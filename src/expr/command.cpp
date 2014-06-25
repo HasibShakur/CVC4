@@ -187,6 +187,43 @@ std::string EchoCommand::getCommandName() const throw() {
   return "echo";
 }
 
+// Edited by Md Hasib Bin Shakur, June 11, 2014
+// QESimplifyCommand is added on a test purpose
+/* QESimplifyCommand*/
+QESimplifyCommand::QESimplifyCommand(const Expr& e) throw() :
+  d_expr(e) {
+}
+Expr QESimplifyCommand::getExpr() const throw() {
+  return d_expr;
+}
+void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
+   try {
+	// The eliminateQuantifier(expr) function will do the quantifier elimination part
+	// smtEngine->eliminateQuantifier(expr);
+	d_commandStatus = CommandSuccess::instance();
+   } catch(exception& e) {
+    d_commandStatus = new CommandFailure(e.what());
+   } 
+}
+void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
+ // smtEngine->eliminateQuantifier(d_expr);
+  out << d_expr.toString() << std::endl;
+  d_commandStatus = CommandSuccess::instance();
+  printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
+}
+Command* QESimplifyCommand::exportTo(ExprManager* exprManager, ExprManagerMapCollection& variableMap) {
+  return new QESimplifyCommand(d_expr.exportTo(exprManager, variableMap));
+}
+
+Command* QESimplifyCommand::clone() const {
+  return new QESimplifyCommand(d_expr);
+}
+
+std::string QESimplifyCommand::getCommandName() const throw() {
+  return "qe";
+}
+
+
 /* class AssertCommand */
 
 AssertCommand::AssertCommand(const Expr& e) throw() :

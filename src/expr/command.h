@@ -319,6 +319,26 @@ public:
   std::string getCommandName() const throw();
 };/* class AssertCommand */
 
+// Edited by Md Hasib Bin Shakur, June 11, 2014
+// QESimplifyCommand is added on a test purpose
+// It just takes a quantified expression as input
+// Finally it will generate an expression without quantifiers
+class CVC4_PUBLIC QESimplifyCommand : public Command {
+protected:
+  Expr d_expr;
+public:
+  QESimplifyCommand(const Expr&) throw();
+  ~QESimplifyCommand() throw() {}
+  Expr getExpr() const throw();
+  //void eliminateQuantifier(const Expr&) throw();
+  void invoke(SmtEngine* smtEngine) throw();
+  void invoke(SmtEngine* smtEngine, std::ostream& out) throw();
+  Command* exportTo(ExprManager* exprManager, ExprManagerMapCollection& variableMap);
+  Command* clone() const;
+  std::string getCommandName() const throw();
+};/* class QESimplifyCommand */
+
+
 class CVC4_PUBLIC PushCommand : public Command {
 public:
   ~PushCommand() throw() {}

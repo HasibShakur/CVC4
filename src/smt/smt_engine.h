@@ -426,8 +426,13 @@ public:
   void defineFunction(Expr func,
                       const std::vector<Expr>& formals,
                       Expr formula);
-
   /**
+   * Added by Md Hasib Bin Shakur on June 17, 2014
+   * eliminateQuantifier function will eliminate quantifiers 
+   * from an expression. For now, the return type is set to void.
+   */
+  void eliminateQuantifier(const Expr& e);	
+  /** 
    * Add a formula to the current context: preprocess, do per-theory
    * setup, use processAssertionList(), asserting to T-solver for
    * literals and conjunction of literals.  Returns false iff

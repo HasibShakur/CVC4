@@ -87,6 +87,7 @@
 #include "theory/datatypes/options.h"
 #include "theory/strings/theory_strings_preprocess.h"
 #include "printer/options.h"
+#include "parser/QuantifierEliminate.h"
 
 using namespace std;
 using namespace CVC4;
@@ -3327,7 +3328,18 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
   d_private->addFormula(e.getNode());
   return quickCheck().asValidityResult();
 }
-
+/**
+ * Author: Md Hasib Bin Shakur
+ * Date alst edited: June 17, 2014
+ * The eliminateQuantifier function will eliminate quantifiers from an
+ * expression.
+ */
+void SmtEngine::eliminateQuantifier(const Expr& ex){
+ // Do the coding
+ Assert(ex.getExprManager() == d_exprManager);
+ QuantifierEliminate qe(ex);
+ 
+}
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
   ModelPostprocessor mpost;
   NodeVisitor<ModelPostprocessor> visitor;

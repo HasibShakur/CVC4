@@ -379,6 +379,10 @@ command returns [CVC4::Command* cmd = NULL]
     ASSERT_TOK { PARSER_STATE->checkThatLogicIsSet(); }
     term[expr, expr2]
     { cmd = new AssertCommand(expr); }
+  /* |  Md Hasib Bin Shakur, June 11, 2014 QE simplify
+     * QESIMPLIFY_TOK { PARSER_STATE->checkThatLogicIsSet(); }
+     * term[expr, expr2]
+     * { cmd = new QESimplifyCommand(expr); } */
   | /* check-sat */
     CHECKSAT_TOK { PARSER_STATE->checkThatLogicIsSet(); }
     ( term[expr, expr2]
@@ -614,6 +618,10 @@ extendedCommand[CVC4::Command*& cmd]
   | SIMPLIFY_TOK { PARSER_STATE->checkThatLogicIsSet(); }
     term[e,e2]
     { cmd = new SimplifyCommand(e); }
+  | /* Md Hasib Bin Shakur, June 11, 2014 QE simplify */
+       QESIMPLIFY_TOK { PARSER_STATE->checkThatLogicIsSet(); }
+       term[e, e2]
+       { cmd = new QESimplifyCommand(e); }
   ;
 
 
@@ -785,7 +793,7 @@ simpleSymbolicExprNoKeyword[CVC4::SExpr& sexpr]
 //	}
   | symbol[s,CHECK_NONE,SYM_SORT]
     { sexpr = SExpr(SExpr::Keyword(s)); }
-  | tok=(ASSERT_TOK | CHECKSAT_TOK | DECLARE_FUN_TOK | DECLARE_SORT_TOK | DEFINE_FUN_TOK | DEFINE_SORT_TOK | GET_VALUE_TOK | GET_ASSIGNMENT_TOK | GET_ASSERTIONS_TOK | GET_PROOF_TOK | GET_UNSAT_CORE_TOK | EXIT_TOK | SET_LOGIC_TOK | SET_INFO_TOK | GET_INFO_TOK | SET_OPTION_TOK | GET_OPTION_TOK | PUSH_TOK | POP_TOK | DECLARE_DATATYPES_TOK | GET_MODEL_TOK | ECHO_TOK | REWRITE_RULE_TOK | REDUCTION_RULE_TOK | PROPAGATION_RULE_TOK | SIMPLIFY_TOK)
+  | tok=(ASSERT_TOK | CHECKSAT_TOK | DECLARE_FUN_TOK | DECLARE_SORT_TOK | DEFINE_FUN_TOK | DEFINE_SORT_TOK | GET_VALUE_TOK | GET_ASSIGNMENT_TOK | GET_ASSERTIONS_TOK | GET_PROOF_TOK | GET_UNSAT_CORE_TOK | EXIT_TOK | SET_LOGIC_TOK | SET_INFO_TOK | GET_INFO_TOK | SET_OPTION_TOK | GET_OPTION_TOK | PUSH_TOK | POP_TOK | DECLARE_DATATYPES_TOK | GET_MODEL_TOK | ECHO_TOK | REWRITE_RULE_TOK | REDUCTION_RULE_TOK | PROPAGATION_RULE_TOK | SIMPLIFY_TOK | QESIMPLIFY_TOK  )
     { sexpr = SExpr(SExpr::Keyword(AntlrInput::tokenText($tok))); }
   | builtinOp[k]
     { std::stringstream ss;
@@ -1675,6 +1683,9 @@ DECLARE_CONST_TOK : 'declare-const';
 DEFINE_CONST_TOK : 'define-const';
 SIMPLIFY_TOK : 'simplify';
 INCLUDE_TOK : 'include';
+// Added QE_SIMPLIFY_TOK for quantifier elimination
+// Md Hasib Bin Shakur, 11 June, 2014
+QESIMPLIFY_TOK : 'qe';
 
 // attributes
 ATTRIBUTE_PATTERN_TOK : ':pattern';
