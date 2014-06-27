@@ -1,4 +1,5 @@
 #include<iostream>
+#include<vector>
 #include "expr/node.h"
 #include "expr/expr_template.h"
 #include "parser/QuantifierEliminate.h"
@@ -16,6 +17,20 @@ QuantifierEliminate::~QuantifierEliminate(){}
 CVC4::Expr QuantifierEliminate::getExpression()
 {
   return this->expression;
+}
+QuantifierEliminate::void parseQuantifiers(const CVC4::Expr& ex)
+{
+  CVC4::Expr temp = ex;
+  Node tempBody =
+
+}
+QuantifierEliminate::int getNumQuantifiers()
+{
+  return (int)d_quants.size();
+}
+Node getQuantifier( int i )
+{
+  return this->d_quants[i];
 }
 
 
