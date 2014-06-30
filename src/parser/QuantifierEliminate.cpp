@@ -20,13 +20,14 @@ CVC4::Expr QuantifierEliminate::getExpression()
 }
 QuantifierEliminate::void parseQuantifiers(const CVC4::Expr& ex)
 {
-  CVC4::Expr temp = ex;
-  Node tempBody = temp->d_node;
+  Node tempBody = Node::fromExpr(ex);
   for(size_t i= 0;i<tempBody[0].getNumChildren();i++)
   {
-    d_quants.push_back(tempBody[0][i].getType());
+    if(tempBody[0][i].getKind() == kind::FORALL || tempBody[0][i].getKind() == kind::EXISTS )
+    {
+      d_quants.push_back(tempBody[0][i].getType());
+    }
   }
-
 }
 QuantifierEliminate::int getNumQuantifiers()
 {

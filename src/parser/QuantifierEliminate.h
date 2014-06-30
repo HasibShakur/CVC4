@@ -4,10 +4,16 @@
 #include "expr/expr_template.h"
 #include "parser/input.h"
 #include "parser/parser.h"
+#include "expr/kind.h"
 //#include "theory/quantifiers/bounded_integers.h"
 using namespace std;
 using namespace CVC4;
 
+namespace kind {
+  namespace metakind {
+    struct NodeValueConstPrinter;
+  }/* CVC4::kind::metakind namespace */
+}/* CVC4::kind namespace */
 class QuantifierEliminate{
  private:
 	CVC4::Expr expression;
