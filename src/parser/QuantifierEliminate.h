@@ -18,6 +18,8 @@ class QuantifierEliminate{
  private:
 	CVC4::Expr expression;
 	std::vector< Node > d_quants;
+	std::vector< Node > d_bound_var;
+	std::vector< Node > d_free_var;
  public:
 	QuantifierEliminate(const CVC4::Expr& ex);
 	~QuantifierEliminate();
@@ -27,5 +29,8 @@ class QuantifierEliminate{
 	int getNumQuantifiers();
 	/** get quantifier */
 	Node getQuantifier( int i );
+	void receiveBoundVariables(const CVC4::Expr& ex);
+	void receiveFreeVariables(const CVC4::Expr& ex);
+	Node computePrenex(const CVC4::Expr& ex);
 
 };
