@@ -23,10 +23,12 @@ private:
   Node computePrenex(Node body,std::vector< Node >& args, bool pol);
   void setNestedQuantifiers( Node n, Node q );
   void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
+  Node computeNNF(Node body);
 public:
   QuantifierEliminate(const CVC4::Expr& ex);
   ~QuantifierEliminate();
   CVC4::Expr getExpression();
+  void setExpression(const CVC4::Expr& ex);
   /*void parseQuantifiers(const CVC4::Expr& ex);
   * get number of quantifiers
   int getNumQuantifiers();
@@ -35,6 +37,7 @@ public:
   void receiveBoundVariables(const CVC4::Expr& ex);
   void receiveFreeVariables(const CVC4::Expr& ex);*/
   CVC4::Expr getPrenexExpression(const CVC4::Expr& ex);
+  void simplifyExpression();
 
 
 };
