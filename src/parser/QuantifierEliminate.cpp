@@ -168,6 +168,7 @@ void QuantifierEliminate::simplifyExpression()
   // 1st phase of simplification is converting the expression to NNF
   Node temp = Node::fromExpr(this->getExpression());
   Node nnfNode = computeNNF(temp);
-  // 2nd phase of simplification is applying the replace rules
-  // 3rd phase of simplification is
+  // 2nd phase of simplification is replacing universal quantifiers with existential quantifiers
+  // 3rd phase of simplification is applying the replace rules
+  // 4th phase of simplification is
 }
