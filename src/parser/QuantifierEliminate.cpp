@@ -10,6 +10,7 @@ using namespace std;
 using namespace CVC4;
 using namespace CVC4::kind;
 using namespace CVC4::theory::quantifiers;
+using namespace qe;
 
 QuantifierEliminate::QuantifierEliminate(const CVC4::Expr& ex) {
   this->expression = ex;
@@ -147,10 +148,17 @@ Node QuantifierEliminate::computeNNF(Node body)
     }
   }
 }
-Node QuantifierEliminate::replaceUniversal(Node body)
+/*Node normalizeBody(Node body)
 {
 
-}
+}*/
+/*Node QuantifierEliminate::replaceUniversal(Node body)
+{
+   if(body.getKind() == kind::FORALL)
+   {
+	
+   }
+}*/
 CVC4::Expr QuantifierEliminate::getPrenexExpression(const CVC4::Expr& ex) {
   Node body = Node::fromExpr(ex);
   std::vector< Node > args;
@@ -173,7 +181,8 @@ void QuantifierEliminate::simplifyExpression()
   Node temp = Node::fromExpr(this->getExpression());
   Node nnfNode = computeNNF(temp);
   // 2nd phase of simplification is replacing universal quantifiers with existential quantifiers
-  Node allExistentialNode = replaceUniversal(nnfNode);
+ // Node allExistentialNode = replaceUniversal(nnfNode);
   // 3rd phase of simplification is applying the replace rules
+  //Node normalizedBody = normalizeBody(nnfNode);
   // 4th phase of simplification is
 }

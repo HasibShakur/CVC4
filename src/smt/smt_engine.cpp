@@ -96,6 +96,9 @@ using namespace CVC4::prop;
 using namespace CVC4::context;
 using namespace CVC4::theory;
 
+//Quantifier Eliminate
+using namespace qe;
+
 namespace CVC4 {
 
 namespace smt {
@@ -3337,7 +3340,7 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
 void SmtEngine::eliminateQuantifier(const Expr& ex){
  // Do the coding
  Assert(ex.getExprManager() == d_exprManager);
- QuantifierEliminate qe(ex);
+ qe::QuantifierEliminate qe(ex);
  
 }
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
