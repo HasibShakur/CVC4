@@ -1,3 +1,4 @@
+#include "cvc4_public.h"
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
@@ -6,10 +7,10 @@
 #include "parser/parser.h"
 #include "expr/kind.h"
 //#include "theory/quantifiers/bounded_integers.h"
-
 using namespace std;
 using namespace CVC4;
-
+using namespace CVC4::kind;
+using namespace CVC4::theory::quantifiers;
 namespace qe{
 // attribute for "contains instantiation constants from"
 struct NestedQuantAttributeId {};
@@ -41,7 +42,5 @@ public:
   void receiveFreeVariables(const CVC4::Expr& ex);*/
   CVC4::Expr getPrenexExpression(const CVC4::Expr& ex);
   void simplifyExpression();
-
-
 };
 }

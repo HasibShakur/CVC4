@@ -1,3 +1,4 @@
+#include "cvc4_public.h"
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
