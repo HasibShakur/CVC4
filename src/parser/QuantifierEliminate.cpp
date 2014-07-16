@@ -6,11 +6,11 @@
 #include "parser/QuantifierEliminate.h"
 #include "parser/input.h"
 #include "parser/parser.h"
-#include "theory/quantifiers/quantifiers_rewriter.h"
+//#include "theory/quantifiers/quantifiers_rewriter.h"
 using namespace std;
 using namespace CVC4;
 using namespace CVC4::kind;
-using namespace CVC4::theory::quantifiers;
+//using namespace CVC4::theory::quantifiers;
 using namespace qe;
 
 QuantifierEliminate::QuantifierEliminate(const CVC4::Expr& ex) {
@@ -149,10 +149,23 @@ Node QuantifierEliminate::computeNNF(Node body)
     }
   }
 }
-/*Node normalizeBody(Node body)
+Node normalizeBody(Node body)
 {
-
-}*/
+  for(int i=0;i<(int)body.getNumChildren();i++)
+  {
+    if(body[i].getKind() == kind::NOT)
+    {
+      //If it is not then do the normalization of the expression whose kind is not
+      //Just call the negateNode on the simplification done on the else part
+    }
+    else
+    {
+      // If it is not of the kind not then directly normalize this
+      // If the operator is > then convert it to < by just exchanging the operators then making a node using mkNode
+      // If the operator is = then use the following conversion s=t <==> s>t+1 and t>s+1
+    }
+  }
+}
 /*Node QuantifierEliminate::replaceUniversal(Node body)
 {
    if(body.getKind() == kind::FORALL)

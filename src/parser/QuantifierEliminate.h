@@ -10,7 +10,7 @@
 using namespace std;
 using namespace CVC4;
 using namespace CVC4::kind;
-using namespace CVC4::theory::quantifiers;
+//using namespace CVC4::theory::quantifiers;
 namespace qe{
 // attribute for "contains instantiation constants from"
 struct NestedQuantAttributeId {};
@@ -26,7 +26,7 @@ private:
   void setNestedQuantifiers( Node n, Node q );
   void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
   Node computeNNF(Node body);
-  //Node normalizeBody(Node body);
+  Node normalizeBody(Node body);
   //Node replaceUniversal(Node body);
 public:
   QuantifierEliminate(const CVC4::Expr& ex);
