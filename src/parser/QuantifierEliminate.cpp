@@ -1,4 +1,5 @@
 #include "cvc4_public.h"
+#include "cvc4_private.h"
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
@@ -6,11 +7,11 @@
 #include "parser/QuantifierEliminate.h"
 #include "parser/input.h"
 #include "parser/parser.h"
-//#include "theory/quantifiers/quantifiers_rewriter.h"
+#include "theory/quantifiers/quantifiers_rewriter.h"
 using namespace std;
 using namespace CVC4;
 using namespace CVC4::kind;
-//using namespace CVC4::theory::quantifiers;
+using namespace CVC4::theory::quantifiers;
 using namespace qe;
 
 QuantifierEliminate::QuantifierEliminate(const CVC4::Expr& ex) {
@@ -29,7 +30,7 @@ void QuantifierEliminate::setNestedQuantifiers( Node n, Node q ){
 void QuantifierEliminate::setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed ) {
   if( std::find( processed.begin(), processed.end(), n )==processed.end() ){
     processed.push_back( n );
-    if( n.getKind()==kind::FORALL || n.getKind()==kind::EXISTS ){
+    if( n.getKind()== FORALL || n.getKind()==EXISTS ){
       Trace("quantifiers-rewrite-debug") << "Set nested quant attribute " << n << std::endl;
       NestedQuantAttribute nqai;
       n[0].setAttribute(nqai,q);
@@ -63,7 +64,7 @@ void QuantifierEliminate::setExpression(const CVC4::Expr& ex)
  return this->d_quants[i];
  }*/
 Node QuantifierEliminate::computePrenex(Node body,std::vector< Node >& args, bool pol) {
-if(body.getKind() == kind::FORALL)
+if(body.getKind() == FORALL)
 {
   std::vector<Node> terms;
   std::vector<Node> subs;
@@ -79,11 +80,11 @@ if(body.getKind() == kind::FORALL)
   //Debug("quantifiers-substitute-debug") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << endl;
   return newBody;
 } else {
-  Assert( body.getKind()!=kind::EXISTS );
+  Assert( body.getKind()!=EXISTS );
   bool childrenChanged = false;
   std::vector<Node> newChildren;
   for(int i = 0; i < (int) body.getNumChildren(); i++) {
-    bool newPol = body.getKind() == kind::NOT ? !pol : pol;
+    bool newPol = body.getKind() == NOT ? !pol : pol;
     Node n = computePrenex(body[i], args, newPol);
     newChildren.push_back(n);
     if(n != body[i]) {
@@ -91,7 +92,7 @@ if(body.getKind() == kind::FORALL)
     }
   }
   if(childrenChanged) {
-    if(body.getKind() == kind::NOT && newChildren[0].getKind() == kind::NOT) {
+    if(body.getKind() == NOT && newChildren[0].getKind() == NOT) {
       return newChildren[0][0];
     } else {
       return NodeManager::currentNM()->mkNode(body.getKind(), newChildren);
@@ -151,9 +152,11 @@ Node QuantifierEliminate::computeNNF(Node body)
 }
 Node normalizeBody(Node body)
 {
+  bool rewritten = false;
+  Node normalized;
   for(int i=0;i<(int)body.getNumChildren();i++)
   {
-    if(body[i].getKind() == kind::NOT)
+    if(body[i].getKind() == NOT)
     {
       //If it is not then do the normalization of the expression whose kind is not
       //Just call the negateNode on the simplification done on the else part
@@ -161,9 +164,26 @@ Node normalizeBody(Node body)
     else
     {
       // If it is not of the kind not then directly normalize this
+      if(QuantifiersRewriter::isLiteral(body[i]))
+      {
+        // If it is a literal then we need to do nothing
+        rewritten = false;
+      }
+      else if(body[i].getKind()==EQUAL)
+      {
+      //  body[i].kinded_iterator::begin(body[i],EQUAL);
+      }
       // If the operator is > then convert it to < by just exchanging the operators then making a node using mkNode
       // If the operator is = then use the following conversion s=t <==> s>t+1 and t>s+1
     }
+  }
+  if(!rewritten)
+  {
+    return body;
+  }
+  else
+  {
+    return normalized;
   }
 }
 /*Node QuantifierEliminate::replaceUniversal(Node body)
@@ -176,7 +196,7 @@ Node normalizeBody(Node body)
 CVC4::Expr QuantifierEliminate::getPrenexExpression(const CVC4::Expr& ex) {
   Node body = Node::fromExpr(ex);
   std::vector< Node > args;
-  if( body.getKind()==kind::EXISTS || body.getKind()==kind::FORALL ){
+  if( body.getKind()==EXISTS || body.getKind()==FORALL ){
       //Trace("quantifiers-rewrite-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
       if( !body.hasAttribute(NestedQuantAttribute()) ){
         setNestedQuantifiers( body[ 1 ], body );

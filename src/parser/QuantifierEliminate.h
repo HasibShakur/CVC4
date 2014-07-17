@@ -1,16 +1,16 @@
 #include "cvc4_public.h"
+#include "cvc4_private.h"
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
 #include "expr/expr_template.h"
 #include "parser/input.h"
 #include "parser/parser.h"
-#include "expr/kind.h"
-//#include "theory/quantifiers/bounded_integers.h"
+
 using namespace std;
 using namespace CVC4;
 using namespace CVC4::kind;
-//using namespace CVC4::theory::quantifiers;
+using namespace CVC4::theory::quantifiers;
 namespace qe{
 // attribute for "contains instantiation constants from"
 struct NestedQuantAttributeId {};
