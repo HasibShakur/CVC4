@@ -2,13 +2,12 @@
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
-#include "theory/quantifiers/quantifiers_rewriter.h"
+//#include "theory/quantifiers/quantifiers_rewriter.h"
 #include "parser/QuantifierEliminate.h"
 
 using namespace CVC4;
 using namespace CVC4::kind;
-using namespace CVC4::theory;
-using namespace CVC4::theory::quantifiers;
+//using namespace CVC4::theory::quantifiers;
 using namespace CVC4::parser::QuantifierEliminate;
 
 
@@ -34,12 +33,34 @@ void QuantifierEliminate::setNestedQuantifiers2( Node n, Node q, std::vector< No
       n[0].setAttribute(nqai,q);
     }
     for( int i=0; i<(int)n.getNumChildren(); i++ ){
+	setNestedQuantifiers2( n[i], q, processed );
     }
   }
 }
 void QuantifierEliminate::setExpression(const CVC4::Expr& ex)
 {
    this->expression = ex;
+}
+bool QuantifierEliminate::isLiteral( Node n ){
+  switch( n.getKind() ){
+  case NOT:
+    return isLiteral( n[0] );
+    break;
+  case OR:
+  case AND:
+  case IMPLIES:
+  case XOR:
+  case ITE:
+  case IFF:
+    return false;
+    break;
+  case EQUAL:
+    return n[0].getType()!=NodeManager::currentNM()->booleanType();
+    break;
+  default:
+    break;
+  }
+  return true;
 }
 /*QuantifierEliminate::void parseQuantifiers(const CVC4::Expr& ex)
  {
@@ -104,7 +125,7 @@ Node QuantifierEliminate::computeNNF(Node body)
   if( body.getKind()==NOT ){
     if( body[0].getKind()==NOT ){
       return computeNNF( body[0][0] );
-    }else if( QuantifiersRewriter::isLiteral( body[0] ) ){
+    }else if( isLiteral( body[0] ) ){
       return body;
     }else{
       std::vector< Node > children;
@@ -130,7 +151,7 @@ Node QuantifierEliminate::computeNNF(Node body)
       }
       return NodeManager::currentNM()->mkNode( k, children );
     }
-  }else if( QuantifiersRewriter::isLiteral( body ) ){
+  }else if( isLiteral( body ) ){
     return body;
   }else{
     std::vector< Node > children;
@@ -194,9 +215,9 @@ CVC4::Expr QuantifierEliminate::getPrenexExpression(const CVC4::Expr& ex) {
   Node body = Node::fromExpr(ex);
   std::vector< Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
-      //Trace("quantifiers-rewrite-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
+      Trace("quantifiers-eliminate-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
       if( !body.hasAttribute(NestedQuantAttribute()) ){
-        QuantifierEliminate::setNestedQuantifiers( body[ 1 ], body );
+         setNestedQuantifiers( body[ 1 ], body );
       }
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
         args.push_back( body[0][i] );

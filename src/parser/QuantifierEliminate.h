@@ -6,11 +6,11 @@
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
+#include "theory/rewriter.h"
 
-//using namespace CVC4;
 namespace CVC4{
- namespace parser{
-  namespace QuantifierEliminate{
+namespace parser{
+namespace QuantifierEliminate{
 
 //attribute for "contains instantiation constants from"
 struct NestedQuantAttributeId {};
@@ -23,6 +23,7 @@ private:
   void setNestedQuantifiers( Node n, Node q );
   void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
   Node computeNNF(Node body);
+  bool isLiteral(Node n);
   //Node normalizeBody(Node body);
   //Node replaceUniversal(Node body);
 public:
@@ -40,8 +41,8 @@ public:
   CVC4::Expr getPrenexExpression(const CVC4::Expr& ex);
   CVC4::Expr simplifyExpression(const CVC4::Expr& ex);
 };
-  }
- }
+}
+}
 }
 
 #endif
