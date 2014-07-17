@@ -327,7 +327,7 @@ class CVC4_PUBLIC QESimplifyCommand : public Command {
 protected:
   Expr d_expr;
 public:
-  QESimplifyCommand(const Expr&) throw();
+  QESimplifyCommand(const Expr& e) throw();
   ~QESimplifyCommand() throw() {}
   Expr getExpr() const throw();
   //void eliminateQuantifier(const Expr&) throw();
