@@ -96,9 +96,6 @@ using namespace CVC4::prop;
 using namespace CVC4::context;
 using namespace CVC4::theory;
 
-//Quantifier Eliminate
-using namespace qe;
-
 namespace CVC4 {
 
 namespace smt {
@@ -3338,9 +3335,8 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  * expression.
  */
 CVC4::Expr SmtEngine::eliminateQuantifier(const Expr& ex){
- // Do the coding
  Assert(ex.getExprManager() == d_exprManager);
- qe::QuantifierEliminate qe(ex);
+ QuantifierEliminate qe(ex);
  CVC4::Expr prenexedExpr = qe.getPrenexExpression(ex);
  CVC4::Expr simplifiedExpr = qe.simplifyExpression(prenexedExpr);
  return simplifiedExpr;

@@ -330,7 +330,6 @@ public:
   QESimplifyCommand(const Expr& e) throw();
   ~QESimplifyCommand() throw() {}
   Expr getExpr() const throw();
-  //void eliminateQuantifier(const Expr&) throw();
   void invoke(SmtEngine* smtEngine) throw();
   void invoke(SmtEngine* smtEngine, std::ostream& out) throw();
   Command* exportTo(ExprManager* exprManager, ExprManagerMapCollection& variableMap);

@@ -198,8 +198,6 @@ Expr QESimplifyCommand::getExpr() const throw() {
 }
 void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
    try {
-	// The eliminateQuantifier(expr) function will do the quantifier elimination part
-	// smtEngine->eliminateQuantifier(expr);
 	d_commandStatus = CommandSuccess::instance();
    } catch(exception& e) {
     d_commandStatus = new CommandFailure(e.what());

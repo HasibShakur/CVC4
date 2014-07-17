@@ -35,14 +35,16 @@ public:
   static bool isClause( Node n );
   static bool isLiteral( Node n );
   static bool isCube( Node n );
+  static void setNestedQuantifiers( Node n, Node q );
+  static void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
 private:
   static void addNodeToOrBuilder( Node n, NodeBuilder<>& t );
   static Node mkForAll( std::vector< Node >& args, Node body, Node ipl );
   static void computeArgs( std::vector< Node >& args, std::map< Node, bool >& activeMap, Node n );
   static void computeArgVec( std::vector< Node >& args, std::vector< Node >& activeArgs, Node n );
   static bool hasArg( std::vector< Node >& args, Node n );
-  static void setNestedQuantifiers( Node n, Node q );
-  static void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
+  //static void setNestedQuantifiers( Node n, Node q );
+  //static void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
   static Node computeClause( Node n );
   static void setAttributes( Node in, Node n );
 private:
