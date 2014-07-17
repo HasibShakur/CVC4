@@ -1,5 +1,4 @@
 #include "cvc4_public.h"
-#include "cvc4_private.h"
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
@@ -35,7 +34,6 @@ void QuantifierEliminate::setNestedQuantifiers2( Node n, Node q, std::vector< No
       n[0].setAttribute(nqai,q);
     }
     for( int i=0; i<(int)n.getNumChildren(); i++ ){
-      setNestedQuantifiers2( n[i], q, processed );
     }
   }
 }
@@ -198,7 +196,7 @@ CVC4::Expr QuantifierEliminate::getPrenexExpression(const CVC4::Expr& ex) {
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
       //Trace("quantifiers-rewrite-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
       if( !body.hasAttribute(NestedQuantAttribute()) ){
-        setNestedQuantifiers( body[ 1 ], body );
+        QuantifierEliminate::setNestedQuantifiers( body[ 1 ], body );
       }
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
         args.push_back( body[0][i] );

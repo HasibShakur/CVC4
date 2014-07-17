@@ -19,9 +19,6 @@ typedef expr::Attribute<NestedQuantAttributeId, Node> NestedQuantAttribute;
 class QuantifierEliminate {
 private:
   CVC4::Expr expression;
-  std::vector<Node> d_quants;
-  std::vector<Node> d_bound_var;
-  std::vector<Node> d_free_var;
   Node computePrenex(Node body,std::vector< Node >& args, bool pol);
   void setNestedQuantifiers( Node n, Node q );
   void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
