@@ -206,8 +206,8 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
    } 
 }
 void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
- // smtEngine->eliminateQuantifier(d_expr);
-  out << d_expr.toString() << std::endl;
+  CVC4::Expr ex = smtEngine->eliminateQuantifier(d_expr);
+  out << ex.toString() << std::endl;
   d_commandStatus = CommandSuccess::instance();
   printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
 }

@@ -150,7 +150,7 @@ Node QuantifierEliminate::computeNNF(Node body)
     }
   }
 }
-Node normalizeBody(Node body)
+/*Node normalizeBody(Node body)
 {
   bool rewritten = false;
   Node normalized;
@@ -185,7 +185,7 @@ Node normalizeBody(Node body)
   {
     return normalized;
   }
-}
+}*/
 /*Node QuantifierEliminate::replaceUniversal(Node body)
 {
    if(body.getKind() == kind::FORALL)
@@ -207,9 +207,9 @@ CVC4::Expr QuantifierEliminate::getPrenexExpression(const CVC4::Expr& ex) {
   }
   Node prenexedBody = computePrenex(body, args, true);
   this->setExpression(prenexedBody.toExpr());
-  return prenexedExpr;
+  return this->getExpression();
 }
-void QuantifierEliminate::simplifyExpression()
+CVC4::Expr QuantifierEliminate::simplifyExpression(const CVC4::Expr& ex)
 {
   // 1st phase of simplification is converting the expression to NNF
   Node temp = Node::fromExpr(this->getExpression());
@@ -219,4 +219,7 @@ void QuantifierEliminate::simplifyExpression()
   // 3rd phase of simplification is applying the replace rules
   //Node normalizedBody = normalizeBody(nnfNode);
   // 4th phase of simplification is
+  this->setExpression(nnfNode.toExpr());
+  CVC4::Expr simplifiedExpr = this->getExpression();
+  return simplifiedExpr;
 }

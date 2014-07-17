@@ -26,7 +26,7 @@ private:
   void setNestedQuantifiers( Node n, Node q );
   void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
   Node computeNNF(Node body);
-  Node normalizeBody(Node body);
+  //Node normalizeBody(Node body);
   //Node replaceUniversal(Node body);
 public:
   QuantifierEliminate(const CVC4::Expr& ex);
@@ -41,6 +41,6 @@ public:
   void receiveBoundVariables(const CVC4::Expr& ex);
   void receiveFreeVariables(const CVC4::Expr& ex);*/
   CVC4::Expr getPrenexExpression(const CVC4::Expr& ex);
-  void simplifyExpression();
+  CVC4::Expr simplifyExpression(const CVC4::Expr& ex);
 };
 }
