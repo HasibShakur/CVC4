@@ -1,20 +1,20 @@
 #include "cvc4_public.h"
-#include "cvc4_private.h"
+
+#ifndef __CVC4__PARSER_QUANTIFIERELIMINATE_H
+#define __CVC4__PARSER_QUANTIFIERELIMINATE_H
+
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
-#include "expr/expr_template.h"
-#include "parser/input.h"
-#include "parser/parser.h"
 
-using namespace std;
-using namespace CVC4;
-using namespace CVC4::kind;
-using namespace CVC4::theory::quantifiers;
+//using namespace CVC4;
+namespace CVC4{
+ namespace parser{
+  namespace QuantifierEliminate{
 
-// attribute for "contains instantiation constants from"
-//struct NestedQuantAttributeId {};
-//typedef expr::Attribute<NestedQuantAttributeId, Node> NestedQuantAttribute;
+//attribute for "contains instantiation constants from"
+struct NestedQuantAttributeId {};
+typedef expr::Attribute<NestedQuantAttributeId, Node> NestedQuantAttribute;
 
 class QuantifierEliminate {
 private:
@@ -23,8 +23,8 @@ private:
   std::vector<Node> d_bound_var;
   std::vector<Node> d_free_var;
   Node computePrenex(Node body,std::vector< Node >& args, bool pol);
-  //void setNestedQuantifiers( Node n, Node q );
-  //void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
+  void setNestedQuantifiers( Node n, Node q );
+  void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
   Node computeNNF(Node body);
   //Node normalizeBody(Node body);
   //Node replaceUniversal(Node body);
@@ -43,4 +43,8 @@ public:
   CVC4::Expr getPrenexExpression(const CVC4::Expr& ex);
   CVC4::Expr simplifyExpression(const CVC4::Expr& ex);
 };
+  }
+ }
+}
 
+#endif
