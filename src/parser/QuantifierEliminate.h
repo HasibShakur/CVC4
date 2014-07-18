@@ -19,10 +19,10 @@ namespace CVC4{
 class QuantifierEliminate {
 private:
   Expr expression;
-  Node computePrenex(Node body,std::vector< Node >& args, bool pol);
+  Node convertToPrenex(Node body,std::vector< Node >& args, bool pol);
  // void setNestedQuantifiers( Node n, Node q );
  // void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
-  Node computeNNF(Node body);
+  Node convertToNNF(Node body);
   bool isLiteral(Node n);
   //Node normalizeBody(Node body);
   //Node replaceUniversal(Node body);
