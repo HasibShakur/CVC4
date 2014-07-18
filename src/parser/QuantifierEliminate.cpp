@@ -11,12 +11,12 @@ using namespace CVC4::kind;
 using namespace CVC4::parser::QuantifierEliminate;
 
 
-QuantifierEliminate::QuantifierEliminate(const CVC4::Expr& ex) {
+QuantifierEliminate::QuantifierEliminate(const Expr& ex) {
   this->expression = ex;
 }
 QuantifierEliminate::~QuantifierEliminate() {
 }
-CVC4::Expr QuantifierEliminate::getExpression() {
+Expr QuantifierEliminate::getExpression() {
   return this->expression;
 }
 //void QuantifierEliminate::setNestedQuantifiers( Node n, Node q ){
@@ -37,7 +37,7 @@ CVC4::Expr QuantifierEliminate::getExpression() {
 //    }
 //  }
 //}
-void QuantifierEliminate::setExpression(const CVC4::Expr& ex)
+void QuantifierEliminate::setExpression(const Expr& ex)
 {
    this->expression = ex;
 }
@@ -211,7 +211,7 @@ Node QuantifierEliminate::computeNNF(Node body)
 	
    }
 }*/
-CVC4::Expr QuantifierEliminate::getPrenexExpression(const CVC4::Expr& ex) {
+Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   Node body = Node::fromExpr(ex);
   std::vector< Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
@@ -225,9 +225,9 @@ CVC4::Expr QuantifierEliminate::getPrenexExpression(const CVC4::Expr& ex) {
   }
   Node prenexedBody = computePrenex(body, args, true);
   this->setExpression(prenexedBody.toExpr());
-  return this->getExpression();
+  return prenexedBody;
 }
-CVC4::Expr QuantifierEliminate::simplifyExpression(const CVC4::Expr& ex)
+Node QuantifierEliminate::simplifyExpression(const Expr& ex)
 {
   // 1st phase of simplification is converting the expression to NNF
   Node temp = Node::fromExpr(this->getExpression());
@@ -238,6 +238,5 @@ CVC4::Expr QuantifierEliminate::simplifyExpression(const CVC4::Expr& ex)
   //Node normalizedBody = normalizeBody(nnfNode);
   // 4th phase of simplification is
   this->setExpression(nnfNode.toExpr());
-  CVC4::Expr simplifiedExpr = this->getExpression();
-  return simplifiedExpr;
+  return nnfNode;
 }

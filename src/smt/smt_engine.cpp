@@ -3335,12 +3335,12 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  * The eliminateQuantifier function will eliminate quantifiers from an
  * expression.
  */
-CVC4::Expr SmtEngine::eliminateQuantifier(const Expr& ex){
+Expr SmtEngine::eliminateQuantifier(const Expr& ex){
  Assert(ex.getExprManager() == d_exprManager);
  QuantifierEliminate qe(ex);
- CVC4::Expr prenexedExpr = qe.getPrenexExpression(ex);
- CVC4::Expr simplifiedExpr = qe.simplifyExpression(prenexedExpr);
- return simplifiedExpr;
+ Node prenexedExpr = qe.getPrenexExpression(ex);
+ Node simplifiedExpr = qe.simplifyExpression(prenexedExpr);
+ return simplifiedExpr.toExpr();
 }
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
   ModelPostprocessor mpost;

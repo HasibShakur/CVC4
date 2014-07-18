@@ -27,10 +27,10 @@ private:
   //Node normalizeBody(Node body);
   //Node replaceUniversal(Node body);
 public:
-  QuantifierEliminate(const CVC4::Expr& ex);
+  QuantifierEliminate(const Expr& ex);
   ~QuantifierEliminate();
-  CVC4::Expr getExpression();
-  void setExpression(const CVC4::Expr& ex);
+  Expr getExpression();
+  void setExpression(const Expr& ex);
   /*void parseQuantifiers(const CVC4::Expr& ex);
   * get number of quantifiers
   int getNumQuantifiers();
@@ -38,8 +38,8 @@ public:
   Node getQuantifier(int i);
   void receiveBoundVariables(const CVC4::Expr& ex);
   void receiveFreeVariables(const CVC4::Expr& ex);*/
-  CVC4::Expr getPrenexExpression(const CVC4::Expr& ex);
-  CVC4::Expr simplifyExpression(const CVC4::Expr& ex);
+  Node getPrenexExpression(Node n);
+  Node simplifyExpression(Node n);
 };
 }
 }
