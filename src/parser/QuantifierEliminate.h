@@ -9,8 +9,8 @@
 #include "theory/rewriter.h"
 
 namespace CVC4{
-namespace parser{
-namespace QuantifierEliminate{
+//namespace parser{
+//namespace QuantifierEliminate{
 
 //attribute for "contains instantiation constants from"
 //struct NestedQuantAttributeId {};
@@ -42,7 +42,7 @@ public:
   Node simplifyExpression(const Expr& e);
 };
 }
-}
-}
+//}
+//}
 
 #endif
