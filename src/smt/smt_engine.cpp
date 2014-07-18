@@ -3339,7 +3339,7 @@ Expr SmtEngine::eliminateQuantifier(const Expr& ex){
  Assert(ex.getExprManager() == d_exprManager);
  QuantifierEliminate qe(ex);
  Node prenexedExpr = qe.getPrenexExpression(ex);
- Node simplifiedExpr = qe.simplifyExpression(prenexedExpr);
+ Node simplifiedExpr = qe.simplifyExpression(prenexedExpr.toExpr());
  return simplifiedExpr.toExpr();
 }
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
