@@ -38,8 +38,8 @@ public:
   Node getQuantifier(int i);
   void receiveBoundVariables(const CVC4::Expr& ex);
   void receiveFreeVariables(const CVC4::Expr& ex);*/
-  Node getPrenexExpression(Node n);
-  Node simplifyExpression(Node n);
+  Node getPrenexExpression(const Expr& e);
+  Node simplifyExpression(const Expr& e);
 };
 }
 }
