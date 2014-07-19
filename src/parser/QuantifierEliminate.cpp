@@ -106,7 +106,7 @@ if(body.getKind() == FORALL)
   std::vector<Node> newChildren;
   for(int i = 0; i < (int) body.getNumChildren(); i++) {
     bool newPol = body.getKind() == NOT ? !pol : pol;
-    Node n = convertToPrenex(body[i], args, newPol);
+    Node n = this->convertToPrenex(body[i], args, newPol);
     newChildren.push_back(n);
     if(n != body[i]) {
       childrenChanged = true;
