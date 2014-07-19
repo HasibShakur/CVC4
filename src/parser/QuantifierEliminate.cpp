@@ -17,6 +17,10 @@ QuantifierEliminate::QuantifierEliminate(const Expr& ex) {
   this->expression = ex;
 }
 QuantifierEliminate::~QuantifierEliminate() {}
+void QuantifierEliminate::setExpression(const Expr& ex)
+{
+  this->expression = ex;
+}
 Expr QuantifierEliminate::getExpression()
 {
    return this->expression;
@@ -222,7 +226,7 @@ Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
         args.push_back( body[0][i] );
       }
   }
-  Node prenexedBody = convertToPrenex(body, args, true);
+  Node prenexedBody = this->convertToPrenex(body, args, true);
   this->setExpression(prenexedBody.toExpr());
   return prenexedBody;
 }
@@ -230,7 +234,7 @@ Node QuantifierEliminate::simplifyExpression(const Expr& ex)
 {
   // 1st phase of simplification is converting the expression to NNF
   Node temp = Node::fromExpr(this->getExpression());
-  Node nnfNode = convertToNNF(temp);
+  Node nnfNode = this->convertToNNF(temp);
   // 2nd phase of simplification is replacing universal quantifiers with existential quantifiers
  // Node allExistentialNode = replaceUniversal(nnfNode);
   // 3rd phase of simplification is applying the replace rules
