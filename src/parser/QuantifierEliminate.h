@@ -7,7 +7,7 @@
 #include<vector>
 #include "expr/node.h"
 #include "theory/rewriter.h"
-using namespace expr;
+using namespace CVC4::expr;
 namespace CVC4{
 //namespace parser{
 //namespace QuantifierEliminate{
