@@ -14,7 +14,7 @@ namespace CVC4{
 
 //attribute for "contains instantiation constants from"
 struct NestedQuantAttributeId {};
-typedef expr::Attribute<NestedQuantAttributeId, Node> NestedQuantAttribute;
+typedef CVC4::expr::Attribute<NestedQuantAttributeId, Node> NestedQuantAttribute;
 
 class QuantifierEliminate {
 private:
