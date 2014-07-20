@@ -4,7 +4,6 @@
 #include<vector>
 #include "expr/node.h"
 #include "theory/rewriter.h"
-//#include "theory/quantifiers/quantifiers_rewriter.h"
 #include "parser/QuantifierEliminate.h"
 
 using namespace CVC4;
@@ -25,24 +24,24 @@ Expr QuantifierEliminate::getExpression()
 {
    return this->expression;
 }
-//void QuantifierEliminate::setNestedQuantifiers( Node n, Node q ){
-//  std::vector< Node > processed;
-//  setNestedQuantifiers2( n, q, processed );
-//}
-//
-//void QuantifierEliminate::setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed ) {
-//  if( std::find( processed.begin(), processed.end(), n )==processed.end() ){
-//    processed.push_back( n );
-//    if( n.getKind()== FORALL || n.getKind()==EXISTS ){
-//      Trace("quantifiers-rewrite-debug") << "Set nested quant attribute " << n << std::endl;
-//      NestedQuantAttribute nqai;
-//      n[0].setAttribute(nqai,q);
-//    }
-//    for( int i=0; i<(int)n.getNumChildren(); i++ ){
-//	setNestedQuantifiers2( n[i], q, processed );
-//    }
-//  }
-//}
+void QuantifierEliminate::setNestedQuantifiers( Node n, Node q ){
+  std::vector< Node > processed;
+  setNestedQuantifiers2( n, q, processed );
+}
+
+void QuantifierEliminate::setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed ) {
+  if( std::find( processed.begin(), processed.end(), n )==processed.end() ){
+    processed.push_back( n );
+    if( n.getKind()== FORALL || n.getKind()==EXISTS ){
+      Trace("quantifiers-rewrite-debug") << "Set nested quant attribute " << n << std::endl;
+      NestedQuantAttribute nqai;
+      n[0].setAttribute(nqai,q);
+    }
+    for( int i=0; i<(int)n.getNumChildren(); i++ ){
+	setNestedQuantifiers2( n[i], q, processed );
+    }
+  }
+}
 
 bool QuantifierEliminate::isLiteral( Node n ){
   switch( n.getKind() ){
@@ -219,14 +218,14 @@ Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   std::vector< Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
 //      Trace("quantifiers-eliminate-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
-//      if( !body.hasAttribute(NestedQuantAttribute()) ){
-//         setNestedQuantifiers( body[ 1 ], body );
-//      }
+      if( !body.hasAttribute(NestedQuantAttribute()) ){
+         setNestedQuantifiers( body[ 1 ], body );
+      }
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
         args.push_back( body[0][i] );
       }
   }
-  Node prenexedBody = this->convertToPrenex(body, args, true);
+  Node prenexedBody = this->convertToPrenex(body[1], args, true);
   this->setExpression(prenexedBody.toExpr());
   return prenexedBody;
 }

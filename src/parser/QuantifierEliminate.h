@@ -13,15 +13,15 @@ namespace CVC4{
 //namespace QuantifierEliminate{
 
 //attribute for "contains instantiation constants from"
-//struct NestedQuantAttributeId {};
-//typedef expr::Attribute<NestedQuantAttributeId, Node> NestedQuantAttribute;
+struct NestedQuantAttributeId {};
+typedef expr::Attribute<NestedQuantAttributeId, Node> NestedQuantAttribute;
 
 class QuantifierEliminate {
 private:
   Expr expression;
   Node convertToPrenex(Node body,std::vector< Node >& args, bool pol);
- // void setNestedQuantifiers( Node n, Node q );
- // void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
+  void setNestedQuantifiers( Node n, Node q );
+  void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
   Node convertToNNF(Node body);
   bool isLiteral(Node n);
   //Node normalizeBody(Node body);
