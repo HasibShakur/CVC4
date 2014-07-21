@@ -6,8 +6,9 @@
 #include "theory/rewriter.h"
 #include "parser/QuantifierEliminate.h"
 
+using namespace std;
 using namespace CVC4;
-using namespace CVC4::expr;
+using namespace CVC4::context;
 using namespace CVC4::kind;
 //using namespace CVC4::theory::quantifiers;
 //using namespace CVC4::parser::QuantifierEliminate;

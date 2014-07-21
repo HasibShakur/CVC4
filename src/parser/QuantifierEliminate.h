@@ -7,14 +7,14 @@
 #include<vector>
 #include "expr/node.h"
 #include "theory/rewriter.h"
-using namespace CVC4::expr;
+
 namespace CVC4{
 //namespace parser{
 //namespace QuantifierEliminate{
 
 //attribute for "contains instantiation constants from"
 struct NestedQuantAttributeId {};
-typedef CVC4::expr::Attribute<NestedQuantAttributeId, Node> NestedQuantAttribute;
+typedef expr::Attribute<NestedQuantAttributeId, Node> NestedQuantAttribute;
 
 class QuantifierEliminate {
 private:
