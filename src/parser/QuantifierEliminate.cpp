@@ -10,9 +10,7 @@ using namespace std;
 using namespace CVC4;
 using namespace CVC4::context;
 using namespace CVC4::kind;
-//using namespace CVC4::theory::quantifiers;
-//using namespace CVC4::parser::QuantifierEliminate;
-
+using namespace CVC4::qe;
 
 QuantifierEliminate::QuantifierEliminate(const Expr& ex) {
   this->expression = ex;
@@ -36,7 +34,7 @@ void QuantifierEliminate::setNestedQuantifiers2( Node n, Node q, std::vector< No
     processed.push_back( n );
     if( n.getKind()== FORALL || n.getKind()==EXISTS ){
       Trace("quantifiers-rewrite-debug") << "Set nested quant attribute " << n << std::endl;
-      NestedQuantAttribute nqai;
+      QeNestedQuantAttributeId nqai;
       n[0].setAttribute(nqai,q);
     }
     for( int i=0; i<(int)n.getNumChildren(); i++ ){
@@ -220,7 +218,7 @@ Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   std::vector< Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
 //      Trace("quantifiers-eliminate-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
-      if( !body.hasAttribute(NestedQuantAttribute()) ){
+    if( !body.hasAttribute(QeNestedQuantAttribute()) ){
          setNestedQuantifiers( body[ 1 ], body );
       }
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ){

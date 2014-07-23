@@ -9,12 +9,11 @@
 #include "theory/rewriter.h"
 
 namespace CVC4{
-//namespace parser{
-//namespace QuantifierEliminate{
+namespace qe{
 
 //attribute for "contains instantiation constants from"
-struct NestedQuantAttributeId {};
-typedef expr::Attribute<NestedQuantAttributeId, Node> NestedQuantAttribute;
+struct QeNestedQuantAttributeId {};
+typedef expr::Attribute<QeNestedQuantAttributeId, Node> QeNestedQuantAttribute;
 
 class QuantifierEliminate {
 private:

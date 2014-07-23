@@ -95,7 +95,7 @@ using namespace CVC4::smt;
 using namespace CVC4::prop;
 using namespace CVC4::context;
 using namespace CVC4::theory;
-//using namespace CVC4::parser::QuantifierEliminate;
+using namespace CVC4::qe;
 
 namespace CVC4 {
 
@@ -3337,9 +3337,9 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  */
 Expr SmtEngine::eliminateQuantifier(const Expr& ex){
  Assert(ex.getExprManager() == d_exprManager);
- QuantifierEliminate qe(ex);
- Node prenexedExpr = qe.getPrenexExpression(ex);
- Node simplifiedExpr = qe.simplifyExpression(prenexedExpr.toExpr());
+ QuantifierEliminate quantifierEliminate(ex);
+ Node prenexedExpr = quantifierEliminate.getPrenexExpression(ex);
+ Node simplifiedExpr = quantifierEliminate.simplifyExpression(prenexedExpr.toExpr());
  return simplifiedExpr.toExpr();
 }
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
