@@ -3337,7 +3337,7 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  */
 Expr SmtEngine::eliminateQuantifier(const Expr& ex){
  Assert(ex.getExprManager() == d_exprManager);
- QuantifierEliminate quantifierEliminate(ex);
+ CVC4::qe::QuantifierEliminate quantifierEliminate(ex);
  Node prenexedExpr = quantifierEliminate.getPrenexExpression(ex);
  Node simplifiedExpr = quantifierEliminate.simplifyExpression(prenexedExpr.toExpr());
  return simplifiedExpr.toExpr();

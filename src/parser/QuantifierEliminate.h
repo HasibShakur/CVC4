@@ -41,7 +41,7 @@ public:
   Node simplifyExpression(const Expr& e);
 };
 }
-
+}
 //}
 
 #endif
