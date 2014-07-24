@@ -56,8 +56,6 @@ libcvc4parser_la_SOURCES = \
 	parser_builder.cpp \
 	parser_exception.h \
 	antlr_tracing.h \
-	QuantifierEliminate.h \
-	QuantifierEliminate.cpp 
 
 EXTRA_DIST = \
 	Makefile.antlr_tracing \

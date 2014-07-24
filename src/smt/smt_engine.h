@@ -70,9 +70,9 @@ namespace prop {
   class PropEngine;
 }/* CVC4::prop namespace */
 
-namespace qe {
-  class QuantifierEliminate;
-}/* CVC4::qe namespace */
+//namespace qe {
+//  class QuantifierEliminate;
+//}/* CVC4::qe namespace */
 
 namespace smt {
   /**
