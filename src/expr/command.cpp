@@ -20,6 +20,7 @@
 #include <iterator>
 #include <sstream>
 #include <exception>
+#include <string>
 
 #include "expr/command.h"
 #include "smt/smt_engine.h"
@@ -187,31 +188,27 @@ std::string EchoCommand::getCommandName() const throw() {
   return "echo";
 }
 
+
+
 // Edited by Md Hasib Bin Shakur, June 11, 2014
-// QESimplifyCommand is added on a test purpose
-/* QESimplifyCommand*/
 QESimplifyCommand::QESimplifyCommand(const Expr& e) throw() :
   d_expr(e) {
 }
+
 Expr QESimplifyCommand::getExpr() const throw() {
   return d_expr;
 }
+
 void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
-   try {
-	d_commandStatus = CommandSuccess::instance();
-   } catch(exception& e) {
-    d_commandStatus = new CommandFailure(e.what());
-   } 
-}
-void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
- // CVC4::Expr ex = smtEngine->eliminateQuantifier(d_expr);
+  /* empty commands have no implementation */
+// CVC4::Expr ex = smtEngine->eliminateQuantifier(d_expr);
   std::string ex = this->getExpr().toString();
-  out << ex << std::endl;
+  cout << ex << endl;
   d_commandStatus = CommandSuccess::instance();
-  printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
 }
+
 Command* QESimplifyCommand::exportTo(ExprManager* exprManager, ExprManagerMapCollection& variableMap) {
-  return new QESimplifyCommand(d_expr.exportTo(exprManager, variableMap));
+  return new QESimplifyCommand(d_expr);
 }
 
 Command* QESimplifyCommand::clone() const {
@@ -221,7 +218,6 @@ Command* QESimplifyCommand::clone() const {
 std::string QESimplifyCommand::getCommandName() const throw() {
   return "qe";
 }
-
 
 /* class AssertCommand */
 

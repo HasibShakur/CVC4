@@ -331,11 +331,10 @@ public:
   ~QESimplifyCommand() throw() {}
   Expr getExpr() const throw();
   void invoke(SmtEngine* smtEngine) throw();
-  void invoke(SmtEngine* smtEngine, std::ostream& out) throw();
   Command* exportTo(ExprManager* exprManager, ExprManagerMapCollection& variableMap);
   Command* clone() const;
   std::string getCommandName() const throw();
-};/* class QESimplifyCommand */
+}; /*class QESimplifyCommand */
 
 
 class CVC4_PUBLIC PushCommand : public Command {
