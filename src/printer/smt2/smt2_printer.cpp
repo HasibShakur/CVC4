@@ -690,7 +690,8 @@ void Smt2Printer::toStream(std::ostream& out, const Command* c,
      tryToStream<DatatypeDeclarationCommand>(out, c) ||
      tryToStream<CommentCommand>(out, c) ||
      tryToStream<EmptyCommand>(out, c) ||
-     tryToStream<EchoCommand>(out, c)) {
+     tryToStream<EchoCommand>(out, c) ||
+     tryToStream<QESimplifyCommand>(out, c)) {
     return;
   }
 
@@ -1069,6 +1070,12 @@ static void toStream(std::ostream& out, const EmptyCommand* c) throw() {
 
 static void toStream(std::ostream& out, const EchoCommand* c) throw() {
   out << "(echo \"" << c->getOutput() << "\")";
+}
+// For QESimplificationCommand
+// Edited by Md Hasib Bin Shakur
+// Edited on 25 July, 2014
+static void toStream(std::ostream& out, const QESimplifyCommand* c) throw() {
+  out << "(qe " << c->getExpr() << ")";
 }
 
 template <class T>

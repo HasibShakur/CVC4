@@ -87,7 +87,7 @@
 #include "theory/datatypes/options.h"
 #include "theory/strings/theory_strings_preprocess.h"
 #include "printer/options.h"
-//#include "parser/QuantifierEliminate.h"
+#include "parser/QuantifierEliminate.h"
 
 using namespace std;
 using namespace CVC4;
@@ -3335,15 +3335,16 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  * The eliminateQuantifier function will eliminate quantifiers from an
  * expression.
  */
-/*
-Expr SmtEngine::eliminateQuantifier(const Expr& ex){
+
+CVC4::Expr SmtEngine::eliminateQuantifier(const Expr& ex){
  Assert(ex.getExprManager() == d_exprManager);
- CVC4::qe::QuantifierEliminate quantifierEliminate(ex);
- Node prenexedExpr = quantifierEliminate.getPrenexExpression(ex);
- Node simplifiedExpr = quantifierEliminate.simplifyExpression(prenexedExpr.toExpr());
+ //CVC4::qe::QuantifierEliminate quantifierEliminate(ex);
+ QuantifierEliminate quantifierEliminate(ex);
+ Node prenexedExpr = quantifierEliminate->getPrenexExpression(ex);
+ Node simplifiedExpr = quantifierEliminate->simplifyExpression(prenexedExpr.toExpr());
  return simplifiedExpr.toExpr();
 }
-*/
+
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
   ModelPostprocessor mpost;
   NodeVisitor<ModelPostprocessor> visitor;

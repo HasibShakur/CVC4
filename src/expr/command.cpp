@@ -200,11 +200,15 @@ Expr QESimplifyCommand::getExpr() const throw() {
 }
 
 void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
-  /* empty commands have no implementation */
-// CVC4::Expr ex = smtEngine->eliminateQuantifier(d_expr);
-  std::string ex = this->getExpr().toString();
-  cout << ex << endl;
+  /* we don't have an output stream here, nothing to do */
   d_commandStatus = CommandSuccess::instance();
+}
+
+void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
+  Expr ex = smtEngine->eliminateQuantifier(this->getExpr());
+  out << ex << std::endl;
+  d_commandStatus = CommandSuccess::instance();
+  printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
 }
 
 Command* QESimplifyCommand::exportTo(ExprManager* exprManager, ExprManagerMapCollection& variableMap) {
