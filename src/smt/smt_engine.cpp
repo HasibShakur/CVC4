@@ -23,7 +23,7 @@
 #include <cctype>
 #include <algorithm>
 #include <ext/hash_map>
-
+#include <iostream>
 #include "context/cdlist.h"
 #include "context/cdhashset.h"
 #include "context/context.h"
@@ -3338,14 +3338,22 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
 
 Expr SmtEngine::eliminateQuantifier(const Expr& ex){
  Assert(ex.getExprManager() == d_exprManager);
- //CVC4::qe::QuantifierEliminate quantifierEliminate(ex);
- QuantifierEliminate quantifierEliminate(ex);
- //quantifierEliminate.setExpression(ex);
- Node prenexedExpr = quantifierEliminate.getPrenexExpression(quantifierEliminate.getExpression());
- Node simplifiedExpr = quantifierEliminate.simplifyExpression(prenexedExpr.toExpr());
- return simplifiedExpr.toExpr();
+ if(ex.isNull())
+ {
+  std::cout<<"Null expression"<<std::endl;
+  return ex;
+ }
+ else
+ {
+  QuantifierEliminate qe(ex);
+  Expr e = qe.getExpression();
+  Node prenexedNode = qe.getPrenexExpression(e);
+  Expr prenexedExpression = prenexedNode.toExpr();
+  Node simplifiedNode = qe.simplifyExpression(prenexedExpression);
+  Expr simplifiedExpression = simplifiedNode.toExpr();
+  return simplifiedExpression;
+ }
 }
-
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
   ModelPostprocessor mpost;
   NodeVisitor<ModelPostprocessor> visitor;
