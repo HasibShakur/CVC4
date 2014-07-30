@@ -3345,20 +3345,13 @@ Expr SmtEngine::eliminateQuantifier(const Expr& ex){
  }
  else
  {
-  QuantifierEliminate qe(ex);
-  if(qe != nullptr)
-  {
-    Expr e = qe.getExpression();
-    Node prenexedNode = qe.getPrenexExpression(e);
-    Expr prenexedExpression = prenexedNode.toExpr();
-    Node simplifiedNode = qe.simplifyExpression(prenexedExpression);
-    Expr simplifiedExpression = simplifiedNode.toExpr();
-    return simplifiedExpression;
-  }
-  else
-  {
-    std::cout<<"Object not created"<<std::endl;
-  }
+  QuantifierEliminate* qe(ex);
+  Expr e = qe->getExpression();
+  Node prenexedNode = qe->getPrenexExpression(e);
+  Expr prenexedExpression = prenexedNode.toExpr();
+  Node simplifiedNode = qe->simplifyExpression(prenexedExpression);
+  Expr simplifiedExpression = simplifiedNode.toExpr();
+  return simplifiedExpression;
  }
 }
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
