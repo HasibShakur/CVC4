@@ -3336,7 +3336,7 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  * expression.
  */
 
-Expr SmtEngine::eliminateQuantifier(const Expr& ex){
+Expr SmtEngine::eliminateQuantifier(Expr ex){
  Assert(ex.getExprManager() == d_exprManager);
  if(ex.isNull())
  {
@@ -3345,12 +3345,12 @@ Expr SmtEngine::eliminateQuantifier(const Expr& ex){
  }
  else
  {
-  QuantifierEliminate* qe;
-  qe->setExpression(ex);
-  Expr e = qe->getExpression();
-  Node prenexedNode = qe->getPrenexExpression(e);
+  QuantifierEliminate qe;
+  qe.setExpression(ex);
+  Expr e = qe.getExpression();
+  Node prenexedNode = qe.getPrenexExpression(e);
   Expr prenexedExpression = prenexedNode.toExpr();
-  Node simplifiedNode = qe->simplifyExpression(prenexedExpression);
+  Node simplifiedNode = qe.simplifyExpression(prenexedExpression);
   Expr simplifiedExpression = simplifiedNode.toExpr();
   return simplifiedExpression;
  }

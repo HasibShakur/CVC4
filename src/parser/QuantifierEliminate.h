@@ -27,9 +27,9 @@ public:
   QuantifierEliminate();
   ~QuantifierEliminate();
   Expr getExpression();
-  void setExpression(const Expr& ex);
-  Node getPrenexExpression(const Expr& e);
-  Node simplifyExpression(const Expr& e);
+  void setExpression(Expr e);
+  Node getPrenexExpression(Expr e);
+  Node simplifyExpression(Expr e);
 };
 }
 //}

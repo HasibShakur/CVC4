@@ -12,13 +12,13 @@ using namespace CVC4::kind;
 //using namespace CVC4::qe;
 
 QuantifierEliminate::QuantifierEliminate() {}
-void QuantifierEliminate::setExpression(const Expr& ex)
+void QuantifierEliminate::setExpression(Expr e)
 {
-  this->expression = ex;
+  expression = e;
 }
 Expr QuantifierEliminate::getExpression()
 {
-   return this->expression;
+   return expression;
 }
 /*void QuantifierEliminate::setNestedQuantifiers( Node n, Node q ){
   std::vector< Node > processed;
@@ -209,7 +209,7 @@ Node QuantifierEliminate::convertToNNF(Node body)
 	
    }
 }*/
-Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
+Node QuantifierEliminate::getPrenexExpression(Expr ex) {
   Node body = Node::fromExpr(ex);
   std::vector< Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
@@ -225,7 +225,7 @@ Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   this->setExpression(prenexedBody.toExpr());
   return prenexedBody;
 }
-Node QuantifierEliminate::simplifyExpression(const Expr& ex)
+Node QuantifierEliminate::simplifyExpression(Expr ex)
 {
   // 1st phase of simplification is converting the expression to NNF
   Node temp = Node::fromExpr(this->getExpression());
