@@ -3345,7 +3345,8 @@ Expr SmtEngine::eliminateQuantifier(const Expr& ex){
  }
  else
  {
-  QuantifierEliminate* qe(ex);
+  QuantifierEliminate* qe;
+  qe->setExpression(ex);
   Expr e = qe->getExpression();
   Node prenexedNode = qe->getPrenexExpression(e);
   Expr prenexedExpression = prenexedNode.toExpr();

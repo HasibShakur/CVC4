@@ -25,7 +25,6 @@ private:
   bool isLiteral(Node n);
 public:
   QuantifierEliminate();
-  QuantifierEliminate(const Expr& ex);
   ~QuantifierEliminate();
   Expr getExpression();
   void setExpression(const Expr& ex);

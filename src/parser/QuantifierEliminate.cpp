@@ -12,9 +12,6 @@ using namespace CVC4::kind;
 //using namespace CVC4::qe;
 
 QuantifierEliminate::QuantifierEliminate() {}
-QuantifierEliminate::QuantifierEliminate(const Expr& ex) {
-  this->expression = ex;
-}
 void QuantifierEliminate::setExpression(const Expr& ex)
 {
   this->expression = ex;
