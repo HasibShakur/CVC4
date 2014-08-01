@@ -9,6 +9,7 @@
 #include "theory/rewriter.h"
 
 namespace CVC4{
+namespace smt{
 //namespace qe{
 
 //attribute for "contains instantiation constants from"
@@ -31,6 +32,7 @@ public:
   Node getPrenexExpression(const Expr& e);
   Node simplifyExpression(const Expr& e);
 };
+}
 }
 //}
 //}

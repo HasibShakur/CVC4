@@ -9,6 +9,7 @@
 using namespace std;
 using namespace CVC4;
 using namespace CVC4::kind;
+using namespace CVC4::smt;
 //using namespace CVC4::qe;
 
 QuantifierEliminate::QuantifierEliminate() {}
