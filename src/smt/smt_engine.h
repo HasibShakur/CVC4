@@ -88,7 +88,7 @@ namespace smt {
   class SmtEnginePrivate;
   class SmtScope;
   class BooleanTermConverter;
-  class QuantifierEliminate;
+  //class QuantifierEliminate;
 
 
   void beforeSearch(std::string, bool, SmtEngine*) throw(ModalException);
