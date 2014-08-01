@@ -6,12 +6,12 @@
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
-#include "smt/smt_engine.h"
+//#include "smt/smt_engine.h"
 #include "theory/rewriter.h"
 
 namespace CVC4{
 namespace smt{
-class SmtEngine;
+//class SmtEngine;
 //namespace qe{
 
 //attribute for "contains instantiation constants from"
