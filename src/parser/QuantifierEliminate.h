@@ -17,7 +17,7 @@ namespace CVC4{
 
 class QuantifierEliminate {
 private:
-  Expr expression;
+  CVC4::Expr expression;
   Node convertToPrenex(Node body,std::vector< Node >& args, bool pol);
   //void setNestedQuantifiers( Node n, Node q );
   //void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
@@ -26,10 +26,10 @@ private:
 public:
   QuantifierEliminate();
   ~QuantifierEliminate();
-  Expr getExpression();
-  void setExpression(Expr e);
-  Node getPrenexExpression(Expr e);
-  Node simplifyExpression(Expr e);
+  CVC4::Expr getExpression();
+  void setExpression(const Expr& e);
+  Node getPrenexExpression(const Expr& e);
+  Node simplifyExpression(const Expr& e);
 };
 }
 //}

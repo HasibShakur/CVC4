@@ -325,11 +325,11 @@ public:
 // Finally it will generate an expression without quantifiers
 class CVC4_PUBLIC QESimplifyCommand : public Command {
 protected:
-  Expr d_expr;
+  CVC4::Expr d_expr;
 public:
   QESimplifyCommand(const Expr& e) throw();
   ~QESimplifyCommand() throw() {}
-  Expr getExpr() const throw();
+  CVC4::Expr getExpr() const throw();
   void invoke(SmtEngine* smtEngine) throw();
   void invoke(SmtEngine* smtEngine, std::ostream& out) throw();
   Command* exportTo(ExprManager* exprManager, ExprManagerMapCollection& variableMap);
