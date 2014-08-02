@@ -1,4 +1,4 @@
-#include "cvc4_public.h"
+//#include "cvc4_public.h"
 
 #include<iostream>
 #include<vector>
