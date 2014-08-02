@@ -8,8 +8,6 @@
 using namespace std;
 using namespace CVC4;
 using namespace CVC4::kind;
-using namespace CVC4::smt;
-//using namespace CVC4::qe;
 
 QuantifierEliminate::QuantifierEliminate() {}
 void QuantifierEliminate::setExpression(const Expr& e)
@@ -20,12 +18,12 @@ CVC4::Expr QuantifierEliminate::getExpression()
 {
    return this->expression;
 }
-void QuantifierEliminate::setNestedQuantifiers( Node n, Node q ){
-  std::vector< Node > processed;
+void QuantifierEliminate::setNestedQuantifiers( CVC4::Node n, CVC4::Node q ){
+  std::vector< CVC4::Node > processed;
   setNestedQuantifiers2( n, q, processed );
 }
 
-void QuantifierEliminate::setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed ) {
+void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std::vector< CVC4::Node >& processed ) {
   if( std::find( processed.begin(), processed.end(), n )==processed.end() ){
     processed.push_back( n );
     if( n.getKind()== FORALL || n.getKind()==EXISTS ){
@@ -39,7 +37,7 @@ void QuantifierEliminate::setNestedQuantifiers2( Node n, Node q, std::vector< No
   }
 }
 
-bool QuantifierEliminate::isLiteral( Node n ){
+bool QuantifierEliminate::isLiteral( CVC4::Node n ){
   switch( n.getKind() ){
   case NOT:
     return isLiteral( n[0] );
@@ -60,11 +58,11 @@ bool QuantifierEliminate::isLiteral( Node n ){
   }
   return true;
 }
-Node QuantifierEliminate::convertToPrenex(Node body,std::vector< Node >& args, bool pol) {
+Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
 if(body.getKind() == FORALL)
 {
-  std::vector<Node> terms;
-  std::vector<Node> subs;
+  std::vector<CVC4::Node> terms;
+  std::vector<CVC4::Node> subs;
   //for doing prenexing of same-signed quantifiers
   //must rename each variable that already exists
   for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
@@ -72,17 +70,17 @@ if(body.getKind() == FORALL)
     subs.push_back(NodeManager::currentNM()->mkBoundVar(body[0][i].getType()));
   }
   args.insert( args.end(), subs.begin(), subs.end() );
-  Node newBody = body[1];
+  CVC4::Node newBody = body[1];
   newBody = newBody.substitute(terms.begin(), terms.end(), subs.begin(), subs.end());
   //Debug("quantifiers-substitute-debug") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << endl;
   return newBody;
 } else {
   Assert( body.getKind()!=EXISTS );
   bool childrenChanged = false;
-  std::vector<Node> newChildren;
+  std::vector<CVC4::Node> newChildren;
   for(int i = 0; i < (int) body.getNumChildren(); i++) {
     bool newPol = body.getKind() == NOT ? !pol : pol;
-    Node n = this->convertToPrenex(body[i], args, newPol);
+    CVC4::Node n = this->convertToPrenex(body[i], args, newPol);
     newChildren.push_back(n);
     if(n != body[i]) {
       childrenChanged = true;
@@ -99,7 +97,7 @@ if(body.getKind() == FORALL)
   }
 }
 }
-Node QuantifierEliminate::convertToNNF(Node body)
+CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
 {
   if( body.getKind()==NOT ){
     if( body[0].getKind()==NOT ){
@@ -107,7 +105,7 @@ Node QuantifierEliminate::convertToNNF(Node body)
     }else if( isLiteral( body[0] ) ){
       return body;
     }else{
-      std::vector< Node > children;
+      std::vector< CVC4::Node > children;
       Kind k = body[0].getKind();
       if( body[0].getKind()==OR || body[0].getKind()==AND ){
         for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
@@ -116,12 +114,12 @@ Node QuantifierEliminate::convertToNNF(Node body)
         k = body[0].getKind()==AND ? OR : AND;
       }else if( body[0].getKind()==IFF ){
         for( int i=0; i<2; i++ ){
-          Node nn = i==0 ? body[0][i] : body[0][i].notNode();
+          CVC4::Node nn = i==0 ? body[0][i] : body[0][i].notNode();
           children.push_back( convertToNNF( nn ) );
         }
       }else if( body[0].getKind()==ITE ){
         for( int i=0; i<3; i++ ){
-          Node nn = i==0 ? body[0][i] : body[0][i].notNode();
+          CVC4::Node nn = i==0 ? body[0][i] : body[0][i].notNode();
           children.push_back( convertToNNF( nn ) );
         }
       }else{
@@ -133,10 +131,10 @@ Node QuantifierEliminate::convertToNNF(Node body)
   }else if( isLiteral( body ) ){
     return body;
   }else{
-    std::vector< Node > children;
+    std::vector< CVC4::Node > children;
     bool childrenChanged = false;
     for( int i=0; i<(int)body.getNumChildren(); i++ ){
-      Node nc = convertToNNF( body[i] );
+      CVC4::Node nc = convertToNNF( body[i] );
       children.push_back( nc );
       childrenChanged = childrenChanged || nc!=body[i];
     }
@@ -190,27 +188,27 @@ Node QuantifierEliminate::convertToNNF(Node body)
 	
    }
 }*/
-Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
-  Node body = Node::fromExpr(ex);
-  std::vector< Node > args;
+CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
+  CVC4::Node body = CVC4::Node::fromExpr(ex);
+  std::vector< CVC4::Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
 //      Trace("quantifiers-eliminate-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
-//    if( !body.hasAttribute(QeNestedQuantAttribute()) ){
-//         setNestedQuantifiers( body[ 1 ], body );
-//      }
+    if( !body.hasAttribute(QeNestedQuantAttribute()) ){
+         setNestedQuantifiers( body[ 1 ], body );
+      }
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
         args.push_back( body[0][i] );
       }
   }
-  Node prenexedBody = this->convertToPrenex(body[1], args, true);
+  CVC4::Node prenexedBody = this->convertToPrenex(body[1], args, true);
   this->setExpression(prenexedBody.toExpr());
   return prenexedBody;
 }
-Node QuantifierEliminate::simplifyExpression(const Expr& ex)
+CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
 {
   // 1st phase of simplification is converting the expression to NNF
-  Node temp = Node::fromExpr(this->getExpression());
-  Node nnfNode = this->convertToNNF(temp);
+  CVC4::Node temp = CVC4::Node::fromExpr(this->getExpression());
+  CVC4::Node nnfNode = this->convertToNNF(temp);
   // 2nd phase of simplification is replacing universal quantifiers with existential quantifiers
  // Node allExistentialNode = replaceUniversal(nnfNode);
   // 3rd phase of simplification is applying the replace rules

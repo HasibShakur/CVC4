@@ -60,7 +60,7 @@ class ProofManager;
 class Model;
 class LogicRequest;
 class StatisticsRegistry;
-//class QuantifierEliminate;
+class QuantifierEliminate;
 
 namespace context {
   class Context;
@@ -88,7 +88,7 @@ namespace smt {
   class SmtEnginePrivate;
   class SmtScope;
   class BooleanTermConverter;
-  //class QuantifierEliminate;
+
 
 
   void beforeSearch(std::string, bool, SmtEngine*) throw(ModalException);

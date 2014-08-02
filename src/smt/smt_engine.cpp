@@ -3348,9 +3348,9 @@ CVC4::Expr SmtEngine::eliminateQuantifier(CVC4::Expr ex){
   QuantifierEliminate qe;
   qe.setExpression(ex);
   CVC4::Expr e = qe.getExpression();
-  Node prenexedNode = qe.getPrenexExpression(e);
+  CVC4::Node prenexedNode = qe.getPrenexExpression(e);
   CVC4::Expr prenexedExpression = prenexedNode.toExpr();
-  Node simplifiedNode = qe.simplifyExpression(prenexedExpression);
+  CVC4::Node simplifiedNode = qe.simplifyExpression(prenexedExpression);
   Expr simplifiedExpression = simplifiedNode.toExpr();
   return simplifiedExpression;
  }
