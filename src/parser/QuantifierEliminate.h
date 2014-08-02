@@ -18,7 +18,7 @@ namespace smt{
 //struct QeNestedQuantAttributeId {};
 //typedef expr::Attribute<QeNestedQuantAttributeId, Node> QeNestedQuantAttribute;
 
-class QuantifierEliminate {
+class CVC4_PUBLIC QuantifierEliminate {
 private:
   CVC4::Expr expression;
   Node convertToPrenex(Node body,std::vector< Node >& args, bool pol);
