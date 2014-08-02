@@ -14,15 +14,15 @@ namespace smt{
 //namespace qe{
 
 //attribute for "contains instantiation constants from"
-//struct QeNestedQuantAttributeId {};
-//typedef expr::Attribute<QeNestedQuantAttributeId, Node> QeNestedQuantAttribute;
+struct QeNestedQuantAttributeId {};
+typedef expr::Attribute<QeNestedQuantAttributeId, Node> QeNestedQuantAttribute;
 
 class CVC4_PUBLIC QuantifierEliminate {
 private:
   CVC4::Expr expression;
   Node convertToPrenex(Node body,std::vector< Node >& args, bool pol);
-  //void setNestedQuantifiers( Node n, Node q );
-  //void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
+  void setNestedQuantifiers( Node n, Node q );
+  void setNestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
   Node convertToNNF(Node body);
   bool isLiteral(Node n);
 public:

@@ -20,7 +20,7 @@ CVC4::Expr QuantifierEliminate::getExpression()
 {
    return this->expression;
 }
-/*void QuantifierEliminate::setNestedQuantifiers( Node n, Node q ){
+void QuantifierEliminate::setNestedQuantifiers( Node n, Node q ){
   std::vector< Node > processed;
   setNestedQuantifiers2( n, q, processed );
 }
@@ -37,7 +37,7 @@ void QuantifierEliminate::setNestedQuantifiers2( Node n, Node q, std::vector< No
 	setNestedQuantifiers2( n[i], q, processed );
     }
   }
-}*/
+}
 
 bool QuantifierEliminate::isLiteral( Node n ){
   switch( n.getKind() ){
@@ -60,25 +60,6 @@ bool QuantifierEliminate::isLiteral( Node n ){
   }
   return true;
 }
-/*QuantifierEliminate::void parseQuantifiers(const CVC4::Expr& ex)
- {
- Node tempBody = Node::fromExpr(ex);
- for(size_t i= 0;i<tempBody[0].getNumChildren();i++)
- {
- if(tempBody[0][i].getKind() == kind::FORALL || tempBody[0][i].getKind() == kind::EXISTS )
- {
- d_quants.push_back(tempBody[0][i].getType());
- }
- }
- }
- QuantifierEliminate::int getNumQuantifiers()
- {
- return (int)d_quants.size();
- }
- QuantifierEliminate::Node getQuantifier( int i )
- {
- return this->d_quants[i];
- }*/
 Node QuantifierEliminate::convertToPrenex(Node body,std::vector< Node >& args, bool pol) {
 if(body.getKind() == FORALL)
 {
