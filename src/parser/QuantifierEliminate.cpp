@@ -3,8 +3,6 @@
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
-#include "theory/rewriter.h"
-//#include "smt/smt_engine.h"
 #include "parser/QuantifierEliminate.h"
 
 using namespace std;
