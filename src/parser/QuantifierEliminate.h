@@ -6,6 +6,7 @@
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
+#include "expr/attribute.h"
 
 
 namespace CVC4{
@@ -25,6 +26,7 @@ private:
   //void setAttribute(CVC4::Node in, CVC4::Node n);
   CVC4::Node convertToNNF(CVC4::Node body);
   bool isLiteral(CVC4::Node n);
+  CVC4::Node normalizeBody(CVC4::Node body);
 public:
   QuantifierEliminate();
   ~QuantifierEliminate();

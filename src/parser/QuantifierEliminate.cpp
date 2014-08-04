@@ -59,7 +59,7 @@ bool QuantifierEliminate::isLiteral( CVC4::Node n ){
   }
   return true;
 }
-Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
+CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
 if(body.getKind() == FORALL)
 {
   std::vector<CVC4::Node> terms;
@@ -146,10 +146,10 @@ CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
     }
   }
 }
-/*Node normalizeBody(Node body)
+/*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
 {
   bool rewritten = false;
-  Node normalized;
+  CVC4::Node normalized;
   for(int i=0;i<(int)body.getNumChildren();i++)
   {
     if(body[i].getKind() == NOT)
@@ -160,7 +160,7 @@ CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
     else
     {
       // If it is not of the kind not then directly normalize this
-      if(QuantifiersRewriter::isLiteral(body[i]))
+      if(this->isLiteral(body[i]))
       {
         // If it is a literal then we need to do nothing
         rewritten = false;
@@ -181,13 +181,6 @@ CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
   {
     return normalized;
   }
-}*/
-/*Node QuantifierEliminate::replaceUniversal(Node body)
-{
-   if(body.getKind() == kind::FORALL)
-   {
-	
-   }
 }*/
 CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   CVC4::Node body = CVC4::Node::fromExpr(ex);
@@ -210,8 +203,6 @@ CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
   // 1st phase of simplification is converting the expression to NNF
   CVC4::Node temp = CVC4::Node::fromExpr(this->getExpression());
   CVC4::Node nnfNode = this->convertToNNF(temp);
-  // 2nd phase of simplification is replacing universal quantifiers with existential quantifiers
- // Node allExistentialNode = replaceUniversal(nnfNode);
   // 3rd phase of simplification is applying the replace rules
   //Node normalizedBody = normalizeBody(nnfNode);
   // 4th phase of simplification is
