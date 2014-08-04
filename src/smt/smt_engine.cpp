@@ -3351,7 +3351,7 @@ CVC4::Expr SmtEngine::eliminateQuantifier(CVC4::Expr ex){
   CVC4::Node prenexedNode = qe.getPrenexExpression(e);
   CVC4::Expr prenexedExpression = prenexedNode.toExpr();
   CVC4::Node simplifiedNode = qe.simplifyExpression(prenexedExpression);
-  Expr simplifiedExpression = simplifiedNode.toExpr();
+  CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
   return simplifiedExpression;
  }
 }
