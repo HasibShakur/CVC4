@@ -58,7 +58,7 @@ void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std
     break;
   }
   return true;
-}
+}*/
 CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
 if(body.getKind() == FORALL)
 {
@@ -68,7 +68,7 @@ if(body.getKind() == FORALL)
   //must rename each variable that already exists
   for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
     terms.push_back(body[0][i]);
-    subs.push_back(NodeManager::currentNM()->mkBoundVar(body[0][i].getType()));
+    subs.push_back(CVC4::NodeManager::currentNM()->mkBoundVar(body[0][i].getType()));
   }
   args.insert( args.end(), subs.begin(), subs.end() );
   CVC4::Node newBody = body[1];
@@ -98,7 +98,7 @@ if(body.getKind() == FORALL)
   }
 }
 }
-CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
+/*CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
 {
   if( body.getKind()==NOT ){
     if( body[0].getKind()==NOT ){
@@ -182,23 +182,23 @@ CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
     return normalized;
   }
 }*/
-/*CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
+CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   CVC4::Node body = CVC4::Node::fromExpr(ex);
   std::vector< CVC4::Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
 //      Trace("quantifiers-eliminate-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
-    if( !body.hasAttribute(QeNestedQuantAttribute()) ){
-         setNestedQuantifiers( body[ 1 ], body );
-      }
+//    if( !body.hasAttribute(QeNestedQuantAttribute()) ){
+//         setNestedQuantifiers( body[ 1 ], body );
+//      }
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
         args.push_back( body[0][i] );
       }
   }
-  CVC4::Node prenexedBody = this->convertToPrenex(body[1], args, true);
+  CVC4::Node prenexedBody = convertToPrenex(body[1], args, true);
   this->setExpression(prenexedBody.toExpr());
   return prenexedBody;
 }
-CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
+/*CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
 {
   // 1st phase of simplification is converting the expression to NNF
   CVC4::Node temp = CVC4::Node::fromExpr(this->getExpression());
