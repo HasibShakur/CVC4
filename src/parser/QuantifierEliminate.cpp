@@ -4,6 +4,7 @@
 #include<vector>
 #include "expr/node.h"
 #include "parser/QuantifierEliminate.h"
+#include "expr/attribute.h"
 
 using namespace std;
 using namespace CVC4;
@@ -21,6 +22,10 @@ CVC4::Expr QuantifierEliminate::getExpression()
    return this->expression;
 }
 */
+//attribute for "contains instantiation constants from"
+struct QeNestedQuantAttributeId {};
+typedef expr::Attribute<QeNestedQuantAttributeId, CVC4::Node> QeNestedQuantAttribute;
+
 void QuantifierEliminate::setNestedQuantifiers( CVC4::Node n, CVC4::Node q ){
   std::vector< CVC4::Node > processed;
   setNestedQuantifiers2( n, q, processed );
@@ -32,7 +37,7 @@ void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std
     if( n.getKind()== FORALL || n.getKind()==EXISTS ){
       Trace("quantifiers-rewrite-debug") << "Set nested quant attribute " << n << std::endl;
       QeNestedQuantAttributeId nqai;
-      n[0].setAttribute(&nqai,&q);
+      n[0].setAttribute(nqai,q);
     }
     for( int i=0; i<(int)n.getNumChildren(); i++ ){
 	setNestedQuantifiers2( n[i], q, processed );

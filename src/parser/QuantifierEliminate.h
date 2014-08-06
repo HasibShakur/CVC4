@@ -6,16 +6,14 @@
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
-#include "expr/attribute.h"
+
 
 
 namespace CVC4{
 //class SmtEngine;
 //namespace qe{
 
-//attribute for "contains instantiation constants from"
-struct QeNestedQuantAttributeId {};
-typedef expr::Attribute<QeNestedQuantAttributeId, CVC4::Node> QeNestedQuantAttribute;
+
 
 class CVC4_PUBLIC QuantifierEliminate {
 private:
