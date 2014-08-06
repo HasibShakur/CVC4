@@ -38,7 +38,7 @@ void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std
   }
 }*/
 
-/*bool QuantifierEliminate::isLiteral( CVC4::Node n ){
+bool QuantifierEliminate::isLiteral( CVC4::Node n ){
   switch( n.getKind() ){
   case NOT:
     return isLiteral( n[0] );
@@ -58,7 +58,7 @@ void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std
     break;
   }
   return true;
-}*/
+}
 /*CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
 if(body.getKind() == FORALL)
 {

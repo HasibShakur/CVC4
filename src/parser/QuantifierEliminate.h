@@ -24,7 +24,7 @@ private:
   //void setNestedQuantifiers( CVC4::Node n, CVC4::Node q );
   //void setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std::vector< CVC4::Node >& processed );
   CVC4::Node convertToNNF(CVC4::Node body);
- // bool isLiteral(CVC4::Node n);
+  bool isLiteral(CVC4::Node n);
   //CVC4::Node normalizeBody(CVC4::Node body);
 public:
   QuantifierEliminate();
