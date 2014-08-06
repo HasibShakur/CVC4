@@ -237,11 +237,12 @@ CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex, QuantifierElimi
    else
    {
     CVC4::Expr e = qe.getExpression();
-    CVC4::Node prenexedNode = qe.getPrenexExpression(e);
+    /*CVC4::Node prenexedNode = qe.getPrenexExpression(e);
     CVC4::Expr prenexedExpression = prenexedNode.toExpr();
     CVC4::Node simplifiedNode = qe.simplifyExpression(prenexedExpression);
     CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
-    return simplifiedExpression;
+    return simplifiedExpression;*/
+    return e;
    }
 }
 

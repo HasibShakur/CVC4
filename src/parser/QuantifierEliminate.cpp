@@ -38,7 +38,7 @@ void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std
   }
 }*/
 
-bool QuantifierEliminate::isLiteral( CVC4::Node n ){
+/*bool QuantifierEliminate::isLiteral( CVC4::Node n ){
   switch( n.getKind() ){
   case NOT:
     return isLiteral( n[0] );
@@ -145,7 +145,7 @@ CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
       return body;
     }
   }
-}
+}*/
 /*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
 {
   bool rewritten = false;
@@ -182,14 +182,14 @@ CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
     return normalized;
   }
 }*/
-CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
+/*CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   CVC4::Node body = CVC4::Node::fromExpr(ex);
   std::vector< CVC4::Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
 //      Trace("quantifiers-eliminate-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
-   /* if( !body.hasAttribute(QeNestedQuantAttribute()) ){
+    if( !body.hasAttribute(QeNestedQuantAttribute()) ){
          setNestedQuantifiers( body[ 1 ], body );
-      }*/
+      }
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
         args.push_back( body[0][i] );
       }
@@ -208,5 +208,5 @@ CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
   // 4th phase of simplification is
   this->setExpression(nnfNode.toExpr());
   return nnfNode;
-}
+}*/
 QuantifierEliminate::~QuantifierEliminate() {}
