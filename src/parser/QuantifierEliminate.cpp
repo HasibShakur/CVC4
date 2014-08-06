@@ -10,6 +10,7 @@ using namespace CVC4;
 using namespace CVC4::expr;
 using namespace CVC4::kind;
 
+/*
 QuantifierEliminate::QuantifierEliminate() {}
 void QuantifierEliminate::setExpression(const Expr& e)
 {
@@ -19,6 +20,7 @@ CVC4::Expr QuantifierEliminate::getExpression()
 {
    return this->expression;
 }
+*/
 /*void QuantifierEliminate::setNestedQuantifiers( CVC4::Node n, CVC4::Node q ){
   std::vector< CVC4::Node > processed;
   setNestedQuantifiers2( n, q, processed );
@@ -201,12 +203,11 @@ CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
 CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
 {
   // 1st phase of simplification is converting the expression to NNF
-  CVC4::Node temp = CVC4::Node::fromExpr(this->getExpression());
-  CVC4::Node nnfNode = this->convertToNNF(temp);
+  CVC4::Node temp = CVC4::Node::fromExpr(ex);
+  CVC4::Node nnfNode = convertToNNF(temp);
   // 3rd phase of simplification is applying the replace rules
   //Node normalizedBody = normalizeBody(nnfNode);
   // 4th phase of simplification is
-  this->setExpression(nnfNode.toExpr());
   return nnfNode;
 }
-QuantifierEliminate::~QuantifierEliminate() {}
+//QuantifierEliminate::~QuantifierEliminate() {}

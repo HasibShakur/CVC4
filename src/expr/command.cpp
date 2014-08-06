@@ -207,9 +207,9 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
 
 void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
 
-  QuantifierEliminate qe;
-  qe.setExpression(this->getExpr());
-  CVC4::Expr ex = this->eliminateQuantifier(this->getExpr(),qe);
+  //QuantifierEliminate qe;
+  //qe.setExpression(this->getExpr());
+  CVC4::Expr ex = this->eliminateQuantifier(this->getExpr());
   out << ex << std::endl;
   d_commandStatus = CommandSuccess::instance();
   printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
@@ -226,7 +226,7 @@ Command* QESimplifyCommand::clone() const {
 std::string QESimplifyCommand::getCommandName() const throw() {
   return "qe";
 }
-CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex, QuantifierEliminate qe)
+CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
 {
   Assert(ex.getExprManager() == d_exprManager);
    if(ex.isNull())
@@ -236,10 +236,9 @@ CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex, QuantifierElimi
    }
    else
    {
-    CVC4::Expr e = qe.getExpression();
     /*CVC4::Node prenexedNode = qe.getPrenexExpression(e);
     CVC4::Expr prenexedExpression = prenexedNode.toExpr();*/
-    CVC4::Node simplifiedNode = qe.simplifyExpression(e);
+    CVC4::Node simplifiedNode = QuantifierEliminate::simplifyExpression(ex);
     CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
     return simplifiedExpression;
    }
