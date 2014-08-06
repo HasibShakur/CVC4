@@ -3336,7 +3336,7 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  * expression.
  */
 
-/*CVC4::Expr SmtEngine::eliminateQuantifier(CVC4::Expr ex){
+CVC4::Expr SmtEngine::eliminateQuantifier(CVC4::Expr ex){
  Assert(ex.getExprManager() == d_exprManager);
  if(ex.isNull())
  {
@@ -3354,7 +3354,7 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
   CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
   return simplifiedExpression;
  }
-}*/
+}
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
   ModelPostprocessor mpost;
   NodeVisitor<ModelPostprocessor> visitor;
