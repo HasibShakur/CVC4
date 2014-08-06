@@ -21,7 +21,7 @@ CVC4::Expr QuantifierEliminate::getExpression()
    return this->expression;
 }
 */
-/*void QuantifierEliminate::setNestedQuantifiers( CVC4::Node n, CVC4::Node q ){
+void QuantifierEliminate::setNestedQuantifiers( CVC4::Node n, CVC4::Node q ){
   std::vector< CVC4::Node > processed;
   setNestedQuantifiers2( n, q, processed );
 }
@@ -38,9 +38,9 @@ void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std
 	setNestedQuantifiers2( n[i], q, processed );
     }
   }
-}*/
+}
 
-bool QuantifierEliminate::isLiteral( CVC4::Node n ){
+/*bool QuantifierEliminate::isLiteral( CVC4::Node n ){
   switch( n.getKind() ){
   case NOT:
     return isLiteral( n[0] );
@@ -60,8 +60,8 @@ bool QuantifierEliminate::isLiteral( CVC4::Node n ){
     break;
   }
   return true;
-}
-/*CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
+}*/
+CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
 if(body.getKind() == FORALL)
 {
   std::vector<CVC4::Node> terms;
@@ -99,8 +99,8 @@ if(body.getKind() == FORALL)
     return body;
   }
 }
-}*/
-CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
+}
+/*CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
 {
   if( body.getKind()==NOT ){
     if( body[0].getKind()==NOT ){
@@ -184,23 +184,23 @@ CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
     return normalized;
   }
 }*/
-/*CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
+CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   CVC4::Node body = CVC4::Node::fromExpr(ex);
   std::vector< CVC4::Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
 //      Trace("quantifiers-eliminate-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
-//    if( !body.hasAttribute(QeNestedQuantAttribute()) ){
-//         setNestedQuantifiers( body[ 1 ], body );
-//      }
+     if( !body.hasAttribute(QeNestedQuantAttribute()) ){
+         setNestedQuantifiers( body[ 1 ], body );
+       }
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
         args.push_back( body[0][i] );
       }
   }
   CVC4::Node prenexedBody = convertToPrenex(body[1], args, true);
-  this->setExpression(prenexedBody.toExpr());
+  //this->setExpression(prenexedBody.toExpr());
   return prenexedBody;
-}*/
-CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
+}
+/*CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
 {
   // 1st phase of simplification is converting the expression to NNF
   CVC4::Node temp = CVC4::Node::fromExpr(ex);
@@ -209,5 +209,5 @@ CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
   //Node normalizedBody = normalizeBody(nnfNode);
   // 4th phase of simplification is
   return nnfNode;
-}
+}*/
 //QuantifierEliminate::~QuantifierEliminate() {}

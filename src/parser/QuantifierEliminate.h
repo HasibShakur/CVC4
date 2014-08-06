@@ -14,8 +14,8 @@ namespace CVC4{
 //namespace qe{
 
 //attribute for "contains instantiation constants from"
-//struct QeNestedQuantAttributeId {};
-//typedef expr::Attribute<QeNestedQuantAttributeId, CVC4::Node> QeNestedQuantAttribute;
+struct QeNestedQuantAttributeId {};
+typedef expr::Attribute<QeNestedQuantAttributeId, CVC4::Node> QeNestedQuantAttribute;
 
 class CVC4_PUBLIC QuantifierEliminate {
 private:
@@ -26,15 +26,19 @@ private:
   //CVC4::Node convertToNNF(CVC4::Node body);
   //bool isLiteral(CVC4::Node n);
   //CVC4::Node normalizeBody(CVC4::Node body);
-  static bool isLiteral(CVC4::Node n);
-  static CVC4::Node convertToNNF(CVC4::Node body);
+  //static bool isLiteral(CVC4::Node n);
+  //static CVC4::Node convertToNNF(CVC4::Node body);
+   static CVC4::Node convertToPrenex(CVC4::Node body, std::vector<CVC4::Node >& args, bool pol);
+   static void setNestedQuantifiers( CVC4::Node n, CVC4::Node q );
+   static void setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std::vector< CVC4::Node >& processed );
 public:
   //QuantifierEliminate();
   //~QuantifierEliminate();
   //CVC4::Expr getExpression();
   //void setExpression(const Expr& e);
   //CVC4::Node getPrenexExpression(const Expr& e);
-  static CVC4::Node simplifyExpression(const Expr& e);
+  //static CVC4::Node simplifyExpression(const Expr& e);
+  static CVC4::Node getPrenexExpression(const Expr& e);
 };
 }
 //}
