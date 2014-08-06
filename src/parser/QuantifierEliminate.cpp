@@ -81,7 +81,7 @@ if(body.getKind() == FORALL)
   std::vector<CVC4::Node> newChildren;
   for(int i = 0; i < (int) body.getNumChildren(); i++) {
     bool newPol = body.getKind() == NOT ? !pol : pol;
-    CVC4::Node n = this->convertToPrenex(body[i], args, newPol);
+    CVC4::Node n = convertToPrenex(body[i], args, newPol);
     newChildren.push_back(n);
     if(n != body[i]) {
       childrenChanged = true;
@@ -91,7 +91,7 @@ if(body.getKind() == FORALL)
     if(body.getKind() == NOT && newChildren[0].getKind() == NOT) {
       return newChildren[0][0];
     } else {
-      return NodeManager::currentNM()->mkNode(body.getKind(), newChildren);
+      return CVC4::NodeManager::currentNM()->mkNode(body.getKind(), newChildren);
     }
   } else {
     return body;
@@ -140,7 +140,7 @@ CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
       childrenChanged = childrenChanged || nc!=body[i];
     }
     if( childrenChanged ){
-      return NodeManager::currentNM()->mkNode( body.getKind(), children );
+      return CVC4::NodeManager::currentNM()->mkNode( body.getKind(), children );
     }else{
       return body;
     }

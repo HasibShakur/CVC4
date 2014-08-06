@@ -210,10 +210,10 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() 
   QuantifierEliminate qe;
   qe.setExpression(this->getExpr());
   CVC4::Expr e = qe.getExpression();
-  //CVC4::Node prenexedNode = qe.getPrenexExpression(e);
-  //CVC4::Expr prenexedExpression = prenexedNode.toExpr();
-  //CVC4::Node simplifiedNode = qe.simplifyExpression(prenexedExpression);
-  //CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
+  CVC4::Node prenexedNode = qe.getPrenexExpression(e);
+  CVC4::Expr prenexedExpression = prenexedNode.toExpr();
+  CVC4::Node simplifiedNode = qe.simplifyExpression(prenexedExpression);
+  CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
   out << e << std::endl;
   d_commandStatus = CommandSuccess::instance();
   printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
