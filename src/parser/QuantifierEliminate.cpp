@@ -52,7 +52,7 @@ bool QuantifierEliminate::isLiteral( CVC4::Node n ){
     return false;
     break;
   case EQUAL:
-    return n[0].getType()!=NodeManager::currentNM()->booleanType();
+    return n[0].getType()!=CVC4::NodeManager::currentNM()->booleanType();
     break;
   default:
     break;
@@ -127,7 +127,7 @@ CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
         Notice() << "Unhandled Quantifiers NNF: " << body << std::endl;
         return body;
       }
-      return NodeManager::currentNM()->mkNode( k, children );
+      return CVC4::NodeManager::currentNM()->mkNode( k, children );
     }
   }else if( isLiteral( body ) ){
     return body;
