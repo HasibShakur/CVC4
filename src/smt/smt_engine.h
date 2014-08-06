@@ -60,7 +60,7 @@ class ProofManager;
 class Model;
 class LogicRequest;
 class StatisticsRegistry;
-class QuantifierEliminate;
+//class QuantifierEliminate;
 
 namespace context {
   class Context;
@@ -438,7 +438,7 @@ public:
    * eliminateQuantifier function will eliminate quantifiers 
    * from an expression. For now, the return type is set to void.
    */
-  CVC4::Expr eliminateQuantifier(CVC4::Expr e);
+ // CVC4::Expr eliminateQuantifier(CVC4::Expr e);
   /** 
    * Add a formula to the current context: preprocess, do per-theory
    * setup, use processAssertionList(), asserting to T-solver for
