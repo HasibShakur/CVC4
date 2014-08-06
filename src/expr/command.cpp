@@ -208,7 +208,7 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
 void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
   //CVC4::Expr ex = smtEngine->eliminateQuantifier(this->getExpr());
   QuantifierEliminate qe;
-  qe.setExpression(ex);
+  qe.setExpression(this->getExpr());
   CVC4::Expr e = qe.getExpression();
   CVC4::Node prenexedNode = qe.getPrenexExpression(e);
   CVC4::Expr prenexedExpression = prenexedNode.toExpr();
