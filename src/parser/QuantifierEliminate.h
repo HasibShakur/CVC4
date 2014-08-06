@@ -26,6 +26,7 @@ private:
   //CVC4::Node convertToNNF(CVC4::Node body);
   //bool isLiteral(CVC4::Node n);
   //CVC4::Node normalizeBody(CVC4::Node body);
+  static bool isLiteral(CVC4::Node n);
   static CVC4::Node convertToNNF(CVC4::Node body);
 public:
   //QuantifierEliminate();
