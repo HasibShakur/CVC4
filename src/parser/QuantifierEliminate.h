@@ -20,10 +20,10 @@ namespace CVC4{
 class CVC4_PUBLIC QuantifierEliminate {
 private:
   CVC4::Expr expression;
-  CVC4::Node convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol);
+  //CVC4::Node convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol);
   //void setNestedQuantifiers( CVC4::Node n, CVC4::Node q );
   //void setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std::vector< CVC4::Node >& processed );
- // CVC4::Node convertToNNF(CVC4::Node body);
+  CVC4::Node convertToNNF(CVC4::Node body);
  // bool isLiteral(CVC4::Node n);
   //CVC4::Node normalizeBody(CVC4::Node body);
 public:
@@ -31,8 +31,8 @@ public:
   ~QuantifierEliminate();
   CVC4::Expr getExpression();
   void setExpression(const Expr& e);
-  CVC4::Node getPrenexExpression(const Expr& e);
-  //CVC4::Node simplifyExpression(const Expr& e);
+  //CVC4::Node getPrenexExpression(const Expr& e);
+  CVC4::Node simplifyExpression(const Expr& e);
 };
 }
 //}

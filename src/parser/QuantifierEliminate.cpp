@@ -59,7 +59,7 @@ void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std
   }
   return true;
 }*/
-CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
+/*CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
 if(body.getKind() == FORALL)
 {
   std::vector<CVC4::Node> terms;
@@ -97,8 +97,8 @@ if(body.getKind() == FORALL)
     return body;
   }
 }
-}
-/*CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
+}*/
+CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
 {
   if( body.getKind()==NOT ){
     if( body[0].getKind()==NOT ){
@@ -145,7 +145,7 @@ if(body.getKind() == FORALL)
       return body;
     }
   }
-}*/
+}
 /*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
 {
   bool rewritten = false;
@@ -182,7 +182,7 @@ if(body.getKind() == FORALL)
     return normalized;
   }
 }*/
-CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
+/*CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   CVC4::Node body = CVC4::Node::fromExpr(ex);
   std::vector< CVC4::Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
@@ -197,8 +197,8 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   CVC4::Node prenexedBody = convertToPrenex(body[1], args, true);
   this->setExpression(prenexedBody.toExpr());
   return prenexedBody;
-}
-/*CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
+}*/
+CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
 {
   // 1st phase of simplification is converting the expression to NNF
   CVC4::Node temp = CVC4::Node::fromExpr(this->getExpression());
@@ -208,5 +208,5 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   // 4th phase of simplification is
   this->setExpression(nnfNode.toExpr());
   return nnfNode;
-}*/
+}
 QuantifierEliminate::~QuantifierEliminate() {}
