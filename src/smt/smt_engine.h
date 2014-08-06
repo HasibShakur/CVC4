@@ -36,7 +36,7 @@
 #include "util/hash.h"
 #include "util/statistics.h"
 #include "theory/logic_info.h"
-#include "parser/QuantifierEliminate.h"
+//#include "parser/QuantifierEliminate.h"
 
 // In terms of abstraction, this is below (and provides services to)
 // ValidityChecker and above (and requires the services of)
@@ -61,7 +61,7 @@ class ProofManager;
 class Model;
 class LogicRequest;
 class StatisticsRegistry;
-class QuantifierEliminate;
+//class QuantifierEliminate;
 
 namespace context {
   class Context;
@@ -439,7 +439,7 @@ public:
    * eliminateQuantifier function will eliminate quantifiers 
    * from an expression. For now, the return type is set to void.
    */
-  CVC4::Expr eliminateQuantifier(CVC4::Expr e, QuantifierEliminate qe);
+ // CVC4::Expr eliminateQuantifier(CVC4::Expr e, QuantifierEliminate qe);
   /** 
    * Add a formula to the current context: preprocess, do per-theory
    * setup, use processAssertionList(), asserting to T-solver for

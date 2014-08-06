@@ -87,7 +87,7 @@
 #include "theory/datatypes/options.h"
 #include "theory/strings/theory_strings_preprocess.h"
 #include "printer/options.h"
-#include "parser/QuantifierEliminate.h"
+//#include "parser/QuantifierEliminate.h"
 
 using namespace std;
 using namespace CVC4;
@@ -3336,7 +3336,7 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  * expression.
  */
 
-CVC4::Expr SmtEngine::eliminateQuantifier(CVC4::Expr ex, QuantifierEliminate qe){
+/*CVC4::Expr SmtEngine::eliminateQuantifier(CVC4::Expr ex, QuantifierEliminate qe){
  Assert(ex.getExprManager() == d_exprManager);
  if(ex.isNull())
  {
@@ -3354,7 +3354,7 @@ CVC4::Expr SmtEngine::eliminateQuantifier(CVC4::Expr ex, QuantifierEliminate qe)
   CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
   return simplifiedExpression;
  }
-}
+}*/
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
   ModelPostprocessor mpost;
   NodeVisitor<ModelPostprocessor> visitor;
