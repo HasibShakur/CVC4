@@ -36,8 +36,8 @@ void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std
     processed.push_back( n );
     if( n.getKind()== FORALL || n.getKind()==EXISTS ){
       Trace("quantifiers-rewrite-debug") << "Set nested quant attribute " << n << std::endl;
-      QeNestedQuantAttributeId nqai;
-      n[0].setAttribute(nqai,q);
+      QeNestedQuantAttributeId qenq;
+      n[0].setAttribute(&qenq,&q);
     }
     for( int i=0; i<(int)n.getNumChildren(); i++ ){
 	setNestedQuantifiers2( n[i], q, processed );
