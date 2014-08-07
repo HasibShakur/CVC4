@@ -11,20 +11,8 @@ using namespace CVC4;
 using namespace CVC4::expr;
 using namespace CVC4::kind;
 
-/*
-QuantifierEliminate::QuantifierEliminate() {}
-void QuantifierEliminate::setExpression(const Expr& e)
-{
-  this->expression = e;
-}
-CVC4::Expr QuantifierEliminate::getExpression()
-{
-   return this->expression;
-}
-*/
 //attribute for "contains instantiation constants from"
 struct QeNestedQuantAttributeId {};
-//typedef CVC4::expr::Attribute<QeNestedQuantAttributeId, CVC4::Node> QeNestedQuantAttribute;
 typedef CVC4::expr::Attribute<QeNestedQuantAttributeId,CVC4::Node> QuantAttrib;
 
 void QuantifierEliminate::setNestedQuantifiers( CVC4::Node n, CVC4::Node q ){
@@ -38,8 +26,6 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
      processed.push_back( n );
      if( n.getKind()== FORALL || n.getKind()==EXISTS ){
        Trace("quantifiers-rewrite-debug") << "Set nested quant attribute " << n << std::endl;
-       // QeNestedQuantAttributeId qenq;
-       // n[0].setAttribute(qenq,q);
        QuantAttrib qa;
        n[0].setAttribute(qa,q);
      }
@@ -48,22 +34,7 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
      }
    }
 }
-
-/*void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std::vector< CVC4::Node >& processed ) {
-  if( std::find( processed.begin(), processed.end(), n )==processed.end() ){
-    processed.push_back( n );
-    if( n.getKind()== FORALL || n.getKind()==EXISTS ){
-      Trace("quantifiers-rewrite-debug") << "Set nested quant attribute " << n << std::endl;
-      QeNestedQuantAttributeId qenq;
-      n[0].setAttribute(qenq,q);
-    }
-    for( int i=0; i<(int)n.getNumChildren(); i++ ){
-	setNestedQuantifiers2( n[i], q, processed );
-    }
-  }
-}*/
-
-/*bool QuantifierEliminate::isLiteral( CVC4::Node n ){
+bool QuantifierEliminate::isLiteral( CVC4::Node n ){
   switch( n.getKind() ){
   case NOT:
     return isLiteral( n[0] );
@@ -83,7 +54,8 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
     break;
   }
   return true;
-}*/
+}
+
 CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
 if(body.getKind() == FORALL)
 {
@@ -123,7 +95,7 @@ if(body.getKind() == FORALL)
   }
 }
 }
-/*CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
+CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
 {
   if( body.getKind()==NOT ){
     if( body[0].getKind()==NOT ){
@@ -171,7 +143,7 @@ if(body.getKind() == FORALL)
     }
   }
 }
-CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
+/*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
 {
   bool rewritten = false;
   CVC4::Node normalized;
@@ -220,10 +192,9 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
       }
   }
   CVC4::Node prenexedBody = convertToPrenex(body[1], args, true);
-  //this->setExpression(prenexedBody.toExpr());
   return prenexedBody;
 }
-/*CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
+CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
 {
   // 1st phase of simplification is converting the expression to NNF
   CVC4::Node temp = CVC4::Node::fromExpr(ex);
@@ -232,5 +203,4 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   //Node normalizedBody = normalizeBody(nnfNode);
   // 4th phase of simplification is
   return nnfNode;
-}*/
-//QuantifierEliminate::~QuantifierEliminate() {}
+}
