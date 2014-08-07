@@ -24,14 +24,32 @@ CVC4::Expr QuantifierEliminate::getExpression()
 */
 //attribute for "contains instantiation constants from"
 struct QeNestedQuantAttributeId {};
-typedef expr::Attribute<QeNestedQuantAttributeId, CVC4::Node> QeNestedQuantAttribute;
+//typedef CVC4::expr::Attribute<QeNestedQuantAttributeId, CVC4::Node> QeNestedQuantAttribute;
+typedef CVC4::expr::Attribute<QeNestedQuantAttributeId,CVC4::Node> QuantAttrib;
 
 void QuantifierEliminate::setNestedQuantifiers( CVC4::Node n, CVC4::Node q ){
   std::vector< CVC4::Node > processed;
-  setNestedQuantifiers2( n, q, processed );
+  setNestedQuantifiersInner( n, q, processed );
 }
 
-void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std::vector< CVC4::Node >& processed ) {
+void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, std::vector<CVC4::Node>& processed)
+{
+  if( std::find( processed.begin(), processed.end(), n )==processed.end() ){
+     processed.push_back( n );
+     if( n.getKind()== FORALL || n.getKind()==EXISTS ){
+       Trace("quantifiers-rewrite-debug") << "Set nested quant attribute " << n << std::endl;
+       // QeNestedQuantAttributeId qenq;
+       // n[0].setAttribute(qenq,q);
+       QuantAttrib qa;
+       n[0].setAttribute(qa,q);
+     }
+     for( int i=0; i<(int)n.getNumChildren(); i++ ){
+       setNestedQuantifiersInner( n[i], q, processed );
+     }
+   }
+}
+
+/*void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std::vector< CVC4::Node >& processed ) {
   if( std::find( processed.begin(), processed.end(), n )==processed.end() ){
     processed.push_back( n );
     if( n.getKind()== FORALL || n.getKind()==EXISTS ){
@@ -43,7 +61,7 @@ void QuantifierEliminate::setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std
 	setNestedQuantifiers2( n[i], q, processed );
     }
   }
-}
+}*/
 
 /*bool QuantifierEliminate::isLiteral( CVC4::Node n ){
   switch( n.getKind() ){
@@ -153,7 +171,7 @@ if(body.getKind() == FORALL)
     }
   }
 }
-/*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
+CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
 {
   bool rewritten = false;
   CVC4::Node normalized;
@@ -194,7 +212,7 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   std::vector< CVC4::Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
 //      Trace("quantifiers-eliminate-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
-     if( !body.hasAttribute(QeNestedQuantAttribute()) ){
+     if( !body.hasAttribute(QuantAttrib()) ){
          setNestedQuantifiers( body[ 1 ], body );
        }
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ){

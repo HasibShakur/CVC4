@@ -28,7 +28,7 @@ private:
   //static CVC4::Node convertToNNF(CVC4::Node body);
    static CVC4::Node convertToPrenex(CVC4::Node body, std::vector<CVC4::Node >& args, bool pol);
    static void setNestedQuantifiers( CVC4::Node n, CVC4::Node q );
-   static void setNestedQuantifiers2( CVC4::Node n, CVC4::Node q, std::vector< CVC4::Node >& processed );
+   static void setNestedQuantifiersInner( CVC4::Node n, CVC4::Node q, std::vector< CVC4::Node >& processed );
 public:
   //QuantifierEliminate();
   //~QuantifierEliminate();
