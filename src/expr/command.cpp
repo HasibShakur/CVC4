@@ -238,10 +238,10 @@ CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
    {
     CVC4::Node prenexedNode = QuantifierEliminate::getPrenexExpression(ex);
     CVC4::Expr prenexedExpression = prenexedNode.toExpr();
-//    CVC4::Node simplifiedNode = QuantifierEliminate::simplifyExpression(ex);
-//    CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
-//    return simplifiedExpression;
-    return prenexedExpression;
+    CVC4::Node simplifiedNode = QuantifierEliminate::simplifyExpression(prenexedExpression);
+    CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
+    return simplifiedExpression;
+
    }
 }
 
