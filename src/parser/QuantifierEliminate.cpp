@@ -15,6 +15,31 @@ using namespace CVC4::kind;
 struct QeNestedQuantAttributeId {};
 typedef CVC4::expr::Attribute<QeNestedQuantAttributeId,CVC4::Node> QuantAttrib;
 
+//attribute for "contains nested quantifier"
+struct QeContainsQuantifierAttributeId {};
+typedef CVC4::expr::Attribute<QeContainsQuantifierAttributeId,uint64_t> ContainsQuantAttrib;
+
+bool QuantifierEliminate::containsQuantifierQe(CVC4::Node n)
+{
+  if( n.hasAttribute(ContainsQuantAttrib()) ){
+      return n.getAttribute(ContainsQuantAttrib())==1;
+    } else if(n.getKind() == kind::FORALL | n.getKind() == kind::EXISTS ) {
+      return true;
+    } else {
+      bool cq = false;
+      for( unsigned i = 0; i < n.getNumChildren(); ++i ){
+        if( containsQuantifierQe(n[i]) ){
+          cq = true;
+          break;
+        }
+      }
+      ContainsQuantAttrib quantAttrib;
+      n.setAttribute(quantAttrib, cq ? 1 : 0);
+      return cq;
+    }
+}
+
+
 void QuantifierEliminate::setNestedQuantifiers( CVC4::Node n, CVC4::Node q ){
   std::vector< CVC4::Node > processed;
   setNestedQuantifiersInner( n, q, processed );
@@ -183,8 +208,8 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   CVC4::Node body = CVC4::Node::fromExpr(ex);
   std::vector< CVC4::Node > args;
   if( body.getKind()==EXISTS || body.getKind()==FORALL ){
-//      Trace("quantifiers-eliminate-debug") << "pre-rewriting " << body << " " << body[0].hasAttribute(NestedQuantAttribute()) << std::endl;
-     if( !body.hasAttribute(QuantAttrib()) ){
+    // if( !body.hasAttribute(QuantAttrib()) ){
+       if(!containsQuantifierQe(body)){
          setNestedQuantifiers( body[ 1 ], body );
        }
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
