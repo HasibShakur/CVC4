@@ -12,7 +12,7 @@ using namespace CVC4::expr;
 using namespace CVC4::kind;
 
 //attribute for "contains instantiation constants from"
-struct QeNestedQuantAttributeId {};
+/*struct QeNestedQuantAttributeId {};
 typedef CVC4::expr::Attribute<QeNestedQuantAttributeId,CVC4::Node> QuantAttrib;
 
 //attribute for "contains nested quantifier"
@@ -58,7 +58,7 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
        setNestedQuantifiersInner( n[i], q, processed );
      }
    }
-}
+}*/
 /*bool QuantifierEliminate::isLiteral( CVC4::Node n ){
   switch( n.getKind() ){
   case NOT:
@@ -212,21 +212,22 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC
 CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   TNode tBody = CVC4::NodeTemplate<false>(ex);
   //return tBody;
-  std::vector< CVC4::Node > args;
+  std::vector< CVC4::TNode > args;
   if( tBody.getKind()==kind::FORALL || tBody.getKind()==kind::EXISTS )
   {
-       if(!containsQuantifierQe(tBody)){
+       /*if(!containsQuantifierQe(tBody)){
          setNestedQuantifiers( tBody[ 1 ], tBody );
-       }
+       }*/
       for( int i=0; i<(int)tBody[0].getNumChildren(); i++ ){
         args.push_back( tBody[0][i] );
       }
       CVC4::NodeBuilder<> defs(kind::AND);
       CVC4::TNode tn = tBody[1];
-      CVC4::Node ipl;
+      CVC4::TNode ipl;
       if( tBody.getNumChildren()==3 ){
             ipl = tBody[2];
       }
+     // std::vector<CVC4::Node> args1 = No
       tn = convertToPrenex(tn,args,true);
       if( tBody[1]==tn && args.size()==tBody[0].getNumChildren() ){
            return tBody;
@@ -237,7 +238,7 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
              defs << tn;
            }
            else{
-             std::vector< CVC4::Node > children;
+             std::vector< CVC4::TNode > children;
              children.push_back( CVC4::NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
              children.push_back( tn );
              if( !ipl.isNull() )
