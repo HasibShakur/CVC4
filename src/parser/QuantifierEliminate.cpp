@@ -81,7 +81,7 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
   return true;
 }*/
 
-CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::TNode >& args, bool pol) {
+CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CVC4::TNode >& args, bool pol) {
   if(body.getKind() == kind::FORALL)
   {
     std::vector<CVC4::TNode> terms;
@@ -93,7 +93,7 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC
       subs.push_back(CVC4::NodeManager::currentNM()->mkBoundVar(body[0][i].getType()));
     }
     args.insert( args.end(), subs.begin(), subs.end() );
-    CVC4::Node newBody = body[1];
+    CVC4::TNode newBody = body[1];
     newBody = newBody.substitute(terms.begin(), terms.end(), subs.begin(), subs.end());
     return newBody;
   }
@@ -108,7 +108,7 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC
     std::vector<CVC4::TNode> newChildren;
     for(int i = 0; i < (int) body.getNumChildren(); i++) {
       bool newPol = body.getKind() == kind::NOT ? !pol : pol;
-      CVC4::Node n = convertToPrenex(body[i], args, newPol);
+      CVC4::TNode n = convertToPrenex(body[i], args, newPol);
       newChildren.push_back(n);
       if(n != body[i]) {
         childrenChanged = true;
