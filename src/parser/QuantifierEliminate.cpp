@@ -12,7 +12,7 @@ using namespace CVC4::expr;
 using namespace CVC4::kind;
 
 //attribute for "contains instantiation constants from"
-/*struct QeNestedQuantAttributeId {};
+struct QeNestedQuantAttributeId {};
 typedef CVC4::expr::Attribute<QeNestedQuantAttributeId,CVC4::Node> QuantAttrib;
 
 //attribute for "contains nested quantifier"
@@ -58,7 +58,7 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
        setNestedQuantifiersInner( n[i], q, processed );
      }
    }
-}*/
+}
 /*bool QuantifierEliminate::isLiteral( CVC4::Node n ){
   switch( n.getKind() ){
   case NOT:
@@ -81,7 +81,7 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
   return true;
 }*/
 
-/*CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
+CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
   if(body.getKind() == kind::FORALL)
   {
     std::vector<CVC4::Node> terms;
@@ -124,7 +124,7 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
       return body;
     }
   }
-}*/
+}
 /*CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
 {
   if( body.getKind()== kind::NOT ){
@@ -210,11 +210,9 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
   }
 }*/
 CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
-  //CVC4::Node body = CVC4::Node::fromExpr(ex);
-  //TNode tBody = CVC4::TNode::fromExpr(ex);
   TNode tBody = CVC4::NodeTemplate<false>(ex);
-  return tBody;
-  /*std::vector< CVC4::Node > args;
+  //return tBody;
+  std::vector< CVC4::Node > args;
   if( tBody.getKind()==kind::FORALL || tBody.getKind()==kind::EXISTS )
   {
        if(!containsQuantifierQe(tBody)){
@@ -254,7 +252,7 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   else
   {
     return tBody;
-  }*/
+  }
   // CVC4::TNode tn = tBody[1];
   // CVC4::Node prenexedBody = convertToPrenex(body[1], args, true);
   // return prenexedBody;
