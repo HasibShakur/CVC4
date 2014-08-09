@@ -211,7 +211,8 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
 }*/
 CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   //CVC4::Node body = CVC4::Node::fromExpr(ex);
-  TNode tBody = CVC4::TNode::fromExpr(ex);
+  //TNode tBody = CVC4::TNode::fromExpr(ex);
+  TNode tBody = CVC4::NodeTemplate(ex);
   return tBody;
   /*std::vector< CVC4::Node > args;
   if( tBody.getKind()==kind::FORALL || tBody.getKind()==kind::EXISTS )
