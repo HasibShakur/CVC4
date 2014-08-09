@@ -15,7 +15,7 @@ namespace CVC4{
 class CVC4_PUBLIC QuantifierEliminate {
 private:
    //CVC4::Node normalizeBody(CVC4::Node body);
-   static CVC4::Node convertToPrenex(CVC4::Node body, std::vector<CVC4::Node >& args, bool pol);
+   static CVC4::Node convertToPrenex(CVC4::TNode body, std::vector<CVC4::TNode >& args, bool pol);
 //   static void setNestedQuantifiers( CVC4::Node n, CVC4::Node q );
 //   static void setNestedQuantifiersInner( CVC4::Node n, CVC4::Node q, std::vector< CVC4::Node >& processed );
    //static CVC4::Node convertToNNF(CVC4::Node body);
