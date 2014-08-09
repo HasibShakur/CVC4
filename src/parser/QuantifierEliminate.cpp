@@ -12,7 +12,7 @@ using namespace CVC4::expr;
 using namespace CVC4::kind;
 
 //attribute for "contains instantiation constants from"
-struct QeNestedQuantAttributeId {};
+/*struct QeNestedQuantAttributeId {};
 typedef CVC4::expr::Attribute<QeNestedQuantAttributeId,CVC4::Node> QuantAttrib;
 
 //attribute for "contains nested quantifier"
@@ -58,7 +58,7 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
        setNestedQuantifiersInner( n[i], q, processed );
      }
    }
-}
+}*/
 /*bool QuantifierEliminate::isLiteral( CVC4::Node n ){
   switch( n.getKind() ){
   case NOT:

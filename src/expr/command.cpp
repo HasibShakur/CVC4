@@ -229,21 +229,12 @@ std::string QESimplifyCommand::getCommandName() const throw() {
 CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
 {
   Assert(ex.getExprManager() == d_exprManager);
-   if(ex.isNull())
-   {
-    std::cout<<"Null expression"<<std::endl;
-    return ex;
-   }
-   else
-   {
-    CVC4::Node prenexedNode = QuantifierEliminate::getPrenexExpression(ex);
-    CVC4::Expr prenexedExpression = prenexedNode.toExpr();
+  CVC4::Node prenexedNode = QuantifierEliminate::getPrenexExpression(ex);
+  CVC4::Expr prenexedExpression = prenexedNode.toExpr();
   //  CVC4::Node simplifiedNode = QuantifierEliminate::simplifyExpression(prenexedExpression);
    // CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
   //  return simplifiedExpression;
     return prenexedExpression;
-
-   }
 }
 
 /* class AssertCommand */
