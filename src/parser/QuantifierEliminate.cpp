@@ -95,13 +95,13 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC
     args.insert( args.end(), subs.begin(), subs.end() );
     CVC4::Node newBody = body[1];
     newBody = newBody.substitute(terms.begin(), terms.end(), subs.begin(), subs.end());
-    //Debug("quantifiers-substitute-debug") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << endl;
     return newBody;
-  }else if( body.getKind()==kind::ITE || body.getKind()==kind::XOR || body.getKind()== kind::IFF )
+  }
+  else if( body.getKind()==kind::ITE || body.getKind()==kind::XOR || body.getKind()== kind::IFF )
   {
     return body;
   }
-   else
+  else
   {
     Assert( body.getKind()!=kind::EXISTS );
     bool childrenChanged = false;
@@ -212,32 +212,36 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC
 CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   //CVC4::Node body = CVC4::Node::fromExpr(ex);
   TNode tBody = CVC4::TNode::fromExpr(ex);
-  std::vector< CVC4::Node > args;
-  if( tBody.getKind()==kind::FORALL || tBody.getKind()==kind::EXISTS ){
-    // if( !body.hasAttribute(QuantAttrib()) ){
+  std::vector< CVC4::TNode > args;
+  if( tBody.getKind()==kind::FORALL || tBody.getKind()==kind::EXISTS )
+  {
        if(!containsQuantifierQe(tBody)){
          setNestedQuantifiers( tBody[ 1 ], tBody );
        }
       for( int i=0; i<(int)tBody[0].getNumChildren(); i++ ){
         args.push_back( tBody[0][i] );
       }
-      NodeBuilder<> defs(kind::AND);
+      CVC4::NodeBuilder<> defs(kind::AND);
       CVC4::TNode tn = tBody[1];
-      Node ipl;
+      CVC4::Node ipl;
       if( tBody.getNumChildren()==3 ){
             ipl = tBody[2];
       }
       tn = convertToPrenex(tn,args,true);
       if( tBody[1]==tn && args.size()==tBody[0].getNumChildren() ){
            return tBody;
-         }else{
-           if( args.empty() ){
+         }
+      else{
+           if( args.empty() )
+           {
              defs << tn;
-           }else{
+           }
+           else{
              std::vector< CVC4::Node > children;
              children.push_back( CVC4::NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
              children.push_back( tn );
-             if( !ipl.isNull() ){
+             if( !ipl.isNull() )
+             {
                children.push_back( ipl );
              }
              defs << CVC4::NodeManager::currentNM()->mkNode(kind::FORALL, children );
