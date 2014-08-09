@@ -81,11 +81,11 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
   return true;
 }*/
 
-CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
+CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::TNode >& args, bool pol) {
   if(body.getKind() == kind::FORALL)
   {
-    std::vector<CVC4::Node> terms;
-    std::vector<CVC4::Node> subs;
+    std::vector<CVC4::TNode> terms;
+    std::vector<CVC4::TNode> subs;
     //for doing prenexing of same-signed quantifiers
     //must rename each variable that already exists
     for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
@@ -105,7 +105,7 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC
   {
     Assert( body.getKind()!=kind::EXISTS );
     bool childrenChanged = false;
-    std::vector<CVC4::Node> newChildren;
+    std::vector<CVC4::TNode> newChildren;
     for(int i = 0; i < (int) body.getNumChildren(); i++) {
       bool newPol = body.getKind() == kind::NOT ? !pol : pol;
       CVC4::Node n = convertToPrenex(body[i], args, newPol);
