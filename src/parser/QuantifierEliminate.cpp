@@ -81,7 +81,7 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
   return true;
 }*/
 
-CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
+/*CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
   if(body.getKind() == kind::FORALL)
   {
     std::vector<CVC4::Node> terms;
@@ -124,7 +124,7 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC
       return body;
     }
   }
-}
+}*/
 /*CVC4::Node QuantifierEliminate::convertToNNF(CVC4::Node body)
 {
   if( body.getKind()== kind::NOT ){
@@ -212,7 +212,8 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC
 CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   //CVC4::Node body = CVC4::Node::fromExpr(ex);
   TNode tBody = CVC4::TNode::fromExpr(ex);
-  std::vector< CVC4::Node > args;
+  return tBody;
+  /*std::vector< CVC4::Node > args;
   if( tBody.getKind()==kind::FORALL || tBody.getKind()==kind::EXISTS )
   {
        if(!containsQuantifierQe(tBody)){
@@ -252,7 +253,7 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   else
   {
     return tBody;
-  }
+  }*/
   // CVC4::TNode tn = tBody[1];
   // CVC4::Node prenexedBody = convertToPrenex(body[1], args, true);
   // return prenexedBody;
