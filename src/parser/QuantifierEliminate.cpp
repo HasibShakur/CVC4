@@ -210,7 +210,7 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC
   }
 }*/
 CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
-  Node tBody = CVC4::NodeTemplate<true>(ex);
+  CVC4::Node tBody = CVC4::NodeTemplate<true>(ex);
   //return tBody;
   std::vector< CVC4::Node > args;
   if( tBody.getKind()==kind::FORALL || tBody.getKind()==kind::EXISTS )
