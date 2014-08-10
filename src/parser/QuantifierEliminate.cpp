@@ -90,7 +90,7 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CV
     //must rename each variable that already exists
     for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
       terms.push_back(body[0][i]);
-      subs.push_back(CVC4::NodeManager::currentNM()->mkBoundVar(body<false>[0][i].getType()));
+      subs.push_back(CVC4::NodeManager::currentNM()->mkBoundVar(body[0][i].getType()));
     }
     args.insert( args.end(), subs.begin(), subs.end() );
     CVC4::TNode newBody = body[1];
@@ -118,7 +118,7 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CV
       if(body.getKind() == kind::NOT && newChildren[0].getKind() == kind::NOT) {
         return newChildren[0][0];
       } else {
-        return CVC4::NodeManager::currentNM()->mkNode(body<false>.getKind(), newChildren);
+        return CVC4::NodeManager::currentNM()->mkNode(body.getKind(), newChildren);
       }
     } else {
       return body;
