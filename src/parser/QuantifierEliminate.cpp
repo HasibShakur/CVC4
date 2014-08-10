@@ -238,7 +238,7 @@ CVC4::TNode QuantifierEliminate::getPrenexExpression(const Expr& ex) {
         return tn;
       }
 }
-CVC4::TNode computePrenexOperation(CVC4::TNode in, bool isNested)
+CVC4::TNode QuantifierEliminate::computePrenexOperation(CVC4::TNode in, bool isNested)
 {
   if( in.getKind()==CVC4::kind::FORALL ){
       std::vector< CVC4::TNode > args;
@@ -251,7 +251,8 @@ CVC4::TNode computePrenexOperation(CVC4::TNode in, bool isNested)
       if( in.getNumChildren()==3 ){
         ipl = in[2];
       }
-      n = convertToPrenex( n, args, true );
+      //n = convertToPrenex( n, args, true );
+       n = convertToPrenex(n,args, true);
       if( in[1]==n && args.size()==in[0].getNumChildren() ){
         return in;
       }else{
