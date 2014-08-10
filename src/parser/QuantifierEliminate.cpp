@@ -247,7 +247,7 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
              }
              defs << CVC4::NodeManager::currentNM()->mkNode(kind::FORALL, children );
            }
-           return defs.getNumChildren()==1 ? defs.getChild( 0 ) : defs.construcNode();
+           return defs.getNumChildren() == 1 ? defs.getChild(0) : defs.constructNode();
         }
   }
   else
