@@ -24,7 +24,7 @@ private:
    static CVC4::TNode computePrenexOperation(CVC4::TNode, bool isNested);
 public:
   //static CVC4::Node simplifyExpression(const Expr& e);
-  static CVC4::Node getPrenexExpression(const Expr& e);
+  static CVC4::TNode getPrenexExpression(const Expr& e);
 };
 }
 //}
