@@ -13,7 +13,7 @@ using namespace CVC4::kind;
 
 //attribute for "contains instantiation constants from"
 struct QeNestedQuantAttributeId {};
-typedef CVC4::expr::Attribute<QeNestedQuantAttributeId,CVC4::Node> QuantAttrib;
+typedef CVC4::expr::Attribute<QeNestedQuantAttributeId,CVC4::TNode> QuantAttrib;
 
 //attribute for "contains nested quantifier"
 /*struct QeContainsQuantifierAttributeId {};
@@ -81,11 +81,11 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
   return true;
 }*/
 
-CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
+CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CVC4::TNode >& args, bool pol) {
   if(body.getKind() == kind::FORALL)
   {
-    std::vector<CVC4::Node> terms;
-    std::vector<CVC4::Node> subs;
+    std::vector<CVC4::TNode> terms;
+    std::vector<CVC4::TNode> subs;
     //for doing prenexing of same-signed quantifiers
     //must rename each variable that already exists
     for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
@@ -105,7 +105,7 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC
   {
     Assert( body.getKind()!=kind::EXISTS );
     bool childrenChanged = false;
-    std::vector<CVC4::Node> newChildren;
+    std::vector<CVC4::TNode> newChildren;
     for(int i = 0; i < (int) body.getNumChildren(); i++) {
       bool newPol = body.getKind() == kind::NOT ? !pol : pol;
       CVC4::Node n = convertToPrenex(body[i], args, newPol);
@@ -238,16 +238,16 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
         return tn;
       }
 }
-CVC4::Node computePrenexOperation(CVC4::Node in, bool isNested)
+CVC4::Node computePrenexOperation(CVC4::TNode in, bool isNested)
 {
   if( in.getKind()==CVC4::kind::FORALL ){
-      std::vector< CVC4::Node > args;
+      std::vector< CVC4::TNode > args;
       for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
         args.push_back( in[0][i] );
       }
       CVC4::NodeBuilder<> defs(kind::AND);
-      CVC4::Node n = in[1];
-      CVC4::Node ipl;
+      CVC4::TNode n = in[1];
+      CVC4::TNode ipl;
       if( in.getNumChildren()==3 ){
         ipl = in[2];
       }
@@ -258,7 +258,7 @@ CVC4::Node computePrenexOperation(CVC4::Node in, bool isNested)
         if( args.empty() ){
           defs << n;
         }else{
-          std::vector< CVC4::Node > children;
+          std::vector< CVC4::TNode > children;
           children.push_back( CVC4::NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
           children.push_back( n );
           if( !ipl.isNull() ){
