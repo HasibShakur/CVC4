@@ -12,11 +12,11 @@ using namespace CVC4::expr;
 using namespace CVC4::kind;
 
 //attribute for "contains instantiation constants from"
-/*struct QeNestedQuantAttributeId {};
+struct QeNestedQuantAttributeId {};
 typedef CVC4::expr::Attribute<QeNestedQuantAttributeId,CVC4::Node> QuantAttrib;
 
 //attribute for "contains nested quantifier"
-struct QeContainsQuantifierAttributeId {};
+/*struct QeContainsQuantifierAttributeId {};
 typedef CVC4::expr::Attribute<QeContainsQuantifierAttributeId,uint64_t> ContainsQuantAttrib;
 
 bool QuantifierEliminate::containsQuantifierQe(CVC4::Node n)
@@ -81,11 +81,11 @@ void QuantifierEliminate::setNestedQuantifiersInner(CVC4::Node n, CVC4::Node q, 
   return true;
 }*/
 
-CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CVC4::TNode >& args, bool pol) {
+CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::Node body,std::vector< CVC4::Node >& args, bool pol) {
   if(body.getKind() == kind::FORALL)
   {
-    std::vector<CVC4::TNode> terms;
-    std::vector<CVC4::TNode> subs;
+    std::vector<CVC4::Node> terms;
+    std::vector<CVC4::Node> subs;
     //for doing prenexing of same-signed quantifiers
     //must rename each variable that already exists
     for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
@@ -105,10 +105,10 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CV
   {
     Assert( body.getKind()!=kind::EXISTS );
     bool childrenChanged = false;
-    std::vector<CVC4::TNode> newChildren;
+    std::vector<CVC4::Node> newChildren;
     for(int i = 0; i < (int) body.getNumChildren(); i++) {
       bool newPol = body.getKind() == kind::NOT ? !pol : pol;
-      CVC4::TNode n = convertToPrenex(body[i], args, newPol);
+      CVC4::Node n = convertToPrenex(body[i], args, newPol);
       newChildren.push_back(n);
       if(n != body[i]) {
         childrenChanged = true;
@@ -212,49 +212,65 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CV
 CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   CVC4::TNode tBody = CVC4::NodeTemplate<false>(ex);
   std::vector< CVC4::TNode > args;
-  if( tBody.getKind()==kind::FORALL || tBody.getKind()==kind::EXISTS )
+  CVC4::TNode tn  = tBody;
+  for(int i=0;i<(int)tBody[0].getNumChildren();i++)
   {
-       /*if(!containsQuantifierQe(tBody)){
-         setNestedQuantifiers( tBody[ 1 ], tBody );
-       }*/
-      for( int i=0; i<(int)tBody[0].getNumChildren(); i++ ){
-        args.push_back( tBody[0][i] );
+    args.push_back( tBody[0][i] );
+  }
+  CVC4::TNode ipl_temp = tBody[2];
+  if( tBody.getKind()==CVC4::kind::EXISTS){
+        std::vector< TNode > children;
+        children.push_back( tBody[0] );
+        children.push_back( tBody[1].negate() );
+        if( tBody.getNumChildren()==3 ){
+          children.push_back( tBody[2] );
+        }
+        tn = NodeManager::currentNM()->mkNode( CVC4::kind::FORALL, children );
+        tn = tn.negate();
+        bool isNested = tBody[0].hasAttribute(QuantAttrib());
+        tn = computePrenexOperation( tBody, isNested );
+        return tn;
+      }
+  else{
+        bool isNested = tBody[0].hasAttribute(QuantAttrib());
+        //doOperation( in, isNested, op );
+        tn = computePrenexOperation( tBody, isNested );
+        return tn;
+      }
+}
+CVC4::Node computePrenexOperation(CVC4::Node in, bool isNested)
+{
+  if( in.getKind()==CVC4::kind::FORALL ){
+      std::vector< CVC4::Node > args;
+      for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
+        args.push_back( in[0][i] );
       }
       CVC4::NodeBuilder<> defs(kind::AND);
-      CVC4::TNode tn = tBody[1];
-      CVC4::TNode ipl;
-      if( tBody.getNumChildren()==3 ){
-            ipl = tBody[2];
+      CVC4::Node n = in[1];
+      CVC4::Node ipl;
+      if( in.getNumChildren()==3 ){
+        ipl = in[2];
       }
-      tn = convertToPrenex(tn,args,true);
-      if( tBody[1]==tn && args.size()==tBody[0].getNumChildren() ){
-           return tBody;
-         }
-      else{
-           if( args.empty() )
-           {
-             defs << tn;
-           }
-           else{
-             std::vector< CVC4::TNode > children;
-             children.push_back( CVC4::NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
-             children.push_back( tn );
-             if( !ipl.isNull() )
-             {
-               children.push_back( ipl );
-             }
-             defs << CVC4::NodeManager::currentNM()->mkNode(kind::FORALL, children );
-           }
-           return defs.getNumChildren() == 1 ? defs.getChild(0) : defs.constructNode();
+      n = convertToPrenex( n, args, true );
+      if( in[1]==n && args.size()==in[0].getNumChildren() ){
+        return in;
+      }else{
+        if( args.empty() ){
+          defs << n;
+        }else{
+          std::vector< CVC4::Node > children;
+          children.push_back( CVC4::NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
+          children.push_back( n );
+          if( !ipl.isNull() ){
+            children.push_back( ipl );
+          }
+          defs << CVC4::NodeManager::currentNM()->mkNode(kind::FORALL, children );
         }
-  }
-  else
-  {
-    return tBody;
-  }
-  // CVC4::Node tn = tBody[1];
-  // CVC4::Node prenexedBody = convertToPrenex(body[1], args, true);
-  // return prenexedBody;
+        return defs.getNumChildren()==1 ? defs.getChild( 0 ) : defs.constructNode();
+      }
+    }else{
+      return in;
+    }
 }
 /*CVC4::Node QuantifierEliminate::simplifyExpression(const Expr& ex)
 {
