@@ -90,7 +90,7 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CV
     //must rename each variable that already exists
     for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
       terms.push_back(body[0][i]);
-     // subs.push_back(CVC4::NodeManager::currentNM()->mkBoundVar(body[0][i].getType()));
+      subs.push_back(CVC4::NodeManager::currentNM()->mkBoundVar(body[0][i].getType()));
     }
     args.insert( args.end(), subs.begin(), subs.end() );
     CVC4::TNode newBody = body[1];
@@ -118,8 +118,7 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CV
       if(body.getKind() == kind::NOT && newChildren[0].getKind() == kind::NOT) {
         return newChildren[0][0];
       } else {
-        // return CVC4::NodeManager::currentNM()->mkNode(body.getKind(), newChildren);
-        return newChildren[0][0];
+        return CVC4::NodeManager::currentNM()->mkNode(body.getKind(), newChildren);
       }
     } else {
       return body;
@@ -212,7 +211,6 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CV
 }*/
 CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
   CVC4::TNode tBody = CVC4::NodeTemplate<false>(ex);
-  //return tBody;
   std::vector< CVC4::TNode > args;
   if( tBody.getKind()==kind::FORALL || tBody.getKind()==kind::EXISTS )
   {
@@ -228,7 +226,6 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
       if( tBody.getNumChildren()==3 ){
             ipl = tBody[2];
       }
-     // std::vector<CVC4::Node> args1 = No
       tn = convertToPrenex(tn,args,true);
       if( tBody[1]==tn && args.size()==tBody[0].getNumChildren() ){
            return tBody;
@@ -240,13 +237,13 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
            }
            else{
              std::vector< CVC4::TNode > children;
-             //children.push_back( CVC4::NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
+             children.push_back( CVC4::NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
              children.push_back( tn );
              if( !ipl.isNull() )
              {
                children.push_back( ipl );
              }
-            // defs << CVC4::NodeManager::currentNM()->mkNode(kind::FORALL, children );
+             defs << CVC4::NodeManager::currentNM()->mkNode(kind::FORALL, children );
            }
            return defs.getNumChildren() == 1 ? defs.getChild(0) : defs.constructNode();
         }
