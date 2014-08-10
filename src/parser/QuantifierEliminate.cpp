@@ -118,7 +118,8 @@ CVC4::Node QuantifierEliminate::convertToPrenex(CVC4::TNode body,std::vector< CV
       if(body.getKind() == kind::NOT && newChildren[0].getKind() == kind::NOT) {
         return newChildren[0][0];
       } else {
-        return CVC4::NodeManager::currentNM()->mkNode(body.getKind(), newChildren);
+        // return CVC4::NodeManager::currentNM()->mkNode(body.getKind(), newChildren);
+        return newChildren[0][0];
       }
     } else {
       return body;
@@ -239,13 +240,13 @@ CVC4::Node QuantifierEliminate::getPrenexExpression(const Expr& ex) {
            }
            else{
              std::vector< CVC4::TNode > children;
-             children.push_back( CVC4::NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
+             //children.push_back( CVC4::NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
              children.push_back( tn );
              if( !ipl.isNull() )
              {
                children.push_back( ipl );
              }
-             defs << CVC4::NodeManager::currentNM()->mkNode(kind::FORALL, children );
+            // defs << CVC4::NodeManager::currentNM()->mkNode(kind::FORALL, children );
            }
            return defs.getNumChildren() == 1 ? defs.getChild(0) : defs.constructNode();
         }
