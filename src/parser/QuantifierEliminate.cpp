@@ -62,7 +62,7 @@ Node QuantifierEliminate::convertToPrenex(Node body, std::vector< Node >& args, 
 Node QuantifierEliminate::getPrenexExpression(Node f)
 {
   if( f.getKind()==FORALL ){
-      Trace("quantifiers-rewrite-debug") << "Compute operation " << computeOption << " on " << f << ", nested = " << isNested << std::endl;
+    //  Trace("quantifiers-rewrite-debug") << "Compute operation " << computeOption << " on " << f << ", nested = " << isNested << std::endl;
       std::vector< Node > args;
       for( int i=0; i<(int)f[0].getNumChildren(); i++ ){
         args.push_back( f[0][i] );
