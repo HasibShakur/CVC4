@@ -206,9 +206,6 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
 }
 
 void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
-
-  //QuantifierEliminate qe;
-  //qe.setExpression(this->getExpr());
   CVC4::Expr ex = this->eliminateQuantifier(this->getExpr());
   out << ex << std::endl;
   d_commandStatus = CommandSuccess::instance();
@@ -229,13 +226,9 @@ std::string QESimplifyCommand::getCommandName() const throw() {
 CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
 {
   Assert(ex.getExprManager() == d_exprManager);
-  CVC4::Node prenexedNode = NodeTemplate<false>(ex);
-  Node tempNode = NodeTemplate<false>(prenexedNode);
-  CVC4::Expr prenexedExpression = QuantifierEliminate::getPrenexExpression(tempNode).toExpr();
-  //  CVC4::Node simplifiedNode = QuantifierEliminate::simplifyExpression(prenexedExpression);
-   // CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
-  //  return simplifiedExpression;
-    return prenexedExpression;
+  Node prenexNode = QuantifierEliminate::getPrenexExpression(NodeTemplate<false>(ex));
+  Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
+  return nnfNode.toExpr();
 }
 
 /* class AssertCommand */
