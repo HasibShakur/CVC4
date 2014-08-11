@@ -229,7 +229,7 @@ CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
   Node prenexNode = QuantifierEliminate::getPrenexExpression(NodeTemplate<true>(ex));
   //Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
   //return nnfNode.toExpr();
-  if(prenexNode != null)
+  if(prenexNode.isNull())
   {
     return prenexNode.toExpr();
   }
