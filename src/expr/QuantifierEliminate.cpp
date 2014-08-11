@@ -63,7 +63,7 @@ Node QuantifierEliminate::convertExistentialToForAll(Node f)
      children.push_back( f[0] );
      children.push_back( f[1].negate() );
      if( f.getNumChildren()==3 ){
-       children.push_back( fs[2] );
+       children.push_back( f[2] );
      }
      ret = NodeManager::currentNM()->mkNode( FORALL, children );
      ret = ret.negate();
