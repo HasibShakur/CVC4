@@ -182,7 +182,7 @@ Node QuantifierEliminate::convertToNNF(Node body)
 Node QuantifierEliminate::simplifyExpression(Node n)
 {
   // 1st phase of simplification is converting the expression to NNF
-  Node nnfNode = convertToNNF(temp);
+  Node nnfNode = convertToNNF(n);
   // 3rd phase of simplification is applying the replace rules
   //Node normalizedBody = normalizeBody(nnfNode);
   // 4th phase of simplification is
