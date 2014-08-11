@@ -226,7 +226,7 @@ std::string QESimplifyCommand::getCommandName() const throw() {
 CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
 {
   Assert(ex.getExprManager() == d_exprManager);
-  Node prenexNode = QuantifierEliminate::getPrenexExpression(NodeTemplate<false>(ex));
+  Node prenexNode = QuantifierEliminate::getPrenexExpression(NodeTemplate<true>(ex));
   Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
   return nnfNode.toExpr();
 }
