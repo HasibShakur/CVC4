@@ -107,17 +107,17 @@ Node QuantifierEliminate::convertToNNF(Node body)
       Kind k = body[0].getKind();
       if( body[0].getKind()== kind::OR || body[0].getKind()== kind::AND ){
         for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
-          children.push_back( convertToNNF( body[0][i].noNode() ) );
+          children.push_back( convertToNNF( body[0][i].notNode() ) );
         }
         k = body[0].getKind()== kind::AND ? kind::OR : kind::AND;
       }else if( body[0].getKind()== kind::IFF ){
         for( int i=0; i<2; i++ ){
-          Node nn = i==0 ? body[0][i] : body[0][i].noNode();
+          Node nn = i==0 ? body[0][i] : body[0][i].notNode();
           children.push_back( convertToNNF( nn ) );
         }
       }else if( body[0].getKind()== kind::ITE ){
         for( int i=0; i<3; i++ ){
-          Node nn = i==0 ? body[0][i] : body[0][i].noNode();
+          Node nn = i==0 ? body[0][i] : body[0][i].notNode();
           children.push_back( convertToNNF( nn ) );
         }
       }else{
