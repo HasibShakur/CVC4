@@ -55,25 +55,45 @@ Node QuantifierEliminate::convertToPrenex(Node body, std::vector< Node >& args, 
       }
     }
 }
+Node QuantifierEliminate::convertExistentialToForAll(Node f)
+{
+   Node ret =f;
+   if( f.getKind()==EXISTS ){
+     std::vector< Node > children;
+     children.push_back( f[0] );
+     children.push_back( f[1].negate() );
+     if( f.getNumChildren()==3 ){
+       children.push_back( fs[2] );
+     }
+     ret = NodeManager::currentNM()->mkNode( FORALL, children );
+     ret = ret.negate();
+     return ret;
+   }
+   else
+   {
+     return f;
+   }
+}
 Node QuantifierEliminate::getPrenexExpression(Node f)
 {
-  if( f.getKind()==FORALL ){
+   Node in = convertExistentialToForAll(f);
+   if( in.getKind()==FORALL ){
     //  Trace("quantifiers-rewrite-debug") << "Compute operation " << computeOption << " on " << f << ", nested = " << isNested << std::endl;
       std::vector< Node > args;
-      for( int i=0; i<(int)f[0].getNumChildren(); i++ ){
-        args.push_back( f[0][i] );
+      for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
+        args.push_back( in[0][i] );
      }
-    Node n = f[1];
+    Node n = in[1];
     n = convertToPrenex(n,args, true);
     return n;
   }
   else
   {
-    return f;
+    return in;
   }
 }
 
-bool QuantifierEliminate::isLiteral( Node n ){
+/*bool QuantifierEliminate::isLiteral( Node n ){
   switch( n.getKind() ){
   case NOT:
     return isLiteral( n[0] );
@@ -93,9 +113,9 @@ bool QuantifierEliminate::isLiteral( Node n ){
     break;
   }
   return true;
-}
+}*/
 
-Node QuantifierEliminate::convertToNNF(Node body)
+/*Node QuantifierEliminate::convertToNNF(Node body)
 {
   if( body.getKind()== kind::NOT ){
     if( body[0].getKind()== kind::NOT ){
@@ -142,7 +162,7 @@ Node QuantifierEliminate::convertToNNF(Node body)
       return body;
     }
   }
-}
+}*/
 /*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
 {
   bool rewritten = false;
@@ -179,7 +199,7 @@ Node QuantifierEliminate::convertToNNF(Node body)
     return normalized;
   }
 }*/
-Node QuantifierEliminate::simplifyExpression(Node n)
+/*Node QuantifierEliminate::simplifyExpression(Node n)
 {
   // 1st phase of simplification is converting the expression to NNF
   Node nnfNode = convertToNNF(n);
@@ -187,5 +207,5 @@ Node QuantifierEliminate::simplifyExpression(Node n)
   //Node normalizedBody = normalizeBody(nnfNode);
   // 4th phase of simplification is
   return nnfNode;
-}
+}*/
 

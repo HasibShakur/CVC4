@@ -227,8 +227,16 @@ CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
 {
   Assert(ex.getExprManager() == d_exprManager);
   Node prenexNode = QuantifierEliminate::getPrenexExpression(NodeTemplate<true>(ex));
-  Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
-  return nnfNode.toExpr();
+  //Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
+  //return nnfNode.toExpr();
+  if(prenexNode != NULL)
+  {
+    return prenexNode.toExpr();
+  }
+  else
+  {
+    return ex;
+  }
 }
 
 /* class AssertCommand */
