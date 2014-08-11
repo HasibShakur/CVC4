@@ -3,7 +3,7 @@
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
-#include "parser/QuantifierEliminate.h"
+#include "expr/QuantifierEliminate.h"
 #include "expr/attribute.h"
 
 using namespace std;

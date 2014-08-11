@@ -33,7 +33,7 @@
 #include "util/model.h"
 #include "expr/node.h"
 #include "printer/printer.h"
-#include "parser/QuantifierEliminate.h"
+#include "expr/QuantifierEliminate.h"
 
 using namespace std;
 
