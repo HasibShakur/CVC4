@@ -6,6 +6,7 @@
 #include "expr/QuantifierEliminate.h"
 #include "expr/attribute.h"
 #include "printer/smt2/smt2_printer.h"
+#include "util/output.h"
 
 using namespace std;
 using namespace CVC4;
@@ -29,9 +30,9 @@ Node QuantifierEliminate::convertToPrenex(Node body, std::vector< Node >& args, 
         newBody = newBody.substitute( terms.begin(), terms.end(), subs.begin(), subs.end() );
         if(newBody.isNull())
         {
-          CVC4::Trace("quantifier-eliminate-debug") << "newBody is null in convertToPrenex" << std::endl;
+          CVC4:Debug("expr-quantifiereliminate") << "newBody is null in convertToPrenex" << "\n" ;
         }
-        CVC4::Trace("quantifiers-substitute-debug") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << endl;
+        CVC4:Debug("expr-quantifiereliminate") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << "\n";
         return newBody;
       }else{
         return body;
@@ -75,7 +76,7 @@ Node QuantifierEliminate::convertExistentialToForAll(Node f)
      ret = ret.negate();
      if(ret.isNull())
      {
-       CVC4::Trace("quantifier-eliminate-debug") << "ret is null after conversion from existential to forall" << std::endl;
+       CVC4:Debug("expr-quantifiereliminate") << "ret is null after conversion from existential to forall" << "\n";
      }
      return ret;
    }
@@ -96,13 +97,13 @@ Node QuantifierEliminate::getPrenexExpression(Node f)
     Node n = in[1];
     if(n.isNull())
     {
-      CVC4::Trace("quantifier-eliminate-debug") << "Node n is null in getPrenexExpression after Node n = in[1]" << std::endl;
+      CVC4:Debug("expr-quantifiereliminate") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
     }
     n = convertToPrenex(n,args, true);
     if(n.isNull())
     {
-       CVC4::Trace("quantifier-eliminate-debug") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << std::endl);
-     }
+      CVC4:Debug("expr-quantifiereliminate") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << "\n";
+    }
     return n;
   }
   else
