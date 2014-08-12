@@ -30,9 +30,9 @@ Node QuantifierEliminate::convertToPrenex(Node body, std::vector< Node >& args, 
         newBody = newBody.substitute( terms.begin(), terms.end(), subs.begin(), subs.end() );
         if(newBody.isNull())
         {
-          CVC4:Debug("expr-quantifiereliminate") << "newBody is null in convertToPrenex" << "\n" ;
+          Debug("expr-quantifiereliminate") << "newBody is null in convertToPrenex" << "\n" ;
         }
-        CVC4:Debug("expr-quantifiereliminate") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << "\n";
+        Debug("expr-quantifiereliminate") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << "\n";
         return newBody;
       }else{
         return body;
@@ -76,7 +76,7 @@ Node QuantifierEliminate::convertExistentialToForAll(Node f)
      ret = ret.negate();
      if(ret.isNull())
      {
-       CVC4:Debug("expr-quantifiereliminate") << "ret is null after conversion from existential to forall" << "\n";
+       Debug("expr-quantifiereliminate") << "ret is null after conversion from existential to forall" << "\n";
      }
      return ret;
    }
@@ -97,12 +97,12 @@ Node QuantifierEliminate::getPrenexExpression(Node f)
     Node n = in[1];
     if(n.isNull())
     {
-      CVC4:Debug("expr-quantifiereliminate") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
+      Debug("expr-quantifiereliminate") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
     }
     n = convertToPrenex(n,args, true);
     if(n.isNull())
     {
-      CVC4:Debug("expr-quantifiereliminate") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << "\n";
+      Debug("expr-quantifiereliminate") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << "\n";
     }
     return n;
   }
