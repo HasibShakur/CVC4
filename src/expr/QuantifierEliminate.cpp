@@ -5,11 +5,13 @@
 #include "expr/node.h"
 #include "expr/QuantifierEliminate.h"
 #include "expr/attribute.h"
+#include "printer/smt2/smt2_printer.h"
 
 using namespace std;
 using namespace CVC4;
 using namespace CVC4::expr;
 using namespace CVC4::kind;
+using namespace CVC4::printer;
 
 Node QuantifierEliminate::convertToPrenex(Node body, std::vector< Node >& args, bool pol)
 {
@@ -25,7 +27,11 @@ Node QuantifierEliminate::convertToPrenex(Node body, std::vector< Node >& args, 
         args.insert( args.end(), subs.begin(), subs.end() );
         Node newBody = body[1];
         newBody = newBody.substitute( terms.begin(), terms.end(), subs.begin(), subs.end() );
-        Debug("quantifiers-substitute-debug") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << endl;
+        if(newBody.isNull())
+        {
+          Trace("quantifier-eliminate-debug") << "newBody is null in convertToPrenex" << std::endl;
+        }
+        Trace("quantifiers-substitute-debug") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << endl;
         return newBody;
       }else{
         return body;
@@ -67,6 +73,10 @@ Node QuantifierEliminate::convertExistentialToForAll(Node f)
      }
      ret = NodeManager::currentNM()->mkNode( FORALL, children );
      ret = ret.negate();
+     if(ret.isNull())
+     {
+       Trace("quantifier-eliminate-debug") << "ret is null after conversion from existential to forall" << std::endl;
+     }
      return ret;
    }
    else
@@ -84,7 +94,15 @@ Node QuantifierEliminate::getPrenexExpression(Node f)
         args.push_back( in[0][i] );
      }
     Node n = in[1];
+    if(n.isNull())
+    {
+      Trace("quantifier-eliminate-debug") << "Node n is null in getPrenexExpression after Node n = in[1]" << std::endl;
+    }
     n = convertToPrenex(n,args, true);
+    if(n.isNull())
+    {
+       Trace("quantifier-eliminate-debug") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << std::endl;
+     }
     return n;
   }
   else
