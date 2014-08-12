@@ -29,9 +29,9 @@ Node QuantifierEliminate::convertToPrenex(Node body, std::vector< Node >& args, 
         newBody = newBody.substitute( terms.begin(), terms.end(), subs.begin(), subs.end() );
         if(newBody.isNull())
         {
-          Trace("quantifier-eliminate-debug") << "newBody is null in convertToPrenex" << std::endl;
+          CVC4::Trace("quantifier-eliminate-debug") << "newBody is null in convertToPrenex" << std::endl;
         }
-        Trace("quantifiers-substitute-debug") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << endl;
+        CVC4::Trace("quantifiers-substitute-debug") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << endl;
         return newBody;
       }else{
         return body;
@@ -75,7 +75,7 @@ Node QuantifierEliminate::convertExistentialToForAll(Node f)
      ret = ret.negate();
      if(ret.isNull())
      {
-       Trace("quantifier-eliminate-debug") << "ret is null after conversion from existential to forall" << std::endl;
+       CVC4::Trace("quantifier-eliminate-debug") << "ret is null after conversion from existential to forall" << std::endl;
      }
      return ret;
    }
@@ -96,12 +96,12 @@ Node QuantifierEliminate::getPrenexExpression(Node f)
     Node n = in[1];
     if(n.isNull())
     {
-      Trace("quantifier-eliminate-debug") << "Node n is null in getPrenexExpression after Node n = in[1]" << std::endl;
+      CVC4::Trace("quantifier-eliminate-debug") << "Node n is null in getPrenexExpression after Node n = in[1]" << std::endl;
     }
     n = convertToPrenex(n,args, true);
     if(n.isNull())
     {
-       Trace("quantifier-eliminate-debug") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << std::endl;
+       CVC4::Trace("quantifier-eliminate-debug") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << std::endl);
      }
     return n;
   }
