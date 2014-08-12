@@ -227,7 +227,7 @@ std::string QESimplifyCommand::getCommandName() const throw() {
 //CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
 std::string QESimplifyCommand::eliminateQuantifier(Expr ex)
 {
-  Assert(ex.getExprManager() == d_exprManager);
+  //Assert(ex.getExprManager() == d_exprManager);
   Node tempNode = NodeTemplate<true>(ex);
   if(tempNode.isNull())
   {
