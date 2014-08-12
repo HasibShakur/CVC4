@@ -228,18 +228,27 @@ std::string QESimplifyCommand::getCommandName() const throw() {
 std::string QESimplifyCommand::eliminateQuantifier(Expr ex)
 {
   Assert(ex.getExprManager() == d_exprManager);
-  Node prenexNode = QuantifierEliminate::getPrenexExpression(NodeTemplate<true>(ex));
-  //Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
-  //return nnfNode.toExpr();
-  if(prenexNode.isNull())
+  Node tempNode = NodeTemplate<true>(ex);
+  if(tempNode.isNull())
   {
-    return prenexNode.toExpr().toString();
+    return "conversion from expr to node failed";
   }
   else
   {
-    std::string result = "null returned by prenexNode";
-    return result;
+    Node prenexNode = QuantifierEliminate::getPrenexExpression(tempNode);
+      //Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
+      //return nnfNode.toExpr();
+      if(prenexNode.isNull())
+      {
+        return prenexNode.toExpr().toString();
+      }
+      else
+      {
+        std::string result = "null returned by prenexNode";
+        return result;
+      }
   }
+
 }
 
 /* class AssertCommand */
