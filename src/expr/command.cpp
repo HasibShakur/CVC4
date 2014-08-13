@@ -209,8 +209,17 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() 
   //CVC4::Expr ex = this->eliminateQuantifier(this->getExpr());
   //std::string ex = this->eliminateQuantifier(this->getExpr());
   Node n = this->eliminateQuantifier(this->getExpr());
+  std::string result = "";
+  if(n.isNull())
+  {
+    result += "eliminateQuantifier has returned null";
+  }
+  else
+  {
+    result += "n is not null";
+  }
   //out << ex << std::endl;
-  out << n << std::endl;
+  out << result << std::endl;
   d_commandStatus = CommandSuccess::instance();
   printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
 }
