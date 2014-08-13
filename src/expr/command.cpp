@@ -208,18 +208,10 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
 void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
   //CVC4::Expr ex = this->eliminateQuantifier(this->getExpr());
   //std::string ex = this->eliminateQuantifier(this->getExpr());
-  Node n = this->eliminateQuantifier(this->getExpr());
-  std::string result = "";
-  if(n.isNull())
-  {
-    result += "eliminateQuantifier has returned null";
-  }
-  else
-  {
-    result += "n is not null";
-  }
+  std::string n = this->eliminateQuantifier(this->getExpr());
+
   //out << ex << std::endl;
-  out << result << std::endl;
+  out << n << std::endl;
   d_commandStatus = CommandSuccess::instance();
   printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
 }
@@ -236,13 +228,22 @@ std::string QESimplifyCommand::getCommandName() const throw() {
   return "qe";
 }
 //CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
-CVC4::Node QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
+std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
 {
   //Assert(ex.getExprManager() == d_exprManager);
   Node tempNode = NodeTemplate<true>(ex);
   Node forallNode = QuantifierEliminate::convertExistentialToForAll(tempNode);
   Node finalNode = QuantifierEliminate::getPrenexExpression(forallNode);
-  return finalNode;
+  std::string result = "";
+    if(finalNode.isNull())
+    {
+      result += "eliminateQuantifier has returned null";
+    }
+    else
+    {
+      result += "n is not null";
+    }
+  return result;
  /* if(tempNode.isNull())
   {
     return "conversion from expr to node failed";
