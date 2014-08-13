@@ -237,22 +237,20 @@ std::string QESimplifyCommand::eliminateQuantifier(Expr ex)
   {
    //Node prenexNode = QuantifierEliminate::getPrenexExpression(tempNode);
     Node p1 = QuantifierEliminate::convertExistentialToForAll(tempNode);
+    std::string s = "";
     if(p1.isNull())
     {
-      return "p1 is null returned by convertExistentialToForAll";
+      //return "p1 is null returned by convertExistentialToForAll";
+      s += "p1 is null returned by convertExistentialToForAll";
     }
-    else
+
+    Node p2 = QuantifierEliminate::getPrenexExpression(p1);
+    if(p2.isNull())
     {
-      Node p2 = QuantifierEliminate::getPrenexExpression(p1);
-      if(p2.isNull())
-      {
-        return "p2 is null in either getPrenexExpression or in convertToPrenex";
-      }
-      else
-      {
-        return p2.toString();
-      }
+      s += " either getPrenexExpression or convertToPrenex is null";
     }
+
+    s += " ends ";
 
       //Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
       //return nnfNode.toExpr();
@@ -265,6 +263,7 @@ std::string QESimplifyCommand::eliminateQuantifier(Expr ex)
         std::string result = "null returned by prenexNode";
         return result;
       }*/
+    return s;
   }
 
 }
