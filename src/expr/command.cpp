@@ -250,7 +250,7 @@ std::string QESimplifyCommand::eliminateQuantifier(Expr ex)
       }
       else
       {
-        return "everything is fine";
+        return p2.toString();
       }
     }
 
