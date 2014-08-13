@@ -326,8 +326,7 @@ public:
 // Finally it will generate an expression without quantifiers
 class CVC4_PUBLIC QESimplifyCommand : public Command {
 private:
-  // CVC4::Expr eliminateQuantifier(CVC4::Expr ex);
-  Node eliminateQuantifier(Expr ex);
+  CVC4::Node eliminateQuantifier(CVC4::Expr ex)throw();
 protected:
   CVC4::Expr d_expr;
 public:

@@ -236,7 +236,7 @@ std::string QESimplifyCommand::getCommandName() const throw() {
   return "qe";
 }
 //CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
-Node QESimplifyCommand::eliminateQuantifier(Expr ex)
+CVC4::Node QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
 {
   //Assert(ex.getExprManager() == d_exprManager);
   Node tempNode = NodeTemplate<true>(ex);
