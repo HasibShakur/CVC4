@@ -244,7 +244,7 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
       result += "n is not null";
     }*/
   std::string nn = finalNode.toString();
-  if(nn == nullptr)
+  if(nn.length() <= 0)
   {
     return "toString conversion failed but node computed";
 
