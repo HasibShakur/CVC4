@@ -35,6 +35,7 @@
 #include "util/sexpr.h"
 #include "util/datatype.h"
 #include "util/proof.h"
+#include "expr/node.h"
 
 namespace CVC4 {
 
@@ -326,7 +327,7 @@ public:
 // Finally it will generate an expression without quantifiers
 class CVC4_PUBLIC QESimplifyCommand : public Command {
 private:
-  CVC4::Node eliminateQuantifier(CVC4::Expr ex)throw();
+  Node eliminateQuantifier(Expr ex)throw();
 protected:
   CVC4::Expr d_expr;
 public:
