@@ -35,6 +35,7 @@
 #include "util/sexpr.h"
 #include "util/datatype.h"
 #include "util/proof.h"
+#include "expr/node.h";
 
 namespace CVC4 {
 
