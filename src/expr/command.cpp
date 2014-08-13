@@ -238,15 +238,15 @@ std::string QESimplifyCommand::eliminateQuantifier(Expr ex)
     Node prenexNode = QuantifierEliminate::getPrenexExpression(tempNode);
       //Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
       //return nnfNode.toExpr();
-      if(prenexNode.isNull())
-      {
+//      if(prenexNode.isNull())
+//      {
         return prenexNode.toExpr().toString();
-      }
-      else
+ //     }
+      /*else
       {
         std::string result = "null returned by prenexNode";
         return result;
-      }
+      }*/
   }
 
 }
