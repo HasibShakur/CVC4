@@ -243,11 +243,18 @@ std::string QESimplifyCommand::eliminateQuantifier(Expr ex)
       //return "p1 is null returned by convertExistentialToForAll";
       s += "p1 is null returned by convertExistentialToForAll";
     }
-
+    else
+    {
+      s+= "p1 is not null ... ";
+    }
     Node p2 = QuantifierEliminate::getPrenexExpression(p1);
     if(p2.isNull())
     {
       s += " either getPrenexExpression or convertToPrenex is null";
+    }
+    else
+    {
+      s+= "p2 is not null ... ";
     }
 
     s += " ends ";
