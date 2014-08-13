@@ -235,12 +235,30 @@ std::string QESimplifyCommand::eliminateQuantifier(Expr ex)
   }
   else
   {
-    Node prenexNode = QuantifierEliminate::getPrenexExpression(tempNode);
+   //Node prenexNode = QuantifierEliminate::getPrenexExpression(tempNode);
+    Node p1 = QuantifierEliminate::convertExistentialToForAll(tempNode);
+    if(p1.isNull())
+    {
+      return "p1 is null returned by convertExistentialToForAll";
+    }
+    else
+    {
+      Node p2 = QuantifierEliminate::getPrenexExpression(p1);
+      if(p2.isNull())
+      {
+        return "p2 is null in either getPrenexExpression or in convertToPrenex";
+      }
+      else
+      {
+        return "everything is fine";
+      }
+    }
+
       //Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
       //return nnfNode.toExpr();
 //      if(prenexNode.isNull())
 //      {
-        return prenexNode.toExpr().toString();
+     //   return prenexNode.toExpr().toString();
  //     }
       /*else
       {
