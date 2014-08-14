@@ -232,8 +232,8 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
 {
   //Assert(ex.getExprManager() == d_exprManager);
   Node tempNode = NodeTemplate<true>(ex);
-  Node forallNode = QuantifierEliminate::convertExistentialToForAll(tempNode);
-  Node finalNode = QuantifierEliminate::getPrenexExpression(forallNode);
+ // Node forallNode = QuantifierEliminate::convertExistentialToForAll(tempNode);
+  Node finalNode = QuantifierEliminate::getPrenexExpressionQE(tempNode);
   /*std::string result = "";
     if(finalNode.isNull())
     {
@@ -243,15 +243,15 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
     {
       result += "n is not null";
     }*/
-  std::string nn = finalNode.toString();
-  if(nn.length() <= 0)
+  std::string result = "";
+  if(finalNode.isNull())
   {
-    return "toString conversion failed but node computed";
+    return "finalNode is returned null";
 
   }
   else
   {
-    return nn;
+    return " finalNode is not null and something is returned";
   }
   //return result;
  /* if(tempNode.isNull())

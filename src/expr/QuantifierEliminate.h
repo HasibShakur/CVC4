@@ -17,9 +17,17 @@ private:
   //static Node convertExistentialToForAll(Node f);
 public:
 //  static Node simplifyExpression(Node n);
-  static Node getPrenexExpression(Node n);
-  static Node convertToPrenex(Node body, std::vector< Node >& args, bool pol);
-  static Node convertExistentialToForAll(Node f);
+  static bool isLiteralQE(Node n);
+  static bool isCubeQE( Node n );
+  static bool isClauseQE( Node n );
+  static void addNodeToOrBuilderQE( Node n, NodeBuilder<>& t );
+  static Node computeClauseQE( Node n );
+  static void computeArgsQE( std::vector< Node >& args, std::map< Node, bool >& activeMap, Node n );
+  static void computeArgVecQE( std::vector< Node >& args, std::vector< Node >& activeArgs, Node n );
+  static Node computeCNFQE( Node body, std::vector< Node >& args, NodeBuilder<>& defs, bool forcePred );
+  static Node getPrenexExpressionQE(Node n);
+  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
+  static Node convertExistentialToForAllQE(Node f);
 };
 }
 #endif
