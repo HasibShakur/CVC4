@@ -82,7 +82,7 @@ void QuantifierEliminate::addNodeToOrBuilderQE( Node n, NodeBuilder<>& t ){
 }
 
 Node QuantifierEliminate::computeClauseQE( Node n ){
-  Assert( isClause( n ) );
+  Assert( isClauseQE( n ) );
   if( isLiteralQE( n ) ){
     return n;
   }else{
