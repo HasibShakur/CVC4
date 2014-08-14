@@ -231,7 +231,7 @@ std::string QESimplifyCommand::getCommandName() const throw() {
 std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
 {
   //Assert(ex.getExprManager() == d_exprManager);
-  Node tempNode = NodeTemplate<true>(ex);
+  Node tempNode = NodeTemplate<false>(ex);
  // Node forallNode = QuantifierEliminate::convertExistentialToForAll(tempNode);
   Node finalNode = QuantifierEliminate::getPrenexExpressionQE(tempNode);
   /*std::string result = "";
