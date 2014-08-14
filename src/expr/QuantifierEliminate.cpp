@@ -314,7 +314,7 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
 }
 Node QuantifierEliminate::getPrenexExpressionQE(Node f)
 {
-   Node in = convertExistentialToForAllQE(f);
+  // Node in = convertExistentialToForAllQE(f);
 
    if( in.getKind()==FORALL ){
     //  Trace("quantifiers-rewrite-debug") << "Compute operation " << computeOption << " on " << f << ", nested = " << isNested << std::endl;
