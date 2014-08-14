@@ -329,7 +329,7 @@ Node QuantifierEliminate::getPrenexExpressionQE(Node f)
     {
       Debug("expr-quantifiereliminate") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
     }
-    n = computeCNFQE(n,args,defs,false);
+    n = computeCNFQE(n,args,defs,true);
     n = convertToPrenexQE(n,args, true);
     if(n.isNull())
     {
