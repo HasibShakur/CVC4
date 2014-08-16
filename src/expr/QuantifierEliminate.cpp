@@ -15,7 +15,7 @@ using namespace CVC4::kind;
 using namespace CVC4::printer;
 
 
-bool QuantifierEliminate::isLiteralQE( Node n ){
+/*bool QuantifierEliminate::isLiteralQE( Node n ){
   switch( n.getKind() ){
   case kind::NOT:
     return isLiteralQE( n[0] );
@@ -240,7 +240,7 @@ Node QuantifierEliminate::computeCNFQE( Node n, std::vector< Node >& args, NodeB
       return pred;
     }
   }
-}
+}*/
 
 Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args, bool pol)
 {
@@ -336,8 +336,8 @@ Node QuantifierEliminate::getPrenexExpressionQE(Node f)
     {
       Debug("expr-quantifiereliminate") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
     }
-    n = computeCNFQE(n,args,defs,true);
-    Debug("expr-quantifiereliminate") << "after computing cnf of the node" << n << "\n";
+ //   n = computeCNFQE(n,args,defs,true);
+ //   Debug("expr-quantifiereliminate") << "after computing cnf of the node" << n << "\n";
     n = convertToPrenexQE(n,args, true);
     Debug("expr-quantifiereliminate") << "after computing prenex of the node" << n << "\n";
     if(n.isNull())
