@@ -14,235 +14,7 @@ using namespace CVC4::expr;
 using namespace CVC4::kind;
 using namespace CVC4::printer;
 
-
-/*bool QuantifierEliminate::isLiteralQE( Node n ){
-  switch( n.getKind() ){
-  case kind::NOT:
-    return isLiteralQE( n[0] );
-    break;
-  case kind::OR:
-  case kind::AND:
-  case kind::IMPLIES:
-  case kind::XOR:
-  case kind::ITE:
-  case kind::IFF:
-    return false;
-    break;
-  case kind::EQUAL:
-    return n[0].getType()!= NodeManager::currentNM()->booleanType();
-    break;
-  default:
-    break;
-  }
-  return true;
-}
-
-bool QuantifierEliminate::isCubeQE( Node n ){
-  if( isLiteralQE( n ) ){
-    return true;
-  }else if( n.getKind()==kind::NOT ){
-    return isClauseQE( n[0] );
-  }else if( n.getKind()==kind::AND ){
-    for( int i=0; i<(int)n.getNumChildren(); i++ ){
-      if( !isCubeQE( n[i] ) ){
-        return false;
-      }
-    }
-    return true;
-  }else{
-    return false;
-  }
-}
-bool QuantifierEliminate::isClauseQE( Node n ){
-  if( isLiteralQE( n ) ){
-    return true;
-  }else if( n.getKind()== kind::NOT ){
-    return isCubeQE( n[0] );
-  }else if( n.getKind()== kind::OR ){
-    for( int i=0; i<(int)n.getNumChildren(); i++ ){
-      if( !isClauseQE( n[i] ) ){
-        return false;
-      }
-    }
-    return true;
-  }else if( n.getKind()== kind::IMPLIES ){
-    return isCubeQE( n[0] ) && isClauseQE( n[1] );
-  }else{
-    return false;
-  }
-}
-
-void QuantifierEliminate::addNodeToOrBuilderQE( Node n, NodeBuilder<>& t ){
-  if( n.getKind()== kind::OR ){
-    for( int i=0; i<(int)n.getNumChildren(); i++ ){
-      t << n[i];
-    }
-  }else{
-    t << n;
-  }
-}
-
-Node QuantifierEliminate::computeClauseQE( Node n ){
-  Assert( isClauseQE( n ) );
-  if( isLiteralQE( n ) ){
-    return n;
-  }else{
-    NodeBuilder<> t(kind::OR);
-    if( n.getKind()==kind::NOT ){
-      if( n[0].getKind()== kind::NOT ){
-        return computeClauseQE( n[0][0] );
-      }else{
-        //De-Morgan's law
-        Assert( n[0].getKind()== kind::AND );
-        for( int i=0; i<(int)n[0].getNumChildren(); i++ ){
-          Node nn = computeClauseQE( n[0][i].notNode() );
-          addNodeToOrBuilderQE( nn, t );
-        }
-      }
-    }else{
-      for( int i=0; i<(int)n.getNumChildren(); i++ ){
-        Node nn = computeClauseQE( n[i] );
-        addNodeToOrBuilderQE( nn, t );
-      }
-    }
-    return t.constructNode();
-  }
-}
-
-void QuantifierEliminate::computeArgsQE( std::vector< Node >& args, std::map< Node, bool >& activeMap, Node n ){
-  if( n.getKind()== kind::BOUND_VARIABLE ){
-    if( std::find( args.begin(), args.end(), n )!=args.end() ){
-      activeMap[ n ] = true;
-    }
-  }else{
-    for( int i=0; i<(int)n.getNumChildren(); i++ ){
-      computeArgsQE( args, activeMap, n[i] );
-    }
-  }
-}
-
-void QuantifierEliminate::computeArgVecQE( std::vector< Node >& args, std::vector< Node >& activeArgs, Node n ) {
-  std::map< Node, bool > activeMap;
-  computeArgsQE( args, activeMap, n );
-  for( unsigned i=0; i<args.size(); i++ ){
-    if( activeMap[args[i]] ){
-      activeArgs.push_back( args[i] );
-    }
-  }
-}
-
-Node QuantifierEliminate::computeCNFQE( Node n, std::vector< Node >& args, NodeBuilder<>& defs, bool forcePred ){
-  if( isLiteralQE( n ) ){
-    return n;
-  }else if( !forcePred && isClauseQE( n ) ){
-    return computeClauseQE( n );
-  }else{
-    Kind k = n.getKind();
-    NodeBuilder<> t(k);
-    for( int i=0; i<(int)n.getNumChildren(); i++ ){
-      Node nc = n[i];
-      Node ncnf = computeCNFQE( nc, args, defs, k!=OR );
-      if( k== kind::OR ){
-        addNodeToOrBuilderQE( ncnf, t );
-      }else{
-        t << ncnf;
-      }
-    }
-    if( !forcePred && k== kind::OR ){
-      return t.constructNode();
-    }else{
-      //compute the free variables
-      Node nt = t;
-      std::vector< Node > activeArgs;
-      computeArgVecQE( args, activeArgs, nt );
-      std::vector< TypeNode > argTypes;
-      for( int i=0; i<(int)activeArgs.size(); i++ ){
-        argTypes.push_back( activeArgs[i].getType() );
-      }
-      //create the predicate
-      Assert( argTypes.size()>0 );
-      TypeNode typ = NodeManager::currentNM()->mkFunctionType( argTypes, NodeManager::currentNM()->booleanType() );
-      std::stringstream ss;
-      ss << "cnf_" << n.getKind() << "_" << n.getId();
-      Node op = NodeManager::currentNM()->mkSkolem( ss.str(), typ, "was created by the quantifiers rewriter" );
-      std::vector< Node > predArgs;
-      predArgs.push_back( op );
-      predArgs.insert( predArgs.end(), activeArgs.begin(), activeArgs.end() );
-      Node pred = NodeManager::currentNM()->mkNode( kind::APPLY_UF, predArgs );
-      Trace("quantifiers-rewrite-cnf-debug") << "Made predicate " << pred << " for " << nt << std::endl;
-      //create the bound var list
-      Node bvl = NodeManager::currentNM()->mkNode( kind::BOUND_VAR_LIST, activeArgs );
-      //now, look at the structure of nt
-      if( nt.getKind()==NOT ){
-        //case for NOT
-        for( int i=0; i<2; i++ ){
-          NodeBuilder<> tt(kind::OR);
-          tt << ( i==0 ? nt[0].notNode() : nt[0] );
-          tt << ( i==0 ? pred.notNode() : pred );
-          defs << NodeManager::currentNM()->mkNode( kind::FORALL, bvl, tt.constructNode() );
-        }
-      }else if( nt.getKind()== kind::OR ){
-        //case for OR
-        for( int i=0; i<(int)nt.getNumChildren(); i++ ){
-          NodeBuilder<> tt(kind::OR);
-          tt << nt[i].notNode() << pred;
-          defs << NodeManager::currentNM()->mkNode( kind::FORALL, bvl, tt.constructNode() );
-        }
-        NodeBuilder<> tt(kind::OR);
-        for( int i=0; i<(int)nt.getNumChildren(); i++ ){
-          tt << nt[i];
-        }
-        tt << pred.notNode();
-        defs << NodeManager::currentNM()->mkNode( kind::FORALL, bvl, tt.constructNode() );
-      }else if( nt.getKind()== kind::AND ){
-        //case for AND
-        for( int i=0; i<(int)nt.getNumChildren(); i++ ){
-          NodeBuilder<> tt(kind::OR);
-          tt << nt[i] << pred.notNode();
-          defs << NodeManager::currentNM()->mkNode( kind::FORALL, bvl, tt.constructNode() );
-        }
-        NodeBuilder<> tt(kind::OR);
-        for( int i=0; i<(int)nt.getNumChildren(); i++ ){
-          tt << nt[i].notNode();
-        }
-        tt << pred;
-        defs << NodeManager::currentNM()->mkNode( kind::FORALL, bvl, tt.constructNode() );
-      }else if( nt.getKind()== kind::IFF ){
-        //case for IFF
-        for( int i=0; i<4; i++ ){
-          NodeBuilder<> tt(OR);
-          tt << ( ( i==0 || i==3 ) ? nt[0].notNode() : nt[0] );
-          tt << ( ( i==1 || i==3 ) ? nt[1].notNode() : nt[1] );
-          tt << ( ( i==0 || i==1 ) ? pred.notNode() : pred );
-          defs << NodeManager::currentNM()->mkNode( kind::FORALL, bvl, tt.constructNode() );
-        }
-      }else if( nt.getKind()== kind::ITE ){
-        //case for ITE
-        for( int j=1; j<=2; j++ ){
-          for( int i=0; i<2; i++ ){
-            NodeBuilder<> tt( kind::OR);
-            tt << ( ( j==1 ) ? nt[0].notNode() : nt[0] );
-            tt << ( ( i==1 ) ? nt[j].notNode() : nt[j] );
-            tt << ( ( i==0 ) ? pred.notNode() : pred );
-            defs << NodeManager::currentNM()->mkNode( kind::FORALL, bvl, tt.constructNode() );
-          }
-        }
-        for( int i=0; i<2; i++ ){
-          NodeBuilder<> tt(kind::OR);
-          tt << ( i==0 ? nt[1].notNode() : nt[1] );
-          tt << ( i==0 ? nt[2].notNode() : nt[2] );
-          tt << ( i==1 ? pred.notNode() : pred );
-          defs << NodeManager::currentNM()->mkNode( kind::FORALL, bvl, tt.constructNode() );
-        }
-      }else{
-        Notice() << "Unhandled Quantifiers CNF: " << nt << std::endl;
-      }
-      return pred;
-    }
-  }
-}*/
-
-Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args, bool pol)
+/*Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args, bool pol)
 {
   if( body.getKind()== kind::FORALL ){
       if( pol ){
@@ -289,7 +61,7 @@ Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args
         return body;
       }
     }
-}
+}*/
 Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
 {
    Node ret =f;
@@ -321,9 +93,10 @@ Node QuantifierEliminate::getPrenexExpressionQE(Node f)
 {
    Node in = convertExistentialToForAllQE(f);
    Debug("expr-quantifiereliminate") << "after replacing all existentials with forall" << in << "\n";
+   return in;
   //Node in = f;
 
-   if( in.getKind()== kind::FORALL ){
+   /*if( in.getKind()== kind::FORALL ){
     //  Trace("quantifiers-rewrite-debug") << "Compute operation " << computeOption << " on " << f << ", nested = " << isNested << std::endl;
       std::vector< Node > args;
       for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
@@ -349,7 +122,7 @@ Node QuantifierEliminate::getPrenexExpressionQE(Node f)
   else
   {
     return in;
-  }
+  }*/
 }
 
 
