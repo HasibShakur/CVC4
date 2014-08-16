@@ -73,18 +73,18 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
        children.push_back( f[2] );
      }
      ret = NodeManager::currentNM()->mkNode( kind::FORALL, children );
-     Debug("expr-quantifiereliminate") << "ret node" << ret << "\n";
+     Debug("expr-qe") << "ret node" << ret << "\n";
      ret = ret.negate();
-     Debug("expr-quantifiereliminate") << "ret node negated" << ret << "\n";
+     Debug("expr-qe") << "ret node negated" << ret << "\n";
      if(ret.isNull())
      {
-       Debug("expr-quantifiereliminate") << "ret is null after conversion from existential to forall" << "\n";
+       Debug("expr-qe") << "ret is null after conversion from existential to forall" << "\n";
      }
      return ret;
    }
    else
    {
-     Debug("expr-quantifiereliminate") << "f node" << f << "\n";
+     Debug("expr-qe") << "f node" << f << "\n";
      return f;
    }
 }
@@ -92,7 +92,7 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
 Node QuantifierEliminate::getPrenexExpressionQE(Node f)
 {
    Node in = convertExistentialToForAllQE(f);
-   Debug("expr-quantifiereliminate") << "after replacing all existentials with forall" << in << "\n";
+   Debug("expr-qe") << "after replacing all existentials with forall" << in << "\n";
    return in;
   //Node in = f;
 
