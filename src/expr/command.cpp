@@ -34,6 +34,7 @@
 #include "expr/node.h"
 #include "printer/printer.h"
 #include "expr/QuantifierEliminate.h"
+#include "theory/rewriter.h"
 
 using namespace std;
 
