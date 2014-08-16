@@ -7,6 +7,7 @@
 #include "expr/attribute.h"
 #include "printer/smt2/smt2_printer.h"
 #include "util/output.h"
+#include "theory/rewriter.h"
 
 using namespace std;
 using namespace CVC4;
@@ -73,9 +74,11 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
        children.push_back( f[2] );
      }
      ret = NodeManager::currentNM()->mkNode( kind::FORALL, children );
-     Debug("expr-qe") << "ret node" << ret << "\n";
+     Node rewrittenNode = theory::Rewriter::rewrite(ret);
+     Debug("expr-qe") << "ret node" << rewrittenNode << "\n";
      ret = ret.negate();
-     Debug("expr-qe") << "ret node negated" << ret << "\n";
+     rewrittenNode = theory::Rewriter::rewrite(ret);
+     Debug("expr-qe") << "ret node negated" << rewrittenNode << "\n";
      if(ret.isNull())
      {
        Debug("expr-qe") << "ret is null after conversion from existential to forall" << "\n";
@@ -92,7 +95,7 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
 Node QuantifierEliminate::getPrenexExpressionQE(Node f)
 {
    Node in = convertExistentialToForAllQE(f);
-   Debug("expr-qe") << "after replacing all existentials with forall" << in << "\n";
+  // Debug("expr-qe") << "after replacing all existentials with forall" << in << "\n";
    return in;
   //Node in = f;
 
