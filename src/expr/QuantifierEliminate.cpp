@@ -77,13 +77,13 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
      ret = ret.negate();
      if(ret.isNull())
      {
-       Debug("expr-qe") << "ret is null after conversion from existential to forall" << "\n";
+   //    Debug("expr-qe") << "ret is null after conversion from existential to forall" << "\n";
      }
      return ret;
    }
    else
    {
-     Debug("expr-qe") << "f node" << f << "\n";
+//     Debug("expr-qe") << "f node" << f << "\n";
      return f;
    }
 }
@@ -99,18 +99,18 @@ Node QuantifierEliminate::getPrenexExpressionQE(Node f)
      }
     NodeBuilder<> defs(kind::AND);
     Node n = in[1];
-    Debug("expr-qe") << "Node n " << n << "\n";
+ //   Debug("expr-qe") << "Node n " << n << "\n";
     if(n.isNull())
     {
-      Debug("expr-qe") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
+  //    Debug("expr-qe") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
     }
     n = convertToPrenexQE(n,args, true);
-    Debug("expr-qe") << "after computing prenex of the node" << n << "\n";
+  //  Debug("expr-qe") << "after computing prenex of the node" << n << "\n";
     if(n.isNull())
     {
-      Debug("expr-qe") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << "\n";
+  //    Debug("expr-qe") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << "\n";
     }
-    Debug("expr-qe")<< "After Prenexing the Node is "<<n<<endl;
+   // Debug("expr-qe")<< "After Prenexing the Node is "<<n<<endl;
     return n;
   }
   else
