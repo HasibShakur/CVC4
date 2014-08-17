@@ -11,7 +11,7 @@ namespace CVC4{
 class CVC4_PUBLIC QuantifierEliminate {
 public:
   static Node getPrenexExpressionQE(Node n);
-  //static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
+  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
   static Node convertExistentialToForAllQE(Node f);
 };
 }
