@@ -15,7 +15,7 @@ using namespace CVC4::expr;
 using namespace CVC4::kind;
 using namespace CVC4::printer;
 
-/*Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args, bool pol)
+Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args, bool pol)
 {
   if( body.getKind()== kind::FORALL ){
       if( pol ){
@@ -31,9 +31,9 @@ using namespace CVC4::printer;
         newBody = newBody.substitute( terms.begin(), terms.end(), subs.begin(), subs.end() );
         if(newBody.isNull())
         {
-          Debug("expr-quantifiereliminate") << "newBody is null in convertToPrenex" << "\n" ;
+          Debug("expr-qe") << "newBody is null in convertToPrenex" << "\n" ;
         }
-        Debug("expr-quantifiereliminate") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << "\n";
+        Debug("expr-qe") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << "\n";
         return newBody;
       }else{
         return body;
@@ -62,7 +62,7 @@ using namespace CVC4::printer;
         return body;
       }
     }
-}*/
+}
 Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
 {
    Node ret =f;
@@ -74,11 +74,7 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
        children.push_back( f[2] );
      }
      ret = NodeManager::currentNM()->mkNode( kind::FORALL, children );
-     Node rewrittenNode = theory::Rewriter::rewrite(ret);
-     Debug("expr-qe") << "ret node" << rewrittenNode << "\n";
      ret = ret.negate();
-     rewrittenNode = theory::Rewriter::rewrite(ret);
-     Debug("expr-qe") << "ret node negated" << rewrittenNode << "\n";
      if(ret.isNull())
      {
        Debug("expr-qe") << "ret is null after conversion from existential to forall" << "\n";
@@ -95,11 +91,7 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
 Node QuantifierEliminate::getPrenexExpressionQE(Node f)
 {
    Node in = convertExistentialToForAllQE(f);
-  // Debug("expr-qe") << "after replacing all existentials with forall" << in << "\n";
-   return in;
-  //Node in = f;
-
-   /*if( in.getKind()== kind::FORALL ){
+   if( in.getKind()== kind::FORALL ){
     //  Trace("quantifiers-rewrite-debug") << "Compute operation " << computeOption << " on " << f << ", nested = " << isNested << std::endl;
       std::vector< Node > args;
       for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
@@ -107,25 +99,24 @@ Node QuantifierEliminate::getPrenexExpressionQE(Node f)
      }
     NodeBuilder<> defs(kind::AND);
     Node n = in[1];
-    Debug("expr-quantifiereliminate") << "Node n " << n << "\n";
+    Debug("expr-qe") << "Node n " << n << "\n";
     if(n.isNull())
     {
-      Debug("expr-quantifiereliminate") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
+      Debug("expr-qe") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
     }
- //   n = computeCNFQE(n,args,defs,true);
- //   Debug("expr-quantifiereliminate") << "after computing cnf of the node" << n << "\n";
     n = convertToPrenexQE(n,args, true);
-    Debug("expr-quantifiereliminate") << "after computing prenex of the node" << n << "\n";
+    Debug("expr-qe") << "after computing prenex of the node" << n << "\n";
     if(n.isNull())
     {
-      Debug("expr-quantifiereliminate") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << "\n";
+      Debug("expr-qe") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << "\n";
     }
+    Debug("expr-qe")<< "After Prenexing the Node is "<<n<<endl;
     return n;
   }
   else
   {
     return in;
-  }*/
+  }
 }
 
 
