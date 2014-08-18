@@ -357,7 +357,7 @@ void QuantifierEliminate::setNestedQuantifiers2QE( Node n, Node q, std::vector< 
 }
 
 Node QuantifierEliminate::computeClauseQE( Node n ){
-  Assert( isClause( n ) );
+  Assert( isClauseQE( n ) );
   if( isLiteralQE( n ) ){
     return n;
   }else{
@@ -516,13 +516,13 @@ bool QuantifierEliminate::doOperationQE(Node f, bool isNested, int cnfOperation)
   }
   else
   {
-    return false;s
+    return false;
   }
 }
 Node QuantifierEliminate::computeOperationQE(Node f, bool isNested, int cnfOperation)
 {
-  if( f.getKind()==kind::sFORALL ){
-     Debug("expr-qe") << "Compute operation " << cnfOperation << " on " << f << ", nested = " << isNested << "\n"s;
+  if( f.getKind()==kind::FORALL ){
+     Debug("expr-qe") << "Compute operation " << cnfOperation << " on " << f << ", nested = " << isNested << "\n";
      std::vector< Node > args;
      for( int i=0; i<(int)f[0].getNumChildren(); i++ ){
        args.push_back( f[0][i] );
@@ -602,12 +602,7 @@ void QuantifierEliminate::convertNodeToCNF(Node n)
          {
             ret = computeOperationQE( n, isNested, 1 );
             Debug("expr-qe")<<"After CNF Operation "<<ret<<"\n";
-            if( ret!=n )
-            {
-              break;
-            }
           }
-
         }
     }
 
