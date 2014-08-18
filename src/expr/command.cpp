@@ -233,7 +233,7 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
 {
   Node tempNode = NodeTemplate<true>(ex);
   QuantifierEliminate::convertNodeToCNF(tempNode);
-  return success;
+  return "success";
  // Debug("expr-qe")<<tempNode<<"\n";
  // Node finalNode = QuantifierEliminate::getPrenexExpressionQE(tempNode);
  // Node rewritten = theory::Rewriter::rewrite(tempNode);
