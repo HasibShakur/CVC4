@@ -232,7 +232,8 @@ std::string QESimplifyCommand::getCommandName() const throw() {
 std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
 {
   Node tempNode = NodeTemplate<true>(ex);
-  QuantifierEliminate::convertNodeToCNF(tempNode);
+  Debug("expr-qetest")<<tempNode.getKind()<<"\n";
+ // QuantifierEliminate::convertNodeToCNF(tempNode);
   return "success";
  // Debug("expr-qe")<<tempNode<<"\n";
  // Node finalNode = QuantifierEliminate::getPrenexExpressionQE(tempNode);
