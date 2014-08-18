@@ -35,8 +35,10 @@
 #include "printer/printer.h"
 #include "expr/QuantifierEliminate.h"
 #include "theory/rewriter.h"
+#include "theory/quantifiers/quantifiers_rewriter.h"
 
 using namespace std;
+using namespace CVC4::theory::quantifiers;
 
 namespace CVC4 {
 
@@ -231,13 +233,15 @@ std::string QESimplifyCommand::getCommandName() const throw() {
 //CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
 std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
 {
-  Node tempNode = NodeTemplate<true>(ex);
-  Debug("expr-qetest")<<tempNode.getKind()<<"\n";
+  Node tempNode = NodeTemplate<false>(ex);
+  QuantifiersRewriter::postRewrite(tempNode);
+
+  /*Debug("expr-qetest")<<tempNode.getKind()<<"\n";
  // Debug("expr-qetest")<<tempNode[0]<<"\n";
   for(int i=0;i< (int)tempNode[0].getNumChildren();i++)
   {
     Debug("expr-qetest")<<tempNode[0][i]<<"\n";
-  }
+  }*/
  // QuantifierEliminate::convertNodeToCNF(tempNode);
   return "success";
  // Debug("expr-qe")<<tempNode<<"\n";
