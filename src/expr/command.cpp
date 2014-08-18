@@ -233,7 +233,7 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
 {
   Node tempNode = NodeTemplate<true>(ex);
   Debug("expr-qetest")<<tempNode.getKind()<<"\n";
-  Debug("expr-qetest")<<tempNode[0]<<"\n";
+ // Debug("expr-qetest")<<tempNode[0]<<"\n";
   for(int i=0;i< (int)tempNode[0].getNumChildren();i++)
   {
     Debug("expr-qetest")<<tempNode[0][i]<<"\n";
