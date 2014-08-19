@@ -326,7 +326,7 @@ public:
 // Finally it will generate an expression without quantifiers
 class CVC4_PUBLIC QESimplifyCommand : public Command {
 private:
-  std::string eliminateQuantifier(Expr ex)throw();
+  std::string eliminateQuantifier(Expr ex,std::ostream& out)throw();
 protected:
   CVC4::Expr d_expr;
 public:

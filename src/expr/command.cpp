@@ -211,7 +211,7 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
 void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
   //CVC4::Expr ex = this->eliminateQuantifier(this->getExpr());
   //std::string ex = this->eliminateQuantifier(this->getExpr());
-  std::string n = this->eliminateQuantifier(this->getExpr());
+  std::string n = this->eliminateQuantifier(this->getExpr(),out);
 
   //out << ex << std::endl;
   out << n << std::endl;
@@ -231,10 +231,14 @@ std::string QESimplifyCommand::getCommandName() const throw() {
   return "qe";
 }
 //CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
-std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex) throw()
+std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& out) throw()
 {
-  Node tempNode = NodeTemplate<false>(ex);
-  QuantifiersRewriter::postRewrite(tempNode);
+  //Node tempNode = NodeTemplate<false>(ex);
+  //QuantifiersRewriter::postRewrite(tempNode);
+  Debug("expr-qetest")<<ex.getKind()<<"\n";
+  Debug("expr-qetest")<<ex.getNumChildren()<<"\n";
+  Debug("expr-qetest")<<ex.getOperator()<<"\n";
+  Debug("expr-qetest")<<ex.printAst(out,1)<<"\n";
 
   /*Debug("expr-qetest")<<tempNode.getKind()<<"\n";
  // Debug("expr-qetest")<<tempNode[0]<<"\n";
