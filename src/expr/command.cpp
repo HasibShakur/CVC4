@@ -233,11 +233,11 @@ std::string QESimplifyCommand::getCommandName() const throw() {
 //CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
 std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& out) throw()
 {
-  //Node tempNode = NodeTemplate<false>(ex);
+  Node tempNode = NodeTemplate<false>(ex);
   //QuantifiersRewriter::postRewrite(tempNode);
-  Debug("expr-qetest")<<ex.getKind()<<"\n";
-  Debug("expr-qetest")<<ex.getNumChildren()<<"\n";
-  Debug("expr-qetest")<<ex.getOperator()<<"\n";
+  Debug("expr-qetest")<<tempNode.getKind()<<"\n";
+  Debug("expr-qetest")<<tempNode.getNumChildren()<<"\n";
+  Debug("expr-qetest")<<tempNode.getOperator()<<"\n";
  // Debug("expr-qetest")<<ex.printAst(out,1)<<"\n";
 
   /*Debug("expr-qetest")<<tempNode.getKind()<<"\n";
