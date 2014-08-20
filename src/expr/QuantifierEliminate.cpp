@@ -78,8 +78,6 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
      }
      ret = NodeManager::currentNM()->mkNode( kind::FORALL, children );
      ret = ret.negate();
-     if(ret.isNull())
-
      return ret;
    }
    else
