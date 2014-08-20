@@ -283,8 +283,9 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& o
       temp = temp.notExpr();
     }
     Debug("expr-qetest")<<"-------After Conversion-----------"<<"\n";
+    Debug("expr-qetest")<<temp<<"\n";
     Debug("expr-qetest")<<temp.getKind()<<"\n";
-      Debug("expr-qetest")<<temp.getNumChildren()<<"\n";
+    Debug("expr-qetest")<<temp.getNumChildren()<<"\n";
         for(int i=0;i<(int)temp.getNumChildren();i++)
         {
           Debug("expr-qetest")<<temp[i].getKind()<<"\n";
@@ -294,11 +295,6 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& o
         {
           Debug("expr-qetest")<<temp[0][i].getKind()<<"\n";
           Debug("expr-qetest")<<temp[0][i].getNumChildren()<<"\n";
-        }
-        for(int i=0;i<(int)temp[1].getNumChildren();i++)
-        {
-           Debug("expr-qetest")<<temp[1][i].getKind()<<"\n";
-           Debug("expr-qetest")<<temp[1][i].getNumChildren()<<"\n";
         }
   /*Node forallNode = QuantifierEliminate::getPrenexExpressionQE(tempNode);
   Debug("expr-qetest")<<forallNode.getKind()<<"\n";
