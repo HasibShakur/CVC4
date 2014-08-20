@@ -311,8 +311,8 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& o
               }
    for(int i=0;i<(int)finalNode[0][1].getNumChildren();i++)
                 {
-                  Debug("expr-qetest")<<finalNode[0][0][i].getKind()<<"\n";
-                  Debug("expr-qetest")<<finalNode[0][0][i].getNumChildren()<<"\n";
+                  Debug("expr-qetest")<<finalNode[0][1][i].getKind()<<"\n";
+                  Debug("expr-qetest")<<finalNode[0][1][i].getNumChildren()<<"\n";
                 }
 
   return "success";
