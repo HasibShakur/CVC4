@@ -18,7 +18,7 @@ using namespace CVC4::printer;
 struct QENestedQuantAttributeId {};
 typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
 
-/*Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args, bool pol)
+Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args, bool pol)
 {
   if( body.getKind()== kind::FORALL ){
       if( pol ){
@@ -36,7 +36,7 @@ typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
         {
           Debug("expr-qe") << "newBody is null in convertToPrenex" << "\n" ;
         }
-        Debug("expr-qe") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << "\n";
+      //  Debug("expr-qe") << "Did substitute have an effect" << (body[1] != newBody) << body[1] << " became " << newBody << "\n";
         return newBody;
       }else{
         return body;
@@ -65,58 +65,32 @@ typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
         return body;
       }
     }
-}*/
-Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
-{
-   Node ret =f;
-   if( f.getKind()== kind::EXISTS ){
-     std::vector< Node > children;
-     children.push_back( f[0] );
-     children.push_back( f[1].negate() );
-     if( f.getNumChildren()==3 ){
-       children.push_back( f[2] );
-     }
-     ret = NodeManager::currentNM()->mkNode( kind::FORALL, children );
-     ret = ret.negate();
-     return ret;
-   }
-   else
-   {
-//     Debug("expr-qe") << "f node" << f << "\n";
-     return f;
-   }
 }
-
-Node QuantifierEliminate::getPrenexExpressionQE(Node f)
+Node QuantifierEliminate::getPrenexExpressionQE(Expr ex)
 {
-   Node in = convertExistentialToForAllQE(f);
-   return in;
-   /*if( in.getKind()== kind::FORALL ){
+  Node in = NodeTemplate<true>(ex);
+  if( in.getKind()== kind::FORALL ){
     //  Trace("quantifiers-rewrite-debug") << "Compute operation " << computeOption << " on " << f << ", nested = " << isNested << std::endl;
       std::vector< Node > args;
       for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
         args.push_back( in[0][i] );
      }
-    NodeBuilder<> defs(kind::AND);
     Node n = in[1];
- //   Debug("expr-qe") << "Node n " << n << "\n";
     if(n.isNull())
     {
-  //    Debug("expr-qe") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
+      Debug("expr-qetest") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
     }
     n = convertToPrenexQE(n,args, true);
-  //  Debug("expr-qe") << "after computing prenex of the node" << n << "\n";
     if(n.isNull())
     {
-  //    Debug("expr-qe") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << "\n";
+      Debug("expr-qetest") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << "\n";
     }
-   // Debug("expr-qe")<< "After Prenexing the Node is "<<n<<endl;
     return n;
   }
   else
   {
     return in;
-  }*/
+  }
 }
 
 
