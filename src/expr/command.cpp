@@ -252,14 +252,32 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& o
      Debug("expr-qetest")<<tempNode[1][i].getKind()<<"\n";
      Debug("expr-qetest")<<tempNode[1][i].getNumChildren()<<"\n";
   }
-  Node forallNode = QuantifierEliminate::getPrenexExpressionQE(tempNode);
+  Debug("expr-qetest")<<ex.getKind()<<"\n";
+  Debug("expr-qetest")<<ex.getNumChildren()<<"\n";
+    for(int i=0;i<(int)ex.getNumChildren();i++)
+    {
+      Debug("expr-qetest")<<ex[i].getKind()<<"\n";
+      Debug("expr-qetest")<<ex[i].getNumChildren()<<"\n";
+    }
+    for(int i=0;i<(int)ex[0].getNumChildren();i++)
+    {
+      Debug("expr-qetest")<<ex[0][i].getKind()<<"\n";
+      Debug("expr-qetest")<<ex[0][i].getNumChildren()<<"\n";
+    }
+    for(int i=0;i<(int)ex[1].getNumChildren();i++)
+    {
+       Debug("expr-qetest")<<ex[1][i].getKind()<<"\n";
+       Debug("expr-qetest")<<ex[1][i].getNumChildren()<<"\n";
+    }
+  /*Node forallNode = QuantifierEliminate::getPrenexExpressionQE(tempNode);
   Debug("expr-qetest")<<forallNode.getKind()<<"\n";
   Debug("expr-qetest")<<forallNode.getNumChildren()<<"\n";
   for(int i=0;i<(int)forallNode.getNumChildren();i++)
   {
     Debug("expr-qetest")<<forallNode[i].getKind()<<"\n";
     Debug("expr-qetest")<<forallNode[i].getNumChildren()<<"\n";
-  }
+  }*/
+
   /*  for(Node::kinded_iterator i = tempNode.begin(kind::FORALL),i_end = tempNode.end(kind::FORALL); i!=i_end;++i)
   {
     Debug("expr-qetest")<<*i<<"\n";
