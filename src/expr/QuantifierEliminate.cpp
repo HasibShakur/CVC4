@@ -18,6 +18,28 @@ using namespace CVC4::printer;
 struct QENestedQuantAttributeId {};
 typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
 
+bool QuantifierEliminate::isLiteralQE( Node n ){
+  switch( n.getKind() ){
+  case kind::NOT:
+    return isLiteralQE( n[0] );
+    break;
+  case kind::OR:
+  case kind::AND:
+  case kind::IMPLIES:
+  case kind::XOR:
+  case kind::ITE:
+  case kind::IFF:
+    return false;
+    break;
+  case kind::EQUAL:
+    return n[0].getType()!=NodeManager::currentNM()->booleanType();
+    break;
+  default:
+    break;
+  }
+  return true;
+}
+
 Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args, bool pol)
 {
   if( body.getKind()== kind::FORALL ){
@@ -83,7 +105,12 @@ Node QuantifierEliminate::getPrenexExpressionQE(Expr ex)
     n = convertToPrenexQE(n,args, true);
     if(n.isNull())
     {
-      Debug("expr-qetest") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenex(n,args, true)" << "\n";
+      Debug("expr-qetest") << "Node n is null in getPrenexExpression after Node n = n = convertToPrenexQE(n,args, true)" << "\n";
+    }
+    n = convertToNNFQE(n);
+    if(n.isNull())
+    {
+      Debug("expr-qetest") << "Node n is null in getPrenexExpression after Node n = n = convertToNNFQE(n)" << "\n";
     }
     return n;
   }
@@ -95,30 +122,30 @@ Node QuantifierEliminate::getPrenexExpressionQE(Expr ex)
 
 
 
-/*Node QuantifierEliminate::convertToNNF(Node body)
+Node QuantifierEliminate::convertToNNFQE(Node body)
 {
   if( body.getKind()== kind::NOT ){
     if( body[0].getKind()== kind::NOT ){
-      return convertToNNF( body[0][0] );
-    }else if( isLiteral( body[0] ) ){
+      return convertToNNFQE( body[0][0] );
+    }else if( isLiteralQE( body[0] ) ){
       return body;
     }else{
       std::vector< CVC4::Node > children;
       Kind k = body[0].getKind();
       if( body[0].getKind()== kind::OR || body[0].getKind()== kind::AND ){
         for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
-          children.push_back( convertToNNF( body[0][i].notNode() ) );
+          children.push_back( convertToNNFQE( body[0][i].notNode() ) );
         }
         k = body[0].getKind()== kind::AND ? kind::OR : kind::AND;
       }else if( body[0].getKind()== kind::IFF ){
         for( int i=0; i<2; i++ ){
           Node nn = i==0 ? body[0][i] : body[0][i].notNode();
-          children.push_back( convertToNNF( nn ) );
+          children.push_back( convertToNNFQE( nn ) );
         }
       }else if( body[0].getKind()== kind::ITE ){
         for( int i=0; i<3; i++ ){
           Node nn = i==0 ? body[0][i] : body[0][i].notNode();
-          children.push_back( convertToNNF( nn ) );
+          children.push_back( convertToNNFQE( nn ) );
         }
       }else{
         Notice() << "Unhandled Quantifiers NNF: " << body << std::endl;
@@ -126,13 +153,13 @@ Node QuantifierEliminate::getPrenexExpressionQE(Expr ex)
       }
       return NodeManager::currentNM()->mkNode( k, children );
     }
-  }else if( isLiteral( body ) ){
+  }else if( isLiteralQE( body ) ){
     return body;
   }else{
     std::vector< CVC4::Node > children;
     bool childrenChanged = false;
     for( int i=0; i<(int)body.getNumChildren(); i++ ){
-      Node nc = convertToNNF( body[i] );
+      Node nc = convertToNNFQE( body[i] );
       children.push_back( nc );
       childrenChanged = childrenChanged || nc!=body[i];
     }
@@ -142,7 +169,7 @@ Node QuantifierEliminate::getPrenexExpressionQE(Expr ex)
       return body;
     }
   }
-}*/
+}
 /*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
 {
   bool rewritten = false;
@@ -207,27 +234,7 @@ Node QuantifierEliminate::getPrenexExpressionQE(Expr ex)
   }
 }
 
-bool QuantifierEliminate::isLiteralQE( Node n ){
-  switch( n.getKind() ){
-  case kind::NOT:
-    return isLiteralQE( n[0] );
-    break;
-  case kind::OR:
-  case kind::AND:
-  case kind::IMPLIES:
-  case kind::XOR:
-  case kind::ITE:
-  case kind::IFF:
-    return false;
-    break;
-  case kind::EQUAL:
-    return n[0].getType()!=NodeManager::currentNM()->booleanType();
-    break;
-  default:
-    break;
-  }
-  return true;
-}
+
 
 bool QuantifierEliminate::isCubeQE( Node n ){
   if( isLiteralQE( n ) ){
