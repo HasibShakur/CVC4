@@ -97,7 +97,7 @@ Node QuantifierEliminate::getPrenexExpressionQE(Expr ex)
       for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
         args.push_back( in[0][i] );
      }
-    Node n = in[1];
+    Node n = in;
     if(n.isNull())
     {
       Debug("expr-qetest") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";

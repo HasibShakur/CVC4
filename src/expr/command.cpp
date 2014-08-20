@@ -296,7 +296,7 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& o
           Debug("expr-qetest")<<temp[0][i].getNumChildren()<<"\n";
         }
    Node finalNode = QuantifierEliminate::getPrenexExpressionQE(temp);
-   Debug("expr-qetest")<<"-------After prenex Conversion-----------"<<"\n";
+   Debug("expr-qetest")<<"-------After prenex and nnf Conversion-----------"<<"\n";
    Debug("expr-qetest")<<finalNode.getKind()<<"\n";
    Debug("expr-qetest")<<finalNode.getNumChildren()<<"\n";
    for(int i=0;i<(int)finalNode.getNumChildren();i++)
