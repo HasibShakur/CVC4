@@ -65,7 +65,7 @@ typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
         return body;
       }
     }
-}
+}*/
 Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
 {
    Node ret =f;
@@ -79,9 +79,7 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
      ret = NodeManager::currentNM()->mkNode( kind::FORALL, children );
      ret = ret.negate();
      if(ret.isNull())
-     {
-   //    Debug("expr-qe") << "ret is null after conversion from existential to forall" << "\n";
-     }
+
      return ret;
    }
    else
@@ -94,7 +92,8 @@ Node QuantifierEliminate::convertExistentialToForAllQE(Node f)
 Node QuantifierEliminate::getPrenexExpressionQE(Node f)
 {
    Node in = convertExistentialToForAllQE(f);
-   if( in.getKind()== kind::FORALL ){
+   return in;
+   /*if( in.getKind()== kind::FORALL ){
     //  Trace("quantifiers-rewrite-debug") << "Compute operation " << computeOption << " on " << f << ", nested = " << isNested << std::endl;
       std::vector< Node > args;
       for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
@@ -119,8 +118,8 @@ Node QuantifierEliminate::getPrenexExpressionQE(Node f)
   else
   {
     return in;
-  }
-}*/
+  }*/
+}
 
 
 
@@ -217,7 +216,7 @@ Node QuantifierEliminate::getPrenexExpressionQE(Node f)
   // 4th phase of simplification is
   return nnfNode;
 }*/
-bool QuantifierEliminate::isClauseQE( Node n ){
+/*bool QuantifierEliminate::isClauseQE( Node n ){
   if( isLiteralQE( n ) ){
     return true;
   }else if( n.getKind()==kind::NOT ){
@@ -606,4 +605,4 @@ void QuantifierEliminate::convertNodeToCNF(Node n)
         }
     }
 
-}
+}*/

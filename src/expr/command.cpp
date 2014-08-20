@@ -237,77 +237,35 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& o
   //QuantifiersRewriter::postRewrite(tempNode);
   Debug("expr-qetest")<<tempNode.getKind()<<"\n";
   Debug("expr-qetest")<<tempNode.getNumChildren()<<"\n";
-  Debug("expr-qetest")<<tempNode.getOperator()<<"\n";
- // Debug("expr-qetest")<<ex.printAst(out,1)<<"\n";
-
-  /*Debug("expr-qetest")<<tempNode.getKind()<<"\n";
- // Debug("expr-qetest")<<tempNode[0]<<"\n";
-  for(int i=0;i< (int)tempNode[0].getNumChildren();i++)
+  for(int i=0;i<(int)tempNode.getNumChildren();i++)
   {
-    Debug("expr-qetest")<<tempNode[0][i]<<"\n";
-  }*/
- // QuantifierEliminate::convertNodeToCNF(tempNode);
+    Debug("expr-qetest")<<tempNode[i].getKind()<<"\n";
+    Debug("expr-qetest")<<tempNode[i].getNumChildren()<<"\n";
+  }
+  for(int i=0;i<(int)tempNode[0].getNumChildren();i++)
+  {
+    Debug("expr-qetest")<<tempNode[0][i].getKind()<<"\n";
+    Debug("expr-qetest")<<tempNode[0][i].getNumChildren()<<"\n";
+  }
+  for(int i=0;i<(int)tempNode[1].getNumChildren();i++)
+  {
+     Debug("expr-qetest")<<tempNode[1][i].getKind()<<"\n";
+     Debug("expr-qetest")<<tempNode[1][i].getNumChildren()<<"\n";
+  }
+  Node forallNode = QuantifierEliminate::getPrenexExpressionQE(tempNode);
+  Debug("expr-qetest")<<forallNode.getKind()<<"\n";
+  Debug("expr-qetest")<<forallNode.getNumChildren()<<"\n";
+  for(int i=0;i<(int)forallNode.getNumChildren();i++)
+  {
+    Debug("expr-qetest")<<forallNode[i].getKind()<<"\n";
+    Debug("expr-qetest")<<forallNode[i].getNumChildren()<<"\n";
+  }
+  /*  for(Node::kinded_iterator i = tempNode.begin(kind::FORALL),i_end = tempNode.end(kind::FORALL); i!=i_end;++i)
+  {
+    Debug("expr-qetest")<<*i<<"\n";
+  } */
+
   return "success";
- // Debug("expr-qe")<<tempNode<<"\n";
- // Node finalNode = QuantifierEliminate::getPrenexExpressionQE(tempNode);
- // Node rewritten = theory::Rewriter::rewrite(tempNode);
- // Debug("expr-qe")<<"Printed Rewriter "<<tempNode<<"\n"
-  //Node forallNode = QuantifierEliminate::convertExistentialToForAll(tempNode);
- // Node finalNode = QuantifierEliminate::getPrenexExpressionQE(tempNode);
- /* std::string result = "";
-  if(finalNode.isNull())
-  {
-    return "finalNode is returned null";
-
-  }
-  else
-  {
-    return " finalNode is not null and something is returned";
-  }
-*/  //return result;
- /* if(tempNode.isNull())
-  {
-    return "conversion from expr to node failed";
-  }
-  else
-  {
-   //Node prenexNode = QuantifierEliminate::getPrenexExpression(tempNode);
-    Node p1 = QuantifierEliminate::convertExistentialToForAll(tempNode);
-    std::string s = "";
-    if(p1.isNull())
-    {
-      //return "p1 is null returned by convertExistentialToForAll";
-      s += "p1 is null returned by convertExistentialToForAll";
-    }
-    else
-    {
-      s+= "p1 is not null ... ";
-    }
-    Node p2 = QuantifierEliminate::getPrenexExpression(p1);
-    if(p2.isNull())
-    {
-      s += " either getPrenexExpression or convertToPrenex is null";
-    }
-    else
-    {
-      s+= "p2 is not null ... ";
-    }
-
-    s += " ends ";
-
-      //Node nnfNode = QuantifierEliminate::simplifyExpression(prenexNode);
-      //return nnfNode.toExpr();
-//      if(prenexNode.isNull())
-//      {
-     //   return prenexNode.toExpr().toString();
- //     }
-      else
-      {
-        std::string result = "null returned by prenexNode";
-        return result;
-      }
-    return s;
-  }*/
 
 }
 

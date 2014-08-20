@@ -379,10 +379,10 @@ command returns [CVC4::Command* cmd = NULL]
     ASSERT_TOK { PARSER_STATE->checkThatLogicIsSet(); }
     term[expr, expr2]
     { cmd = new AssertCommand(expr); }
-  /* |  Md Hasib Bin Shakur, June 11, 2014 QE simplify
-     * QESIMPLIFY_TOK { PARSER_STATE->checkThatLogicIsSet(); }
-     * term[expr, expr2]
-     * { cmd = new QESimplifyCommand(expr); } */
+  |  /* Md Hasib Bin Shakur, June 11, 2014 QE simplify */
+    QESIMPLIFY_TOK { PARSER_STATE->checkThatLogicIsSet(); }
+    term[expr, expr2]
+    { cmd = new QESimplifyCommand(expr); } 
   | /* check-sat */
     CHECKSAT_TOK { PARSER_STATE->checkThatLogicIsSet(); }
     ( term[expr, expr2]
@@ -618,10 +618,6 @@ extendedCommand[CVC4::Command*& cmd]
   | SIMPLIFY_TOK { PARSER_STATE->checkThatLogicIsSet(); }
     term[e,e2]
     { cmd = new SimplifyCommand(e); }
-  | /* Md Hasib Bin Shakur, June 11, 2014 QE simplify */
-       QESIMPLIFY_TOK { PARSER_STATE->checkThatLogicIsSet(); }
-       term[e, e2]
-       { cmd = new QESimplifyCommand(e); }
   ;
 
 
