@@ -97,7 +97,12 @@ Node QuantifierEliminate::getPrenexExpressionQE(Expr ex)
       for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
         args.push_back( in[0][i] );
      }
+    NodeBuilder<> defs(kind::AND);
     Node n = in[1];
+    Node ipl;
+    if( in.getNumChildren()==3 ){
+      ipl = in[2];
+    }
     if(n.isNull())
     {
       Debug("expr-qetest") << "Node n is null in getPrenexExpression after Node n = in[1]" << "\n";
@@ -112,7 +117,28 @@ Node QuantifierEliminate::getPrenexExpressionQE(Expr ex)
     {
       Debug("expr-qetest") << "Node n is null in getPrenexExpression after Node n = n = convertToNNFQE(n)" << "\n";
     }
-    return n;
+    if(in[1] == n && args.size() == in[0].getNumChildren())
+    {
+       return in;
+    }
+    else
+    {
+      if(args.empty())
+      {
+        defs << n;
+      }
+      else
+      {
+        std::vector< Node > children;
+        children.push_back( NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
+        children.push_back( n );
+        if( !ipl.isNull() ){
+           children.push_back( ipl );
+        }
+        defs << NodeManager::currentNM()->mkNode(kind::FORALL, children );
+      }
+      return defs.getNumChildren()==1 ? defs.getChild( 0 ) : defs.constructNode();
+    }
   }
   else
   {
