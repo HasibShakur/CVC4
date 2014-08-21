@@ -285,25 +285,30 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& o
     Debug("expr-qetest")<<temp<<"\n";
     Debug("expr-qetest")<<temp.getKind()<<"\n";
     Debug("expr-qetest")<<temp.getNumChildren()<<"\n";
-        for(int i=0;i<(int)temp.getNumChildren();i++)
-        {
-          Debug("expr-qetest")<<temp[i].getKind()<<"\n";
-          Debug("expr-qetest")<<temp[i].getNumChildren()<<"\n";
-        }
-        for(int i=0;i<(int)temp[0].getNumChildren();i++)
-        {
-          Debug("expr-qetest")<<temp[0][i].getKind()<<"\n";
-          Debug("expr-qetest")<<temp[0][i].getNumChildren()<<"\n";
-        }
+    for(int i=0;i<(int)temp.getNumChildren();i++)
+    {
+      Debug("expr-qetest")<<temp[i].getKind()<<"\n";
+      Debug("expr-qetest")<<temp[i].getNumChildren()<<"\n";
+     }
+    for(int i=0;i<(int)temp[0].getNumChildren();i++)
+    {
+      Debug("expr-qetest")<<temp[0][i].getKind()<<"\n";
+      Debug("expr-qetest")<<temp[0][i].getNumChildren()<<"\n";
+    }
    Node finalNode = QuantifierEliminate::doPreprocessing(temp);
    Debug("expr-qetest")<<"-------After prenex and nnf Conversion-----------"<<"\n";
    Debug("expr-qetest")<<finalNode.getKind()<<"\n";
    Debug("expr-qetest")<<finalNode.getNumChildren()<<"\n";
    for(int i=0;i<(int)finalNode.getNumChildren();i++)
    {
-       Debug("expr-qetest")<<finalNode[i].getKind()<<"\n";
-       Debug("expr-qetest")<<finalNode[i].getNumChildren()<<"\n";
+     Debug("expr-qetest")<<finalNode[i].getKind()<<"\n";
+     Debug("expr-qetest")<<finalNode[i].getNumChildren()<<"\n";
    }
+   for(int i=0;i<(int)finalNode[0].getNumChildren();i++)
+      {
+        Debug("expr-qetest")<<finalNode[0][i].getKind()<<"\n";
+        Debug("expr-qetest")<<finalNode[0][i].getNumChildren()<<"\n";
+      }
   return "success";
 
 }
