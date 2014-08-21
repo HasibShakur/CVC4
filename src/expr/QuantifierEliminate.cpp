@@ -405,25 +405,25 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
     if( in.getNumChildren()==3 ){
       ipl = in[2];
     }
-    if(n.isNull())
-    {
-      Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = in[1]" << "\n";
-    }
-    n = convertToPrenexQE(n,args, true);
-    if(n.isNull())
-    {
-      Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToPrenexQE(n,args, true)" << "\n";
-    }
-    n = convertToNNFQE(n);
-    if(n.isNull())
-    {
-      Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToNNFQE(n)" << "\n";
-    }
+//    if(n.isNull())
+//    {
+//      Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = in[1]" << "\n";
+//    }
+  //  n = convertToPrenexQE(n,args, true);
+//    if(n.isNull())
+//    {
+//      Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToPrenexQE(n,args, true)" << "\n";
+//    }
+  //  n = convertToNNFQE(n);
+//    if(n.isNull())
+//    {
+//      Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToNNFQE(n)" << "\n";
+//    }
     n = computeCNFQE( n, args, defs, false );
     ipl = Node::null();
     if(n.isNull())
     {
-       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = computeCNFQE(n)" << "\n";
+       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = computeCNFQE( n, args, defs, false )" << "\n";
     }
     if(in[1] == n && args.size() == in[0].getNumChildren())
     {
