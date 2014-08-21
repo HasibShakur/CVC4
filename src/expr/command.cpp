@@ -300,21 +300,10 @@ std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& o
    Debug("expr-qetest")<<finalNode.getKind()<<"\n";
    Debug("expr-qetest")<<finalNode.getNumChildren()<<"\n";
    for(int i=0;i<(int)finalNode.getNumChildren();i++)
-           {
-             Debug("expr-qetest")<<finalNode[i].getKind()<<"\n";
-             Debug("expr-qetest")<<finalNode[i].getNumChildren()<<"\n";
-           }
-   for(int i=0;i<(int)finalNode[0].getNumChildren();i++)
-              {
-                Debug("expr-qetest")<<finalNode[0][i].getKind()<<"\n";
-                Debug("expr-qetest")<<finalNode[0][i].getNumChildren()<<"\n";
-              }
-   for(int i=0;i<(int)finalNode[0][1].getNumChildren();i++)
-                {
-                  Debug("expr-qetest")<<finalNode[0][1][i].getKind()<<"\n";
-                  Debug("expr-qetest")<<finalNode[0][1][i].getNumChildren()<<"\n";
-                }
-
+   {
+       Debug("expr-qetest")<<finalNode[i].getKind()<<"\n";
+       Debug("expr-qetest")<<finalNode[i].getNumChildren()<<"\n";
+   }
   return "success";
 
 }
