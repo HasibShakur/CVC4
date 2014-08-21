@@ -136,6 +136,26 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
     }
   }
 }
+bool QuantifierEliminate::isClauseQE( Node n ){
+  if( isLiteralQE( n ) ){
+    return true;
+  }else if( n.getKind()==kind::NOT ){
+    return isCubeQE( n[0] );
+  }else if( n.getKind()==kind::OR ){
+    for( int i=0; i<(int)n.getNumChildren(); i++ ){
+      if( !isClauseQE( n[i] ) ){
+        return false;
+      }
+    }
+    return true;
+  }else if( n.getKind()==kind::IMPLIES ){
+    return isCubeQE( n[0] ) && isClauseQE( n[1] );
+  }else{
+    return false;
+  }
+}
+
+
 bool QuantifierEliminate::isCubeQE( Node n ){
   if( isLiteralQE( n ) ){
     return true;
