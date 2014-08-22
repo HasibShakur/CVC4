@@ -177,7 +177,13 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
                if(body[0][i].getKind() == kind::GEQ)
                {
                  Debug("expr-qetest") << "Debug reaches here before the creation of node and the number of children is "<< body[0][i].getNumChildren() << "\n";
-                 Node lt = NodeManager::currentNM()->mkNode(kind::LT,body[0][i][0],body[0][i][1]);
+                 std::vector< CVC4::Node > children_relation;
+                 for(int j = 0; j< (int)body[0][i].getNumChildren();j++)
+                 {
+                   children_relation.push_back( body[0][i][j] );
+                 }
+                 Debug("expr-qetest") << "Inner children size "<<children_relation.size() << "\n";
+                 Node lt = NodeManager::currentNM()->mkNode(kind::LT,children_relation);
                  Debug("expr-qetest") << "After negation of the GEQ the kind will be lt "<< body[0][i].getKind() << "\n";
                  children.push_back( lt );
                }
