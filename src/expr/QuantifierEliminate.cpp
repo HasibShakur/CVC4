@@ -95,15 +95,19 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
 {
   if( body.getKind()== kind::NOT ){
     if( body[0].getKind()== kind::NOT ){
+      Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][0].getKind() << "\n";
       return convertToNNFQE( body[0][0] );
     }else if( isLiteralQE( body[0] ) ){
+      Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getKind() << "\n";
       return body;
     }else{
       std::vector< CVC4::Node > children;
       Kind k = body[0].getKind();
       Debug("expr-qetest") << "Inside NNF convertion of the formula kind (as per the given input it should be and) "<< k << "\n";
       if( body[0].getKind()== kind::OR || body[0].getKind()== kind::AND ){
+        Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getNumChildren() << "\n";
         for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
+          Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][i].getKind() << "\n";
           children.push_back( convertToNNFQE( body[0][i].notNode() ) );
         }
         Debug("expr-qetest") << "Size of children here "<< children.size() << "\n";
