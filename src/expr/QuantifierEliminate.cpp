@@ -416,11 +416,15 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = in[1]" << "\n";
     }
     n = convertToPrenexQE(n,args, true);
+    Debug("expr-qetest") << "kind of after prenexing "<<n.getKind() << "\n";
+    Debug("expr-qetest") << "number of children  of n after prenexing "<<n.getNumChildren() << "\n";
     if(n.isNull())
     {
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToPrenexQE(n,args, true)" << "\n";
     }
     n = convertToNNFQE(n);
+    Debug("expr-qetest") << "kind of after nnf "<<n.getKind() << "\n";
+    Debug("expr-qetest") << "number of children  of n after nnf "<<n.getNumChildren() << "\n";
     if(n.isNull())
     {
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToNNFQE(n)" << "\n";
