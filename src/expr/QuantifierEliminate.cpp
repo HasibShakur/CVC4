@@ -98,10 +98,12 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
     }else{
       std::vector< CVC4::Node > children;
       Kind k = body[0].getKind();
+      Debug("expr-qetest") << "Inside NNF convertion of the formula kind (as per the given input it should be and) "<< k << "\n";
       if( body[0].getKind()== kind::OR || body[0].getKind()== kind::AND ){
         for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
           children.push_back( convertToNNFQE( body[0][i].notNode() ) );
         }
+        Debug("expr-qetest") << "Size of children here "<< children.size() << "\n";
         k = body[0].getKind()== kind::AND ? kind::OR : kind::AND;
       }else if( body[0].getKind()== kind::IFF ){
         for( int i=0; i<2; i++ ){
@@ -408,12 +410,10 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
     Debug("expr-qetest") << in.getNumChildren() << "\n";
   }
   if( in.getKind()== kind::FORALL ){
-    //  Trace("quantifiers-rewrite-debug") << "Compute operation " << computeOption << " on " << f << ", nested = " << isNested << std::endl;
       std::vector< Node > args;
       for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
         args.push_back( in[0][i] );
-     }
-     Debug("expr-qetest") << "children size "<<args.size() << "\n";
+    }
     NodeBuilder<> defs(kind::AND);
     Node n = in[1];
     Node ipl;
