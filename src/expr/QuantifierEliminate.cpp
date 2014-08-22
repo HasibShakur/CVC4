@@ -153,12 +153,13 @@ Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args
     }
   }
 }*/
-Node QuantifierEliminate::convertToNNFQE(Node body)
+Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
 {
+
   if( body.getKind()== kind::NOT ){
       if( body[0].getKind()== kind::NOT ){
         Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][0].getKind() << "\n";
-        return convertToNNFQE( body[0][0] );
+        return convertToNNFQE( body[0][0],currNM );
       }else if( isLiteralQE( body[0] ) ){
         Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getKind() << "\n";
         return body;
@@ -183,7 +184,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
                    children_relation.push_back( body[0][i][j] );
                  }
                  Debug("expr-qetest") << "Inner children size "<<children_relation.size() << "\n";
-                 Node lt = NodeManager::currentNM()->mkNode(kind::LT,children_relation);
+                 Node lt = currNM->mkNode(kind::LT,children_relation);
                  Debug("expr-qetest") << "After negation of the GEQ the kind will be lt "<< body[0][i].getKind() << "\n";
                  children.push_back( lt );
                }
@@ -199,7 +200,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
             Notice() << "Unhandled Quantifiers NNF: " << body << std::endl;
             return body;
           }
-        return NodeManager::currentNM()->mkNode( k, children );
+        return currNM->mkNode( k, children );
      }
   }
   else if( isLiteralQE( body ) ){
@@ -208,12 +209,12 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
       std::vector< CVC4::Node > children;
       bool childrenChanged = false;
       for( int i=0; i<(int)body.getNumChildren(); i++ ){
-        Node nc = convertToNNFQE( body[i] );
+        Node nc = convertToNNFQE( body[i],currNM );
         children.push_back( nc );
         childrenChanged = childrenChanged || nc!=body[i];
       }
       if( childrenChanged ){
-        return NodeManager::currentNM()->mkNode( body.getKind(), children );
+        return currNM->mkNode( body.getKind(), children );
       }else{
         return body;
       }
@@ -261,7 +262,8 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
     {
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToPrenexQE(n,args, true)" << "\n";
     }
-    Node rewrittenNode = convertToNNFQE(n);
+    NodeManager* currNM = NodeManager::currentNM();
+    Node rewrittenNode = convertToNNFQE(n,currNM);
    // n = convertToNNFQE(n);
     Debug("expr-qetest") << "kind of after rewriting "<<rewrittenNode.getKind() << "\n";
     Debug("expr-qetest") << "number of children  of n after rewriting "<<rewrittenNode.getNumChildren() << "\n";
