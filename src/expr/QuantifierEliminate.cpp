@@ -181,7 +181,13 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                  std::vector< CVC4::Node > children_relation;
                  for(int j = 0; j< (int)body[0][i].getNumChildren();j++)
                  {
-                   children_relation.push_back( body[0][i][j] );
+                   if(!body[0][i][j].isNull())
+                   {
+                     Debug("expr-qetest")<<"inner_children element " << j <<" is not null\n";
+                     Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
+                     Debug("expr-qetest")<<"Type of inner children element "<<body[0][i][j].getType()<<"\n";
+                     children_relation.push_back( body[0][i][j] );
+                   }
                  }
                  Debug("expr-qetest") << "Inner children size "<<children_relation.size() << "\n";
                  Node lt = currNM->mkNode(kind::LT,children_relation[0],children_relation[1]);
