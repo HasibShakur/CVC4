@@ -177,7 +177,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
                if(body[0][i].getKind() == kind::GEQ)
                {
                  Node lt = NodeManager::currentNM()->mkNode(kind::LT,body[0][i][0],body[0][i][1]);
-                 children.push_back( convertToNNFQE( body[0][i]) );
+                 children.push_back( lt );
                }
                // to do code
             }
