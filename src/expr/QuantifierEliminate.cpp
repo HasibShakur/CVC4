@@ -18,7 +18,7 @@ using namespace CVC4::printer;
 struct QENestedQuantAttributeId {};
 typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
 
-bool QuantifierEliminate::isLiteralQE( Node n ){
+/*bool QuantifierEliminate::isLiteralQE( Node n ){
   switch( n.getKind() ){
   case kind::NOT:
     return isLiteralQE( n[0] );
@@ -46,7 +46,7 @@ bool QuantifierEliminate::isLiteralQE( Node n ){
     break;
   }
   return true;
-}
+}*/
 
 Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args, bool pol)
 {
@@ -96,7 +96,7 @@ Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector< Node >& args
       }
     }
 }
-Node QuantifierEliminate::convertToNNFQE(Node body)
+/*Node QuantifierEliminate::convertToNNFQE(Node body)
 {
   if( body.getKind()== kind::NOT ){
     if( body[0].getKind()== kind::NOT ){
@@ -149,7 +149,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
       return body;
     }
   }
-}
+}*/
 /*bool QuantifierEliminate::isClauseQE( Node n ){
   if( isLiteralQE( n ) ){
     return true;
@@ -445,14 +445,15 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
     {
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToPrenexQE(n,args, true)" << "\n";
     }
-    n = convertToNNFQE(n);
-    Debug("expr-qetest") << "kind of after nnf "<<n.getKind() << "\n";
-    Debug("expr-qetest") << "number of children  of n after nnf "<<n.getNumChildren() << "\n";
-    if(n.isNull())
+    Node rewrittenNode = theory::Rewriter::rewrite(n);
+   // n = convertToNNFQE(n);
+    Debug("expr-qetest") << "kind of after rewriting "<<rewrittenNode.getKind() << "\n";
+    Debug("expr-qetest") << "number of children  of n after rewriting "<<rewrittenNode.getNumChildren() << "\n";
+    if(rewrittenNode.isNull())
     {
-      Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToNNFQE(n)" << "\n";
+      Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
-    if(in[1] == n && args.size() == in[0].getNumChildren())
+    if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren())
     {
        return in;
     }
@@ -460,13 +461,13 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
     {
       if(args.empty())
       {
-        defs << n;
+        defs << rewrittenNode;
       }
       else
       {
         std::vector< Node > children;
         children.push_back( NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
-        children.push_back( n );
+        children.push_back( rewrittenNode );
         if( !ipl.isNull() ){
            children.push_back( ipl );
         }
