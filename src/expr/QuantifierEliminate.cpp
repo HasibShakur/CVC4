@@ -392,10 +392,21 @@ Node QuantifierEliminate::computeCNFQE( Node n, std::vector< Node >& args, NodeB
 }*/
 Node QuantifierEliminate::doPreprocessing(Expr ex)
 {
-  Node in = NodeTemplate<true>(ex);
+  Node temp_in = NodeTemplate<true>(ex);
   Debug("expr-qetest") << "------- Inside doProcessing Method ------" << "\n";
-  Debug("expr-qetest") << in.getKind() << "\n";
-  Debug("expr-qetest") << in.getNumChildren() << "\n";
+  Node in;
+  if(temp_in.getKind() == kind::NOT)
+  {
+    in = temp_in[0];
+    Debug("expr-qetest") << in.getKind() << "\n";
+    Debug("expr-qetest") << in.getNumChildren() << "\n";
+  }
+  else
+  {
+    in  = temp_in;
+    Debug("expr-qetest") << in.getKind() << "\n";
+    Debug("expr-qetest") << in.getNumChildren() << "\n";
+  }
   if( in.getKind()== kind::FORALL ){
     //  Trace("quantifiers-rewrite-debug") << "Compute operation " << computeOption << " on " << f << ", nested = " << isNested << std::endl;
       std::vector< Node > args;
