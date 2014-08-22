@@ -402,10 +402,12 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
       for( int i=0; i<(int)in[0].getNumChildren(); i++ ){
         args.push_back( in[0][i] );
      }
-      Debug("expr-qetest") << "children size"<<args.size() << "\n";
+     Debug("expr-qetest") << "children size "<<args.size() << "\n";
     NodeBuilder<> defs(kind::AND);
     Node n = in[1];
     Node ipl;
+    Debug("expr-qetest") << "kind of n "<<n.getKind() << "\n";
+    Debug("expr-qetest") << "number of children  of n "<<n.getNumChildren() << "\n";
     if( in.getNumChildren()==3 ){
       ipl = in[2];
     }
