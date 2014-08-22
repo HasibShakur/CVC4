@@ -175,8 +175,10 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
             Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][i].getKind() << "\n";
             if(isRelationalOperatorTypeQE(body[0][i].getKind()))
             {
+               Debug("expr-qetest") << "Debug reaches after the comparison of relation type before comparing geq "<< body[0][i].getKind() << "\n";
                if(body[0][i].getKind() == kind::GEQ)
                {
+                 Debug("expr-qetest") << "Debug reaches inside the GEQ comparison if before the creation of node "<< body[0][i].getKind() << "\n";
                  Node lt = NodeManager::currentNM()->mkNode(kind::LT,body[0][i][0],body[0][i][1]);
                  Debug("expr-qetest") << "After negation of the GEQ the kind will be lt "<< body[0][i].getKind() << "\n";
                  children.push_back( lt );
