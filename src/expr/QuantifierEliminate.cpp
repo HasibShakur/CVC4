@@ -136,7 +136,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
     }
   }
 }
-bool QuantifierEliminate::isClauseQE( Node n ){
+/*bool QuantifierEliminate::isClauseQE( Node n ){
   if( isLiteralQE( n ) ){
     return true;
   }else if( n.getKind()==kind::NOT ){
@@ -389,7 +389,7 @@ Node QuantifierEliminate::computeCNFQE( Node n, std::vector< Node >& args, NodeB
       return pred;
     }
   }
-}
+}*/
 Node QuantifierEliminate::doPreprocessing(Expr ex)
 {
   Node in = NodeTemplate<true>(ex);
@@ -418,12 +418,6 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
     if(n.isNull())
     {
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToNNFQE(n)" << "\n";
-    }
-    n = computeCNFQE( n, args, defs, false );
-    ipl = Node::null();
-    if(n.isNull())
-    {
-       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = computeCNFQE(n)" << "\n";
     }
     if(in[1] == n && args.size() == in[0].getNumChildren())
     {
