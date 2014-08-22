@@ -24,6 +24,7 @@ private:
   static void setNestedQuantifiers2QE( Node n, Node q, std::vector< Node >& processed );
   static Node computeClauseQE( Node n );
   static Node computeCNFQE( Node n, std::vector< Node >& args, NodeBuilder<>& defs, bool forcePred );
+
 public:
   static Node doPreprocessing(Expr ex);
 };
