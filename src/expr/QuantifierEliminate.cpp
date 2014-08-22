@@ -185,10 +185,13 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                    {
                      Debug("expr-qetest")<<"inner_children element " << j <<" is not null\n";
                      Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
+                     TypeNode tn = body[0][i][j].getType(true);
+                     Debug("expr-qetest")<<"Type of each element "<<tn.getKind()<<"\n";
                      children_relation.push_back( body[0][i][j] );
                      Debug("expr-qetest")<<"added successfully to inner_children\n";
                    }
                  }
+
                  Debug("expr-qetest") << "Inner children size "<<children_relation.size() << "\n";
                  Node lt = currNM->mkNode(kind::LT,children_relation[0],children_relation[1]);
                  Debug("expr-qetest") << "After negation of the GEQ the kind will be lt "<< body[0][i].getKind() << "\n";
