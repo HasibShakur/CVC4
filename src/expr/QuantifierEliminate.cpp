@@ -184,7 +184,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                    children_relation.push_back( body[0][i][j] );
                  }
                  Debug("expr-qetest") << "Inner children size "<<children_relation.size() << "\n";
-                 Node lt = currNM->mkNode(kind::LT,children_relation);
+                 Node lt = currNM->mkNode(kind::LT,children_relation[0],children_relation[1]);
                  Debug("expr-qetest") << "After negation of the GEQ the kind will be lt "<< body[0][i].getKind() << "\n";
                  children.push_back( lt );
                }
