@@ -186,7 +186,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                      Debug("expr-qetest")<<"inner_children element " << j <<" is not null\n";
                      Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
                      children_relation.push_back( body[0][i][j] );
-                     Debug("expr-qeTest")<<"added successfully to inner_children\n";
+                     Debug("expr-qetest")<<"added successfully to inner_children\n";
                    }
                  }
                  Debug("expr-qetest") << "Inner children size "<<children_relation.size() << "\n";
