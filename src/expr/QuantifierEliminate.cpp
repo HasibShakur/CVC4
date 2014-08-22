@@ -35,6 +35,7 @@ bool QuantifierEliminate::isLiteralQE( Node n ){
     return n[0].getType()!=NodeManager::currentNM()->booleanType();
     break;
   case kind::GEQ:
+    return n[0].getType()!=NodeManager::currentNM()->integerType();
   case kind::LEQ:
     return n[0].getType()!=NodeManager::currentNM()->integerType();
   default:
