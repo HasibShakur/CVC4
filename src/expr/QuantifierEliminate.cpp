@@ -36,15 +36,16 @@ bool QuantifierEliminate::isLiteralQE( Node n ){
   }
   return true;
 }
-bool QuantifierEliminate::isRelationalOperatorTypeQE(Node n)
+bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k)
 {
-  switch( n.getKind())
+  switch( k )
   {
     case kind::LT:
     case kind::GT:
     case kind::LEQ:
     case kind::GEQ:
     case kind::EQUAL:
+      Debug("expr-qetest")<<"Debug reaches here and kind is one of the mentioned "<<k<<"\n";
       return true;
     default:
       return false;
@@ -172,11 +173,12 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
           Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getNumChildren() << "\n";
           for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
             Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][i].getKind() << "\n";
-            if(isRelationalOperatorTypeQE(body[0][i]))
+            if(isRelationalOperatorTypeQE(body[0][i].getKind()))
             {
                if(body[0][i].getKind() == kind::GEQ)
                {
                  Node lt = NodeManager::currentNM()->mkNode(kind::LT,body[0][i][0],body[0][i][1]);
+                 Debug("expr-qetest") << "After negation of the GEQ the kind will be lt "<< body[0][i].getKind() << "\n";
                  children.push_back( lt );
                }
                // to do code
@@ -185,6 +187,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
          }
           Debug("expr-qetest")<<"Size of children is "<<children.size()<<"\n";
           k = body[0].getKind()== kind::AND ? kind::OR : kind::AND;
+          Debug("expr-qetest")<<"New kind after negation "<<k<<"\n";
       }
       else{
             Notice() << "Unhandled Quantifiers NNF: " << body << std::endl;
