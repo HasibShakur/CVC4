@@ -179,6 +179,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body)
                if(body[0][i].getKind() == kind::GEQ)
                {
                  Debug("expr-qetest") << "Debug reaches inside the GEQ comparison if before the creation of node "<< body[0][i].getKind() << "\n";
+                 Debug("expr-qetest") << "Debug reaches here before the creation of node and the number of children is "<< body[0][i].getNumChildren() << "\n";
                  Node lt = NodeManager::currentNM()->mkNode(kind::LT,body[0][i][0],body[0][i][1]);
                  Debug("expr-qetest") << "After negation of the GEQ the kind will be lt "<< body[0][i].getKind() << "\n";
                  children.push_back( lt );
