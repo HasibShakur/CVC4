@@ -191,11 +191,11 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                      }
                      else if(body[0][i][j].isConst())
                      {
-                       Debug("expr-qetest")<<" Variable " << body[0][i][j].getAttribute(body[0][i][j].getKind());
+                       Debug("expr-qetest")<<" Constant " << body[0][i][j].getAttribute(body[0][i][j].getKind());
                      }
                      else
                      {
-                       Debug("expr-qetest")<<" Variable " << body[0][i][j].getAttribute(body[0][i][j].getKind());
+                       Debug("expr-qetest")<< body[0][i][j].getKind();
                      }
                        children_relation.push_back( body[0][i][j] );
 
