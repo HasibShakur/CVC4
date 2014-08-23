@@ -187,11 +187,11 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                      Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
                      if(body[0][i][j].isVar())
                      {
-                       Debug("expr-qetest")<<" Variable " << body[0][i][j].getAttribute(body[0][i][j].getKind());
+                       Debug("expr-qetest")<<" Variable\n " ;
                      }
                      else if(body[0][i][j].isConst())
                      {
-                       Debug("expr-qetest")<<" Constant " << body[0][i][j].getAttribute(body[0][i][j].getKind());
+                       Debug("expr-qetest")<<" Constant\n " ;
                      }
                      else
                      {
