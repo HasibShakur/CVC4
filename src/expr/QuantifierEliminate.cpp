@@ -158,21 +158,21 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
 
   if( body.getKind()== kind::NOT ){
       if( body[0].getKind()== kind::NOT ){
-        Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][0].getKind() << "\n";
+      //  Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][0].getKind() << "\n";
         return convertToNNFQE( body[0][0],currNM );
       }else if( isLiteralQE( body[0] ) ){
-        Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getKind() << "\n";
+      //  Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getKind() << "\n";
         return body;
       }
       else
       {
         std::vector< CVC4::Node > children;
         Kind k = body[0].getKind();
-        Debug("expr-qetest") << "Inside NNF convertion of the formula kind (as per the given input it should be and) "<< k << "\n";
+       // Debug("expr-qetest") << "Inside NNF convertion of the formula kind (as per the given input it should be and) "<< k << "\n";
         if( body[0].getKind()== kind::OR || body[0].getKind()== kind::AND ){
-          Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getNumChildren() << "\n";
+       //   Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getNumChildren() << "\n";
           for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
-            Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][i].getKind() << "\n";
+         //   Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][i].getKind() << "\n";
             if(isRelationalOperatorTypeQE(body[0][i].getKind()))
             {
                if(body[0][i].getKind() == kind::GEQ)
@@ -185,9 +185,20 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                    {
                      Debug("expr-qetest")<<"inner_children element " << j <<" is not null\n";
                      Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
-                     TypeNode tn = body[0][i][j].getType(true);
-                     Debug("expr-qetest")<<"Type of each element "<<tn.getKind()<<"\n";
-                     children_relation.push_back( body[0][i][j] );
+                     if(body[0][i][j].isVar())
+                     {
+                       Debug("expr-qetest")<<" Variable " << body[0][i][j].getAttribute(body[0][i][j].getKind());
+                     }
+                     else if(body[0][i][j].isConst())
+                     {
+                       Debug("expr-qetest")<<" Variable " << body[0][i][j].getAttribute(body[0][i][j].getKind());
+                     }
+                     else
+                     {
+                       Debug("expr-qetest")<<" Variable " << body[0][i][j].getAttribute(body[0][i][j].getKind());
+                     }
+                       children_relation.push_back( body[0][i][j] );
+
                      Debug("expr-qetest")<<"added successfully to inner_children\n";
                    }
                  }
