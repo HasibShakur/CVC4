@@ -196,7 +196,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                        {
                          Debug("expr-qetest")<<" Integer \n " ;
                        }
-                      if(body[0][i][j][0].getType().isInteger())
+                      if(body[0][i][j].getType().isInteger())
                       {
                         Debug("expr-qetest") <<" Value is integer \n";
                       }
