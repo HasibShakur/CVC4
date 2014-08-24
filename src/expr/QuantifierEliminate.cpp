@@ -8,12 +8,16 @@
 #include "printer/smt2/smt2_printer.h"
 #include "util/output.h"
 #include "theory/rewriter.h"
+#include "theory/arith/normal_form.h"
+#include "theory/arith/arith_rewriter.h"
+#include "theory/arith/arith_utilities.h"
 
 using namespace std;
 using namespace CVC4;
 using namespace CVC4::expr;
 using namespace CVC4::kind;
 using namespace CVC4::printer;
+using namespace CVC4::theory::arith;
 
 struct QENestedQuantAttributeId {};
 typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
@@ -177,44 +181,38 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
             {
                if(body[0][i].getKind() == kind::GEQ)
                {
-                 Debug("expr-qetest") << "Debug reaches here before the creation of node and the number of children is "<< body[0][i].getNumChildren() << "\n";
                  std::vector< CVC4::Node > children_relation;
                  for(int j = 0; j< (int)body[0][i].getNumChildren();j++)
                  {
                    if(!body[0][i][j].isNull())
                    {
-                     Debug("expr-qetest")<<"inner_children element " << j <<" is not null\n";
                      Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
                      if(body[0][i][j].isVar())
                      {
-                       Debug("expr-qetest")<<" Variable \n " ;
                        if(body[0][i][j].getKind() == kind::IS_INTEGER)
                        {
-                         Debug("expr-qetest")<<" Integer \n " ;
-                         Debug("expr-qetest")<<" Number of children of Integer "<<body[0][i][j].getNumChildren() ;
+                         Debug("expr-qetest")<<"Integer \n";
+                         Debug("expr-qetest")<<theory::arith::ArithRewriter::preRewrite(body[0][i][j])<<"\n";
                        }
                        else
                        {
-                         Debug("expr-qetest")<<" Integer \n " ;
-                         Debug("expr-qetest")<<" Number of children of Integer "<<body[0][i][j].getNumChildren() ;
+                         Debug("expr-qetest")<<"Not Integer \n";
                        }
 
                      }
                      else if(body[0][i][j].isConst())
                      {
-                       Debug("expr-qetest")<<" Constant \n " ;
+                       Debug("expr-qetest")<<"Constant \n";
+                       Debug("expr-qetest")<<theory::arith::ArithRewriter::preRewrite(body[0][i][j])<<"\n";
                      }
                      else
                      {
                        Debug("expr-qetest")<< " Undefined type " <<body[0][i][j].getKind()<<"\n";
                      }
                        children_relation.push_back( body[0][i][j] );
-
-                     Debug("expr-qetest")<<"added successfully to inner_children\n";
                    }
                  }
 
-                 Debug("expr-qetest") << "Inner children size "<<children_relation.size() << "\n";
                  Node lt = currNM->mkNode(kind::LT,children_relation[0],children_relation[1]);
                  Debug("expr-qetest") << "After negation of the GEQ the kind will be lt "<< body[0][i].getKind() << "\n";
                  children.push_back( lt );
