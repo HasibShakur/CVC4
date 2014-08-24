@@ -188,13 +188,13 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                      if(body[0][i][j].isVar())
                      {
                        Debug("expr-qetest")<<" Variable \n " ;
-                       if(body[0][i][j].getType().isInteger())
+                       if(body[0][i][j].getKind() == kind::IS_INTEGER)
                        {
-                         Debug("expr-qetest")<<"Integer\n";
+                         Debug("expr-qetest")<<" Integer \n " ;
                        }
                        else
                        {
-                         Debug("expr-qetest")<<"Not Integer\n";
+                         Debug("expr-qetest")<<" Integer \n " ;
                        }
 
                      }
