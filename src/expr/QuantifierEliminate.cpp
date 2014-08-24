@@ -187,15 +187,24 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                      Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
                      if(body[0][i][j].isVar())
                      {
-                       Debug("expr-qetest")<<" Variable\n " ;
+                       Debug("expr-qetest")<<" Variable \n " ;
+                       if(body[0][i][j].getType().isInteger())
+                       {
+                         Debug("expr-qetest")<<"Integer\n";
+                       }
+                       else
+                       {
+                         Debug("expr-qetest")<<"Not Integer\n";
+                       }
+
                      }
                      else if(body[0][i][j].isConst())
                      {
-                       Debug("expr-qetest")<<" Constant\n " ;
+                       Debug("expr-qetest")<<" Constant \n " ;
                      }
                      else
                      {
-                       Debug("expr-qetest")<< body[0][i][j].getKind();
+                       Debug("expr-qetest")<< " Undefined type " <<body[0][i][j].getKind()<<"\n";
                      }
                        children_relation.push_back( body[0][i][j] );
 
