@@ -209,7 +209,7 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
 }
 
 void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
-  std::string n = smtEngine->eliminateQuantifier(this->getCommandName());
+  std::string n = smtEngine->eliminateQuantifier(this->getExpr());
 
   out << n << std::endl;
   d_commandStatus = CommandSuccess::instance();
