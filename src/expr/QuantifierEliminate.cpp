@@ -169,11 +169,8 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
       {
         std::vector< CVC4::Node > children;
         Kind k = body[0].getKind();
-       // Debug("expr-qetest") << "Inside NNF convertion of the formula kind (as per the given input it should be and) "<< k << "\n";
         if( body[0].getKind()== kind::OR || body[0].getKind()== kind::AND ){
-       //   Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getNumChildren() << "\n";
           for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
-         //   Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][i].getKind() << "\n";
             if(isRelationalOperatorTypeQE(body[0][i].getKind()))
             {
                if(body[0][i].getKind() == kind::GEQ)
@@ -183,7 +180,6 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                  {
                    if(!body[0][i][j].isNull())
                    {
-                     Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
                      if(body[0][i][j].isVar())
                      {
                          if(body[0][i][j].getType(true).isInteger())
@@ -208,14 +204,13 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                  }
 
                  Node lt = currNM->mkNode(kind::LT,children_relation[0],children_relation[1]);
-                 Debug("expr-qetest") << "After negation of the GEQ the kind will be lt "<< body[0][i].getKind() << "\n";
+                 Debug("expr-qe")<<lt<<"\n";
                  children.push_back( lt );
                }
                // to do code
             }
             //children.push_back( convertToNNFQE( body[0][i].notNode() ) );
          }
-          Debug("expr-qetest")<<"Size of children is "<<children.size()<<"\n";
           k = body[0].getKind()== kind::AND ? kind::OR : kind::AND;
           Debug("expr-qetest")<<"New kind after negation "<<k<<"\n";
       }
@@ -252,14 +247,10 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
   if(temp_in.getKind() == kind::NOT)
   {
     in = temp_in[0];
-    Debug("expr-qetest") << in.getKind() << "\n";
-    Debug("expr-qetest") << in.getNumChildren() << "\n";
   }
   else
   {
     in  = temp_in;
-    Debug("expr-qetest") << in.getKind() << "\n";
-    Debug("expr-qetest") << in.getNumChildren() << "\n";
   }
   if( in.getKind()== kind::FORALL ){
       std::vector< Node > args;
@@ -269,8 +260,6 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
     NodeBuilder<> defs(kind::AND);
     Node n = in[1];
     Node ipl;
-    Debug("expr-qetest") << "kind of n "<<n.getKind() << "\n";
-    Debug("expr-qetest") << "number of children  of n "<<n.getNumChildren() << "\n";
     if( in.getNumChildren()==3 ){
       ipl = in[2];
     }
@@ -279,17 +268,14 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = in[1]" << "\n";
     }
     n = convertToPrenexQE(n,args, true);
-    Debug("expr-qetest") << "kind of after prenexing "<<n.getKind() << "\n";
-    Debug("expr-qetest") << "number of children  of n after prenexing "<<n.getNumChildren() << "\n";
+    Debug("expr-qetest") << "After Prenexing "<< n << "\n";
     if(n.isNull())
     {
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToPrenexQE(n,args, true)" << "\n";
     }
     NodeManager* currNM = NodeManager::currentNM();
     Node rewrittenNode = convertToNNFQE(n,currNM);
-   // n = convertToNNFQE(n);
-    Debug("expr-qetest") << "kind of after rewriting "<<rewrittenNode.getKind() << "\n";
-    Debug("expr-qetest") << "number of children  of n after rewriting "<<rewrittenNode.getNumChildren() << "\n";
+    Debug("expr-qetest") << "After nnf "<< rewrittenNode << "\n";
     if(rewrittenNode.isNull())
     {
       Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
