@@ -3352,6 +3352,7 @@ std::string SmtEngine::eliminateQuantifier(Expr ex)
       temp = ex.getExprManager()->mkExpr(kind::FORALL,children);
       temp = temp.notExpr();
     }
+   Debug("expr-qetest")<<"Before processing "<<temp<<"\n";
    Node finalNode = QuantifierEliminate::doPreprocessing(temp);
    Debug("expr-qetest")<<"After processing "<<finalNode<<"\n";
   return "success";

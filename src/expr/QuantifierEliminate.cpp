@@ -178,33 +178,9 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                  std::vector< CVC4::Node > children_relation;
                  for(int j = 0; j< (int)body[0][i].getNumChildren();j++)
                  {
-                   if(!body[0][i][j].isNull())
-                   {
-                     if(body[0][i][j].isVar())
-                     {
-                         if(body[0][i][j].getType(true).isInteger())
-                         {
-                           Debug("expr-qetest")<<"Integer type \n";
-                         }
-                         else
-                         {
-                           Debug("expr-qetest")<<"Not Integer type \n";
-                         }
-                     }
-                     else if(body[0][i][j].isConst())
-                     {
-                       Debug("expr-qetest")<<"Constant \n";
-                     }
-                     else
-                     {
-                       Debug("expr-qetest")<< " Undefined type " <<body[0][i][j].getKind()<<"\n";
-                     }
                        children_relation.push_back( body[0][i][j] );
-                   }
                  }
-
                  Node lt = currNM->mkNode(kind::LT,children_relation[0],children_relation[1]);
-                 Debug("expr-qe")<<lt<<"\n";
                  children.push_back( lt );
                }
                // to do code
