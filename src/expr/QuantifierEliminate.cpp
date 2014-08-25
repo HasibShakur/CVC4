@@ -189,14 +189,14 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                      Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
                      if(body[0][i][j].isVar())
                      {
-                       if(body[0][i][j].hasAttribute(kind::IS_INTEGER))
+                       TypeNode tn = body[0][i][j].getType();
+                       if(tn.isInteger())
                        {
-                         Debug("expr-qetest")<<"Integer \n";
-                        // theory::arith::ArithRewriter::preRewrite(body[0][i][j]);
+                         Debug("expr-qetest")<<"Integer type \n";
                        }
                        else
                        {
-                         Debug("expr-qetest")<<"Not Integer \n";
+                         Debug("expr-qetest")<<"Not Integer type \n";
                        }
 
                      }
