@@ -189,8 +189,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                      Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
                      if(body[0][i][j].isVar())
                      {
-                       TypeNode tn = body[0][i][j].getType();
-                       if(tn.isInteger())
+                       if(body[0][i][j].getKind()== kind::IS_INTEGER)
                        {
                          Debug("expr-qetest")<<"Integer type \n";
                        }
