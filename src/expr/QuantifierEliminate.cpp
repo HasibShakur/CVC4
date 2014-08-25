@@ -8,16 +8,13 @@
 #include "printer/smt2/smt2_printer.h"
 #include "util/output.h"
 #include "theory/rewriter.h"
-#include "theory/arith/normal_form.h"
-#include "theory/arith/arith_rewriter.h"
-#include "theory/arith/arith_utilities.h"
+
 
 using namespace std;
 using namespace CVC4;
 using namespace CVC4::expr;
 using namespace CVC4::kind;
 using namespace CVC4::printer;
-using namespace CVC4::theory::arith;
 
 struct QENestedQuantAttributeId {};
 typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
