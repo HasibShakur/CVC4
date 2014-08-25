@@ -189,10 +189,10 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                      Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
                      if(body[0][i][j].isVar())
                      {
-                       if(body[0][i][j].getKind() == kind::IS_INTEGER)
+                       if(body[0][i][j].hasAttribute(kind::IS_INTEGER))
                        {
                          Debug("expr-qetest")<<"Integer \n";
-                         theory::arith::ArithRewriter::preRewrite(body[0][i][j]);
+                        // theory::arith::ArithRewriter::preRewrite(body[0][i][j]);
                        }
                        else
                        {
@@ -203,7 +203,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                      else if(body[0][i][j].isConst())
                      {
                        Debug("expr-qetest")<<"Constant \n";
-                       theory::arith::ArithRewriter::preRewrite(body[0][i][j]);
+                     //  theory::arith::ArithRewriter::preRewrite(body[0][i][j]);
                      }
                      else
                      {
