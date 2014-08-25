@@ -209,11 +209,8 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
 }
 
 void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
-  //CVC4::Expr ex = this->eliminateQuantifier(this->getExpr());
-  //std::string ex = this->eliminateQuantifier(this->getExpr());
-  std::string n = this->eliminateQuantifier(this->getExpr(),out);
+  std::string n = smtEngine->eliminateQuantifier(this->getCommandName());
 
-  //out << ex << std::endl;
   out << n << std::endl;
   d_commandStatus = CommandSuccess::instance();
   printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
@@ -229,88 +226,6 @@ Command* QESimplifyCommand::clone() const {
 
 std::string QESimplifyCommand::getCommandName() const throw() {
   return "qe";
-}
-//CVC4::Expr QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex)
-std::string QESimplifyCommand::eliminateQuantifier(CVC4::Expr ex,std::ostream& out) throw()
-{
-  Node tempNode = NodeTemplate<false>(ex);
-  //QuantifiersRewriter::postRewrite(tempNode);
- /* Debug("expr-qetest")<<tempNode.getKind()<<"\n";
-  Debug("expr-qetest")<<tempNode.getNumChildren()<<"\n";
-  for(int i=0;i<(int)tempNode.getNumChildren();i++)
-  {
-    Debug("expr-qetest")<<tempNode[i].getKind()<<"\n";
-    Debug("expr-qetest")<<tempNode[i].getNumChildren()<<"\n";
-  }
-  for(int i=0;i<(int)tempNode[0].getNumChildren();i++)
-  {
-    Debug("expr-qetest")<<tempNode[0][i].getKind()<<"\n";
-    Debug("expr-qetest")<<tempNode[0][i].getNumChildren()<<"\n";
-  }
-  for(int i=0;i<(int)tempNode[1].getNumChildren();i++)
-  {
-     Debug("expr-qetest")<<tempNode[1][i].getKind()<<"\n";
-     Debug("expr-qetest")<<tempNode[1][i].getNumChildren()<<"\n";
-  }*/
-  Debug("expr-qetest")<<ex.getKind()<<"\n";
-  Debug("expr-qetest")<<ex.getNumChildren()<<"\n";
-    for(int i=0;i<(int)ex.getNumChildren();i++)
-    {
-      Debug("expr-qetest")<<ex[i].getKind()<<"\n";
-      Debug("expr-qetest")<<ex[i].getNumChildren()<<"\n";
-    }
-    for(int i=0;i<(int)ex[0].getNumChildren();i++)
-    {
-      Debug("expr-qetest")<<ex[0][i].getKind()<<"\n";
-      Debug("expr-qetest")<<ex[0][i].getNumChildren()<<"\n";
-    }
-    for(int i=0;i<(int)ex[1].getNumChildren();i++)
-    {
-       Debug("expr-qetest")<<ex[1][i].getKind()<<"\n";
-       Debug("expr-qetest")<<ex[1][i].getNumChildren()<<"\n";
-    }
-    Expr temp = ex;
-    if(temp.getKind()==kind::EXISTS)
-    {
-      std::vector< Expr > children;
-      children.push_back( ex[0] );
-      children.push_back( ex[1].notExpr() );
-      if( ex.getNumChildren()==3 ){
-        children.push_back( ex[2] );
-      }
-      temp = ex.getExprManager()->mkExpr(kind::FORALL,children);
-      temp = temp.notExpr();
-    }
-    Debug("expr-qetest")<<"-------After Forall Conversion-----------"<<"\n";
-    Debug("expr-qetest")<<temp<<"\n";
-    Debug("expr-qetest")<<temp.getKind()<<"\n";
-    Debug("expr-qetest")<<temp.getNumChildren()<<"\n";
-    for(int i=0;i<(int)temp.getNumChildren();i++)
-    {
-      Debug("expr-qetest")<<temp[i].getKind()<<"\n";
-      Debug("expr-qetest")<<temp[i].getNumChildren()<<"\n";
-     }
-    for(int i=0;i<(int)temp[0].getNumChildren();i++)
-    {
-      Debug("expr-qetest")<<temp[0][i].getKind()<<"\n";
-      Debug("expr-qetest")<<temp[0][i].getNumChildren()<<"\n";
-    }
-   Node finalNode = QuantifierEliminate::doPreprocessing(temp);
-   Debug("expr-qetest")<<"-------After prenex and nnf Conversion-----------"<<"\n";
-   Debug("expr-qetest")<<finalNode.getKind()<<"\n";
-   Debug("expr-qetest")<<finalNode.getNumChildren()<<"\n";
-   for(int i=0;i<(int)finalNode.getNumChildren();i++)
-   {
-     Debug("expr-qetest")<<finalNode[i].getKind()<<"\n";
-     Debug("expr-qetest")<<finalNode[i].getNumChildren()<<"\n";
-   }
-   for(int i=0;i<(int)finalNode[0].getNumChildren();i++)
-      {
-        Debug("expr-qetest")<<finalNode[0][i].getKind()<<"\n";
-        Debug("expr-qetest")<<finalNode[0][i].getNumChildren()<<"\n";
-      }
-  return "success";
-
 }
 
 /* class AssertCommand */

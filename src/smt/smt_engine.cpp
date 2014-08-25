@@ -3335,26 +3335,88 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  * The eliminateQuantifier function will eliminate quantifiers from an
  * expression.
  */
+std::string SmtEngine::eliminateQuantifier(Expr ex)
+{
+  Node tempNode = NodeTemplate<false>(ex);
+  //QuantifiersRewriter::postRewrite(tempNode);
+ /* Debug("expr-qetest")<<tempNode.getKind()<<"\n";
+  Debug("expr-qetest")<<tempNode.getNumChildren()<<"\n";
+  for(int i=0;i<(int)tempNode.getNumChildren();i++)
+  {
+    Debug("expr-qetest")<<tempNode[i].getKind()<<"\n";
+    Debug("expr-qetest")<<tempNode[i].getNumChildren()<<"\n";
+  }
+  for(int i=0;i<(int)tempNode[0].getNumChildren();i++)
+  {
+    Debug("expr-qetest")<<tempNode[0][i].getKind()<<"\n";
+    Debug("expr-qetest")<<tempNode[0][i].getNumChildren()<<"\n";
+  }
+  for(int i=0;i<(int)tempNode[1].getNumChildren();i++)
+  {
+     Debug("expr-qetest")<<tempNode[1][i].getKind()<<"\n";
+     Debug("expr-qetest")<<tempNode[1][i].getNumChildren()<<"\n";
+  }*/
+  Debug("expr-qetest")<<ex.getKind()<<"\n";
+  Debug("expr-qetest")<<ex.getNumChildren()<<"\n";
+    for(int i=0;i<(int)ex.getNumChildren();i++)
+    {
+      Debug("expr-qetest")<<ex[i].getKind()<<"\n";
+      Debug("expr-qetest")<<ex[i].getNumChildren()<<"\n";
+    }
+    for(int i=0;i<(int)ex[0].getNumChildren();i++)
+    {
+      Debug("expr-qetest")<<ex[0][i].getKind()<<"\n";
+      Debug("expr-qetest")<<ex[0][i].getNumChildren()<<"\n";
+    }
+    for(int i=0;i<(int)ex[1].getNumChildren();i++)
+    {
+       Debug("expr-qetest")<<ex[1][i].getKind()<<"\n";
+       Debug("expr-qetest")<<ex[1][i].getNumChildren()<<"\n";
+    }
+    Expr temp = ex;
+    if(temp.getKind()==kind::EXISTS)
+    {
+      std::vector< Expr > children;
+      children.push_back( ex[0] );
+      children.push_back( ex[1].notExpr() );
+      if( ex.getNumChildren()==3 ){
+        children.push_back( ex[2] );
+      }
+      temp = ex.getExprManager()->mkExpr(kind::FORALL,children);
+      temp = temp.notExpr();
+    }
+    Debug("expr-qetest")<<"-------After Forall Conversion-----------"<<"\n";
+    Debug("expr-qetest")<<temp<<"\n";
+    Debug("expr-qetest")<<temp.getKind()<<"\n";
+    Debug("expr-qetest")<<temp.getNumChildren()<<"\n";
+    for(int i=0;i<(int)temp.getNumChildren();i++)
+    {
+      Debug("expr-qetest")<<temp[i].getKind()<<"\n";
+      Debug("expr-qetest")<<temp[i].getNumChildren()<<"\n";
+     }
+    for(int i=0;i<(int)temp[0].getNumChildren();i++)
+    {
+      Debug("expr-qetest")<<temp[0][i].getKind()<<"\n";
+      Debug("expr-qetest")<<temp[0][i].getNumChildren()<<"\n";
+    }
+   Node finalNode = QuantifierEliminate::doPreprocessing(temp);
+   Debug("expr-qetest")<<"-------After prenex and nnf Conversion-----------"<<"\n";
+   Debug("expr-qetest")<<finalNode.getKind()<<"\n";
+   Debug("expr-qetest")<<finalNode.getNumChildren()<<"\n";
+   for(int i=0;i<(int)finalNode.getNumChildren();i++)
+   {
+     Debug("expr-qetest")<<finalNode[i].getKind()<<"\n";
+     Debug("expr-qetest")<<finalNode[i].getNumChildren()<<"\n";
+   }
+   for(int i=0;i<(int)finalNode[0].getNumChildren();i++)
+      {
+        Debug("expr-qetest")<<finalNode[0][i].getKind()<<"\n";
+        Debug("expr-qetest")<<finalNode[0][i].getNumChildren()<<"\n";
+      }
+  return "success";
 
-/*CVC4::Expr SmtEngine::eliminateQuantifier(CVC4::Expr ex, QuantifierEliminate qe){
- Assert(ex.getExprManager() == d_exprManager);
- if(ex.isNull())
- {
-  std::cout<<"Null expression"<<std::endl;
-  return ex;
- }
- else
- {
-  QuantifierEliminate qe;
-  qe.setExpression(ex);
-  CVC4::Expr e = qe.getExpression();
-  CVC4::Node prenexedNode = qe.getPrenexExpression(e);
-  CVC4::Expr prenexedExpression = prenexedNode.toExpr();
-  CVC4::Node simplifiedNode = qe.simplifyExpression(prenexedExpression);
-  CVC4::Expr simplifiedExpression = simplifiedNode.toExpr();
-  return simplifiedExpression;
- }
-}*/
+}
+
 Node SmtEngine::postprocess(TNode node, TypeNode expectedType) const {
   ModelPostprocessor mpost;
   NodeVisitor<ModelPostprocessor> visitor;
