@@ -3338,6 +3338,7 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
 std::string SmtEngine::eliminateQuantifier(Expr ex)
 {
   Assert(ex.getExprManager() == d_exprManager);
+  SmtScope smts(this);
   Node tempNode = NodeTemplate<false>(ex);
     Expr temp = ex;
     if(temp.getKind()==kind::EXISTS)
