@@ -87,7 +87,7 @@
 #include "theory/datatypes/options.h"
 #include "theory/strings/theory_strings_preprocess.h"
 #include "printer/options.h"
-//#include "parser/QuantifierEliminate.h"
+#include "expr/QuantifierEliminate.h"
 
 using namespace std;
 using namespace CVC4;
@@ -3334,29 +3334,10 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  * Date alst edited: June 17, 2014
  * The eliminateQuantifier function will eliminate quantifiers from an
  * expression.
- *
  */
 std::string SmtEngine::eliminateQuantifier(Expr ex)
 {
   Node tempNode = NodeTemplate<false>(ex);
-  //QuantifiersRewriter::postRewrite(tempNode);
- /* Debug("expr-qetest")<<tempNode.getKind()<<"\n";
-  Debug("expr-qetest")<<tempNode.getNumChildren()<<"\n";
-  for(int i=0;i<(int)tempNode.getNumChildren();i++)
-  {
-    Debug("expr-qetest")<<tempNode[i].getKind()<<"\n";
-    Debug("expr-qetest")<<tempNode[i].getNumChildren()<<"\n";
-  }
-  for(int i=0;i<(int)tempNode[0].getNumChildren();i++)
-  {
-    Debug("expr-qetest")<<tempNode[0][i].getKind()<<"\n";
-    Debug("expr-qetest")<<tempNode[0][i].getNumChildren()<<"\n";
-  }
-  for(int i=0;i<(int)tempNode[1].getNumChildren();i++)
-  {
-     Debug("expr-qetest")<<tempNode[1][i].getKind()<<"\n";
-     Debug("expr-qetest")<<tempNode[1][i].getNumChildren()<<"\n";
-  }*/
   Debug("expr-qetest")<<ex.getKind()<<"\n";
   Debug("expr-qetest")<<ex.getNumChildren()<<"\n";
     for(int i=0;i<(int)ex.getNumChildren();i++)
