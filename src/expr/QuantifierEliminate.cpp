@@ -276,7 +276,17 @@ Node QuantifierEliminate::doPreprocessing(Expr ex)
         }
         defs << NodeManager::currentNM()->mkNode(kind::FORALL, children );
       }
-      return defs.getNumChildren()==1 ? defs.getChild( 0 ) : defs.constructNode();
+      Node returnNode =  defs.getNumChildren()==1 ? defs.getChild( 0 ) : defs.constructNode();
+      if(temp_in.getKind() == kind::NOT)
+      {
+        std::vector< Node > children;
+        children.push_back(returnNode);
+        return NodeManager::currentNM()->mkNode(kind::NOT, children );
+      }
+      else
+      {
+        return returnNode;
+      }
     }
   }
   else
