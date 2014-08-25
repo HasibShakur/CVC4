@@ -186,14 +186,14 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM)
                      Debug("expr-qetest")<<"Kind of inner children element "<<body[0][i][j].getKind()<<"\n";
                      if(body[0][i][j].isVar())
                      {
-                       if(body[0][i][j].getKind()== kind::TO_INTEGER)
-                       {
-                         Debug("expr-qetest")<<"Integer type \n";
-                       }
-                       else
-                       {
-                         Debug("expr-qetest")<<"Not Integer type \n";
-                       }
+                         if(body[0][i][j].getType(true).isInteger())
+                         {
+                           Debug("expr-qetest")<<"Integer type \n";
+                         }
+                         else
+                         {
+                           Debug("expr-qetest")<<"Not Integer type \n";
+                         }
                      }
                      else if(body[0][i][j].isConst())
                      {
