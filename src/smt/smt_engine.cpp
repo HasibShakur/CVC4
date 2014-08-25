@@ -3334,6 +3334,7 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  * Date alst edited: June 17, 2014
  * The eliminateQuantifier function will eliminate quantifiers from an
  * expression.
+ *
  */
 std::string SmtEngine::eliminateQuantifier(Expr ex)
 {
