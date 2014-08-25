@@ -3337,24 +3337,8 @@ Result SmtEngine::assertFormula(const Expr& ex) throw(TypeCheckingException, Log
  */
 std::string SmtEngine::eliminateQuantifier(Expr ex)
 {
+  Assert(ex.getExprManager() == d_exprManager);
   Node tempNode = NodeTemplate<false>(ex);
-  Debug("expr-qetest")<<ex.getKind()<<"\n";
-  Debug("expr-qetest")<<ex.getNumChildren()<<"\n";
-    for(int i=0;i<(int)ex.getNumChildren();i++)
-    {
-      Debug("expr-qetest")<<ex[i].getKind()<<"\n";
-      Debug("expr-qetest")<<ex[i].getNumChildren()<<"\n";
-    }
-    for(int i=0;i<(int)ex[0].getNumChildren();i++)
-    {
-      Debug("expr-qetest")<<ex[0][i].getKind()<<"\n";
-      Debug("expr-qetest")<<ex[0][i].getNumChildren()<<"\n";
-    }
-    for(int i=0;i<(int)ex[1].getNumChildren();i++)
-    {
-       Debug("expr-qetest")<<ex[1][i].getKind()<<"\n";
-       Debug("expr-qetest")<<ex[1][i].getNumChildren()<<"\n";
-    }
     Expr temp = ex;
     if(temp.getKind()==kind::EXISTS)
     {
@@ -3366,20 +3350,6 @@ std::string SmtEngine::eliminateQuantifier(Expr ex)
       }
       temp = ex.getExprManager()->mkExpr(kind::FORALL,children);
       temp = temp.notExpr();
-    }
-    Debug("expr-qetest")<<"-------After Forall Conversion-----------"<<"\n";
-    Debug("expr-qetest")<<temp<<"\n";
-    Debug("expr-qetest")<<temp.getKind()<<"\n";
-    Debug("expr-qetest")<<temp.getNumChildren()<<"\n";
-    for(int i=0;i<(int)temp.getNumChildren();i++)
-    {
-      Debug("expr-qetest")<<temp[i].getKind()<<"\n";
-      Debug("expr-qetest")<<temp[i].getNumChildren()<<"\n";
-     }
-    for(int i=0;i<(int)temp[0].getNumChildren();i++)
-    {
-      Debug("expr-qetest")<<temp[0][i].getKind()<<"\n";
-      Debug("expr-qetest")<<temp[0][i].getNumChildren()<<"\n";
     }
    Node finalNode = QuantifierEliminate::doPreprocessing(temp);
    Debug("expr-qetest")<<"-------After prenex and nnf Conversion-----------"<<"\n";
