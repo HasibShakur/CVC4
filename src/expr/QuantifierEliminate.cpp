@@ -168,7 +168,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
       Kind k = body[0].getKind();
       if(body[0].getKind() == kind::OR || body[0].getKind() == kind::AND) {
         for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
-          if(isRelationalOperatorTypeQE(body[0][i].getKind())) {
+         /* if(isRelationalOperatorTypeQE(body[0][i].getKind())) {
             if(body[0][i].getKind() == kind::GEQ) {
               std::vector<CVC4::Node> children_relation;
               for(int j = 0; j < (int) body[0][i].getNumChildren(); j++) {
@@ -202,8 +202,8 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
                                         children_relation[1]);
               children.push_back(convertToNNFQE(geq.notNode(),currNM));
             }
-          }
-          //children.push_back( convertToNNFQE( body[0][i].notNode() ) );
+          }*/
+          children.push_back( convertToNNFQE( body[0][i].notNode() ) );
         }
         k = body[0].getKind() == kind::AND ? kind::OR : kind::AND;
         Debug("expr-qetest")<<"New kind after negation "<<k<<"\n";
