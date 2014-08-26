@@ -176,7 +176,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
               }
               Node lt = currNM->mkNode(kind::LT, children_relation[0],
                                        children_relation[1]);
-              children.push_back(lt);
+              children.push_back(convertToNNFQE(lt.notNode(),currNM));
             } else if(body[0][i].getKind() == kind::LEQ) {
               std::vector<CVC4::Node> children_relation;
               for(int j = 0; j < (int) body[0][i].getNumChildren(); j++) {
@@ -184,7 +184,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
               }
               Node gt = currNM->mkNode(kind::GT, children_relation[0],
                                        children_relation[1]);
-              children.push_back(gt);
+              children.push_back(convertToNNFQE(gt.notNode(),currNM));
             } else if(body[0][i].getKind() == kind::GT) {
               std::vector<CVC4::Node> children_relation;
               for(int j = 0; j < (int) body[0][i].getNumChildren(); j++) {
@@ -192,7 +192,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
               }
               Node leq = currNM->mkNode(kind::LEQ, children_relation[0],
                                         children_relation[1]);
-              children.push_back(leq);
+              children.push_back(convertToNNFQE(leq.notNode(),currNM));
             } else if(body[0][i].getKind() == kind::LT) {
               std::vector<CVC4::Node> children_relation;
               for(int j = 0; j < (int) body[0][i].getNumChildren(); j++) {
@@ -200,9 +200,8 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
               }
               Node geq = currNM->mkNode(kind::GEQ, children_relation[0],
                                         children_relation[1]);
-              children.push_back(geq);
+              children.push_back(convertToNNFQE(geq.notNode(),currNM));
             }
-            // to do code
           }
           //children.push_back( convertToNNFQE( body[0][i].notNode() ) );
         }
@@ -262,10 +261,15 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToPrenexQE(n,args, true)" << "\n";
     }
     NodeManager* currNM = NodeManager::currentNM();
-    Node rewrittenNode = convertToNNFQE(n, currNM);
-    Debug("expr-qetest") << "After nnf "<< rewrittenNode << "\n";
-    if(rewrittenNode.isNull()) {
+    Node nnfNode = convertToNNFQE(n, currNM);
+    Debug("expr-qetest") << "After nnf "<< nnfNode << "\n";
+    if(nnfNode.isNull()) {
       Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
+    }
+    Node rewrittenNode = doRewriting(nnfNode,currNm);
+    Debug("expr-qetest") << "After rewriting "<< rewrittenNode << "\n";
+    if(rewrittenNode.isNull()) {
+       Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
     if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
       return in;
@@ -295,6 +299,10 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
   } else {
     return in;
   }
+}
+Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
+{
+  return n;
 }
 
 /*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)

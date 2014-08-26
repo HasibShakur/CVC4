@@ -14,6 +14,7 @@ private:
   static Node convertToNNFQE(Node body,NodeManager* currNM);
   static bool isLiteralQE (Node body);
   static bool isRelationalOperatorTypeQE(Kind k);
+  static Node doRewriting(Node n,NodeManager* currNM);
 public:
   static Node doPreprocessing(Expr ex);
 };
