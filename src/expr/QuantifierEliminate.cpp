@@ -302,6 +302,13 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
 }
 Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
 {
+  if(n.getKind() == kind::OR || n.getKind() == kind::AND)
+  {
+    for(int i=0;i<(int)n.getNumChildren();i++)
+    {
+      Debug("expr-qetest")<<"child "<<i<<" "<<n[i]<<"\n";
+    }
+  }
   return n;
 }
 
