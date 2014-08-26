@@ -203,7 +203,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
               children.push_back(convertToNNFQE(geq.notNode(),currNM));
             }
           }*/
-          children.push_back( convertToNNFQE( body[0][i].notNode() ) );
+          children.push_back( convertToNNFQE( body[0][i].notNode(),currNM ) );
         }
         k = body[0].getKind() == kind::AND ? kind::OR : kind::AND;
         Debug("expr-qetest")<<"New kind after negation "<<k<<"\n";
