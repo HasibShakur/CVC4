@@ -232,6 +232,18 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
   }
 }
 
+Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
+{
+  if(n.getKind() == kind::OR || n.getKind() == kind::AND)
+  {
+    for(int i=0;i<(int)n.getNumChildren();i++)
+    {
+      Debug("expr-qetest")<<"child "<<i<<" "<<n[i]<<"\n";
+    }
+  }
+  return n;
+}
+
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
   Node temp_in = NodeTemplate<true>(ex);
   Debug("expr-qetest") << "------- Inside doProcessing Method ------" << "\n";
@@ -300,17 +312,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     return in;
   }
 }
-Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
-{
-  if(n.getKind() == kind::OR || n.getKind() == kind::AND)
-  {
-    for(int i=0;i<(int)n.getNumChildren();i++)
-    {
-      Debug("expr-qetest")<<"child "<<i<<" "<<n[i]<<"\n";
-    }
-  }
-  return n;
-}
+
 
 /*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
  {
