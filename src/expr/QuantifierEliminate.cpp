@@ -266,7 +266,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     if(nnfNode.isNull()) {
       Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
-    Node rewrittenNode = doRewriting(nnfNode,currNm);
+    Node rewrittenNode = doRewriting(nnfNode,currNM);
     Debug("expr-qetest") << "After rewriting "<< rewrittenNode << "\n";
     if(rewrittenNode.isNull()) {
        Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
