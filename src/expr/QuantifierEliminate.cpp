@@ -242,11 +242,17 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
       if(n[i].getKind() == kind::NOT)
       {
         //do something
-        Debug("expr-qetest")<<n[i].getNumChildren()<<"\n";
+        for(int j=0;j<(int)n[i].getNumChildren();j++)
+        {
+          Debug("expr-qetest")<<"inner inner child "<<j<<" "<<n[j][i]<<"\n";
+        }
       }
       else
       {
-        Debug("expr-qetest")<<n[i].getNumChildren()<<"\n";
+        for(int j=0;j<(int)n[i].getNumChildren();j++)
+        {
+          Debug("expr-qetest")<<"inner inner child "<<j<<" "<<n[j][i]<<"\n";
+        }
       }
     }
   }
