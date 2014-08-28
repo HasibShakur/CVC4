@@ -239,6 +239,15 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
     for(int i=0;i<(int)n.getNumChildren();i++)
     {
       Debug("expr-qetest")<<"child "<<i<<" "<<n[i]<<"\n";
+      if(n[i].getKind() == kind::NOT)
+      {
+        //do something
+        Debug("expr-qetest")<<n[i].getNumChildren()<<"\n";
+      }
+      else
+      {
+        Debug("expr-qetest")<<n[i].getNumChildren()<<"\n";
+      }
     }
   }
   return n;
