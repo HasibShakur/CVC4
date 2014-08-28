@@ -241,18 +241,13 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
       Debug("expr-qetest")<<"child "<<i<<" "<<n[i]<<"\n";
       if(n[i].getKind() == kind::NOT)
       {
-        //do something
-        for(int j=0;j<(int)n[i].getNumChildren();j++)
-        {
-          Debug("expr-qetest")<<"inner inner child "<<j<<" "<<n[j][i]<<"\n";
-        }
+        Debug("expr-qetest")<<"inner child "<<" "<<n[i][0]<<"\n";
+        Debug("expr-qetest")<<"inner child "<<" "<<n[i][0][0]<<"\n";
+        Debug("expr-qetest")<<"inner child "<<" "<<n[i][0][1]<<"\n";
       }
       else
       {
-        for(int j=0;j<(int)n[i].getNumChildren();j++)
-        {
-          Debug("expr-qetest")<<"inner inner child "<<j<<" "<<n[j][i]<<"\n";
-        }
+
       }
     }
   }
