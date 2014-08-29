@@ -50,6 +50,31 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
   }
 }
 
+Node QuantifierEliminate::eliminateImpliesQE(Node body)
+{
+  if( isLiteralQE( body ) ){
+      return body;
+    }else{
+      bool childrenChanged = false;
+      std::vector< Node > children;
+      for( unsigned i=0; i<body.getNumChildren(); i++ ){
+        Node c = eliminateImpliesQE( body[i] );
+        if( i==0 && ( body.getKind()== kind::IMPLIES ) ){
+          c = c.negate();
+        }
+        children.push_back( c );
+        childrenChanged = childrenChanged || c!=body[i];
+      }
+      if( body.getKind()== kind::IMPLIES ){
+        return NodeManager::currentNM()->mkNode( OR, children );
+      }else if( childrenChanged ){
+        return NodeManager::currentNM()->mkNode( body.getKind(), children );
+      }else{
+        return body;
+      }
+    }
+}
+
 Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
                                             bool pol) {
   if(body.getKind() == kind::FORALL) {
@@ -242,12 +267,16 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
       if(n[i].getKind() == kind::NOT)
       {
         Debug("expr-qetest")<<"inner child "<<" "<<n[i][0]<<"\n";
+      //  if()
         Debug("expr-qetest")<<"inner child "<<" "<<n[i][0][0]<<"\n";
         Debug("expr-qetest")<<"inner child "<<" "<<n[i][0][1]<<"\n";
       }
       else
       {
-
+//        if(isRelationalOperatorTypeQE(n[i].getKind()))
+//        {
+//            if(n[i])
+//        }
       }
     }
   }
@@ -277,6 +306,8 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     if(n.isNull()) {
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = in[1]" << "\n";
     }
+    n = eliminateImpliesQE(n);
+    Debug("expr-qetest") << "After After Eliminating Implies "<< n << "\n";
     n = convertToPrenexQE(n, args, true);
     Debug("expr-qetest") << "After Prenexing "<< n << "\n";
     if(n.isNull()) {
