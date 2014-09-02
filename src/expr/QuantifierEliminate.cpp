@@ -256,15 +256,47 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
     }
   }
 }
+/*Node QuantifierEliminate::internalProcessNodeQE(Node n)
+{
+  if(n.getKind()== kind::CONST_RATIONAL)
+  {
+    if(n.getType().isInteger())
+    {
+      Node constNode  = n.getConst();
+      Debug("expr-qetest")<<"relation node "<<" "<<n<<"\n";
+      Const
+    }
+  }
+}
 
-Node QuantifierEliminate::processRelationOperatorQE(Node n)
+Node QuantifierEliminate::replaceGTQE(Node n)
+{
+  Debug("expr-qetest")<<n<<"\n";
+  Node leftChild = n[0];
+  Node rightChild = n[1];
+  rightChild = internalProcessNodeQE(rightChild);
+  NodeManager::currentNM()->mkNode(kind::LT,leftChild,)
+}
+
+Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
 {
   Debug("expr-qetest")<<"relation node "<<" "<<n<<"\n";
   Debug("expr-qetest")<<"relation node children number "<<n.getNumChildren()<<"\n";
-  return n;
-}
+  if(negationEnabled)
+  {
+    if(n.getKind() == kind::GT)
+    {
 
-Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
+    }
+  }
+  else
+  {
+
+  }
+  return n;
+}*/
+
+/*Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
 {
   if(n.getKind() == kind::OR || n.getKind() == kind::AND)
   {
@@ -277,7 +309,7 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
         if(isRelationalOperatorTypeQE(n[i][0].getKind()))
         {
            Debug("expr-qetest")<<"inner child "<<" "<<n[i]<<"\n";
-           Node processedRelationOperator = processRelationOperatorQE(n[i][0]);
+           Node processedRelationOperator = processRelationOperatorQE(n[i][0],true);
         }
 
       }
@@ -286,13 +318,13 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
         if(isRelationalOperatorTypeQE(n[i].getKind()))
         {
           Debug("expr-qetest")<<"inner child "<<" "<<n[i]<<"\n";
-          Node processedRelationOperator = processRelationOperatorQE(n[i]);
+          Node processedRelationOperator = processRelationOperatorQE(n[i],false);
         }
       }
     }
   }
   return n;
-}
+}*/
 
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
   Node temp_in = NodeTemplate<true>(ex);
@@ -330,11 +362,12 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     if(nnfNode.isNull()) {
       Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
-    Node rewrittenNode = doRewriting(nnfNode,currNM);
+    Node rewrittenNode = nnfNode;
+    /*Node rewrittenNode = doRewriting(nnfNode,currNM);
     Debug("expr-qetest") << "After rewriting "<< rewrittenNode << "\n";
     if(rewrittenNode.isNull()) {
        Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
-    }
+    }*/
     if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
       return in;
     } else {

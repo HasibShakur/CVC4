@@ -16,7 +16,9 @@ private:
   static bool isRelationalOperatorTypeQE(Kind k);
   static Node doRewriting(Node n,NodeManager* currNM);
   static Node eliminateImpliesQE(Node body);
-  static Node processRelationOperatorQE(Node n);
+//  static Node processRelationOperatorQE(Node n,bool negationEnabled);
+// static Node replaceGTQE(Node n);
+//  static Node internalProcessNodeQE(Node n);
 public:
   static Node doPreprocessing(Expr ex);
 };
