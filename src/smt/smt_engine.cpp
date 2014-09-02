@@ -3356,7 +3356,7 @@ std::string SmtEngine::eliminateQuantifier(Expr ex)
    Node processedNode = QuantifierEliminate::doPreprocessing(temp);
    Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
 */
-   Node rewrittenNode = Rewriter::rewrite(temp);
+   Node rewrittenNode = Rewriter::rewrite(tempNode);
    Debug("expr-qetest")<<"After rewriting "<<rewrittenNode<<"\n";
 
   return "success";
