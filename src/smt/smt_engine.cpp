@@ -3340,7 +3340,7 @@ std::string SmtEngine::eliminateQuantifier(Expr ex)
   Assert(ex.getExprManager() == d_exprManager);
   SmtScope smts(this);
   Node tempNode = NodeTemplate<false>(ex);
-    Expr temp = ex;
+   /* Expr temp = ex;
     if(temp.getKind()==kind::EXISTS)
     {
       std::vector< Expr > children;
@@ -3355,7 +3355,7 @@ std::string SmtEngine::eliminateQuantifier(Expr ex)
    Debug("expr-qetest")<<"Before processing "<<temp<<"\n";
    Node processedNode = QuantifierEliminate::doPreprocessing(temp);
    Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
-
+*/
    Node rewrittenNode = Rewriter::rewrite(temp);
    Debug("expr-qetest")<<"After rewriting "<<rewrittenNode<<"\n";
 
