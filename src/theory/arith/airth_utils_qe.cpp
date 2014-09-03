@@ -10,7 +10,7 @@ using namespace CVC4::kind;
 using namespace CVC4::theory::arith;
 
 ConstantQE ConstantQE::mkConstantQE(const Rational& rat) {
-  return Constant(mkRationalNode(rat));
+  return ConstantQE(mkRationalNode(rat));
 }
 
 /*bool VariableQE::isLeafMemberQE(Node n)
