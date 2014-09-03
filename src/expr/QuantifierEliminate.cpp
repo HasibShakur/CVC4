@@ -8,7 +8,7 @@
 #include "printer/smt2/smt2_printer.h"
 #include "util/output.h"
 #include "theory/rewriter.h"
-#include "expr/arith_utils_qe.h"
+#include "theory/arith/arith_utils_qe.h"
 
 using namespace std;
 using namespace CVC4;
