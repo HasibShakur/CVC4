@@ -8,12 +8,14 @@
 #include "printer/smt2/smt2_printer.h"
 #include "util/output.h"
 #include "theory/rewriter.h"
+#include "expr/arith_utils_qe.h"
 
 using namespace std;
 using namespace CVC4;
 using namespace CVC4::expr;
 using namespace CVC4::kind;
 using namespace CVC4::printer;
+using namespace CVC4::theory::arith;
 
 struct QENestedQuantAttributeId {
 };
@@ -256,26 +258,135 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
     }
   }
 }
-/*Node QuantifierEliminate::internalProcessNodeQE(Node n)
+Node QuantifierEliminate::internalProcessNodeQE(Node n)
 {
   if(n.getKind()== kind::CONST_RATIONAL)
   {
     if(n.getType().isInteger())
     {
-      Node constNode  = n.getConst();
-      Debug("expr-qetest")<<"relation node "<<" "<<n<<"\n";
-      Const
+      ConstantQE nodeConst = ConstantQE::mkConstantQE(n);
+      Debug("expr-qetest")<<"Const Node "<<nodeConst<<"\n";
+      ConstantQE oneConst = ConstantQE::mkConstantQE(1);
+      Debug("expr-qetest")<<"One Node "<<nodeConst<<"\n";
+      ConstantQE result = nodeConst + oneConst;
+      Debug("expr-qetest")<<"Result Node "<<nodeConst<<"\n";
+      return NodeManager::currentNM()->mkNode(kind::CONST_RATIONAL, result);
     }
+  }
+  else
+  {
+    //extract variable and bound variable
+    /*if(n.isVar())
+    {
+      return n;
+    }*/
+    return n;
   }
 }
 
-Node QuantifierEliminate::replaceGTQE(Node n)
+Node QuantifierEliminate::replaceGEQQE(Node n,bool negationEnabled)
+{
+  Debug("expr-qetest")<<n<<"\n";
+  Node leftChild;
+  Node rightChild;
+  if(negationEnabled)
+  {
+    leftChild = n[0];
+    rightChild = n[1];
+    return NodeManager::currentNM()->mkNode(kind::LT,leftChild,rightChild);
+  }
+  else
+  {
+    leftChild = n[1];
+    rightChild = QuantifierEliminate::internalProcessNodeQE(n[0]);
+    Debug("expr-qetest")<<"After modification Right child "<<rightChild<<"\n";
+    return NodeManager::currentNM()->mkNode(kind::LT,leftChild,rightChild);
+  }
+}
+
+Node QuantifierEliminate::replaceGTQE(Node n,bool negationEnabled)
+{
+  Debug("expr-qetest")<<n<<"\n";
+  Node leftChild;
+  Node rightChild;
+  if(negationEnabled)
+  {
+    leftChild = n[0];
+    rightChild = QuantifierEliminate::internalProcessNodeQE(n[1]);
+    Debug("expr-qetest")<<"After modification Right child "<<rightChild<<"\n";
+    return NodeManager::currentNM()->mkNode(kind::LT,leftChild,rightChild);
+  }
+  else
+  {
+    leftChild = n[1];
+    rightChild = n[0];
+    return NodeManager::currentNM()->mkNode(kind::LT,leftChild,rightChild);
+  }
+}
+
+Node QuantifierEliminate::replaceLTQE(Node n,bool negationEnabled)
+{
+  Debug("expr-qetest")<<n<<"\n";
+  Node leftChild;
+  Node rightChild;
+  if(negationEnabled)
+  {
+    leftChild = n[1];
+    rightChild = QuantifierEliminate::internalProcessNodeQE(n[0]);
+    Debug("expr-qetest")<<"After modification Right child "<<rightChild<<"\n";
+    return NodeManager::currentNM()->mkNode(kind::LT,leftChild,rightChild);
+  }
+  else
+  {
+    return n;
+  }
+}
+
+Node QuantifierEliminate::replaceLEQQE(Node n,bool negationEnabled)
+{
+  Debug("expr-qetest")<<n<<"\n";
+  Node leftChild;
+  Node rightChild;
+  if(negationEnabled)
+  {
+    leftChild = n[1];
+    rightChild = n[0];
+    return NodeManager::currentNM()->mkNode(kind::LT,leftChild,rightChild);
+  }
+  else
+  {
+    leftChild = n[0];
+    rightChild = QuantifierEliminate::internalProcessNodeQE(n[1]);
+    Debug("expr-qetest")<<"After modification Right child "<<rightChild<<"\n";
+    return NodeManager::currentNM()->mkNode(kind::LT,leftChild,rightChild);
+  }
+}
+
+Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
 {
   Debug("expr-qetest")<<n<<"\n";
   Node leftChild = n[0];
   Node rightChild = n[1];
-  rightChild = internalProcessNodeQE(rightChild);
-  NodeManager::currentNM()->mkNode(kind::LT,leftChild,)
+  Node leftExp;
+  Node rightExp;
+  if(negationEnabled)
+  {
+    leftExp = NodeManager::currentNM()->mkNode(kind::LT, leftChild,rightChild);
+    rightExp = NodeManager::currentNM()->mkNode(kind::LT, rightChild,leftChild);
+    return NodeManager::currentNM()->mkNode(kind::OR, left,right);
+  }
+  else
+  {
+    Node modifiedLeftChild = QuantifierEliminate::internalProcessNodeQE(leftChild);
+    Debug("expr-qetest")<<"After modification Left child "<<modifiedLeftChild<<"\n";
+    Node modifiedRightChild = QuantifierEliminate::internalProcessNodeQE(rightChild);
+    Debug("expr-qetest")<<"After modification Left child "<<modifiedRightChild<<"\n";
+    leftExp = NodeManager::currentNM()->mkNode(kind::LT, leftChild, modifiedRightChild);
+    Debug("expr-qetest")<<"Left Expression "<<leftExp<<"\n";
+    rightExp = NodeManager::currentNM()->mkNode(kind::LT,rightChild,modifiedLeftChild);
+    Debug("expr-qetest")<<"Right Expression "<<rightExp<<"\n";
+    return NodeManager::currentNM()->mkNode(kind::AND, leftExp,rightExp);
+  }
 }
 
 Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
@@ -284,19 +395,64 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
   Debug("expr-qetest")<<"relation node children number "<<n.getNumChildren()<<"\n";
   if(negationEnabled)
   {
-    if(n.getKind() == kind::GT)
+    if(n.getKind() == kind::GEQ)
     {
-
+      n = QuantifierEliminate::replaceGEQQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+    }
+    else if(n.getKind() == kind::GT)
+    {
+      n = QuantifierEliminate::replaceGTQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+    }
+    else if(n.getKind() == kind::LT)
+    {
+      n = QuantifierEliminate::replaceLTNegationQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+    }
+    else if(n.getKind() == kind::LEQ)
+    {
+      n = QuantifierEliminate::replaceLEQNegationQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+    }
+    else if(n.getKind() == kind::EQUAL)
+    {
+      n = QuantifierEliminate::replaceEqualQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
     }
   }
   else
   {
-
+    if(n.getKind() == kind::GT)
+    {
+      n = QuantifierEliminate::replaceGTQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+    }
+    else if(n.getKind() == kind::GEQ)
+    {
+      n = QuantifierEliminate::replaceGEQQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+    }
+    else if(n.getKind() == kind::LT)
+    {
+      n = QuantifierEliminate::replaceLTQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+    }
+    else if(n.getKind() == kind::LEQ)
+    {
+      n = QuantifierEliminate::replaceLEQQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+    }
+    else if(n.getKind() == kind::EQUAL)
+    {
+      n = QuantifierEliminate::replaceEqualQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+    }
   }
   return n;
-}*/
+}
 
-/*Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
+Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
 {
   if(n.getKind() == kind::OR || n.getKind() == kind::AND)
   {
@@ -324,7 +480,7 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
     }
   }
   return n;
-}*/
+}
 
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
   Node temp_in = NodeTemplate<true>(ex);
@@ -362,12 +518,11 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     if(nnfNode.isNull()) {
       Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
-    Node rewrittenNode = nnfNode;
-    /*Node rewrittenNode = doRewriting(nnfNode,currNM);
+    Node rewrittenNode = doRewriting(nnfNode,currNM);
     Debug("expr-qetest") << "After rewriting "<< rewrittenNode << "\n";
     if(rewrittenNode.isNull()) {
        Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
-    }*/
+    }
     if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
       return in;
     } else {
