@@ -9,9 +9,15 @@ using namespace CVC4::expr;
 using namespace CVC4::kind;
 using namespace CVC4::theory::arith;
 
-ConstantQE ConstantQE::mkConstantQE(const Rational& rat) {
-  return ConstantQE(mkRationalNode(rat));
+inline Node mkRationalNodeQE(const Rational& q){
+  return NodeManager::currentNM()->mkConst<Rational>(q);
 }
+
+ConstantQE ConstantQE::mkConstantQE(const Rational& rat) {
+  return ConstantQE(mkRationalNodeQE(rat));
+}
+
+
 
 /*bool VariableQE::isLeafMemberQE(Node n)
 {
