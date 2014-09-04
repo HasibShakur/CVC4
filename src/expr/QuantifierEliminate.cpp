@@ -400,7 +400,7 @@ Node QuantifierEliminate::replaceLTQE(Node n,bool negationEnabled)
 
 Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
 {
-  Node changedNode
+  Node changedNode;
   if(negationEnabled)
   {
     if(n.getKind() == kind::GEQ)
