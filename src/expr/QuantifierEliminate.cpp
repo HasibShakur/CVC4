@@ -3,7 +3,7 @@
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
-#include "expr/QuantifierEliminate.h"
+#include "util/QuantifierEliminate.h"
 #include "expr/attribute.h"
 #include "printer/smt2/smt2_printer.h"
 #include "util/output.h"
@@ -271,7 +271,8 @@ Node QuantifierEliminate::internalProcessNodeQE(Node n)
     Constant result = Constant::mkConstant(c.getValue()+one.getValue());
     return result.getNode();*/
     Debug("expr-qetest")<<"Constant "<<n.getType()<<"\n";
-    Debug("expr-qetest")<<"Constant value "<<n.getType(true).getConst<Integer><<"\n";
+    Constant c = Constant::mkConstant(n);
+    Debug("expr-qetest")<<"Constant value "<<c.getValue()<<"\n";
 
    // Debug("expr-qetest")<<"Constant "<<n.getType(true).getConst()<<"\n";
     return n;

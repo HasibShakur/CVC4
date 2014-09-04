@@ -96,9 +96,7 @@ libutil_la_SOURCES = \
 	regexp.h \
 	regexp.cpp \
 	didyoumean.h \
-	didyoumean.cpp \
-	QuantifierEliminate.h \
-	QuantifierEliminate.cpp
+	didyoumean.cpp 
 
 libstatistics_la_SOURCES = \
 	statistics_registry.h \
