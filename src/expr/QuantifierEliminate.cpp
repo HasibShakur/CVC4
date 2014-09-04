@@ -277,8 +277,8 @@ Node QuantifierEliminate::internalProcessNodeQE(Node n)
     Debug("expr-qetest")<<"Print the kind "<<n.getKind()<<"\n";
     Debug("expr-qetest")<<"Print the kind "<<n.getType()<<"\n";
     Constant one = Constant::mkOne();
-    NodeBuilder nb;
-    nb<<kind::PLUS<<n<<one.getNode();
+    NodeBuilder<> nb(kind::PLUS);
+    nb << n << one.getNode();
     n = nb;
     Debug("expr-qetest")<<"Print the new node "<<n<<"\n";
     return n;
