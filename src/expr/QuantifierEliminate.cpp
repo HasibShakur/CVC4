@@ -327,7 +327,7 @@ Node QuantifierEliminate::replaceGTQE(Node n,bool negationEnabled)
   {
     leftChild = n[1];
     rightChild = n[0];
-    replaceMent = s NodeManager::currentNM()->mkNode(kind::LT,leftChild,rightChild);
+    replaceMent = NodeManager::currentNM()->mkNode(kind::LT,leftChild,rightChild);
     Debug("expr-qetest")<<"After replacing GT without not "<<replaceMent<<"\n";
     return replaceMent;
   }
