@@ -16,9 +16,9 @@ private:
   static Node eliminateImpliesQE(Node body);
   static Node processRelationOperatorQE(Node n,bool negationEnabled);
   static Node replaceGEQQE(Node n,bool negationEnabled);
-//  static Node replaceGTQE(Node n,bool negationEnabled);
+  static Node replaceGTQE(Node n,bool negationEnabled);
   static Node replaceLTQE(Node n,bool negationEnabled);
-//  static Node replaceLEQQE(Node n,bool negationEnabled);
+  static Node replaceLEQQE(Node n,bool negationEnabled);
 //  static Node replaceEqualQE(Node n,bool negationEnabled);
   static Node internalProcessNodeQE(Node n);
 public:
