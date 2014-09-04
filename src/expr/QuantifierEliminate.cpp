@@ -9,6 +9,7 @@
 #include "util/output.h"
 #include "theory/rewriter.h"
 #include "theory/arith/normal_form.h"
+#include "util/rational.h"
 #include "util/integer.h"
 
 using namespace std;
