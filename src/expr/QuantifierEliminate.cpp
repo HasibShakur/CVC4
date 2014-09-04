@@ -387,7 +387,9 @@ Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
   if(negationEnabled)
   {
     leftExp = NodeManager::currentNM()->mkNode(kind::LT, leftChild,rightChild);
+    Debug("expr-qetest")<<"left expression inside equals "<<leftExp<<"\n";
     rightExp = NodeManager::currentNM()->mkNode(kind::LT, rightChild,leftChild);
+    Debug("expr-qetest")<<"right expression inside equals "<<rightExp<<"\n";
     return NodeManager::currentNM()->mkNode(kind::OR, leftExp,rightExp);
   }
   else
