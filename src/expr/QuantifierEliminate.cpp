@@ -8,7 +8,7 @@
 #include "printer/smt2/smt2_printer.h"
 #include "util/output.h"
 #include "theory/rewriter.h"
-#include "theory/arith/arith_utils_qe.h"
+#include "theory/arith/normal_form.h"
 
 using namespace std;
 using namespace CVC4;
@@ -262,16 +262,13 @@ Node QuantifierEliminate::internalProcessNodeQE(Node n)
 {
   if(n.getKind()== kind::CONST_RATIONAL)
   {
-    if(n.getType().isInteger())
-    {
-      ConstantQE nodeConst = ConstantQE::mkConstantQE(n);
-      Debug("expr-qetest")<<"Const Node "<<nodeConst<<"\n";
-      ConstantQE oneConst = ConstantQE::mkConstantQE(1);
-      Debug("expr-qetest")<<"One Node "<<nodeConst<<"\n";
-      ConstantQE result = nodeConst + oneConst;
-      Debug("expr-qetest")<<"Result Node "<<nodeConst<<"\n";
-      return NodeManager::currentNM()->mkNode(kind::CONST_RATIONAL, result);
-    }
+    Constant c = Constant::mkConstant(n);
+    Debug("expr-qetest")<<"Constant Node "<<c<<"\n";
+    Constant one = Constant::mkOne();
+    Debug("expr-qetest")<<"One Node "<<one<<"\n";
+    Constant result = c.getValue() + one.getValue();
+    Debug("expr-qetest")<<"Result Node "<<result<<"\n";
+    return NodeManager::currentNM()->mkNode(kind::CONST_RATIONAL, result.getNode());
   }
   else
   {
