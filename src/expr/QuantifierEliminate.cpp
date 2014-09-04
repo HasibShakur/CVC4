@@ -3,7 +3,7 @@
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
-#include "util/QuantifierEliminate.h"
+#include "expr/QuantifierEliminate.h"
 #include "expr/attribute.h"
 #include "printer/smt2/smt2_printer.h"
 #include "util/output.h"
