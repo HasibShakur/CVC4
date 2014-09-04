@@ -19,7 +19,7 @@ private:
   static Node replaceGTQE(Node n,bool negationEnabled);
   static Node replaceLTQE(Node n,bool negationEnabled);
   static Node replaceLEQQE(Node n,bool negationEnabled);
-//  static Node replaceEqualQE(Node n,bool negationEnabled);
+  static Node replaceEqualQE(Node n,bool negationEnabled);
   static Node internalProcessNodeQE(Node n);
 public:
   static Node doPreprocessing(Expr ex);

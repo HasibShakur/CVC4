@@ -264,21 +264,12 @@ Node QuantifierEliminate::internalProcessNodeQE(Node n)
 {
   if(n.getKind()== kind::CONST_RATIONAL)
   {
-   /* Constant c = Constant::mkConstant(n);
-    Debug("expr-qetest")<<"Constant Node "<<c<<"\n";
-    Constant one = Constant::mkOne();
-    Debug("expr-qetest")<<"One Node "<<one<<"\n";
-    Constant result = Constant::mkConstant(c.getValue()+one.getValue());
-    return result.getNode();*/
     Debug("expr-qetest")<<"Constant "<<n.getType()<<"\n";
     Constant c = Constant::mkConstant(n);
     Constant one = Constant::mkOne();
     Debug("expr-qetest")<<"Constant value "<<(c+one).getValue()<<"\n";
     Node temp = (c+one).getNode();
     return temp;
-   // n = NodeManager::currentNM()->mkNode(kind::CONST_RATIONAL, (c.getValue()+one.getValue()));
-   // Debug("expr-qetest")<<"Constant "<<n.getType(true).getConst()<<"\n";
-   // return n;
    }
   else
   {
@@ -387,9 +378,8 @@ Node QuantifierEliminate::replaceLEQQE(Node n,bool negationEnabled)
   }
 }
 
-/*Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
+Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
 {
-  Debug("expr-qetest")<<n<<"\n";
   Node leftChild = n[0];
   Node rightChild = n[1];
   Node leftExp;
@@ -398,7 +388,7 @@ Node QuantifierEliminate::replaceLEQQE(Node n,bool negationEnabled)
   {
     leftExp = NodeManager::currentNM()->mkNode(kind::LT, leftChild,rightChild);
     rightExp = NodeManager::currentNM()->mkNode(kind::LT, rightChild,leftChild);
-    return NodeManager::currentNM()->mkNode(kind::OR, left,right);
+    return NodeManager::currentNM()->mkNode(kind::OR, leftExp,rightExp);
   }
   else
   {
@@ -412,7 +402,7 @@ Node QuantifierEliminate::replaceLEQQE(Node n,bool negationEnabled)
     Debug("expr-qetest")<<"Right Expression "<<rightExp<<"\n";
     return NodeManager::currentNM()->mkNode(kind::AND, leftExp,rightExp);
   }
-}*/
+}
 
 Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
 {
@@ -439,11 +429,11 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
       changedNode = QuantifierEliminate::replaceLEQQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications LEQ with not "<<changedNode<<"\n";
     }
-  /*  else if(n.getKind() == kind::EQUAL)
+    else if(n.getKind() == kind::EQUAL)
     {
       n = QuantifierEliminate::replaceEqualQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
-    }*/
+    }
   }
   else
   {
@@ -467,11 +457,11 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
       changedNode = QuantifierEliminate::replaceLEQQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications LEQ without not "<<changedNode<<"\n";
     }
-//    else if(n.getKind() == kind::EQUAL)
-//    {
-//      n = QuantifierEliminate::replaceEqualQE(n,negationEnabled);
-//      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
-//    }
+    else if(n.getKind() == kind::EQUAL)
+    {
+      n = QuantifierEliminate::replaceEqualQE(n,negationEnabled);
+      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+    }
   }
   return changedNode;
 }
