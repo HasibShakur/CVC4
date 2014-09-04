@@ -262,28 +262,24 @@ Node QuantifierEliminate::internalProcessNodeQE(Node n)
 {
   if(n.getKind()== kind::CONST_RATIONAL)
   {
-    Constant c = Constant::mkConstant(n);
+   /* Constant c = Constant::mkConstant(n);
     Debug("expr-qetest")<<"Constant Node "<<c<<"\n";
     Constant one = Constant::mkOne();
     Debug("expr-qetest")<<"One Node "<<one<<"\n";
     Constant result = Constant::mkConstant(c.getValue()+one.getValue());
-    return result.getNode();
-    //PlusNodeBuilder<> pb(c.getNode(),one.getNode());
-   // Node returnNode = pb;
-  //  return returnNode;
-  }
+    return result.getNode();*/
+    Debug("expr-qetest")<<"Constant "<<n.getType()<<"\n";
+    Debug("expr-qetest")<<"Constant "<<n.getType(true).getConst()<<"\n";
+    return n;
+   }
   else
   {
-    //extract variable and bound variable
-    /*if(n.isVar())
-    {
-      return n;
-    }*/
     Debug("expr-qetest")<<"Print the kind "<<n.getKind()<<"\n";
     Debug("expr-qetest")<<"Print the kind "<<n.getType()<<"\n";
     Constant one = Constant::mkOne();
     PlusNodeBuilder<> pb(n,one.getNode());
     n = pb;
+    Debug("expr-qetest")<<"Print the new node "<<n<<"\n";
     return n;
   }
 }
