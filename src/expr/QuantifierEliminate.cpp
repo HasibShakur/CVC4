@@ -389,9 +389,13 @@ Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
   {
     leftExp = NodeManager::currentNM()->mkNode(kind::LT, leftChild,rightChild);
     Debug("expr-qetest")<<"left expression inside equals "<<leftExp<<"\n";
+    Polynomial p1 = Polynomial::parsePolynomial(leftExp);
     rightExp = NodeManager::currentNM()->mkNode(kind::LT, rightChild,leftChild);
+    Polynomial p2 = Polynomial::parsePolynomial(rightExp);
     Debug("expr-qetest")<<"right expression inside equals "<<rightExp<<"\n";
     finalExp = NodeManager::currentNM()->mkNode(kind::OR, leftExp,rightExp);
+    Polynomial f = Polynomial::parsePolynomial(finalExp);
+    Debug("expr-qetest")<<"final expression "<<f.getNode()<<"\n";
     Debug("expr-qetest")<<"final expression "<<finalExp<<"\n";
     return finalExp;
   }
@@ -571,6 +575,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     if(rewrittenNode.isNull()) {
        Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
+
     if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
       return in;
     } else {
