@@ -407,7 +407,7 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
     }*/
     else if(n.getKind() == kind::LT)
     {
-      n = QuantifierEliminate::replaceLTNegationQE(n,negationEnabled);
+      n = QuantifierEliminate::replaceLTQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
     }
    /* else if(n.getKind() == kind::LEQ)
@@ -423,12 +423,12 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
   }
   else
   {
-    if(n.getKind() == kind::GT)
-    {
-      n = QuantifierEliminate::replaceGTQE(n,negationEnabled);
-      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
-    }
-    else if(n.getKind() == kind::GEQ)
+//    if(n.getKind() == kind::GT)
+//    {
+//      n = QuantifierEliminate::replaceGTQE(n,negationEnabled);
+//      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+//    }
+    if(n.getKind() == kind::GEQ)
     {
       n = QuantifierEliminate::replaceGEQQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
@@ -438,16 +438,16 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
       n = QuantifierEliminate::replaceLTQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
     }
-    else if(n.getKind() == kind::LEQ)
-    {
-      n = QuantifierEliminate::replaceLEQQE(n,negationEnabled);
-      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
-    }
-    else if(n.getKind() == kind::EQUAL)
-    {
-      n = QuantifierEliminate::replaceEqualQE(n,negationEnabled);
-      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
-    }
+//    else if(n.getKind() == kind::LEQ)
+//    {
+//      n = QuantifierEliminate::replaceLEQQE(n,negationEnabled);
+//      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+//    }
+//    else if(n.getKind() == kind::EQUAL)
+//    {
+//      n = QuantifierEliminate::replaceEqualQE(n,negationEnabled);
+//      Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
+//    }
   }
   return n;
 }
