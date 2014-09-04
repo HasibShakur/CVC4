@@ -455,6 +455,7 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
 
 Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
 {
+  Node processedRelationOperator;
   if(n.getKind() == kind::OR || n.getKind() == kind::AND)
   {
     for(int i=0;i<(int)n.getNumChildren();i++)
@@ -466,7 +467,7 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
         if(isRelationalOperatorTypeQE(n[i][0].getKind()))
         {
            Debug("expr-qetest")<<"inner child "<<" "<<n[i]<<"\n";
-           Node processedRelationOperator = processRelationOperatorQE(n[i][0],true);
+           processedRelationOperator = processRelationOperatorQE(n[i][0],true);
         }
 
       }
@@ -475,12 +476,12 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
         if(isRelationalOperatorTypeQE(n[i].getKind()))
         {
           Debug("expr-qetest")<<"inner child "<<" "<<n[i]<<"\n";
-          Node processedRelationOperator = processRelationOperatorQE(n[i],false);
+          processedRelationOperator = processRelationOperatorQE(n[i],false);
         }
       }
     }
   }
-  return n;
+  return processedRelationOperator;
 }
 
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
