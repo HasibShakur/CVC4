@@ -273,9 +273,8 @@ Node QuantifierEliminate::internalProcessNodeQE(Node n)
     Debug("expr-qetest")<<"Constant "<<n.getType()<<"\n";
     Constant c = Constant::mkConstant(n);
     Constant one = Constant::mkOne();
-    Constant result = c.getValue()+one.getValue();
-    Debug("expr-qetest")<<"Constant value "<<result<<"\n";
-
+    Debug("expr-qetest")<<"Constant value "<<c.getValue()+one.getValue()<<"\n";
+    n = NodeManager::currentNM()->mkNode(kind::CONST_RATIONAL, (c.getValue()+one.getValue()));
    // Debug("expr-qetest")<<"Constant "<<n.getType(true).getConst()<<"\n";
     return n;
    }
