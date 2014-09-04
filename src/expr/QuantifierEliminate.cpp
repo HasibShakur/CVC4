@@ -287,7 +287,6 @@ Node QuantifierEliminate::internalProcessNodeQE(Node n)
 
 Node QuantifierEliminate::replaceGEQQE(Node n,bool negationEnabled)
 {
-  Debug("expr-qetest")<<n<<"\n";
   Node leftChild;
   Node rightChild;
   if(negationEnabled)
@@ -327,7 +326,6 @@ Node QuantifierEliminate::replaceGEQQE(Node n,bool negationEnabled)
 
 Node QuantifierEliminate::replaceLTQE(Node n,bool negationEnabled)
 {
-  Debug("expr-qetest")<<n<<"\n";
   Node leftChild;
   Node rightChild;
   if(negationEnabled)
@@ -392,8 +390,6 @@ Node QuantifierEliminate::replaceLTQE(Node n,bool negationEnabled)
 
 Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
 {
-  Debug("expr-qetest")<<"relation node "<<" "<<n<<"\n";
-  Debug("expr-qetest")<<"relation node children number "<<n.getNumChildren()<<"\n";
   if(negationEnabled)
   {
     if(n.getKind() == kind::GEQ)
@@ -463,22 +459,27 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
     if(n[0].getKind() == kind::NOT)
     {
       processedFirstChild = QuantifierEliminate::processRelationOperatorQE(n[0], true);
+      Debug("expr-qetest") << "After processing first child "<< processedFirstChild<<"\n";
     }
     else
     {
       processedFirstChild = QuantifierEliminate::processRelationOperatorQE(n[0],false);
+      Debug("expr-qetest") << "After processing first child "<< processedFirstChild<<"\n";
     }
     if(n[1].getKind() == kind::NOT)
     {
       processedSecondChild = QuantifierEliminate::processRelationOperatorQE(n[1],true);
+      Debug("expr-qetest") << "After processing second child "<< processedSecondChild<<"\n";
     }
     else
     {
       processedSecondChild = QuantifierEliminate::processRelationOperatorQE(n[1],false);
+      Debug("expr-qetest") << "After processing second child "<< processedSecondChild<<"\n";
     }
     NodeBuilder<> nb(n.getKind());
     nb<<processedFirstChild<<processedSecondChild;
     finalNode = nb;
+    Debug("expr-qetest") << "After processing final node "<< finalNode<<"\n";
     return finalNode;
   }
   else
@@ -489,11 +490,13 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
     {
       Debug("expr-qetest") << "Node to process "<< n<<"\n";
       finalNode = QuantifierEliminate::processRelationOperatorQE(n[0],true);
+      Debug("expr-qetest") << "After processing final node "<< finalNode<<"\n";
     }
     else
     {
       Debug("expr-qetest") << "Node to process "<< n<<"\n";
       finalNode = QuantifierEliminate::processRelationOperatorQE(n,false);
+      Debug("expr-qetest") << "After processing final node "<< finalNode<<"\n";
     }
     return finalNode;
   }
