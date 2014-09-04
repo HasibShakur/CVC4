@@ -9,6 +9,7 @@
 #include "util/output.h"
 #include "theory/rewriter.h"
 #include "theory/arith/normal_form.h"
+#include "util/integer.h"
 
 using namespace std;
 using namespace CVC4;
@@ -16,6 +17,7 @@ using namespace CVC4::expr;
 using namespace CVC4::kind;
 using namespace CVC4::printer;
 using namespace CVC4::theory::arith;
+using namespace CVC4::util;
 
 struct QENestedQuantAttributeId {
 };
