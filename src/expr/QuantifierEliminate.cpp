@@ -455,33 +455,48 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
 
 Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
 {
-  Node processedRelationOperator;
+  Node processedFirstChild;
+  Node processedSecondChild;
+  Node finalNode;
   if(n.getKind() == kind::OR || n.getKind() == kind::AND)
   {
-    for(int i=0;i<(int)n.getNumChildren();i++)
+    if(n[0].getKind() == kind::NOT)
     {
-      Debug("expr-qetest")<<"child "<<i<<" "<<n[i]<<"\n";
-      if(n[i].getKind() == kind::NOT)
-      {
-        Debug("expr-qetest")<<"inner child "<<" "<<n[i][0]<<"\n";
-        if(isRelationalOperatorTypeQE(n[i][0].getKind()))
-        {
-           Debug("expr-qetest")<<"inner child "<<" "<<n[i]<<"\n";
-           processedRelationOperator = processRelationOperatorQE(n[i][0],true);
-        }
-
-      }
-      else
-      {
-        if(isRelationalOperatorTypeQE(n[i].getKind()))
-        {
-          Debug("expr-qetest")<<"inner child "<<" "<<n[i]<<"\n";
-          processedRelationOperator = processRelationOperatorQE(n[i],false);
-        }
-      }
+      processedFirstChild = QuantifierEliminate::processRelationOperatorQE(n[0], true);
     }
+    else
+    {
+      processedFirstChild = QuantifierEliminate::processRelationOperatorQE(n[0],false);
+    }
+    if(n[1].getKind() == kind::NOT)
+    {
+      processedSecondChild = QuantifierEliminate::processRelationOperatorQE(n[1],true);
+    }
+    else
+    {
+      processedSecondChild = QuantifierEliminate::processRelationOperatorQE(n[1],false);
+    }
+    NodeBuilder<> nb(n.getKind());
+    nb<<processedFirstChild<<processedSecondChild;
+    finalNode = nb;
+    return finalNode;
   }
-  return processedRelationOperator;
+  else
+  {
+    Debug("expr-qetest") << "Process Relational Operator Directly "<< "\n";
+    Node finalNode;
+    if(n.getKind() == kind::NOT)
+    {
+      Debug("expr-qetest") << "Node to process "<< n<<"\n";
+      finalNode = QuantifierEliminate::processRelationOperatorQE(n[0],true);
+    }
+    else
+    {
+      Debug("expr-qetest") << "Node to process "<< n<<"\n";
+      finalNode = QuantifierEliminate::processRelationOperatorQE(n,false);
+    }
+    return finalNode;
+  }
 }
 
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
