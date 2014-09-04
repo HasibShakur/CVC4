@@ -470,7 +470,7 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
     if(n[0].getKind() == kind::NOT)
     {
       Debug("expr-qetest") << "Before processing first child "<< n[0]<<"\n";
-      processedFirstChild = QuantifierEliminate::processRelationOperatorQE(n[0], true);
+      processedFirstChild = QuantifierEliminate::processRelationOperatorQE(n[0][0], true);
       Debug("expr-qetest") << "After processing first child "<< processedFirstChild<<"\n";
     }
     else
@@ -482,7 +482,7 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
     if(n[1].getKind() == kind::NOT)
     {
       Debug("expr-qetest") << "Before processing second child "<< n[1]<<"\n";
-      processedSecondChild = QuantifierEliminate::processRelationOperatorQE(n[1],true);
+      processedSecondChild = QuantifierEliminate::processRelationOperatorQE(n[1][0],true);
       Debug("expr-qetest") << "After processing second child "<< processedSecondChild<<"\n";
     }
     else
