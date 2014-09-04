@@ -384,13 +384,16 @@ Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
   Node rightChild = n[1];
   Node leftExp;
   Node rightExp;
+  Node finalExp;
   if(negationEnabled)
   {
     leftExp = NodeManager::currentNM()->mkNode(kind::LT, leftChild,rightChild);
     Debug("expr-qetest")<<"left expression inside equals "<<leftExp<<"\n";
     rightExp = NodeManager::currentNM()->mkNode(kind::LT, rightChild,leftChild);
     Debug("expr-qetest")<<"right expression inside equals "<<rightExp<<"\n";
-    return NodeManager::currentNM()->mkNode(kind::OR, leftExp,rightExp);
+    finalExp = NodeManager::currentNM()->mkNode(kind::OR, leftExp,rightExp);
+    Debug("expr-qetest")<<"final expression "<<finalExp<<"\n";
+    return finalExp;
   }
   else
   {
@@ -402,7 +405,9 @@ Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
     Debug("expr-qetest")<<"Left Expression "<<leftExp<<"\n";
     rightExp = NodeManager::currentNM()->mkNode(kind::LT,rightChild,modifiedLeftChild);
     Debug("expr-qetest")<<"Right Expression "<<rightExp<<"\n";
-    return NodeManager::currentNM()->mkNode(kind::AND, leftExp,rightExp);
+    finalExp = NodeManager::currentNM()->mkNode(kind::AND, leftExp,rightExp);
+    Debug("expr-qetest")<<"final expression "<<finalExp<<"\n";
+    return finalExp;
   }
 }
 
