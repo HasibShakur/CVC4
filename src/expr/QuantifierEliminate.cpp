@@ -428,7 +428,7 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
     }
     else if(n.getKind() == kind::LEQ)
     {
-      changedNode = QuantifierEliminate::replaceLEQNegationQE(n,negationEnabled);
+      changedNode = QuantifierEliminate::replaceLEQQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications LEQ with not "<<changedNode<<"\n";
     }
   /*  else if(n.getKind() == kind::EQUAL)
