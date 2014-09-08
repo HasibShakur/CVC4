@@ -293,7 +293,7 @@ Node QuantifierEliminate::replaceGEQQE(Node n,bool negationEnabled)
   {
     leftChild = n[0];
     rightChild = n[1];
-    if()
+   // if()
     replaceMent =  NodeManager::currentNM()->mkNode(kind::LT,leftChild,rightChild);
     Debug("expr-qetest")<<"After replacing GEQ with not "<<replaceMent<<"\n";
     return replaceMent;
