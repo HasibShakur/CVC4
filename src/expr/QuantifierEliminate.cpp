@@ -290,7 +290,7 @@ Node QuantifierEliminate::normalizeAtom(Node n)
   Node rightNode = n[1];
   if(leftNode.hasBoundVar())
   {
-    kind k = leftNode.getKind();
+    Kind k = leftNode.getKind();
     if(k == kind::PLUS)
     {
       if(leftNode[0].hasBoundVar())
