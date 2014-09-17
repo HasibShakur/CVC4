@@ -17,6 +17,7 @@ using namespace CVC4;
 using namespace CVC4::expr;
 using namespace CVC4::kind;
 using namespace CVC4::printer;
+using namespace CVC4::theory;
 using namespace CVC4::theory::arith;
 
 struct QENestedQuantAttributeId {
