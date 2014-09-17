@@ -517,9 +517,9 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
   {
     if(n.getKind() == kind::GEQ)
     {
-      changedNode = Rewriter::rewrite(n);
-      Debug("expr-qetest")<<"After modifications of GEQ with not(Before Normalization) "<< changedNode<<"\n";
-      changedNode = QuantifierEliminate::replaceGEQQE(changedNode,negationEnabled);
+     // changedNode = Rewriter::rewrite(n);
+   //   Debug("expr-qetest")<<"After modifications of GEQ with not(Before Normalization) "<< changedNode<<"\n";
+      changedNode = QuantifierEliminate::replaceGEQQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications of GEQ with not(After Normalization) "<< changedNode<<"\n";
     }
     else if(n.getKind() == kind::GT)
