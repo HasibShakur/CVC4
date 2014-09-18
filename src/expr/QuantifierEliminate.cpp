@@ -11,6 +11,7 @@
 #include "theory/arith/normal_form.h"
 #include "util/rational.h"
 #include "util/integer.h"
+#include "theory/arith/arith_utilities.h"
 
 using namespace std;
 using namespace CVC4;
