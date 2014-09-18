@@ -21,7 +21,7 @@ private:
   static Node replaceLEQQE(Node n,bool negationEnabled);
  // static Node replaceEqualQE(Node n,bool negationEnabled);
   static Node internalProcessNodeQE(Node n);
- // static Node normalizeAtom(Node n);
+  static Node normalizeAtom(Node n);
 public:
   static Node doPreprocessing(Expr ex);
   static bool isLiteralQE (Node body);
