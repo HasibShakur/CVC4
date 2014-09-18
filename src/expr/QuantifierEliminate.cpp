@@ -340,7 +340,7 @@ Node QuantifierEliminate::normalizeAtom(Node n)
       {
         Rational negOne(-1);
         temp = NodeManager::currentNM()->mkNode(kind::MULT,mkRationalNode(negOne),rightNode[0]);
-        rightNode = righttNode[1];
+        rightNode = rightNode[1];
         NodeBuilder<> nb(kind::PLUS);
         nb<<leftNode<<temp;
         leftNode = nb;
