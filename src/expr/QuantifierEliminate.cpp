@@ -360,42 +360,73 @@ Node QuantifierEliminate::replaceLEQQE(Node n,bool negationEnabled)
   }
 }
 
-/*Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
+Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
 {
-  Node leftChild = n[0];
-  Node rightChild = n[1];
-  Node leftExp;
-  Node rightExp;
-  Node finalExp;
+  Node leftNode = n[0];
+  Node rightNode = n[1];
   if(negationEnabled)
   {
-    leftExp = NodeManager::currentNM()->mkNode(kind::LT, leftChild,rightChild);
-    Debug("expr-qetest")<<"left expression inside equals "<<leftExp<<"\n";
-    Polynomial p1 = Polynomial::parsePolynomial(leftExp);
-    rightExp = NodeManager::currentNM()->mkNode(kind::LT, rightChild,leftChild);
-    Polynomial p2 = Polynomial::parsePolynomial(rightExp);
-    Debug("expr-qetest")<<"right expression inside equals "<<rightExp<<"\n";
-    finalExp = NodeManager::currentNM()->mkNode(kind::OR, leftExp,rightExp);
-    Polynomial f = Polynomial::parsePolynomial(finalExp);
-    Debug("expr-qetest")<<"final expression "<<f.getNode()<<"\n";
-    Debug("expr-qetest")<<"final expression "<<finalExp<<"\n";
-    return finalExp;
+    NodeBuilder<> leftSide(kind::LT);
+    leftSide<<leftNode<<rightNode;
+    Debug("expr-qetest")<<"Left side of equality with not "<<leftSide<<"\n";
+    NodeBuilder<> rightSide(kind::LT);
+    rightSide<<rightNode<<leftNode;
+    Debug("expr-qetest")<<"Right side of equality with not "<<rightSide<<"\n";
+    NodeBuilder<> returnNode(kind::OR);
+    returnNode<<leftSide<<rightSide;
+    Debug("expr-qetest")<<"Replacing equality with not "<<returnNode<<"\n";
+    return returnNode;
   }
   else
   {
-    Node modifiedLeftChild = QuantifierEliminate::internalProcessNodeQE(leftChild);
-    Debug("expr-qetest")<<"After modification Left child "<<modifiedLeftChild<<"\n";
-    Node modifiedRightChild = QuantifierEliminate::internalProcessNodeQE(rightChild);
-    Debug("expr-qetest")<<"After modification Left child "<<modifiedRightChild<<"\n";
-    leftExp = NodeManager::currentNM()->mkNode(kind::LT, leftChild, modifiedRightChild);
-    Debug("expr-qetest")<<"Left Expression "<<leftExp<<"\n";
-    rightExp = NodeManager::currentNM()->mkNode(kind::LT,rightChild,modifiedLeftChild);
-    Debug("expr-qetest")<<"Right Expression "<<rightExp<<"\n";
-    finalExp = NodeManager::currentNM()->mkNode(kind::AND, leftExp,rightExp);
-    Debug("expr-qetest")<<"final expression "<<finalExp<<"\n";
-    return finalExp;
+    Rational positiveOne(1);
+    Node temp1 = NodeManager::currentNM()->mkNode(kind::PLUS,rightNode,mkRationalNode(positiveOne));
+    NodeBuilder<> leftSide(kind::LT);
+    leftSide<<leftNode<<temp1;
+    Debug("expr-qetest")<<"Left side of equality "<<leftSide<<"\n";
+    Node temp2 = NodeManager::currentNM()->mkNode(kind::PLUS,leftNode,mkRationalNode(positiveOne));
+    NodeBuilder<> rightSide(kind::LT);
+    rightSide<<rightNode<<temp2;
+    Debug("expr-qetest")<<"Right side of equality "<<rightSide<<"\n";
+    NodeBuilder<> returnNode(kind::AND);
+    returnNode<<leftSide<<rightSide;
+    Debug("expr-qetest")<<"Replacing equality "<<returnNode<<"\n";
+    return returnNode;s
   }
-}*/
+//  Node leftChild = n[0];
+//  Node rightChild = n[1];
+//  Node leftExp;
+//  Node rightExp;
+//  Node finalExp;
+//  if(negationEnabled)
+//  {
+//    leftExp = NodeManager::currentNM()->mkNode(kind::LT, leftChild,rightChild);
+//    Debug("expr-qetest")<<"left expression inside equals "<<leftExp<<"\n";
+//    Polynomial p1 = Polynomial::parsePolynomial(leftExp);
+//    rightExp = NodeManager::currentNM()->mkNode(kind::LT, rightChild,leftChild);
+//    Polynomial p2 = Polynomial::parsePolynomial(rightExp);
+//    Debug("expr-qetest")<<"right expression inside equals "<<rightExp<<"\n";
+//    finalExp = NodeManager::currentNM()->mkNode(kind::OR, leftExp,rightExp);
+//    Polynomial f = Polynomial::parsePolynomial(finalExp);
+//    Debug("expr-qetest")<<"final expression "<<f.getNode()<<"\n";
+//    Debug("expr-qetest")<<"final expression "<<finalExp<<"\n";
+//    return finalExp;
+//  }
+//  else
+//  {
+//    Node modifiedLeftChild = QuantifierEliminate::internalProcessNodeQE(leftChild);
+//    Debug("expr-qetest")<<"After modification Left child "<<modifiedLeftChild<<"\n";
+//    Node modifiedRightChild = QuantifierEliminate::internalProcessNodeQE(rightChild);
+//    Debug("expr-qetest")<<"After modification Left child "<<modifiedRightChild<<"\n";
+//    leftExp = NodeManager::currentNM()->mkNode(kind::LT, leftChild, modifiedRightChild);
+//    Debug("expr-qetest")<<"Left Expression "<<leftExp<<"\n";
+//    rightExp = NodeManager::currentNM()->mkNode(kind::LT,rightChild,modifiedLeftChild);
+//    Debug("expr-qetest")<<"Right Expression "<<rightExp<<"\n";
+//    finalExp = NodeManager::currentNM()->mkNode(kind::AND, leftExp,rightExp);
+//    Debug("expr-qetest")<<"final expression "<<finalExp<<"\n";
+//    return finalExp;
+//  }
+}
 
 Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
 {
@@ -430,11 +461,11 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
       changedNode = QuantifierEliminate::normalizeAtom(changedNode);
       Debug("expr-qetest")<<"After modifications LEQ with not(After Normalization) "<< changedNode<<"\n";
     }
-    /*else if(n.getKind() == kind::EQUAL)
+    else if(n.getKind() == kind::EQUAL)
     {
       n = QuantifierEliminate::replaceEqualQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
-    }*/
+    }
   }
   else
   {
@@ -467,11 +498,11 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
       changedNode = QuantifierEliminate::normalizeAtom(changedNode);
       Debug("expr-qetest")<<"After modifications LEQ without not(After Normalization) "<< changedNode<<"\n";
     }
-   /* else if(n.getKind() == kind::EQUAL)
+   else if(n.getKind() == kind::EQUAL)
     {
       n = QuantifierEliminate::replaceEqualQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications "<<" "<<n<<"\n";
-    }*/
+    }
   }
   return changedNode;
 }

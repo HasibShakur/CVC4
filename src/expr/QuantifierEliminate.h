@@ -19,7 +19,7 @@ private:
   static Node replaceGTQE(Node n,bool negationEnabled);
   static Node replaceLTQE(Node n,bool negationEnabled);
   static Node replaceLEQQE(Node n,bool negationEnabled);
- // static Node replaceEqualQE(Node n,bool negationEnabled);
+  static Node replaceEqualQE(Node n,bool negationEnabled);
   static Node internalProcessNodeQE(Node n);
   static Node normalizeAtom(Node n);
 public:
