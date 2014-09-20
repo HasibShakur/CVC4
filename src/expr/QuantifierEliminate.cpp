@@ -372,6 +372,10 @@ Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
     NodeBuilder<> rightSide(kind::LT);
     rightSide<<rightNode<<leftNode;
     Debug("expr-qetest")<<"Right side of equality with not "<<rightSide<<"\n";
+    leftSide = normalizeAtom(leftSide);
+    Debug("expr-qetest")<<"After Normalization(left side) "<< leftSide<<"\n";
+    rightSide = normalizeAtom(rightSide);
+    Debug("expr-qetest")<<"After Normalization(right side) "<< rightSide<<"\n";
     NodeBuilder<> returnNode(kind::OR);
     returnNode<<leftSide<<rightSide;
     Debug("expr-qetest")<<"Replacing equality with not "<<returnNode<<"\n";
@@ -388,6 +392,10 @@ Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
     NodeBuilder<> rightSide(kind::LT);
     rightSide<<rightNode<<temp2;
     Debug("expr-qetest")<<"Right side of equality "<<rightSide<<"\n";
+    leftSide = normalizeAtom(leftSide);
+    Debug("expr-qetest")<<"After Normalization(left side) "<< leftSide<<"\n";
+    rightSide = normalizeAtom(rightSide);
+    Debug("expr-qetest")<<"After Normalization(right side) "<< rightSide<<"\n";
     NodeBuilder<> returnNode(kind::AND);
     returnNode<<leftSide<<rightSide;
     Debug("expr-qetest")<<"Replacing equality "<<returnNode<<"\n";
