@@ -83,7 +83,7 @@ Node QuantifierEliminate::eliminateImpliesQE(Node body)
 
 Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
                                             bool pol) {
-  if(body.getKind() == kind::FORALL) {
+  if(body.getKind() == kind::EXISTS) {
     if(pol) {
       std::vector<Node> terms;
       std::vector<Node> subs;
@@ -109,7 +109,7 @@ Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
       || body.getKind() == kind::IFF) {
     return body;
   } else {
-    Assert( body.getKind()!= kind::EXISTS );
+    Assert( body.getKind()!= kind::FORALL );
     bool childrenChanged = false;
     std::vector<Node> newChildren;
     for(int i = 0; i < (int) body.getNumChildren(); i++) {
@@ -131,60 +131,7 @@ Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
     }
   }
 }
-/*Node QuantifierEliminate::convertToNNFQE(Node body)
- {
- if( body.getKind()== kind::NOT ){
- if( body[0].getKind()== kind::NOT ){
- Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][0].getKind() << "\n";
- return convertToNNFQE( body[0][0] );
- }else if( isLiteralQE( body[0] ) ){
- Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getKind() << "\n";
- return body;
- }else{
- std::vector< CVC4::Node > children;
- Kind k = body[0].getKind();
- Debug("expr-qetest") << "Inside NNF convertion of the formula kind (as per the given input it should be and) "<< k << "\n";
- if( body[0].getKind()== kind::OR || body[0].getKind()== kind::AND ){
- Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getNumChildren() << "\n";
- for( int i=0; i<(int)body[0].getNumChildren(); i++ ){
- Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][i].getKind() << "\n";
- children.push_back( convertToNNFQE( body[0][i].notNode() ) );
- }
- Debug("expr-qetest") << "Size of children here "<< children.size() << "\n";
- k = body[0].getKind()== kind::AND ? kind::OR : kind::AND;
- }else if( body[0].getKind()== kind::IFF ){
- for( int i=0; i<2; i++ ){
- Node nn = i==0 ? body[0][i] : body[0][i].notNode();
- children.push_back( convertToNNFQE( nn ) );
- }
- }else if( body[0].getKind()== kind::ITE ){
- for( int i=0; i<3; i++ ){
- Node nn = i==0 ? body[0][i] : body[0][i].notNode();
- children.push_back( convertToNNFQE( nn ) );
- }
- }else{
- Notice() << "Unhandled Quantifiers NNF: " << body << std::endl;
- return body;
- }
- return NodeManager::currentNM()->mkNode( k, children );
- }
- }else if( isLiteralQE( body ) ){
- return body;
- }else{
- std::vector< CVC4::Node > children;
- bool childrenChanged = false;
- for( int i=0; i<(int)body.getNumChildren(); i++ ){
- Node nc = convertToNNFQE( body[i] );
- children.push_back( nc );
- childrenChanged = childrenChanged || nc!=body[i];
- }
- if( childrenChanged ){
- return NodeManager::currentNM()->mkNode( body.getKind(), children );
- }else{
- return body;
- }
- }
- }*/
+
 Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
 
   if(body.getKind() == kind::NOT) {
@@ -199,42 +146,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
       Kind k = body[0].getKind();
       if(body[0].getKind() == kind::OR || body[0].getKind() == kind::AND) {
         for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
-         /* if(isRelationalOperatorTypeQE(body[0][i].getKind())) {
-            if(body[0][i].getKind() == kind::GEQ) {
-              std::vector<CVC4::Node> children_relation;
-              for(int j = 0; j < (int) body[0][i].getNumChildren(); j++) {
-                children_relation.push_back(body[0][i][j]);
-              }
-              Node lt = currNM->mkNode(kind::LT, children_relation[0],
-                                       children_relation[1]);
-              children.push_back(convertToNNFQE(lt.notNode(),currNM));
-            } else if(body[0][i].getKind() == kind::LEQ) {
-              std::vector<CVC4::Node> children_relation;
-              for(int j = 0; j < (int) body[0][i].getNumChildren(); j++) {
-                children_relation.push_back(body[0][i][j]);
-              }
-              Node gt = currNM->mkNode(kind::GT, children_relation[0],
-                                       children_relation[1]);
-              children.push_back(convertToNNFQE(gt.notNode(),currNM));
-            } else if(body[0][i].getKind() == kind::GT) {
-              std::vector<CVC4::Node> children_relation;
-              for(int j = 0; j < (int) body[0][i].getNumChildren(); j++) {
-                children_relation.push_back(body[0][i][j]);
-              }
-              Node leq = currNM->mkNode(kind::LEQ, children_relation[0],
-                                        children_relation[1]);
-              children.push_back(convertToNNFQE(leq.notNode(),currNM));
-            } else if(body[0][i].getKind() == kind::LT) {
-              std::vector<CVC4::Node> children_relation;
-              for(int j = 0; j < (int) body[0][i].getNumChildren(); j++) {
-                children_relation.push_back(body[0][i][j]);
-              }
-              Node geq = currNM->mkNode(kind::GEQ, children_relation[0],
-                                        children_relation[1]);
-              children.push_back(convertToNNFQE(geq.notNode(),currNM));
-            }
-          }*/
-          children.push_back( convertToNNFQE( body[0][i].notNode(),currNM ) );
+         children.push_back( convertToNNFQE( body[0][i].notNode(),currNM ) );
         }
         k = body[0].getKind() == kind::AND ? kind::OR : kind::AND;
         Debug("expr-qetest")<<"New kind after negation "<<k<<"\n";
@@ -631,7 +543,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
   } else {
     in = temp_in;
   }
-  if(in.getKind() == kind::FORALL) {
+  if(in.getKind() == kind::EXISTS) {
     std::vector<Node> args;
     for(int i = 0; i < (int) in[0].getNumChildren(); i++) {
       args.push_back(in[0][i]);
@@ -677,7 +589,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
         if(!ipl.isNull()) {
           children.push_back(ipl);
         }
-        defs << NodeManager::currentNM()->mkNode(kind::FORALL, children);
+        defs << NodeManager::currentNM()->mkNode(kind::EXISTS, children);
       }
       Node returnNode =
           defs.getNumChildren() == 1 ? defs.getChild(0) : defs.constructNode();
