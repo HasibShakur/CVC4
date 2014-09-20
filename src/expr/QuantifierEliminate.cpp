@@ -391,7 +391,7 @@ Node QuantifierEliminate::replaceEqualQE(Node n,bool negationEnabled)
     NodeBuilder<> returnNode(kind::AND);
     returnNode<<leftSide<<rightSide;
     Debug("expr-qetest")<<"Replacing equality "<<returnNode<<"\n";
-    return returnNode;s
+    return returnNode;
   }
 //  Node leftChild = n[0];
 //  Node rightChild = n[1];
