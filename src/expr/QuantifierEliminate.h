@@ -23,6 +23,7 @@ private:
   static Node internalProcessNodeQE(Node n);
   static Node normalizeAtom(Node n);
   static bool computeLeftProjection(Node n);
+  static bool evaluateBoolean(Node n);
 public:
   static Node doPreprocessing(Expr ex);
   static bool isLiteralQE (Node body);

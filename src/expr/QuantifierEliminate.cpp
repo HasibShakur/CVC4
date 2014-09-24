@@ -485,6 +485,33 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
   }
   return changedNode;
 }
+bool QuantifierEliminate::evaluateBoolean(Node n)
+{
+  bool result = false;
+  if(n.hasBoundVar())
+  {
+    if(n[0].getKind() == kind::MULT)
+    {
+      result = result & false;
+    }
+    else
+    {
+      result = result & true;
+    }
+  }
+  else
+  {
+    if(n[1].getKind() == kind::MULT)
+    {
+      result = result & true;
+    }
+    else
+    {
+      result = result & false;
+    }
+  }
+  return result;
+}
 
 Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
 {
@@ -547,11 +574,20 @@ bool QuantifierEliminate::computeLeftProjection(Node n)
 {
   Debug("expr-qetest")<<"Node before computing projection "<<n<<"\n";
   Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
+  bool result = false;
   for(int i=0;i<(int)n.getNumChildren();i++)
   {
     Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<"\n";
+    if(n[i].getKind()!=kind::AND || n[i].getKind()!=kind::OR)
+    {
+      result = result & evaluateBoolean(n[i]);
+    }
+    else
+    {
+      result = result & computeLeftProjection(n[i]);
+    }
   }
-  return true;
+  return result;
 
 }
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
@@ -596,6 +632,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
        Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
     bool test = computeLeftProjection(rewrittenNode);
+    Debug("expr-qetest") << "Left projection "<< test << "\n";
 
     if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
       return in;
