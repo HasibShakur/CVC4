@@ -578,18 +578,18 @@ bool QuantifierEliminate::computeLeftProjection(Node n)
 {
   Debug("expr-qetest")<<"Node before computing projection "<<n<<"\n";
   Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
-  bool result = false;
+  bool result = true;
   for(int i=0;i<(int)n.getNumChildren();i++)
   {
     Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<"\n";
     if(n[i].getKind()!=kind::AND || n[i].getKind()!=kind::OR)
     {
-      result = evaluateBoolean(n[i]);
+      result = result & evaluateBoolean(n[i]);
       Debug("expr-qetest")<<"Left Projection for "<<n[i]<<" is "<<result<<"\n";
     }
     else
     {
-      result = computeLeftProjection(n[i]);
+      result = result & computeLeftProjection(n[i]);
       Debug("expr-qetest")<<"Left Projection for "<<n[i]<<" is "<<result<<"\n";
     }
   }
