@@ -581,10 +581,12 @@ bool QuantifierEliminate::computeLeftProjection(Node n)
     if(n[i].getKind()!=kind::AND || n[i].getKind()!=kind::OR)
     {
       result = result & evaluateBoolean(n[i]);
+      Debug("expr-qetest")<<"Left Projection for "<<n[i]<<" is "<<result<<"\n";
     }
     else
     {
       result = result & computeLeftProjection(n[i]);
+      Debug("expr-qetest")<<"Left Projection for "<<n[i]<<" is "<<result<<"\n";
     }
   }
   return result;
