@@ -543,7 +543,17 @@ Node QuantifierEliminate::doRewriting(Node n,NodeManager* currNM)
     return finalNode;
   }
 }
+bool QuantifierEliminate::computeLeftProjection(Node n)
+{
+  Debug("expr-qetest")<<"Node before computing projection "<<n<<"\n";
+  Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
+  for(int i=0;i<(int)n.getNumChildren();i++)
+  {
+    Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<"\n";
+  }
+  return true;
 
+}
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
   Node temp_in = NodeTemplate<true>(ex);
   Debug("expr-qetest") << "------- Inside doProcessing Method ------" << "\n";
@@ -585,6 +595,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     if(rewrittenNode.isNull()) {
        Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
+    bool test = computeLeftProjection(rewrittenNode);
 
     if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
       return in;
