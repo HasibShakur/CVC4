@@ -589,8 +589,18 @@ bool QuantifierEliminate::computeLeftProjection(Node n)
     }
     else
     {
-      result = result & computeLeftProjection(n[i]);
-      Debug("expr-qetest")<<"Left Projection for "<<n[i]<<" is "<<result<<"\n";
+      bool temp1 = evaluateBoolean(n[i][0]);
+      bool temp2 = evaluateBoolean(n[i][1]);
+      if(n[i].getKind()==kind::AND)
+      {
+        result = result & (temp1 & temp2);
+        Debug("expr-qetest")<<"Left Projection for "<<n[i]<<" is "<<result<<"\n";
+      }
+      else
+      {
+        result = result & (temp1|temp2);
+        Debug("expr-qetest")<<"Left Projection for "<<n[i]<<" is "<<result<<"\n";
+      }
     }
   }
   return result;
