@@ -492,22 +492,26 @@ bool QuantifierEliminate::evaluateBoolean(Node n)
   {
     if(n[0].getKind() == kind::MULT)
     {
-      result = result & false;
+      result = false;
+      Debug("expr-qetest") << "Result of evaluating "<< n<<" "<<result<<"\n";
     }
     else
     {
-      result = result & true;
+      result = true;
+      Debug("expr-qetest") << "Result of evaluating "<< n<<" "<<result<<"\n";
     }
   }
   else
   {
     if(n[1].getKind() == kind::MULT)
     {
-      result = result & true;
+      result = true;
+      Debug("expr-qetest") << "Result of evaluating "<< n<<" "<<result<<"\n";
     }
     else
     {
-      result = result & false;
+      result = false;
+      Debug("expr-qetest") << "Result of evaluating "<< n<<" "<<result<<"\n";
     }
   }
   return result;
@@ -580,12 +584,12 @@ bool QuantifierEliminate::computeLeftProjection(Node n)
     Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<"\n";
     if(n[i].getKind()!=kind::AND || n[i].getKind()!=kind::OR)
     {
-      result = result & evaluateBoolean(n[i]);
+      result = evaluateBoolean(n[i]);
       Debug("expr-qetest")<<"Left Projection for "<<n[i]<<" is "<<result<<"\n";
     }
     else
     {
-      result = result & computeLeftProjection(n[i]);
+      result = computeLeftProjection(n[i]);
       Debug("expr-qetest")<<"Left Projection for "<<n[i]<<" is "<<result<<"\n";
     }
   }
