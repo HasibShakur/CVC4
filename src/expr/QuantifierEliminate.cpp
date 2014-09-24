@@ -590,7 +590,9 @@ bool QuantifierEliminate::computeLeftProjection(Node n)
     else
     {
       bool temp1 = evaluateBoolean(n[i][0]);
+      Debug("expr-qetest")<<"Left Projection for "<<n[i][0]<<" is "<<temp1<<"\n";
       bool temp2 = evaluateBoolean(n[i][1]);
+      Debug("expr-qetest")<<"Left Projection for "<<n[i][1]<<" is "<<temp2<<"\n";
       if(n[i].getKind()==kind::AND)
       {
         result = result & (temp1 & temp2);
