@@ -488,7 +488,7 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,bool negationEnabled)
 bool QuantifierEliminate::evaluateBoolean(Node n)
 {
   bool result = false;
-  if(n.hasBoundVar())
+  if(n[0].hasBoundVar())
   {
     if(n[0].getKind() == kind::MULT)
     {
