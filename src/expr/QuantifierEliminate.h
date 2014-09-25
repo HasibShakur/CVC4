@@ -26,7 +26,8 @@ private:
   static bool evaluateBoolean(Node n);
   static Node computeRightProjection(Node n);
   static Node preProcessingForRightProjection(Node n);
-  static Node evaluateNodeForRightProjection(Node n);
+  static Node preProcessing2ForRightProjection(Node n);
+  static Node evaluateForRightProjection(Node n, Node replacement);
 public:
   static Node doPreprocessing(Expr ex);
   static bool isLiteralQE (Node body);
