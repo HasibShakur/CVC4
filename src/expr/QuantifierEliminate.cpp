@@ -728,20 +728,23 @@ Node QuantifierEliminate::computeRightProjection(Node n) {
       if(toCompute[i][0][1].hasBoundVar())
       {
         replace = toCompute[i][0][1];
+        Debug("expr-qetest")<<"Replace Node "<<replace<<"\n";
       }
       else if(toCompute[i][1][1].hasBoundVar())
       {
         replace = toCompute[i][1][1];
+        Debug("expr-qetest")<<"Replace Node "<<replace<<"\n";
       }
     }
     else if(toCompute[i][1].hasBoundVar())
     {
       replace = toCompute[i][0];
+      Debug("expr-qetest")<<"Replace Node "<<replace<<"\n";
     }
   }
   if(!replace.isNull())
   {
-    Debug("expr-qetest")<<"Replace Node "<<replace<<"\n";
+
     firstAlt = replace;
     secondAlt = Rewriter::rewrite(NodeManager::currentNM()->mkNode(kind::PLUS,test,replace));
     Node result1 = evaluateForRightProjection(n,firstAlt);
