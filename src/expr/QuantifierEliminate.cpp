@@ -620,11 +620,10 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
         Debug("expr-qetest")<<"After rewriting temp2 "<<temp2<<"\n";
         Node temp = NodeManager::currentNM()->mkNode(kind::PLUS, temp1, temp2);
         Debug("expr-qetest")<<"Temp is "<<temp<<"\n";
-        n[1] = n[0][1];
-        Debug("expr-qetest")<<"new n[1] "<<n[0][1]<<"\n";
-        n[0] = temp;
+        Node temp3 = n[0][1];
+        Debug("expr-qetest")<<"new n[1] "<<temp3<<"\n";
         NodeBuilder<> nb(n.getKind());
-        nb << n[0] << n[1];
+        nb << temp << temp3;
         returnNode = nb;
         Debug("expr-qetest")<<"Return Node is "<<returnNode<<"\n";
       }
