@@ -24,8 +24,9 @@ private:
   static Node normalizeAtom(Node n);
   static bool computeLeftProjection(Node n);
   static bool evaluateBoolean(Node n);
-  //static Node computeRightProjection(Node n);
-  //static Node preProcessingForRightProjection(Node n);
+  static Node computeRightProjection(Node n);
+  static Node preProcessingForRightProjection(Node n);
+  static Node evaluateNodeForRightProjection(Node n);
 public:
   static Node doPreprocessing(Expr ex);
   static bool isLiteralQE (Node body);

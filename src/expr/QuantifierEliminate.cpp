@@ -555,7 +555,7 @@ bool QuantifierEliminate::computeLeftProjection(Node n) {
   for(int i=0;i<(int)n.getNumChildren();i++)
   {
     Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<"\n";
-    if(n[i].getKind()== kind::AND || n[i].getKind()== kind::OR)
+    if((n[i].getKind()== kind::AND) || (n[i].getKind()== kind::OR))
     {
       bool temp1 = evaluateBoolean(n[i][0]);
       Debug("expr-qetest")<<"Left Projection for "<<n[i][0]<<" is "<<temp1<<"\n";
@@ -581,53 +581,108 @@ bool QuantifierEliminate::computeLeftProjection(Node n) {
   return result;
 }
 
-//Node QuantifierEliminate::preProcessingForRightProjection(Node n)
-//{
-//  Debug("expr-qetest")<<"Node before computing projection "<<n<<"\n";
-//  Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
-//  Rational negOne(-1);
-//  Node test = mkRationalNode(negOne);
-//  Node replace;
-//  for(int i=0;i<(int)n.getNumChildren();i++)
-//  {
-//    if(n[i][0].hasBoundVar())
-//    {
-//      if((n[i][0].getKind() == kind::MULT) && (n[i][0][0] == test))
-//      {
-//        if((n[i][1]).isConst())
-//        {
-//          Node temp = NodeManager::currentNM()->mkNode(kind::MULT,test,n[i][1]);
-//          temp = Rewriter::rewrite(temp);
-//          Node temp1 = n[i][0];
-//          n[i][0] = temp;
-//          n[i][1] = n[i][0][1];
-//          NodeBuilder<> nb(n[i].getKind());
-//          nb<<n[i][0]<<n[i][1];
-//          n[i] = nb;
-//        }
-//        else if(n[i][1].getKind() == kind::PLUS)
-//        {
-//          n[i][1]
-//        }
-//      }
-//    }
-//  }
-//}
+Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
+  Rational negOne(-1);
+  Node test = mkRationalNode(negOne);
+  Node returnNode;
+  if(n[0].hasBoundVar()) {
+    if((n[0].getKind() == kind::MULT) && (n[0][0] == test)) {
+      if((n[1]).isConst()) {
+        Node temp = NodeManager::currentNM()->mkNode(kind::MULT, test, n[1]);
+        temp = Rewriter::rewrite(temp);
+        Node temp1 = n[0];
+        n[0] = temp;
+        n[1] = temp1[1];
+        NodeBuilder<> nb(n.getKind());
+        nb << n[0] << n[1];
+        n = nb;
+        returnNode = n;
+      } else if(n[1].getKind() == kind::PLUS) {
+        Node temp1 = NodeManager::currentNM()->mkNode(kind::MULT, test,
+                                                      n[1][0]);
+        temp1 = Rewriter::rewrite(temp1);
+        Node temp2 = NodeManager::currentNM()->mkNode(kind::MULT, test,
+                                                      n[1][1]);
+        temp1 = Rewriter::rewrite(temp2);
+        Node temp = NodeManager::currentNM()->mkNode(kind::PLUS, temp1, temp2);
+        n[1] = n[0][1];
+        n[0] = temp;
+        NodeBuilder<> nb(n.getKind());
+        nb << n[0] << n[1];
+        n = nb;
+        returnNode = n;
+      }
+    }
+  } else {
+    if((n[1].getKind() == kind::MULT) && (n[1][0] == test)) {
+      if((n[0]).isConst()) {
+        Node temp = NodeManager::currentNM()->mkNode(kind::MULT, test, n[0]);
+        temp = Rewriter::rewrite(temp);
+        Node temp1 = n[1];
+        n[1] = temp;
+        n[0] = temp1[1];
+        NodeBuilder<> nb(n.getKind());
+        nb << n[0] << n[1];
+        n = nb;
+        returnNode = n;
+      } else if(n[0].getKind() == kind::PLUS) {
+        Node temp1 = NodeManager::currentNM()->mkNode(kind::MULT, test,
+                                                      n[0][0]);
+        temp1 = Rewriter::rewrite(temp1);
+        Node temp2 = NodeManager::currentNM()->mkNode(kind::MULT, test,
+                                                      n[0][1]);
+        temp1 = Rewriter::rewrite(temp2);
+        Node temp = NodeManager::currentNM()->mkNode(kind::PLUS, temp1, temp2);
+        n[0] = n[1][1];
+        n[1] = temp;
+        NodeBuilder<> nb(n.getKind());
+        nb << n[0] << n[1];
+        n = nb;
+        returnNode = n;
+      }
+    }
+  }
+  return returnNode;
+}
 
-//Node QuantifierEliminate::computeRightProjection(Node n)
-//{
-//  Debug("expr-qetest")<<"Node before computing projection "<<n<<"\n";
-//  Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
-//  Rational negOne(-1);
-//  Node test = mkRationalNode(negOne);
+Node QuantifierEliminate::preProcessingForRightProjection(Node n) {
+  Debug("expr-qetest")<<"Node before computing projection "<<n<<"\n";
+  Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
+  for(int i=0;i<(int)n.getNumChildren();i++)
+  {
+    if((n[i].getKind() == kind::AND) || (n[i].getKind == kind::OR))
+    {
+      Node left = evaluateNodeForRightProjection(n[i][0]);
+      Debug("expr-qetest")<<"Right projection left node "<<left<<"\n";
+      Node right = evaluateNodeForRightProjection(n[i][1]);
+      Debug("expr-qetest")<<"Right projection right node "<<right<<"\n";
+      NodeBuilder<> nb(n[i].getKind());
+      nb<<left<<right;
+      n[i] = nb;
+      Debug("expr-qetest")<<"Right projection changed node "<<n[i]<<"\n";
+    }
+    else
+    {
+      n[i] = evaluateNodeForRightProjection(n[i]);
+      Debug("expr-qetest")<<"Right projection changed node "<<n[i]<<"\n";
+    }
+  }
+  return n;
+}
+
+Node QuantifierEliminate::computeRightProjection(Node n) {
+  Debug("expr-qetest")<<"Node before computing projection "<<n<<"\n";
+  Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
+  Rational negOne(-1);
+  Node test = mkRationalNode(negOne);
+  Node toCompute = preProcessingForRightProjection(n);
+  Debug("expr-qetest")<<"Right projection after preprocessing "<<toCompute<<"\n";
 //  for(int i=0;i<(int)n.getNumChildren();i++)
 //  {
-//    if(n[i][0].hasBoundVar())
-//    {
 //
-//    }
 //  }
-//}
+  return toCompute;
+}
 
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
   Node temp_in = NodeTemplate<true>(ex);
@@ -672,7 +727,8 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     }
     bool test = computeLeftProjection(rewrittenNode);
     Debug("expr-qetest") << "Left projection "<< test << "\n";
-
+    Node test1 = computeRightProjection(rewrittenNode);
+    Debug("expr-qetest") << "Right projection "<< test1 << "\n";
     if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
       return in;
     } else {
