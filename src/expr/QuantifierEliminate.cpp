@@ -728,7 +728,7 @@ Node QuantifierEliminate::computeRightProjection(Node n) {
       replace = toCompute[i][0];
     }
   }
-  if(replace != null)
+  if(!replace.isNull())
   {
     Debug("expr-qetest")<<"Replace Node "<<replace<<"\n";
     firstAlt = replace;
