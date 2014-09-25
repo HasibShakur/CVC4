@@ -585,6 +585,7 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
   Rational negOne(-1);
   Node test = mkRationalNode(negOne);
   Node returnNode;
+  Debug("expr-qetest")<<"Inside evaluateNodeForRightProjection "<<n<<"\n";
   if(n[0].hasBoundVar()) {
     if((n[0].getKind() == kind::MULT) && (n[0][0] == test)) {
       if((n[1]).isConst()) {
