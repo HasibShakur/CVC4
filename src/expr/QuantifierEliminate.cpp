@@ -616,7 +616,7 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
         Node temp2 = NodeManager::currentNM()->mkNode(kind::MULT, test,
                                                       n[1][1]);
         Debug("expr-qetest")<<"Before rewriting temp2 "<<temp2<<"\n";
-        temp1 = Rewriter::rewrite(temp2);
+        temp2 = Rewriter::rewrite(temp2);
         Debug("expr-qetest")<<"After rewriting temp2 "<<temp2<<"\n";
         Node temp = NodeManager::currentNM()->mkNode(kind::PLUS, temp1, temp2);
         Debug("expr-qetest")<<"Temp is "<<temp<<"\n";
