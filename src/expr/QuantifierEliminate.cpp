@@ -760,6 +760,7 @@ Node QuantifierEliminate::computeRightProjection(Node n) {
     return mkBoolNode(truthValue);
   }
 
+
   return toCompute;
 }
 
