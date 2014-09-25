@@ -600,13 +600,11 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
       if((n[1]).isConst()) {
         Node temp = NodeManager::currentNM()->mkNode(kind::MULT, test, n[1]);
         temp = Rewriter::rewrite(temp);
-        Node temp1 = n[0];
-        n[0] = temp;
-        n[1] = temp1[1];
+        Node temp1 = n[0][1];
         NodeBuilder<> nb(n.getKind());
-        nb << n[0] << n[1];
-        n = nb;
-        returnNode = n;
+        nb << temp << temp1;
+        returnNode = nb;
+        Debug("expr-qetest")<<"Return Node is "<<returnNode<<"\n";
       } else if(n[1].getKind() == kind::PLUS) {
         Node temp1 = NodeManager::currentNM()->mkNode(kind::MULT, test,
                                                       n[1][0]);
@@ -633,11 +631,9 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
       if((n[0]).isConst()) {
         Node temp = NodeManager::currentNM()->mkNode(kind::MULT, test, n[0]);
         temp = Rewriter::rewrite(temp);
-        Node temp1 = n[1];
-        n[1] = temp;
-        n[0] = temp1[1];
+        Node temp1 = n[1][1];
         NodeBuilder<> nb(n.getKind());
-        nb << n[0] << n[1];
+        nb << temp1 << temp;
         returnNode = nb;
       } else if(n[0].getKind() == kind::PLUS) {
         Node temp1 = NodeManager::currentNM()->mkNode(kind::MULT, test,
@@ -645,16 +641,17 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
         temp1 = Rewriter::rewrite(temp1);
         Node temp2 = NodeManager::currentNM()->mkNode(kind::MULT, test,
                                                       n[0][1]);
-        temp1 = Rewriter::rewrite(temp2);
+        temp2 = Rewriter::rewrite(temp2);
         Node temp = NodeManager::currentNM()->mkNode(kind::PLUS, temp1, temp2);
-        n[0] = n[1][1];
-        n[1] = temp;
+        Node temp3 = n[1][1];
         NodeBuilder<> nb(n.getKind());
-        nb << n[0] << n[1];
+        nb << temp3 << temp;
         returnNode = nb;
+        Debug("expr-qetest")<<"Return Node is "<<returnNode<<"\n";
       }
     }
   }
+  Debug("expr-qetest")<<"Finally Return Node is "<<returnNode<<"\n";
   return returnNode;
 }
 
