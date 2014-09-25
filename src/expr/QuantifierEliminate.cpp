@@ -723,7 +723,18 @@ Node QuantifierEliminate::computeRightProjection(Node n) {
   bool truthValue = true;
   for(int i=0;i<(int)toCompute.getNumChildren();i++)
   {
-    if(toCompute[i][1].hasBoundVar())
+    if((toCompute[i].getKind() == kind::AND) || (toCompute[i].getKind() == kind::OR))
+    {
+      if(toCompute[i][0][1].hasBoundVar())
+      {
+        replace = toCompute[i][0][1];
+      }
+      else if(toCompute[i][1][1].hasBoundVar())
+      {
+        replace = toCompute[i][1][1];
+      }
+    }
+    else if(toCompute[i][1].hasBoundVar())
     {
       replace = toCompute[i][0];
     }
