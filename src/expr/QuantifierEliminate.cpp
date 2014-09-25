@@ -650,7 +650,7 @@ Node QuantifierEliminate::preProcessingForRightProjection(Node n) {
   Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
   for(int i=0;i<(int)n.getNumChildren();i++)
   {
-    if((n[i].getKind() == kind::AND) || (n[i].getKind == kind::OR))
+    if((n[i].getKind() == kind::AND) || (n[i].getKind() == kind::OR))
     {
       Node left = evaluateNodeForRightProjection(n[i][0]);
       Debug("expr-qetest")<<"Right projection left node "<<left<<"\n";
