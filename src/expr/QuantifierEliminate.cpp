@@ -676,7 +676,8 @@ Node QuantifierEliminate::preProcessingForRightProjection(Node n) {
     }
     else
     {
-      n[i] = evaluateNodeForRightProjection(n[i]);
+      Node temp = evaluateNodeForRightProjection(n[i]);
+      n[i] = temp;
       Debug("expr-qetest")<<"Right projection changed node "<<n[i]<<"\n";
     }
   }
