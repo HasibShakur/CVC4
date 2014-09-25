@@ -596,6 +596,7 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
   }
   if(n[0].hasBoundVar()) {
     if((n[0].getKind() == kind::MULT) && (n[0][0] == test)) {
+      Debug("expr-qetest")<<"n[0] has a -1 as multiply "<<"\n";
       if((n[1]).isConst()) {
         Node temp = NodeManager::currentNM()->mkNode(kind::MULT, test, n[1]);
         temp = Rewriter::rewrite(temp);
@@ -609,17 +610,23 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
       } else if(n[1].getKind() == kind::PLUS) {
         Node temp1 = NodeManager::currentNM()->mkNode(kind::MULT, test,
                                                       n[1][0]);
+        Debug("expr-qetest")<<"Before rewriting temp1 "<<temp1<<"\n";
         temp1 = Rewriter::rewrite(temp1);
+        Debug("expr-qetest")<<"After rewriting temp1 "<<temp1<<"\n";
         Node temp2 = NodeManager::currentNM()->mkNode(kind::MULT, test,
                                                       n[1][1]);
+        Debug("expr-qetest")<<"Before rewriting temp2 "<<temp2<<"\n";
         temp1 = Rewriter::rewrite(temp2);
+        Debug("expr-qetest")<<"After rewriting temp2 "<<temp2<<"\n";
         Node temp = NodeManager::currentNM()->mkNode(kind::PLUS, temp1, temp2);
+        Debug("expr-qetest")<<"Temp is "<<temp<<"\n";
         n[1] = n[0][1];
         n[0] = temp;
         NodeBuilder<> nb(n.getKind());
         nb << n[0] << n[1];
         n = nb;
         returnNode = n;
+        Debug("expr-qetest")<<"Return Node is "<<returnNode<<"\n";
       }
     }
   } else {
