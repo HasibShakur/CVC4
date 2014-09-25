@@ -585,15 +585,6 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
   Rational negOne(-1);
   Node test = mkRationalNode(negOne);
   Node returnNode;
-  Debug("expr-qetest")<<"Inside evaluateNodeForRightProjection "<<n<<"\n";
-  if(n[0].hasBoundVar())
-  {
-    Debug("expr-qetest")<<n[0]<<" has bound variable"<<"\n";
-  }
-  else
-  {
-    Debug("expr-qetest")<<n[1]<<" has bound variable"<<"\n";
-  }
   if(n[0].hasBoundVar()) {
     if((n[0].getKind() == kind::MULT) && (n[0][0] == test)) {
       Debug("expr-qetest")<<"n[0] has a -1 as multiply "<<"\n";
@@ -605,7 +596,8 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
         nb << temp << temp1;
         returnNode = nb;
         Debug("expr-qetest")<<"Return Node is "<<returnNode<<"\n";
-      } else if(n[1].getKind() == kind::PLUS) {
+        return returnNode;
+      } else if(n[1].getKind() == kind::PLUS){
         Node temp1 = NodeManager::currentNM()->mkNode(kind::MULT, test,
                                                       n[1][0]);
         Debug("expr-qetest")<<"Before rewriting temp1 "<<temp1<<"\n";
@@ -624,7 +616,13 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
         nb << temp << temp3;
         returnNode = nb;
         Debug("expr-qetest")<<"Return Node is "<<returnNode<<"\n";
+        return returnNode;
       }
+    }
+    else
+    {
+      returnNode = n;
+      return returnNode;
     }
   } else {
     if((n[1].getKind() == kind::MULT) && (n[1][0] == test)) {
@@ -635,7 +633,8 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
         NodeBuilder<> nb(n.getKind());
         nb << temp1 << temp;
         returnNode = nb;
-      } else if(n[0].getKind() == kind::PLUS) {
+        return returnNode;
+      } else if(n[0].getKind() == kind::PLUS){
         Node temp1 = NodeManager::currentNM()->mkNode(kind::MULT, test,
                                                       n[0][0]);
         temp1 = Rewriter::rewrite(temp1);
@@ -648,11 +647,15 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
         nb << temp3 << temp;
         returnNode = nb;
         Debug("expr-qetest")<<"Return Node is "<<returnNode<<"\n";
+        return returnNode;
       }
     }
+    else
+    {
+      returnNode = n;
+      return returnNode;
+    }
   }
-  Debug("expr-qetest")<<"Finally Return Node is "<<returnNode<<"\n";
-  return returnNode;
 }
 
 Node QuantifierEliminate::preProcessingForRightProjection(Node n) {
