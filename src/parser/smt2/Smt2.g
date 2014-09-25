@@ -381,7 +381,8 @@ command returns [CVC4::Command* cmd = NULL]
     { cmd = new AssertCommand(expr); }
   |  /* Md Hasib Bin Shakur, June 11, 2014 QE simplify */
     QESIMPLIFY_TOK { PARSER_STATE->checkThatLogicIsSet(); }
-    term[expr, expr2]
+    //term[expr, expr2]
+    expr
     { cmd = new QESimplifyCommand(expr); } 
   | /* check-sat */
     CHECKSAT_TOK { PARSER_STATE->checkThatLogicIsSet(); }

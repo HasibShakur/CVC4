@@ -571,7 +571,6 @@ bool QuantifierEliminate::computeLeftProjection(Node n) {
         result = result & (temp1|temp2);
         Debug("expr-qetest")<<"Left Projection for "<<n[i]<<" is "<<result<<"\n";
       }
-
     }
     else
     {
@@ -580,8 +579,56 @@ bool QuantifierEliminate::computeLeftProjection(Node n) {
     }
   }
   return result;
-
 }
+
+//Node QuantifierEliminate::preProcessingForRightProjection(Node n)
+//{
+//  Debug("expr-qetest")<<"Node before computing projection "<<n<<"\n";
+//  Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
+//  Rational negOne(-1);
+//  Node test = mkRationalNode(negOne);
+//  Node replace;
+//  for(int i=0;i<(int)n.getNumChildren();i++)
+//  {
+//    if(n[i][0].hasBoundVar())
+//    {
+//      if((n[i][0].getKind() == kind::MULT) && (n[i][0][0] == test))
+//      {
+//        if((n[i][1]).isConst())
+//        {
+//          Node temp = NodeManager::currentNM()->mkNode(kind::MULT,test,n[i][1]);
+//          temp = Rewriter::rewrite(temp);
+//          Node temp1 = n[i][0];
+//          n[i][0] = temp;
+//          n[i][1] = n[i][0][1];
+//          NodeBuilder<> nb(n[i].getKind());
+//          nb<<n[i][0]<<n[i][1];
+//          n[i] = nb;
+//        }
+//        else if(n[i][1].getKind() == kind::PLUS)
+//        {
+//          n[i][1]
+//        }
+//      }
+//    }
+//  }
+//}
+
+//Node QuantifierEliminate::computeRightProjection(Node n)
+//{
+//  Debug("expr-qetest")<<"Node before computing projection "<<n<<"\n";
+//  Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
+//  Rational negOne(-1);
+//  Node test = mkRationalNode(negOne);
+//  for(int i=0;i<(int)n.getNumChildren();i++)
+//  {
+//    if(n[i][0].hasBoundVar())
+//    {
+//
+//    }
+//  }
+//}
+
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
   Node temp_in = NodeTemplate<true>(ex);
   Debug("expr-qetest") << "------- Inside doProcessing Method ------" << "\n";
