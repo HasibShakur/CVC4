@@ -661,6 +661,7 @@ Node QuantifierEliminate::evaluateNodeForRightProjection(Node n) {
 Node QuantifierEliminate::preProcessingForRightProjection(Node n) {
   Debug("expr-qetest")<<"Node before computing projection "<<n<<"\n";
   Debug("expr-qetest")<<"Number of Children "<<n.getNumChildren()<<"\n";
+  std::vector<Node> newNode;
   for(int i=0;i<(int)n.getNumChildren();i++)
   {
     if((n[i].getKind() == kind::AND) || (n[i].getKind() == kind::OR))
@@ -671,18 +672,17 @@ Node QuantifierEliminate::preProcessingForRightProjection(Node n) {
       Debug("expr-qetest")<<"Right projection right node "<<right<<"\n";
       NodeBuilder<> nb(n[i].getKind());
       nb<<left<<right;
-      n[i] = nb;
-      Debug("expr-qetest")<<"Right projection changed node "<<n[i]<<"\n";
+      newNode.push_back(nb);
     }
     else
     {
       Node temp = evaluateNodeForRightProjection(n[i]);
-      Debug("expr-qetest")<<"temp node "<<temp<<"\n";
-      n.substitute(n[i],temp);
-      Debug("expr-qetest")<<"Right projection changed node "<<n[i]<<"\n";
+      newNode.push_back(temp);
     }
   }
-  return n;
+  Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),newNode);
+  Debug("expr-qetest")<<"Right projection returnNode "<<returnNode<<"\n";
+  return returnNode;
 }
 
 Node QuantifierEliminate::computeRightProjection(Node n) {
