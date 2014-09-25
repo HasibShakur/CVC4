@@ -727,12 +727,12 @@ Node QuantifierEliminate::computeRightProjection(Node n) {
     {
       if(toCompute[i][0][1].hasBoundVar())
       {
-        replace = toCompute[i][0][1];
+        replace = toCompute[i][0][0];
         Debug("expr-qetest")<<"Replace Node "<<replace<<"\n";
       }
       else if(toCompute[i][1][1].hasBoundVar())
       {
-        replace = toCompute[i][1][1];
+        replace = toCompute[i][1][0];
         Debug("expr-qetest")<<"Replace Node "<<replace<<"\n";
       }
     }
