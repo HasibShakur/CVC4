@@ -691,20 +691,22 @@ Node QuantifierEliminate::evaluateForRightProjection(Node n, Node replacement) {
     if(n[i][0].hasBoundVar()) {
       Node temp1 = replacement;
       Node temp2 = n[i][1];
-      Node temp = Rewriter::rewrite(NodeManager::currentNM()->mkNode(n[i].getKind(),temp1,temp2));
+//      Node temp = Rewriter::rewrite(
+//          NodeManager::currentNM()->mkNode(n[i].getKind(), temp1, temp2));
+      Node temp = NodeManager::currentNM()->mkNode(n[i].getKind(), temp1, temp2);
       Debug("expr-qetest")<<"Right projection after replacement "<<temp<<"\n";
       newNode.push_back(temp);
-    }
-    else
-    {
+    } else {
       Node temp1 = replacement;
       Node temp2 = n[i][0];
-      Node temp = Rewriter::rewrite(NodeManager::currentNM()->mkNode(n[i].getKind(),temp2,temp1));
+//      Node temp = Rewriter::rewrite(
+//          NodeManager::currentNM()->mkNode(n[i].getKind(), temp2, temp1));
+      Node temp = NodeManager::currentNM()->mkNode(n[i].getKind(), temp2, temp1);
       Debug("expr-qetest")<<"Right projection after replacement "<<temp<<"\n";
       newNode.push_back(temp);
     }
   }
-  Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),newNode);
+  Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(), newNode);
   returnNode = Rewriter::rewrite(returnNode);
   Debug("expr-qetest")<<"Right projection final return node "<<returnNode<<"\n";
   return returnNode;
