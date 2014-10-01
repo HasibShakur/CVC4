@@ -832,6 +832,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
         return NodeManager::currentNM()->mkNode(kind::NOT, children);
       } else {
         return returnNode;
+
       }
     }
   } else {
