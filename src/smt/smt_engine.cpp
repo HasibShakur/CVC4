@@ -3357,6 +3357,8 @@ std::string SmtEngine::eliminateQuantifier(Expr ex)
    Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
    Node checkRewrittenNode = Rewriter::rewrite(temp);
    Debug("expr-qetest")<<"Separate rewriting "<<checkRewrittenNode<<"\n";
+   Node finalNode = QuantifierEliminate::computeProjections(processedNode);
+   Debug("expr-qetest")<<"Final Node "<<finalNode<<"\n";
    return "success";
 
 }

@@ -839,6 +839,41 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
   }
 }
 
+Node QuantifierEliminate::computeProjections(Node n)
+{
+  Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
+  Debug("expr-qetest") << n << "\n";
+  Node in;
+  if(n.getKind() == kind::NOT) {
+      in = n[0];
+    } else {
+      in = n;
+   }
+  if(in.getKind() == kind::EXISTS)
+  {
+    std::vector<Node> args;
+    for(int i = 0; i < (int) in[0].getNumChildren(); i++) {
+       args.push_back(in[1]);
+     }
+    Node n1 = args.pop_back();
+    if(n1.getKind() == kind::EXISTS)
+    {
+      return computeProjections(n1);
+    }
+    else
+    {
+      bool left = computeLeftProjection(n1);
+      Node right = computeRightProjection(n1);
+      Node final = NodeManager::currentNM()->mkNode(kind::OR,left,right);
+      return final;
+    }
+  }
+  else
+  {
+    return in;
+  }
+}
+
 /*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
  {
  bool rewritten = false;

@@ -28,10 +28,12 @@ private:
   static Node preProcessingForRightProjection(Node n);
   static Node preProcessing2ForRightProjection(Node n);
   static Node evaluateForRightProjection(Node n, Node replacement);
+
 public:
   static Node doPreprocessing(Expr ex);
   static bool isLiteralQE (Node body);
   static bool isRelationalOperatorTypeQE(Kind k);
+  static Node computeProjections(Node n);
 };
 }
 #endif
