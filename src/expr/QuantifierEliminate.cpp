@@ -857,7 +857,12 @@ Node QuantifierEliminate::computeProjections(Node n)
     for(int i = 0; i < (int) in[0].getNumChildren(); i++) {
        args.push_back(in[1]);
      }
-    Node n1 = args.pop_back();
+    Node n1;
+    while(!args.empty())
+    {
+      n1 = args.back();
+      args.pop_back();
+    }
     if(n1.getKind() == kind::EXISTS)
     {
       return computeProjections(n1);
