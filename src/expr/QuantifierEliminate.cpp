@@ -836,6 +836,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     }
   } else {
     return in;
+
   }
 }
 
