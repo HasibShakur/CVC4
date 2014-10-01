@@ -869,7 +869,7 @@ Node QuantifierEliminate::computeProjections(Node n)
     }
     else
     {
-      bool left = computeLeftProjection(n1);
+      bool left = mkBoolNode(computeLeftProjection(n1));
       Node right = computeRightProjection(n1);
       Node final = NodeManager::currentNM()->mkNode(kind::OR,left,right);
       return final;
