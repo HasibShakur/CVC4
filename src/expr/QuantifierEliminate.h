@@ -11,7 +11,7 @@ namespace CVC4{
 class CVC4_PUBLIC QuantifierEliminate {
 private:
   static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
-  static Node convertToNNFQE(Node body,NodeManager* currNM);
+  static Node convertToNNFQE(Node body);
   static Node doRewriting(Node n);
   static Node eliminateImpliesQE(Node body);
   static Node processRelationOperatorQE(Node n,bool negationEnabled);
