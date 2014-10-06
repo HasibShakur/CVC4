@@ -12,7 +12,7 @@ class CVC4_PUBLIC QuantifierEliminate {
 private:
   static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
   static Node convertToNNFQE(Node body,NodeManager* currNM);
-  static Node doRewriting(Node n,NodeManager* currNM);
+  static Node doRewriting(Node n);
   static Node eliminateImpliesQE(Node body);
   static Node processRelationOperatorQE(Node n,bool negationEnabled);
   static Node replaceGEQQE(Node n,bool negationEnabled);
@@ -28,7 +28,7 @@ private:
   static Node preProcessingForRightProjection(Node n);
   static Node preProcessing2ForRightProjection(Node n);
   static Node evaluateForRightProjection(Node n, Node replacement);
-
+  static Node replaceForall(Node n);
 public:
   static Node doPreprocessing(Expr ex);
   static bool isLiteralQE (Node body);

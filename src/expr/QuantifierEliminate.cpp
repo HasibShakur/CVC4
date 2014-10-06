@@ -82,6 +82,7 @@ Node QuantifierEliminate::eliminateImpliesQE(Node body) {
 
 Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
                                             bool pol) {
+  body = replaceForall(body);
   if(body.getKind() == kind::EXISTS) {
     if(pol) {
       std::vector<Node> terms;
@@ -131,12 +132,12 @@ Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
   }
 }
 
-Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
+Node QuantifierEliminate::convertToNNFQE(Node body) {
 
   if(body.getKind() == kind::NOT) {
     if(body[0].getKind() == kind::NOT) {
       //  Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][0].getKind() << "\n";
-      return convertToNNFQE(body[0][0], currNM);
+      return convertToNNFQE(body[0][0]);
     } else if(isLiteralQE(body[0])) {
       //  Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getKind() << "\n";
       return body;
@@ -145,7 +146,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
       Kind k = body[0].getKind();
       if(body[0].getKind() == kind::OR || body[0].getKind() == kind::AND) {
         for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
-          children.push_back(convertToNNFQE(body[0][i].notNode(), currNM));
+          children.push_back(convertToNNFQE(body[0][i].notNode()));
         }
         k = body[0].getKind() == kind::AND ? kind::OR : kind::AND;
         Debug("expr-qetest")<<"New kind after negation "<<k<<"\n";
@@ -154,7 +155,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
         Notice() << "Unhandled Quantifiers NNF: " << body << std::endl;
         return body;
       }
-      return currNM->mkNode(k, children);
+      return NodeManager::currentNM()->mkNode(k, children);
     }
   } else if(isLiteralQE(body)) {
     return body;
@@ -162,12 +163,12 @@ Node QuantifierEliminate::convertToNNFQE(Node body, NodeManager* currNM) {
     std::vector<CVC4::Node> children;
     bool childrenChanged = false;
     for(int i = 0; i < (int) body.getNumChildren(); i++) {
-      Node nc = convertToNNFQE(body[i], currNM);
+      Node nc = convertToNNFQE(body[i]);
       children.push_back(nc);
       childrenChanged = childrenChanged || nc != body[i];
     }
     if(childrenChanged) {
-      return currNM->mkNode(body.getKind(), children);
+      return NodeManager::currentNM()->mkNode(body.getKind(), children);
     } else {
       return body;
     }
@@ -494,7 +495,7 @@ bool QuantifierEliminate::evaluateBoolean(Node n) {
   return result;
 }
 
-Node QuantifierEliminate::doRewriting(Node n, NodeManager* currNM) {
+Node QuantifierEliminate::doRewriting(Node n) {
   Node processedFirstChild;
   Node processedSecondChild;
   Node finalNode;
@@ -759,9 +760,24 @@ Node QuantifierEliminate::computeRightProjection(Node n) {
     truthValue = false;
     return mkBoolNode(truthValue);
   }
+ return toCompute;
+}
 
-
-  return toCompute;
+Node QuantifierEliminate::replaceForall(Node n)
+{
+  if(n.getKind() == kind::FORALL)
+  {
+    std::vector<Node> children;
+    children.push_back(n[0]);
+    children.push_back(n[1].notNode());
+    if(n.getNumChildren())
+    {
+      children.push_back(n[2]);
+    }
+    n = NodeManager::currentNM()->mkNode(kind::EXISTS,children);
+    n = n.notNode();
+  }
+  return n;
 }
 
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
@@ -773,7 +789,8 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
   } else {
     in = temp_in;
   }
-  if(in.getKind() == kind::EXISTS) {
+ // in = replaceForall(in);
+  if(in.getKind() == kind::EXISTS || in.getKind() == kind::FORALL) {
     std::vector<Node> args;
     for(int i = 0; i < (int) in[0].getNumChildren(); i++) {
       args.push_back(in[0][i]);
@@ -794,21 +811,16 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     if(n.isNull()) {
       Debug("expr-qetest") << "Node n is null in doPreprocessing after Node n = convertToPrenexQE(n,args, true)" << "\n";
     }
-    NodeManager* currNM = NodeManager::currentNM();
-    Node nnfNode = convertToNNFQE(n, currNM);
+    Node nnfNode = convertToNNFQE(n);
     Debug("expr-qetest") << "After nnf "<< nnfNode << "\n";
     if(nnfNode.isNull()) {
       Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
-    Node rewrittenNode = doRewriting(nnfNode, currNM);
+    Node rewrittenNode = Rewriter::rewrite(nnfNode);
     Debug("expr-qetest") << "After rewriting "<< rewrittenNode << "\n";
     if(rewrittenNode.isNull()) {
       Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
-    bool test = computeLeftProjection(rewrittenNode);
-    Debug("expr-qetest") << "Left projection "<< test << "\n";
-    Node test1 = computeRightProjection(rewrittenNode);
-    Debug("expr-qetest") << "Right projection "<< test1 << "\n";
     if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
       return in;
     } else {
@@ -832,7 +844,6 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
         return NodeManager::currentNM()->mkNode(kind::NOT, children);
       } else {
         return returnNode;
-
       }
     }
   } else {
@@ -851,7 +862,7 @@ Node QuantifierEliminate::computeProjections(Node n)
     } else {
       in = n;
    }
-  if(in.getKind() == kind::EXISTS)
+  if(in.getKind() == kind::EXISTS || kind::FORALL)
   {
     std::vector<Node> args;
     for(int i = 0; i < (int) in[0].getNumChildren(); i++) {
@@ -869,8 +880,9 @@ Node QuantifierEliminate::computeProjections(Node n)
     }
     else
     {
-      bool left = computeLeftProjection(n1);
-      Node right = computeRightProjection(n1);
+      Node temp = doRewriting(n1);
+      bool left = computeLeftProjection(temp);
+      Node right = computeRightProjection(temp);
       Node final = NodeManager::currentNM()->mkNode(kind::OR,mkBoolNode(left),right);
       return final;
     }
@@ -881,67 +893,4 @@ Node QuantifierEliminate::computeProjections(Node n)
   }
 }
 
-/*CVC4::Node QuantifierEliminate::normalizeBody(CVC4::Node body)
- {
- bool rewritten = false;
- Node normalized;
- for(int i=0;i<(int)body.getNumChildren();i++)
- {
- if(body[i].getKind() == NOT)
- {
- //If it is not then do the normalization of the expression whose kind is not
- //Just call the negateNode on the simplification done on the else part
- }
- else
- {
- // If it is not of the kind not then directly normalize this
- if(this->isLiteral(body[i]))
- {
- // If it is a literal then we need to do nothing
- rewritten = false;
- }
- else if(body[i].getKind()==EQUAL)
- {
- //  body[i].kinded_iterator::begin(body[i],EQUAL);
- }
- // If the operator is > then convert it to < by just exchanging the operators then making a node using mkNode
- // If the operator is = then use the following conversion s=t <==> s>t+1 and t>s+1
- }
- }
- if(!rewritten)
- {
- return body;
- }
- else
- {
- return normalized;
- }
- }*/
-/*Node QuantifierEliminate::simplifyExpression(Node n)
- {
- // 1st phase of simplification is converting the expression to NNF
- Node nnfNode = convertToNNF(n);
- // 3rd phase of simplification is applying the replace rules
- //Node normalizedBody = normalizeBody(nnfNode);
- // 4th phase of simplification is
- return nnfNode;
- }*/
-/*bool QuantifierEliminate::isClauseQE( Node n ){
- if( isLiteralQE( n ) ){
- return true;
- }else if( n.getKind()==kind::NOT ){
- return isCubeQE( n[0] );
- }else if( n.getKind()==kind::OR ){
- for( int i=0; i<(int)n.getNumChildren(); i++ ){
- if( !isClauseQE( n[i] ) ){
- return false;
- }
- }
- return true;
- }else if( n.getKind()==kind::IMPLIES ){
- return isCubeQE( n[0] ) && isClauseQE( n[1] );
- }else{
- return false;
- }
- }*/
 
