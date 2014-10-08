@@ -762,7 +762,7 @@ Node QuantifierEliminate::computeRightProjection(Node n) {
   }
  return toCompute;
 }
-
+*/
 Node QuantifierEliminate::replaceForall(Node n)
 {
   if(n.getKind() == kind::FORALL)
@@ -778,7 +778,7 @@ Node QuantifierEliminate::replaceForall(Node n)
     n = n.notNode();
   }
   return n;
-}*/
+}
 
 Node QuantifierEliminate::doRewriting(Node n, Node boundVar)
 {
