@@ -817,11 +817,12 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     if(nnfNode.isNull()) {
       Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
-    Node rewrittenNode = Rewriter::rewrite(nnfNode);
-    Debug("expr-qetest") << "After rewriting "<< rewrittenNode << "\n";
-    if(rewrittenNode.isNull()) {
-      Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
-    }
+//    Node rewrittenNode = Rewriter::rewrite(nnfNode);
+//    Debug("expr-qetest") << "After rewriting "<< rewrittenNode << "\n";
+//    if(rewrittenNode.isNull()) {
+//      Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
+//    }
+    Node rewrittenNode = nnfNode;
     if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
       return in;
     } else {
