@@ -499,7 +499,7 @@ Node QuantifierEliminate::doRewriting(Node n) {
   Node processedFirstChild;
   Node processedSecondChild;
   Node finalNode;
-  n = Rewriter::rewrite(n);
+ // n = Rewriter::rewrite(n);
   if(n.getKind() == kind::OR || n.getKind() == kind::AND) {
     if(n[0].getKind() == kind::NOT) {
       Debug("expr-qetest") << "Before processing first child "<< n[0]<<"\n";
