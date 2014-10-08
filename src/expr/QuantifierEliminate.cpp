@@ -790,7 +790,8 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     in = temp_in;
   }
  // in = replaceForall(in);
-  if(in.getKind() == kind::EXISTS || in.getKind() == kind::FORALL) {
+  Kind initialKind = in.getKind();
+  if(initialKind == kind::EXISTS || initialKind == kind::FORALL) {
     std::vector<Node> args;
     for(int i = 0; i < (int) in[0].getNumChildren(); i++) {
       args.push_back(in[0][i]);
@@ -834,7 +835,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
         if(!ipl.isNull()) {
           children.push_back(ipl);
         }
-        defs << NodeManager::currentNM()->mkNode(kind::EXISTS, children);
+        defs << NodeManager::currentNM()->mkNode(initialKind, children);
       }
       Node returnNode =
           defs.getNumChildren() == 1 ? defs.getChild(0) : defs.constructNode();
