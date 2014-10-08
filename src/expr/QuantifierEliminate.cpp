@@ -174,7 +174,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
     }
   }
 }
-Node QuantifierEliminate::internalProcessNodeQE(Node n) {
+/*Node QuantifierEliminate::internalProcessNodeQE(Node n) {
   if(n.getKind() == kind::CONST_RATIONAL) {
     Debug("expr-qetest")<<"Constant "<<n.getType()<<"\n";
     Constant c = Constant::mkConstant(n);
@@ -384,9 +384,9 @@ Node QuantifierEliminate::replaceEqualQE(Node n, bool negationEnabled) {
     Debug("expr-qetest")<<"Replacing equality "<<returnNode<<"\n";
     return returnNode;
   }
-}
+}*/
 
-Node QuantifierEliminate::processRelationOperatorQE(Node n,
+/*Node QuantifierEliminate::processRelationOperatorQE(Node n,
                                                     bool negationEnabled) {
   Node changedNode;
   if(negationEnabled) {
@@ -465,8 +465,8 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,
     }
   }
   return changedNode;
-}
-bool QuantifierEliminate::evaluateBoolean(Node n) {
+}*/
+/*bool QuantifierEliminate::evaluateBoolean(Node n) {
   bool result = false;
   if(n[0].hasBoundVar()) {
     if(n[0].getKind() == kind::MULT) {
@@ -493,9 +493,9 @@ bool QuantifierEliminate::evaluateBoolean(Node n) {
     }
   }
   return result;
-}
+}*/
 
-Node QuantifierEliminate::doRewriting(Node n) {
+/*Node QuantifierEliminate::doRewriting(Node n) {
   Node processedFirstChild;
   Node processedSecondChild;
   Node finalNode;
@@ -778,6 +778,28 @@ Node QuantifierEliminate::replaceForall(Node n)
     n = n.notNode();
   }
   return n;
+}*/
+
+Node QuantifierEliminate::doRewriting(Node n, Node boundVar)
+{
+  Debug("expr-qetest")<<" Inside doRewriting method "<<"\n";
+  Debug("expr-qetest")<<"Node to rewrite "<<n<<"\n";
+  Debug("expr-qetest")<<"Bound Variable "<<boundVar<<"\n";
+  return n;
+}
+bool QuantifierEliminate::computeLeftProjection(Node n, Node boundVar)
+{
+  Debug("expr-qetest")<<" Inside left projection method "<<"\n";
+  Debug("expr-qetest")<<"Node to rewrite "<<n<<"\n";
+  Debug("expr-qetest")<<"Bound Variable "<<boundVar<<"\n";
+  return true;
+}
+Node QuantifierEliminate::computeRightProjection(Node n, Node boundVar)
+{
+  Debug("expr-qetest")<<" Inside left projection method "<<"\n";
+  Debug("expr-qetest")<<"Node to rewrite "<<n<<"\n";
+  Debug("expr-qetest")<<"Bound Variable "<<boundVar<<"\n";
+  return n;
 }
 
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
@@ -817,13 +839,12 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
     if(nnfNode.isNull()) {
       Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
     }
-//    Node rewrittenNode = Rewriter::rewrite(nnfNode);
-//    Debug("expr-qetest") << "After rewriting "<< rewrittenNode << "\n";
-//    if(rewrittenNode.isNull()) {
-//      Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
-//    }
-    Node rewrittenNode = nnfNode;
-    if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
+    Node rewrittenNode = Rewriter::rewrite(nnfNode);
+    Debug("expr-qetest") << "After rewriting "<< rewrittenNode << "\n";
+    if(rewrittenNode.isNull()) {
+      Debug("expr-qetest") << "Node rewrittenNode is null in doPreprocessing after rewriting " << "\n";
+    }
+   if(in[1] == rewrittenNode && args.size() == in[0].getNumChildren()) {
       return in;
     } else {
       if(args.empty()) {
@@ -859,6 +880,9 @@ Node QuantifierEliminate::computeProjections(Node n)
   Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
   Debug("expr-qetest") << n << "\n";
   Node in;
+  Node result;
+  std::vector<Node> boundVar;
+  std::vector<Node> args;
   if(n.getKind() == kind::NOT) {
       in = n[0];
     } else {
@@ -866,27 +890,36 @@ Node QuantifierEliminate::computeProjections(Node n)
    }
   if(in.getKind() == kind::EXISTS || kind::FORALL)
   {
-    std::vector<Node> args;
-    for(int i = 0; i < (int) in[1].getNumChildren(); i++) {
-       args.push_back(in[1][i]);
-     }
-    Node n1;
-    while(!args.empty())
-    {
-      n1 = args.back();
-      args.pop_back();
-    }
-    if(n1.getKind() == kind::EXISTS)
+    boundVar.push_back(in[0]);
+    Debug("expr-qetest")<<"Bound Varialbe "<<boundVar.back()<<"\n";
+    args.push_back(in[1]);
+    Debug("expr-qetest")<<"Argument "<<args.back()<<"\n";
+    Node n1 = args.back();
+    if(n1.getKind() == kind::EXISTS || n1.getKind() == kind::FORALL)
     {
       return computeProjections(n1);
     }
     else
     {
-      Node temp = doRewriting(n1);
-      bool left = computeLeftProjection(temp);
-      Node right = computeRightProjection(temp);
-      Node final = NodeManager::currentNM()->mkNode(kind::OR,mkBoolNode(left),right);
-      return final;
+      while(!boundVar.empty() && !args.empty())
+      {
+        Node varToElim = boundVar.back();
+        Node rewrittenNode = doRewriting(n1,varToElim);
+        Debug("expr-qetest")<<"After rewriting "<<rewrittenNode<<"\n";
+        bool left = computeLeftProjection(rewrittenNode,varToElim);
+        Debug("expr-qetest")<<"After left projection "<<left<<"\n";
+        Node right = computeRightProjection(rewrittenNode,varToElim);
+        Debug("expr-qetest")<<"After right projection "<<right<<"\n";
+        Node finalNode = NodeManager::currentNM()->mkNode(kind::OR,mkBoolNode(left),right);
+        Debug("expr-qetest")<<"final Node "<<finalNode<<"\n";
+        args.pop_back();
+        boundVar.pop_back();
+        n1 = finalNode;
+        result = n1;
+        Debug("expr-qetest")<<"Result inside while "<<result<<"\n";
+      }
+      Debug("expr-qetest")<<"Result outside while "<<result<<"\n";
+      return result;
     }
   }
   else
