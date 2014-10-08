@@ -436,14 +436,14 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,
     }
     if(n.getKind() == kind::GEQ)
     {
-      changedNode = QuantifierEliminate::replaceGEQQE(changedNode,negationEnabled);
+      changedNode = QuantifierEliminate::replaceGEQQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications GEQ without not(Before Normalization)  "<<changedNode<<"\n";
       changedNode = QuantifierEliminate::normalizeAtom(changedNode);
       Debug("expr-qetest")<<"After modifications GEQ without not(After Normalization) "<< changedNode<<"\n";
     }
     else if(n.getKind() == kind::LT)
     {
-      changedNode = QuantifierEliminate::replaceLTQE(changedNode,negationEnabled);
+      changedNode = QuantifierEliminate::replaceLTQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications LT without not(Before Normalization) "<<changedNode<<"\n";
       changedNode = QuantifierEliminate::normalizeAtom(changedNode);
       Debug("expr-qetest")<<"After modifications LT without not(After Normalization) "<< changedNode<<"\n";
@@ -451,7 +451,7 @@ Node QuantifierEliminate::processRelationOperatorQE(Node n,
     }
     else if(n.getKind() == kind::LEQ)
     {
-      changedNode = QuantifierEliminate::replaceLEQQE(changedNode,negationEnabled);
+      changedNode = QuantifierEliminate::replaceLEQQE(n,negationEnabled);
       Debug("expr-qetest")<<"After modifications LEQ without not(Before Normalization) "<<changedNode<<"\n";
       changedNode = QuantifierEliminate::normalizeAtom(changedNode);
       Debug("expr-qetest")<<"After modifications LEQ without not(After Normalization) "<< changedNode<<"\n";
