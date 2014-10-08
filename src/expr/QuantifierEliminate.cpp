@@ -804,7 +804,9 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node boundVar)
 
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
   Node temp_in = NodeTemplate<true>(ex);
-  Debug("expr-qetest") << "------- Inside doProcessing Method ------" << "\n";
+  Node rewrittenNode = Rewriter::rewrite(temp_in);
+  return rewrittenNode;
+  /*Debug("expr-qetest") << "------- Inside doProcessing Method ------" << "\n";
   Node in;
   if(temp_in.getKind() == kind::NOT) {
     in = temp_in[0];
@@ -872,7 +874,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
   } else {
     return in;
 
-  }
+  }*/
 }
 
 Node QuantifierEliminate::computeProjections(Node n)
