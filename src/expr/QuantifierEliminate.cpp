@@ -782,23 +782,14 @@ Node QuantifierEliminate::replaceForall(Node n)
 
 Node QuantifierEliminate::doRewriting(Node n, Node boundVar)
 {
-  Debug("expr-qetest")<<" Inside doRewriting method "<<"\n";
-  Debug("expr-qetest")<<"Node to rewrite "<<n<<"\n";
-  Debug("expr-qetest")<<"Bound Variable "<<boundVar<<"\n";
   return n;
 }
 bool QuantifierEliminate::computeLeftProjection(Node n, Node boundVar)
 {
-  Debug("expr-qetest")<<" Inside left projection method "<<"\n";
-  Debug("expr-qetest")<<"Node to rewrite "<<n<<"\n";
-  Debug("expr-qetest")<<"Bound Variable "<<boundVar<<"\n";
   return true;
 }
 Node QuantifierEliminate::computeRightProjection(Node n, Node boundVar)
 {
-  Debug("expr-qetest")<<" Inside left projection method "<<"\n";
-  Debug("expr-qetest")<<"Node to rewrite "<<n<<"\n";
-  Debug("expr-qetest")<<"Bound Variable "<<boundVar<<"\n";
   return n;
 }
 
