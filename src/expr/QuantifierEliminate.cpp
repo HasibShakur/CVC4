@@ -887,7 +887,16 @@ Node QuantifierEliminate::computeProjections(Node n)
     Debug("expr-qetest")<<"Bound Varialbe "<<boundVar.back()<<"\n";
     args.push_back(in[1]);
     Debug("expr-qetest")<<"Argument "<<args.back()<<"\n";
-    Node n1 = args.back();
+    Node temp = args.back();
+    Node n1;
+    if(temp.getKind() == kind::NOT)
+    {
+      n1 = temp[0];
+    }
+    else
+    {
+      n1 = temp;
+    }
     if(n1.getKind() == kind::EXISTS || n1.getKind() == kind::FORALL)
     {
       return computeProjections(n1);
