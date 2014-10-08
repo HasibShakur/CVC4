@@ -866,8 +866,8 @@ Node QuantifierEliminate::computeProjections(Node n)
   if(in.getKind() == kind::EXISTS || kind::FORALL)
   {
     std::vector<Node> args;
-    for(int i = 0; i < (int) in[0].getNumChildren(); i++) {
-       args.push_back(in[1]);
+    for(int i = 0; i < (int) in[1].getNumChildren(); i++) {
+       args.push_back(in[1][i]);
      }
     Node n1;
     while(!args.empty())
