@@ -795,6 +795,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, Node boundVar) {
   Debug("expr-qetest")<<"After right projection "<<right<<"\n";
   Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
                                                     right);
+  finalNode = Rewriter::rewrite(finalNode);
   return finalNode;
 }
 
@@ -880,101 +881,66 @@ Node QuantifierEliminate::computeProjections(Node n) {
   Node temp;
   std::vector<Node> boundVar;
   std::vector<Node> args;
-  if(n.getKind()==kind::NOT)
+  if(n.getKind() == kind::NOT)
   {
-    if((n[0].getKind() == kind::EXISTS)||(n[0].getKind() == kind::FORALL))
+    temp = n[0];
+  }
+  else
+  {
+    temp = n;
+  }
+  if(temp.getKind()==kind::EXISTS || temp.getKind() == kind::FORALL)
+  {
+    boundVar.push_back(temp[0]);
+    Debug("expr-qetest")<<"Bound Varialbe "<<boundVar.back()<<"\n";
+    args.push_back(temp[1]);
+    Debug("expr-qetest")<<"Argument "<<args.back()<<"\n";
+    Node n1 = args.back();
+    Node temp2;
+    if(n1.getKind() == kind::NOT)
     {
-      boundVar.push_back(n[0][0]);
-      Debug("expr-qetest")<<"Bound Varialbe "<<boundVar.back()<<"\n";
-      args.push_back(n[0][1]);
-      Debug("expr-qetest")<<"Argument "<<args.back()<<"\n";
-      temp = args.back();
-      if(temp.getKind() == kind::NOT)
-      {
-        if(temp[0].getKind() == kind::EXISTS || temp[0].getKind() == kind::FORALL)
-        {
-          return computeProjections(temp);
-        }
-        else
-        {
-          Node varToElim = args.back();
-          Node finalNode = performCaseAnalysis(temp,varToElim);
-          args.pop_back();
-          boundVar.pop_back();
-        }
-      }
-      else
-      {
-        if(temp.getKind() == kind::EXISTS || temp.getKind() == kind::FORALL)
-        {
-          return computeProjections(temp);
-        }
-        else
-        {
-          Node varToElim = args.back();
-          Node finalNode = performCaseAnalysis(temp,varToElim);
-          args.pop_back();
-          boundVar.pop_back();
-        }
-      }
+      temp2 = n1[0];
     }
     else
     {
-      return n;
+      temp2 = n1;
+    }
+    if(temp2.getKind() == kind::EXISTS || temp2.getKind() == kind::FORALL)
+    {
+      return computeProjections(temp2);
+    }
+    else
+    {
+      while(!boundVar.empty() && !args.empty())
+      {
+        Node varToElim = args.back();
+        Node finalNode = performCaseAnalysis(temp,varToElim);
+        args.pop_back();
+        boundVar.pop_back();
+        if(n1.getKind() == kind::NOT)
+        {
+          temp2 = finalNode.notNode();
+        }
+        else
+        {
+          temp2 = finalNode;
+        }
+        result = temp2;
+      }
+    }
+    if(n.getKind() == kind::NOT)
+    {
+      result = result.notNode();
+      return result;
+    }
+    else
+    {
+      return result;
     }
   }
   else
   {
-    if((n.getKind() == kind::EXISTS)||(n.getKind() == kind::FORALL))
-    {
-      boundVar.push_back(n[0]);
-      Debug("expr-qetest")<<"Bound Varialbe "<<boundVar.back()<<"\n";
-      args.push_back(n[1]);
-      Debug("expr-qetest")<<"Argument "<<args.back()<<"\n";
-      temp = args.back();
-      if(temp.getKind() == kind::NOT)
-      {
-        if(temp[0].getKind() == kind::EXISTS || temp[0].getKind() == kind::FORALL)
-        {
-          return computeProjections(temp);
-        }
-        else
-        {
-          while(!boundVar.empty() && !args.empty())
-          {
-            Node varToElim = args.back();
-            Node finalNode = performCaseAnalysis(temp,varToElim);
-            args.pop_back();
-            boundVar.pop_back();
-            temp = finalNode;
-            Debug("expr-qetest")<<"New temp "<<temp<<"\n";
-          }
-        }
-      }
-      else
-      {
-        if(temp.getKind() == kind::EXISTS || temp.getKind() == kind::FORALL)
-        {
-          return computeProjections(temp);
-        }
-        else
-        {
-          while(!boundVar.empty() && !args.empty())
-          {
-            Node varToElim = args.back();
-            Node finalNode = performCaseAnalysis(temp,varToElim);
-            args.pop_back();
-            boundVar.pop_back();
-            temp = finalNode;
-            Debug("expr-qetest")<<"New temp "<<temp<<"\n";
-          }
-        }
-      }
-    }
-    else
-    {
-      return n;
-    }
+    return n;
   }
 }
 
