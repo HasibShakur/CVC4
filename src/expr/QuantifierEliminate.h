@@ -29,6 +29,7 @@ private:
 //  static Node preProcessing2ForRightProjection(Node n);
 //  static Node evaluateForRightProjection(Node n, Node replacement);
   static Node replaceForall(Node n);
+  static Node performCaseAnalysis(Node n,Node boundVar);
 public:
   static Node doPreprocessing(Expr ex);
   static bool isLiteralQE (Node body);
