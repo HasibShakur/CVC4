@@ -794,7 +794,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, Node boundVar) {
   Node right = computeRightProjection(rewrittenNode, boundVar);
   Debug("expr-qetest")<<"After right projection "<<right<<"\n";
   //Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
-                                                    right);
+                                                    //right);
   Node finalNode = Rewriter::rewrite(right);
   return finalNode;
 }
