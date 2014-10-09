@@ -897,7 +897,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         }
         else
         {
-          Node varToElim = args.push_back();
+          Node varToElim = args.back();
           Node finalNode = performCaseAnalysis(temp,varToElim);
           args.pop_back();
           boundVar.pop_back();
@@ -911,7 +911,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         }
         else
         {
-          Node varToElim = args.push_back();
+          Node varToElim = args.back();
           Node finalNode = performCaseAnalysis(temp,varToElim);
           args.pop_back();
           boundVar.pop_back();
@@ -942,7 +942,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         {
           while(!boundVar.empty() && !args.empty())
           {
-            Node varToElim = args.push_back();
+            Node varToElim = args.back();
             Node finalNode = performCaseAnalysis(temp,varToElim);
             args.pop_back();
             boundVar.pop_back();
@@ -961,7 +961,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         {
           while(!boundVar.empty() && !args.empty())
           {
-            Node varToElim = args.push_back();
+            Node varToElim = args.back();
             Node finalNode = performCaseAnalysis(temp,varToElim);
             args.pop_back();
             boundVar.pop_back();
