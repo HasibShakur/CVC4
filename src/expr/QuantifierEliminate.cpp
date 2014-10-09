@@ -913,8 +913,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
     {
       while(!boundVar.empty() && !args.empty())
       {
-        Node varToElim = args.back();
-        Node finalNode = performCaseAnalysis(temp,varToElim);
+        Node varToElim = boundVar.back();
+        Node finalNode = performCaseAnalysis(temp2,varToElim);
         args.pop_back();
         boundVar.pop_back();
         if(n1.getKind() == kind::NOT)
