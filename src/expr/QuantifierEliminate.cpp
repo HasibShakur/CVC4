@@ -918,7 +918,8 @@ Node QuantifierEliminate::computeProjections(Node n)
         n1 = finalNode;
         if(temp.getKind() == kind::NOT)
         {
-          result = n1.negate();
+
+          result = Rewriter::rewrite(n1.negate());
         }
         else
         {
@@ -930,7 +931,7 @@ Node QuantifierEliminate::computeProjections(Node n)
       Debug("expr-qetest")<<"Result outside while "<<result<<"\n";
       if(n.getKind() == kind::NOT)
       {
-        return result.negate();
+        return Rewriter::rewrite(result.negate());
       }
       else
       {
