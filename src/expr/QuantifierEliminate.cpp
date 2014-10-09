@@ -913,15 +913,29 @@ Node QuantifierEliminate::computeProjections(Node n)
         Node right = computeRightProjection(rewrittenNode,varToElim);
         Debug("expr-qetest")<<"After right projection "<<right<<"\n";
         Node finalNode = NodeManager::currentNM()->mkNode(kind::OR,mkBoolNode(left),right);
-        Debug("expr-qetest")<<"final Node "<<finalNode<<"\n";
         args.pop_back();
         boundVar.pop_back();
         n1 = finalNode;
-        result = n1;
+        if(temp.getKind() == kind::NOT)
+        {
+          result = n1.negate();
+        }
+        else
+        {
+          result = n1;
+        }
+
         Debug("expr-qetest")<<"Result inside while "<<result<<"\n";
       }
       Debug("expr-qetest")<<"Result outside while "<<result<<"\n";
-      return result;
+      if(n.getKind() == kind::NOT)
+      {
+        return result.negate();
+      }
+      else
+      {
+        return result;
+      }
     }
   }
   else
