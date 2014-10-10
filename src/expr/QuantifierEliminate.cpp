@@ -892,40 +892,40 @@ Node QuantifierEliminate::computeProjections(Node n) {
   if(temp.getKind()==kind::EXISTS || temp.getKind() == kind::FORALL)
   {
     boundVar.push_back(temp[0]);
-    Debug("expr-qetest")<<"Bound Varialbe "<<boundVar.back()<<"\n";
+    Debug("expr-qetest")<<"Bound Variable "<<boundVar.back()<<"\n";
     args.push_back(temp[1]);
     Debug("expr-qetest")<<"Argument "<<args.back()<<"\n";
     Node n1 = args.back();
-    Node temp2;
-    if(n1.getKind() == kind::NOT)
+//    Node temp2;
+//    if(n1.getKind() == kind::NOT)
+//    {
+//      temp2 = n1[0];
+//    }
+//    else
+//    {
+//      temp2 = n1;
+//    }
+    if(n1.getKind() == kind::EXISTS || n1.getKind() == kind::FORALL || n1.getKind() == kind::NOT)
     {
-      temp2 = n1[0];
-    }
-    else
-    {
-      temp2 = n1;
-    }
-    if(temp2.getKind() == kind::EXISTS || temp2.getKind() == kind::FORALL)
-    {
-      return computeProjections(temp2);
+      return computeProjections(n1);
     }
     else
     {
       while(!boundVar.empty() && !args.empty())
       {
         Node varToElim = boundVar.back();
-        Node finalNode = performCaseAnalysis(temp2,varToElim);
+        Node finalNode = performCaseAnalysis(n1,varToElim);
         args.pop_back();
         boundVar.pop_back();
         if(n1.getKind() == kind::NOT)
         {
-          temp2 = finalNode.notNode();
+          n1 = finalNode.notNode();
         }
         else
         {
-          temp2 = finalNode;
+          n1 = finalNode;
         }
-        result = temp2;
+        result = n1;
       }
     }
     if(n.getKind() == kind::NOT)
