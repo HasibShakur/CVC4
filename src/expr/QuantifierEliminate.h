@@ -34,7 +34,7 @@ public:
   static Node doPreprocessing(Expr ex);
   static bool isLiteralQE (Node body);
   static bool isRelationalOperatorTypeQE(Kind k);
-  static Node computeProjections(Node n);
+  static Node computeProjections(Node n,std::vector<Node> boundVar,std::vector<Node> args);
 };
 }
 #endif

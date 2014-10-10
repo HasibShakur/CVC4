@@ -874,13 +874,12 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
    }*/
 }
 
-Node QuantifierEliminate::computeProjections(Node n) {
+Node QuantifierEliminate::computeProjections(Node n,std::vector<Node> boundVar,std::vector<Node> args) {
   Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
   Debug("expr-qetest") << n << "\n";
   Node result;
   Node temp;
-  std::vector<Node> boundVar;
-  std::vector<Node> args;
+
   if(n.getKind() == kind::NOT)
   {
     temp = n[0];
@@ -896,18 +895,9 @@ Node QuantifierEliminate::computeProjections(Node n) {
     args.push_back(temp[1]);
     Debug("expr-qetest")<<"Argument "<<args.back()<<"\n";
     Node n1 = args.back();
-//    Node temp2;
-//    if(n1.getKind() == kind::NOT)
-//    {
-//      temp2 = n1[0];
-//    }
-//    else
-//    {
-//      temp2 = n1;
-//    }
     if(n1.getKind() == kind::EXISTS || n1.getKind() == kind::FORALL || n1.getKind() == kind::NOT)
     {
-      return computeProjections(n1);
+      return computeProjections(n1,boundVar,args);
     }
     else
     {
