@@ -3357,7 +3357,7 @@ std::string SmtEngine::eliminateQuantifier(Expr ex) {
   std::vector<Node> boundVar;
   std::vector<Node> args;
 //  Node checkRewrittenNode = Rewriter::rewrite(ex);
-//  Debug("expr-qetest")<<"Separate rewriting "<<checkRewrittenNode<<"\n";
+//  Debug("expr-qetest")<<"Separate rewriting "<<checkRewrittenNode<<n";
   Node finalNode = QuantifierEliminate::computeProjections(processedNode,boundVar,args);
   Debug("expr-qetest")<<"Final Node "<<finalNode<<"\n";
   return "success";
