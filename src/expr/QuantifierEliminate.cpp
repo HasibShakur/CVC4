@@ -794,7 +794,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, Node boundVar) {
   Node right = computeRightProjection(rewrittenNode, boundVar);
   Debug("expr-qetest")<<"After right projection "<<right<<"\n";
   //Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
-                                                    //right);
+  //right);
   Node finalNode = Rewriter::rewrite(right);
   return finalNode;
 }
@@ -874,7 +874,8 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
    }*/
 }
 
-Node QuantifierEliminate::computeProjections(Node n,std::vector<Node> boundVar,std::vector<Node> args) {
+Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
+                                             std::vector<Node> args) {
   Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
   Debug("expr-qetest") << n << "\n";
   Node result;
@@ -889,7 +890,11 @@ Node QuantifierEliminate::computeProjections(Node n,std::vector<Node> boundVar,s
   {
     temp = n;
   }
-  if(temp.getKind()==kind::EXISTS || temp.getKind() == kind::FORALL)
+  if(boundVar.empty() && args.empty() && (temp.getKind()!=kind::EXISTS || temp.getKind() != kind::FORALL))
+  {
+    return n;
+  }
+  else
   {
     boundVar.push_back(temp[0]);
     Debug("expr-qetest")<<"Bound Variable "<<boundVar.back()<<"\n";
@@ -928,10 +933,6 @@ Node QuantifierEliminate::computeProjections(Node n,std::vector<Node> boundVar,s
     {
       return result;
     }
-  }
-  else
-  {
-    return n;
   }
 }
 
