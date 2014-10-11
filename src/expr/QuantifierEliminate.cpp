@@ -890,7 +890,7 @@ Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
   {
     temp = n;
   }
-  if(boundVar.empty() && args.empty() && (temp.getKind()!=kind::EXISTS || temp.getKind() != kind::FORALL))
+  if((boundVar.empty() && args.empty()) && (temp.getKind()!=kind::EXISTS || temp.getKind() != kind::FORALL ))
   {
     return n;
   }
