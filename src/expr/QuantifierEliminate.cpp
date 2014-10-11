@@ -879,7 +879,8 @@ Node QuantifierEliminate::computeProjections(Node n,std::vector<Node> boundVar,s
   Debug("expr-qetest") << n << "\n";
   Node result;
   Node temp;
-
+  Debug("expr-qetest") << "boundVar size" << boundVar.size()<<"\n";
+  Debug("expr-qetest") << "args size" << args.size()<<"\n";
   if(n.getKind() == kind::NOT)
   {
     temp = n[0];
