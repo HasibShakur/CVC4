@@ -891,10 +891,13 @@ Node QuantifierEliminate::computeProjections(Node n,std::vector<Node> boundVar,s
   }
   if(temp.getKind()==kind::EXISTS || temp.getKind() == kind::FORALL || (!boundVar.empty() && !args.empty()))
   {
-    boundVar.push_back(temp[0]);
-    Debug("expr-qetest")<<"Bound Variable "<<boundVar.back()<<"\n";
-    args.push_back(temp[1]);
-    Debug("expr-qetest")<<"Argument "<<args.back()<<"\n";
+    if(temp.getKind() == kind::BOUND_VAR)
+    {
+      boundVar.push_back(temp[0]);
+      Debug("expr-qetest")<<"Bound Variable "<<boundVar.back()<<"\n";
+      args.push_back(temp[1]);
+      Debug("expr-qetest")<<"Argument "<<args.back()<<"\n";
+    }
     Node n1 = args.back();
     if(n1.getKind() == kind::EXISTS || n1.getKind() == kind::FORALL || n1.getKind() == kind::NOT)
     {
