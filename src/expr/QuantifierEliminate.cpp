@@ -67,6 +67,7 @@ void QuantifierEliminate::setQENestedQuantifiers2(Node n, Node q, std::vector<No
     if(n.getKind() == kind::FORALL || n.getKind() == kind::EXISTS) {
       Debug("expr-qetest") << "Set nested quant attribute " << n << std::endl;
       QENestedQuantAttributeId qenq;
+     // n[0].setAttribute(qenq,q);
       n[0].setAttribute(qenq,q);
     }
     for(int i = 0; i < (int) n.getNumChildren(); i++) {
