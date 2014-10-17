@@ -56,6 +56,174 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
   }
 }
 
+void QuantifierEliminate::setQENestedQuantifiers(Node n, Node q) {
+  std::vector<Node> processed;
+  setQENestedQuantifiers2(n, q, processed);
+}
+
+void QuantifierEliminate::seQEtNestedQuantifiers2(
+    Node n, Node q, std::vector<Node>& processed) {
+  if(std::find(processed.begin(), processed.end(), n) == processed.end()) {
+    processed.push_back(n);
+    if(n.getKind() == kind::FORALL || n.getKind() == kind::EXISTS) {
+      Debug("expr-qetest") << "Set nested quant attribute " << n << std::endl;
+      QENestedQuantAttributeId qenq;
+      n[0].setAttribute(qenq,q);
+    }
+    for(int i = 0; i < (int) n.getNumChildren(); i++) {
+      seQEtNestedQuantifiers2(n[i], q, processed);
+    }
+  }
+}
+
+void QuantifierEliminate::setAttributesQE(Node in, Node n) {
+  if((n.getKind() == kind::FORALL || n.getKind() == kind::EXISTS)
+      && (in.getKind() == kind::FORALL || in.getKind() == kind::EXISTS)) {
+    if(in[0].hasAttribute(QuantAttrib())) {
+      setQENestedQuantifiers(n[0], in[0].getAttribute(QuantAttrib()));
+    }
+  }
+}
+
+Node QuantifierEliminate::preRewriteForPrenex(Node in) {
+  Node temp;
+  if(in.getKind() == kind::NOT) {
+    temp = in[0];
+  } else {
+    temp = in;
+  }
+  if(temp.getKind() == kind::EXISTS || temp.getKind() == kind::FORALL) {
+    Debug("expr-qetest") << "pre-rewriting for prenexing" << temp << " " << temp[0].hasAttribute(QuantAttrib()) << std::endl;
+    if( !temp.hasAttribute(QuantAttrib()) ) {
+      setQENestedQuantifiers( temp[ 1 ], temp );
+    }
+    std::vector< Node > args;
+    for( int i=0; i<(int)temp[0].getNumChildren(); i++ ) {
+      args.push_back( temp[0][i] );
+    }
+    Node body = temp[1];
+    bool doRewrite = false;
+    while( body.getNumChildren()>=2 && body.getKind()==temp.getKind() ) {
+      for( int i=0; i<(int)body[0].getNumChildren(); i++ ) {
+        args.push_back( body[0][i] );
+      }
+      body = body[1];
+      doRewrite = true;
+    }
+    if( doRewrite ) {
+      std::vector< Node > children;
+      children.push_back( NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST,args) );
+      children.push_back( body );
+      if( temp.getNumChildren()==3 ) {
+        children.push_back( temp[2] );
+      }
+      Node n = NodeManager::currentNM()->mkNode( temp.getKind(), children );
+      if( temp!=n ) {
+        setAttributesQE( temp, n );
+        Debug("expr-qetest") << "*** pre-rewrite for prenexing " << temp << std::endl;
+        Debug("expr-qetest") << " to " << std::endl;
+        Debug("expr-qetest") << n << std::endl;
+      }
+      if(in.getKind() == kind::NOT)
+      {
+        return n.notNode();
+      }
+      else
+      {
+        return n;
+      }
+    }
+    return in;
+  }
+  return in;
+}
+Node QuantifierEliminate::computeOperationQE(Node f, bool isNested)
+{
+  if( f.getKind()==kind::EXISTS ){
+      Debug("expr-qetest") << "Compute operation on " << f << ", nested = " << isNested << std::endl;
+      std::vector< Node > args;
+      for( int i=0; i<(int)f[0].getNumChildren(); i++ ){
+        args.push_back( f[0][i] );
+      }
+      NodeBuilder<> defs(kind::AND);
+      Node n = f[1];
+      Node ipl;
+      if( f.getNumChildren()==3 ){
+        ipl = f[2];
+      }
+      n = convertToNNFQE(n);
+      n = convertToPrenexQE(n,args,true);
+     Debug("expr-qetest") << "Compute Operation: return " << n << ", " << args.size() << std::endl;
+      if( f[1]==n && args.size()==f[0].getNumChildren() ){
+        return f;
+      }else{
+        if( args.empty() ){
+          defs << n;
+        }else{
+          std::vector< Node > children;
+          children.push_back( NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, args ) );
+          children.push_back( n );
+          if( !ipl.isNull() ){
+            children.push_back( ipl );
+          }
+          defs << NodeManager::currentNM()->mkNode(kind::FORALL, children );
+        }
+        return defs.getNumChildren()==1 ? defs.getChild( 0 ) : defs.constructNode();
+      }
+    }else{
+      return f;
+    }
+}
+
+Node QuantifierEliminate::postRewriteForPrenex(Node in) {
+  Debug("expr-qetest") << "post-rewriting for prenex " << in << std::endl;
+  Debug("expr-qetest") << "Attributes : " << in[0].hasAttribute(QuantAttrib()) << std::endl;
+  //  if( !options::quantRewriteRules() || !TermDb::isRewriteRule( in ) ){
+  bool rewriteStat = true;
+  while(rewriteStat)
+  {
+    Node ret = in;
+    //get the arguments
+    std::vector< Node > args;
+    for( int i=0; i<(int)in[0].getNumChildren(); i++ ) {
+      args.push_back( in[0][i] );
+    }
+    //get the instantiation pattern list
+    Node ipl;
+    if( in.getNumChildren()==3 ) {
+      ipl = in[2];
+    }
+    //get the body
+    if( in.getKind()==kind::FORALL ) {
+      std::vector< Node > children;
+      children.push_back( in[0] );
+      children.push_back( in[1].negate() );
+      if( in.getNumChildren()==3 ) {
+        children.push_back( in[2] );
+      }
+      ret = NodeManager::currentNM()->mkNode( kind::EXISTS, children );
+      ret = ret.negate();
+      rewriteStat = false;
+    }
+    else {
+      bool isNested = in[0].hasAttribute(QuantAttrib());
+      ret = computeOperationQE( in, isNested);
+      if( ret!=in ) {
+        rewriteStat = false;
+        break;
+      }
+    }
+    if(in != ret)
+    {
+      setAttributesQE(in,ret);
+      Debug("expr-qetest") << "*** rewrite " << in << std::endl;
+      Debug("expr-qetest") << " to " << std::endl;
+      Debug("expr-qetest") << ret << std::endl;
+    }
+    return ret;
+  }
+  return in;
+}
 Node QuantifierEliminate::eliminateImpliesQE(Node body) {
   if(isLiteralQE(body)) {
     return body;
@@ -82,7 +250,6 @@ Node QuantifierEliminate::eliminateImpliesQE(Node body) {
 
 Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
                                             bool pol) {
-  body = replaceForall(body);
   if(body.getKind() == kind::EXISTS) {
     if(pol) {
       std::vector<Node> terms;
@@ -763,19 +930,6 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
  return toCompute;
  }
  */
-Node QuantifierEliminate::replaceForall(Node n) {
-  if(n.getKind() == kind::FORALL) {
-    std::vector<Node> children;
-    children.push_back(n[0]);
-    children.push_back(n[1].notNode());
-    if(n.getNumChildren()) {
-      children.push_back(n[2]);
-    }
-    n = NodeManager::currentNM()->mkNode(kind::EXISTS, children);
-    n = n.notNode();
-  }
-  return n;
-}
 
 Node QuantifierEliminate::doRewriting(Node n, Node boundVar) {
   return n;
@@ -794,7 +948,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, Node boundVar) {
   Node right = computeRightProjection(rewrittenNode, boundVar);
   Debug("expr-qetest")<<"After right projection "<<right<<"\n";
   //Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
-                                                    //right);
+  //right);
   Node finalNode = Rewriter::rewrite(right);
   return finalNode;
 }
@@ -874,7 +1028,8 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
    }*/
 }
 
-Node QuantifierEliminate::computeProjections(Node n,std::vector<Node> boundVar,std::vector<Node> args) {
+Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
+                                             std::vector<Node> args) {
   Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
   Debug("expr-qetest") << n << "\n";
   Node result;

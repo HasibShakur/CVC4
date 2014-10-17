@@ -28,10 +28,15 @@ private:
 //  static Node preProcessingForRightProjection(Node n);
 //  static Node preProcessing2ForRightProjection(Node n);
 //  static Node evaluateForRightProjection(Node n, Node replacement);
-  static Node replaceForall(Node n);
+  static Node computeOperationQE(Node n, bool isNested);
   static Node performCaseAnalysis(Node n,Node boundVar);
+  static void setQENestedQuantifiers( Node n, Node q );
+  static void setQENestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
+  static void setAttributesQE( Node in, Node n );
 public:
   static Node doPreprocessing(Expr ex);
+  static Node preRewriteForPrenex(Node n);
+  static Node postRewriteForPrenex(Node n);
   static bool isLiteralQE (Node body);
   static bool isRelationalOperatorTypeQE(Kind k);
   static Node computeProjections(Node n,std::vector<Node> boundVar,std::vector<Node> args);

@@ -3352,14 +3352,18 @@ std::string SmtEngine::eliminateQuantifier(Expr ex) {
   Assert(ex.getExprManager() == d_exprManager);
   SmtScope smts(this);
   Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
-  Node processedNode = QuantifierEliminate::doPreprocessing(ex);
-  Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
-  std::vector<Node> boundVar;
-  std::vector<Node> args;
+  Node t1 = QuantifierEliminate::preRewriteForPrenex(NodeTemplate<true>(ex));
+  Node t2 = QuantifierEliminate::postRewriteForPrenex(t1);
+  Debug("expr-qetest")<<"After processing "<<t2<<"\n";
+//  Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
+//  Node processedNode = QuantifierEliminate::doPreprocessing(ex);
+//  Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
+//  std::vector<Node> boundVar;
+//  std::vector<Node> args;
 //  Node checkRewrittenNode = Rewriter::rewrite(ex);
 //  Debug("expr-qetest")<<"Separate rewriting "<<checkRewrittenNode<<n";
-  Node finalNode = QuantifierEliminate::computeProjections(processedNode,boundVar,args);
-  Debug("expr-qetest")<<"Final Node "<<finalNode<<"\n";
+//  Node finalNode = QuantifierEliminate::computeProjections(processedNode,boundVar,args);
+//  Debug("expr-qetest")<<"Final Node "<<finalNode<<"\n";
   return "success";
 
 }
