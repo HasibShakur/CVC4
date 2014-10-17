@@ -61,7 +61,7 @@ void QuantifierEliminate::setQENestedQuantifiers(Node n, Node q) {
   setQENestedQuantifiers2(n, q, processed);
 }
 
-void QuantifierEliminate::seQENestedQuantifiers2(Node n, Node q, std::vector<Node>& processed) {
+void QuantifierEliminate::setQENestedQuantifiers2(Node n, Node q, std::vector<Node>& processed) {
   if(std::find(processed.begin(), processed.end(), n) == processed.end()) {
     processed.push_back(n);
     if(n.getKind() == kind::FORALL || n.getKind() == kind::EXISTS) {
@@ -70,7 +70,7 @@ void QuantifierEliminate::seQENestedQuantifiers2(Node n, Node q, std::vector<Nod
       n[0].setAttribute(qenq,q);
     }
     for(int i = 0; i < (int) n.getNumChildren(); i++) {
-      seQEtNestedQuantifiers2(n[i], q, processed);
+      seQENestedQuantifiers2(n[i], q, processed);
     }
   }
 }
