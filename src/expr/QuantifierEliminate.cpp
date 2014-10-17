@@ -70,7 +70,7 @@ void QuantifierEliminate::setQENestedQuantifiers2(Node n, Node q, std::vector<No
       n[0].setAttribute(qenq,q);
     }
     for(int i = 0; i < (int) n.getNumChildren(); i++) {
-      seQENestedQuantifiers2(n[i], q, processed);
+      setQENestedQuantifiers2(n[i], q, processed);
     }
   }
 }
