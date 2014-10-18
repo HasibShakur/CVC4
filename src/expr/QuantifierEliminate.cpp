@@ -151,7 +151,9 @@ Node QuantifierEliminate::computeOperationQE(Node f, bool isNested)
       if( f.getNumChildren()==3 ){
         ipl = f[2];
       }
+      Debug("expr-qetest")<<"Body "<<n<<std::endl;
       n = eliminateImpliesQE(n);
+      Debug("expr-qetest")<<"After eliminate Implies call "<<n<<std::endl;
       n = convertToNNFQE(n);
       n = convertToPrenexQE(n,args,true);
      Debug("expr-qetest") << "Compute Operation: return " << n << ", " << args.size() << std::endl;
