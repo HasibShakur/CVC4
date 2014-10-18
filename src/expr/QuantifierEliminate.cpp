@@ -191,6 +191,9 @@ Node QuantifierEliminate::postRewriteForPrenex(Node in) {
     for( int i=0; i<(int)in[0].getNumChildren(); i++ ) {
       args.push_back( in[0][i] );
     }
+    for( int i=0; i<args.size(); i++ ) {
+      Debug("expr-qetest") << "element at "<<i<<" " << args.back() << std::endl;
+    }
     //get the instantiation pattern list
     Node ipl;
     if( in.getNumChildren()==3 ) {
