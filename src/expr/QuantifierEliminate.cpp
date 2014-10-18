@@ -100,14 +100,17 @@ Node QuantifierEliminate::preRewriteForPrenex(Node in) {
     std::vector< Node > args;
     for( int i=0; i<(int)temp[0].getNumChildren(); i++ ) {
       args.push_back( temp[0][i] );
+      Debug("expr-qetest") << "Element" <<i<<" "<< args.back() <<std::endl;
     }
     Node body = temp[1];
     bool doRewrite = false;
     while( body.getNumChildren()>=2 && body.getKind()==temp.getKind() ) {
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ) {
         args.push_back( body[0][i] );
+        Debug("expr-qetest") << "Element" <<i<<" "<< args.back() <<std::endl;
       }
       body = body[1];
+      Debug("expr-qetest") << "new body "<<body<<std::endl;
       doRewrite = true;
     }
     if( doRewrite ) {
@@ -188,8 +191,8 @@ Node QuantifierEliminate::postRewriteForPrenex(Node in) {
     Node ret = in;
     //get the arguments
     std::vector< Node > args;
-    for( int i=0; i<(int)in[1].getNumChildren(); i++ ) {
-      args.push_back( in[1][i] );
+    for( int i=0; i<(int)in[0].getNumChildren(); i++ ) {
+      args.push_back( in[0][i] );
     }
     for( int i=0; i<args.size(); i++ ) {
       Debug("expr-qetest") << "element at "<<i<<" " << args.back() << std::endl;
