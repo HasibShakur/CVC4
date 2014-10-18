@@ -206,7 +206,7 @@ Node QuantifierEliminate::postRewriteForPrenex(Node in) {
       }
       ret = NodeManager::currentNM()->mkNode( kind::EXISTS, children );
       ret = ret.negate();
-     // rewriteStat = false;
+      rewriteStat = true;
     }
     else {
       bool isNested = in[0].hasAttribute(QuantAttrib());
