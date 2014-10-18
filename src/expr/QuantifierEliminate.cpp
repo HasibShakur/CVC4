@@ -188,8 +188,8 @@ Node QuantifierEliminate::postRewriteForPrenex(Node in) {
     Node ret = in;
     //get the arguments
     std::vector< Node > args;
-    for( int i=0; i<(int)in[0].getNumChildren(); i++ ) {
-      args.push_back( in[0][i] );
+    for( int i=0; i<(int)in[1].getNumChildren(); i++ ) {
+      args.push_back( in[1][i] );
     }
     for( int i=0; i<args.size(); i++ ) {
       Debug("expr-qetest") << "element at "<<i<<" " << args.back() << std::endl;
