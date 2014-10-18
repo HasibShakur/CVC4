@@ -10,10 +10,10 @@
 namespace CVC4{
 class CVC4_PUBLIC QuantifierEliminate {
 private:
-//  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
-//  static Node convertToNNFQE(Node body);
+  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
+  static Node convertToNNFQE(Node body);
   static Node doRewriting(Node n, Node boundVar);
-//  static Node eliminateImpliesQE(Node body);
+  static Node eliminateImpliesQE(Node body);
 //  static Node processRelationOperatorQE(Node n,bool negationEnabled);
 //  static Node replaceGEQQE(Node n,bool negationEnabled);
 //  static Node replaceGTQE(Node n,bool negationEnabled);
@@ -30,13 +30,13 @@ private:
 //  static Node evaluateForRightProjection(Node n, Node replacement);
   static Node computeOperationQE(Node n, bool isNested);
   static Node performCaseAnalysis(Node n,Node boundVar);
-//  static void setQENestedQuantifiers( Node n, Node q );
-//  static void setQENestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
-//  static void setAttributesQE( Node in, Node n );
+  static void setQENestedQuantifiers( Node n, Node q );
+  static void setQENestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
+  static void setAttributesQE( Node in, Node n );
 public:
   static Node doPreprocessing(Expr ex);
-//  static Node preRewriteForPrenex(Node n);
-//  static Node postRewriteForPrenex(Node n);
+  static Node preRewriteForPrenex(Node n);
+  static Node postRewriteForPrenex(Node n);
   static bool isLiteralQE (Node body);
   static bool isRelationalOperatorTypeQE(Kind k);
   static Node computeProjections(Node n,std::vector<Node> boundVar,std::vector<Node> args);
