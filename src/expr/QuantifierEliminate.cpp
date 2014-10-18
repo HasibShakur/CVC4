@@ -103,6 +103,7 @@ Node QuantifierEliminate::preRewriteForPrenex(Node in) {
       Debug("expr-qetest") << "Element" <<i<<" "<< args.back() <<std::endl;
     }
     Node body = temp[1];
+    Debug("expr-qetest") << "Initial body "<<body<<std::endl;
     bool doRewrite = false;
     while( body.getNumChildren()>=2 && body.getKind()==temp.getKind() ) {
       for( int i=0; i<(int)body[0].getNumChildren(); i++ ) {
