@@ -12,6 +12,7 @@
 #include "util/rational.h"
 #include "util/integer.h"
 #include "theory/arith/arith_utilities.h"
+#include "theory/quantifiers/quantifiers_rewriter.h"
 
 using namespace std;
 using namespace CVC4;
@@ -20,6 +21,7 @@ using namespace CVC4::kind;
 using namespace CVC4::printer;
 using namespace CVC4::theory;
 using namespace CVC4::theory::arith;
+using namespace CVC4::theory::quantifiers;
 
 struct QENestedQuantAttributeId {
 };
@@ -965,8 +967,10 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, Node boundVar) {
 
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
   Node temp_in = NodeTemplate<true>(ex);
-  Node rewrittenNode = Rewriter::rewrite(temp_in);
-  return rewrittenNode;
+  Node n = QuantifiersRewriter::postRewrite(temp_in);
+  return n;
+ // Node rewrittenNode = Rewriter::rewrite(temp_in);
+  //return rewrittenNode;
 }
 
 Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
