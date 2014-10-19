@@ -32,7 +32,7 @@ private:
   static void setQENestedQuantifiers( Node n, Node q );
   static void setQENestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
   static void setAttributesQE( Node in, Node n );
-  static Node replaceForall(Node body);
+  //static Node replaceForall(Node body);
 public:
   static Node doPreprocessing(Expr ex);
   static Node preRewriteForPrenex(Node n);

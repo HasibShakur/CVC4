@@ -146,7 +146,7 @@ Node QuantifierEliminate::preRewriteForPrenex(Node in) {
 }
 Node QuantifierEliminate::computeOperationQE(Node f, bool isNested)
 {
-  if( f.getKind()==kind::EXISTS ){
+  if( (f.getKind()==kind::EXISTS) || (f.getKind() == kind::FORALL) ){
       Debug("expr-qetest") << "Compute operation on " << f << ", nested = " << isNested << std::endl;
       std::vector< Node > args;
       for( int i=0; i<(int)f[0].getNumChildren(); i++ ){
@@ -176,7 +176,7 @@ Node QuantifierEliminate::computeOperationQE(Node f, bool isNested)
           if( !ipl.isNull() ){
             children.push_back( ipl );
           }
-          defs << NodeManager::currentNM()->mkNode(kind::FORALL, children );
+          defs << NodeManager::currentNM()->mkNode(f.getKind(), children );
         }
         return defs.getNumChildren()==1 ? defs.getChild( 0 ) : defs.constructNode();
       }
@@ -235,43 +235,43 @@ Node QuantifierEliminate::postRewriteForPrenex(Node in) {
   }
   return in;*/
   Node ret = in;
-  ret = replaceForall(ret);
-  Debug("expr-qetest") << "After converting all the forall to exists " << ret << std::endl;
+  //ret = replaceForall(ret);
+  //Debug("expr-qetest") << "After converting all the forall to exists " << ret << std::endl;
   bool isNested = in[0].hasAttribute(QuantAttrib());
-  ret = computeOperationQE( ret, isNested);
+  ret = computeOperationQE( ret, true);
   Debug("expr-qetest") << "After computeOperation " << ret << std::endl;
   return ret;
 }
 
-Node QuantifierEliminate::replaceForall(Node body)
-{
-  if(isLiteralQE(body))
-  {
-    return body;
-  }
-  else
-  {
-    bool childrenChanged = false;
-        std::vector<Node> children;
-    for(unsigned i = 0; i < body.getNumChildren(); i++) {
-      Node c = replaceForall(body[i]);
-      if(i == 0 && (body.getKind() == kind::FORALL)) {
-        c = c.negate();
-      }
-      children.push_back(c);
-      childrenChanged = childrenChanged || c != body[i];
-    }
-    if(body.getKind() == kind::FORALL) {
-          Node temp = NodeManager::currentNM()->mkNode(kind::NOT,children);
-          Debug("expr-qetest") << "After computeOperation " << temp << std::endl;
-          return NodeManager::currentNM()->mkNode(kind::EXISTS, temp);
-        } else if(childrenChanged) {
-          return NodeManager::currentNM()->mkNode(body.getKind(), children);
-        } else {
-          return body;
-        }
-  }
-}
+//Node QuantifierEliminate::replaceForall(Node body)
+//{
+//  if(isLiteralQE(body))
+//  {
+//    return body;
+//  }
+//  else
+//  {
+//    bool childrenChanged = false;
+//        std::vector<Node> children;
+//    for(unsigned i = 0; i < body.getNumChildren(); i++) {
+//      Node c = replaceForall(body[i]);
+//      if(i == 0 && (body.getKind() == kind::FORALL)) {
+//        c = c.negate();
+//      }
+//      children.push_back(c);
+//      childrenChanged = childrenChanged || c != body[i];
+//    }
+//    if(body.getKind() == kind::FORALL) {
+//          Node temp = NodeManager::currentNM()->mkNode(kind::NOT,children);
+//          Debug("expr-qetest") << "After not " << temp << std::endl;
+//          return NodeManager::currentNM()->mkNode(kind::EXISTS, temp);
+//        } else if(childrenChanged) {
+//          return NodeManager::currentNM()->mkNode(body.getKind(), children);
+//        } else {
+//          return body;
+//        }
+//  }
+//}
 Node QuantifierEliminate::eliminateImpliesQE(Node body) {
   if(isLiteralQE(body)) {
     return body;
@@ -298,7 +298,7 @@ Node QuantifierEliminate::eliminateImpliesQE(Node body) {
 
 Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
                                             bool pol) {
-  if(body.getKind() == kind::EXISTS) {
+  if((body.getKind() == kind::EXISTS) || (body.getKind() == kind::FORALL)) {
     if(pol) {
       std::vector<Node> terms;
       std::vector<Node> subs;
@@ -324,7 +324,7 @@ Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
       || body.getKind() == kind::IFF) {
     return body;
   } else {
-    Assert( body.getKind()!= kind::FORALL );
+   // Assert( body.getKind()!= kind::FORALL );
     bool childrenChanged = false;
     std::vector<Node> newChildren;
     for(int i = 0; i < (int) body.getNumChildren(); i++) {
