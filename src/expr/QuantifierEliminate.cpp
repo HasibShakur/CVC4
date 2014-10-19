@@ -24,6 +24,9 @@ using namespace CVC4::theory::arith;
 using namespace CVC4::theory::quantifiers;
 
 
+struct QENestedQuantAttributeId {
+};
+typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
 
 bool QuantifierEliminate::isLiteralQE(Node n) {
   switch(n.getKind()) {
@@ -183,7 +186,7 @@ Node QuantifierEliminate::computeOperationQE(Node f, bool isNested)
 }
 
 Node QuantifierEliminate::postRewriteForPrenex(Node in) {
-  Debug("expr-qetest") << "post-rewriting for prenex " << in << std::endl;
+  /*Debug("expr-qetest") << "post-rewriting for prenex " << in << std::endl;
   Debug("expr-qetest") << "Attributes : " << in[0].hasAttribute(QuantAttrib()) << std::endl;
   //  if( !options::quantRewriteRules() || !TermDb::isRewriteRule( in ) ){
   bool rewriteStat = true;
@@ -230,7 +233,24 @@ Node QuantifierEliminate::postRewriteForPrenex(Node in) {
     }
     return ret;
   }
-  return in;
+  return in;*/
+  Node ret = in;
+  while(in.getKind() == kind::FORALL)
+  {
+    std::vector< Node > children;
+    children.push_back( in[0] );
+    children.push_back( in[1].negate() );
+    if( in.getNumChildren()==3 ) {
+       children.push_back( in[2] );
+    }
+    ret = NodeManager::currentNM()->mkNode( kind::EXISTS, children );
+    ret = ret.negate();
+  }
+  Debug("expr-qetest") << "After converting all the forall to exists " << ret << std::endl;
+  bool isNested = in[0].hasAttribute(QuantAttrib());
+  ret = computeOperationQE( ret, isNested);
+  Debug("expr-qetest") << "After computeOperation " << ret << std::endl;
+  return ret;
 }
 Node QuantifierEliminate::eliminateImpliesQE(Node body) {
   if(isLiteralQE(body)) {
