@@ -3353,7 +3353,7 @@ std::string SmtEngine::eliminateQuantifier(Expr ex) {
   SmtScope smts(this);
   Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
   Node processedNode = QuantifierEliminate::doPreprocessing(ex);
-  Debug("expr-qetest")<<"After processing "<<t2<<"\n";
+  Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
 //  Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
 //
 //  Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
