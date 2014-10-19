@@ -12,7 +12,7 @@
 #include "util/rational.h"
 #include "util/integer.h"
 #include "theory/arith/arith_utilities.h"
-#include "theory/quantifiers/quantifiers_rewriter.h"
+//#include "theory/quantifiers/quantifiers_rewriter.h"
 
 using namespace std;
 using namespace CVC4;
@@ -21,7 +21,7 @@ using namespace CVC4::kind;
 using namespace CVC4::printer;
 using namespace CVC4::theory;
 using namespace CVC4::theory::arith;
-using namespace CVC4::theory::quantifiers;
+//using namespace CVC4::theory::quantifiers;
 
 
 struct QENestedQuantAttributeId {
