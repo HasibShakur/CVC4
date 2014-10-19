@@ -8,6 +8,9 @@
 #include "expr/node.h"
 
 namespace CVC4{
+struct QENestedQuantAttributeId {
+};
+typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
 class CVC4_PUBLIC QuantifierEliminate {
 private:
   static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);

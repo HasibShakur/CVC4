@@ -23,9 +23,7 @@ using namespace CVC4::theory;
 using namespace CVC4::theory::arith;
 using namespace CVC4::theory::quantifiers;
 
-struct QENestedQuantAttributeId {
-};
-typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
+
 
 bool QuantifierEliminate::isLiteralQE(Node n) {
   switch(n.getKind()) {
