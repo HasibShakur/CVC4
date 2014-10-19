@@ -18,8 +18,8 @@ option miniscopeQuantFreeVar /--disable-miniscope-quant-fv bool :default true
  disable miniscope quantifiers for ground subformulas
 
 # Whether to prenex (nested universal) quantifiers
-option prenexQuant /--disable-prenex-quant bool :default false
- disable prenexing of quantified formulas
+option prenexQuant --prenex-quant bool :default true
+disable prenexing of quantified formulas
 
 # Whether to variable-eliminate quantifiers.
 # For example, forall x y. ( P( x, y ) V x != c ) will be rewritten to

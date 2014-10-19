@@ -263,6 +263,7 @@ Node QuantifierEliminate::replaceForall(Node body)
     }
     if(body.getKind() == kind::FORALL) {
           Node temp = NodeManager::currentNM()->mkNode(kind::NOT,children);
+          Debug("expr-qetest") << "After computeOperation " << temp << std::endl;
           return NodeManager::currentNM()->mkNode(kind::EXISTS, temp);
         } else if(childrenChanged) {
           return NodeManager::currentNM()->mkNode(body.getKind(), children);
