@@ -967,7 +967,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, Node boundVar) {
 
 Node QuantifierEliminate::doPreprocessing(Expr ex) {
   Node temp_in = NodeTemplate<true>(ex);
-  Node n = QuantifiersRewriter::postRewrite(temp_in);
+  Node n = Rewriter::rewrite(temp_in);
   return n;
  // Node rewrittenNode = Rewriter::rewrite(temp_in);
   //return rewrittenNode;
