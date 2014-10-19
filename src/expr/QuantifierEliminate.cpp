@@ -217,14 +217,12 @@ Node QuantifierEliminate::postRewriteForPrenex(Node in) {
       ret = ret.negate();
       rewriteStat = true;
     }
-    else {
       bool isNested = in[0].hasAttribute(QuantAttrib());
       ret = computeOperationQE( in, isNested);
       if( ret!=in ) {
         rewriteStat = false;
         break;
       }
-    }
     if(in != ret)
     {
       setAttributesQE(in,ret);

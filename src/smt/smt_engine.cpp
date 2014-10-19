@@ -3352,12 +3352,12 @@ std::string SmtEngine::eliminateQuantifier(Expr ex) {
   Assert(ex.getExprManager() == d_exprManager);
   SmtScope smts(this);
   Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
- // Node t1 = QuantifierEliminate::preRewriteForPrenex(NodeTemplate<true>(ex));
- // Debug("expr-qetest")<<"After pre rewriting processing "<<t1<<"\n";
- // Node t2 = QuantifierEliminate::postRewriteForPrenex(t1);
+  Node t1 = QuantifierEliminate::preRewriteForPrenex(NodeTemplate<true>(ex));
+  Debug("expr-qetest")<<"After pre rewriting processing "<<t1<<"\n";
+  Node t2 = QuantifierEliminate::postRewriteForPrenex(t1);
 //  Node processedNode = QuantifierEliminate::doPreprocessing(ex);
-   Node processedNode = QuantifierEliminate::doPreprocessing(ex);
-  Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
+ //  Node processedNode = QuantifierEliminate::doPreprocessing(ex);
+  Debug("expr-qetest")<<"After processing "<<t2<<"\n";
 //  Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
 //
 //  Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
