@@ -235,22 +235,41 @@ Node QuantifierEliminate::postRewriteForPrenex(Node in) {
   }
   return in;*/
   Node ret = in;
-  while(in.getKind() == kind::FORALL)
-  {
-    std::vector< Node > children;
-    children.push_back( in[0] );
-    children.push_back( in[1].negate() );
-    if( in.getNumChildren()==3 ) {
-       children.push_back( in[2] );
-    }
-    ret = NodeManager::currentNM()->mkNode( kind::EXISTS, children );
-    ret = ret.negate();
-  }
+  ret = replaceForall(ret);
   Debug("expr-qetest") << "After converting all the forall to exists " << ret << std::endl;
   bool isNested = in[0].hasAttribute(QuantAttrib());
   ret = computeOperationQE( ret, isNested);
   Debug("expr-qetest") << "After computeOperation " << ret << std::endl;
   return ret;
+}
+
+Node QuantifierEliminate::replaceForall(Node body)
+{
+  if(isLiteralQE(body))
+  {
+    return body;
+  }
+  else
+  {
+    bool childrenChanged = false;
+        std::vector<Node> children;
+    for(unsigned i = 0; i < body.getNumChildren(); i++) {
+      Node c = replaceForall(body[i]);
+      if(i == 0 && (body.getKind() == kind::FORALL)) {
+        c = c.negate();
+      }
+      children.push_back(c);
+      childrenChanged = childrenChanged || c != body[i];
+    }
+    if(body.getKind() == kind::FORALL) {
+          Node temp = NodeManager::currentNM()->mkNode(kind::NOT,children);
+          return NodeManager::currentNM()->mkNode(kind::EXISTS, temp);
+        } else if(childrenChanged) {
+          return NodeManager::currentNM()->mkNode(body.getKind(), children);
+        } else {
+          return body;
+        }
+  }
 }
 Node QuantifierEliminate::eliminateImpliesQE(Node body) {
   if(isLiteralQE(body)) {
