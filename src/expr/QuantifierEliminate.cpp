@@ -1020,9 +1020,6 @@ Node QuantifierEliminate::computeProjections(Node n) {
   Node final;
   if((n.getKind() == kind::NOT) ||(n.getKind() == kind::FORALL) || (n.getKind() == kind::EXISTS))
   {
-    Debug("expr-qetest")<<args.size()<<"\n";
-    Debug("expr-qetest")<<boundVar.size()<<"\n";
-
     if(n.getKind() == kind::NOT)
     {
       if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS))
@@ -1058,10 +1055,14 @@ Node QuantifierEliminate::computeProjections(Node n) {
     Debug("expr-qetest")<<n[0]<<"\n";
     args.push_back(n[1]);
     Debug("expr-qetest")<<n[1]<<"\n";
+    Debug("expr-qetest")<<args.size()<<"\n";
+    Debug("expr-qetest")<<boundVar.size()<<"\n";
     computeProjections(n[1]);
   }
   else
   {
+    Debug("expr-qetest")<<args.size()<<"\n";
+    Debug("expr-qetest")<<boundVar.size()<<"\n";
     if((args.size() > 0) && (boundVar.size() > 0))
     {
       while((args.size() > 0) && (boundVar.size() > 0))
