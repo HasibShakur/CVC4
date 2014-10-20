@@ -1044,15 +1044,12 @@ Node QuantifierEliminate::computeProjections(Node n) {
           }
           Debug("expr-qetest")<<"Temp3 "<<temp3<<"\n";
           final = temp3.negate();
-          break;
-        //  Debug("expr-qetest")<<"final "<<final<<"\n";
-          //return final;
+          return final;
         }
         else
         {
           final = n;
-          break;
-         // return final;
+          return final;
         }
       }
     }
@@ -1076,15 +1073,12 @@ Node QuantifierEliminate::computeProjections(Node n) {
       }
       Debug("expr-qetest")<<"Temp3 "<<temp3<<"\n";
       final = temp3;
-     // return final;
-      break;
-    //  Debug("expr-qetest")<<"final "<<final<<"\n";
+      return final;
     }
     else
     {
       final = n;
-      //return final;
-      break;
+      return final;
     }
   }
   Debug("expr-qetest")<<"Final "<<final<<"\n";
