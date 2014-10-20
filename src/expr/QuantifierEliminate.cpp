@@ -1077,7 +1077,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       final = n;
     }
   }
-  Debug("expr-qetest")<<"Final Node "<<fnal<<"\n";
+  Debug("expr-qetest")<<"Final Node "<<final<<"\n";
   return final;
   /*Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
   Debug("expr-qetest") << n << "\n";
