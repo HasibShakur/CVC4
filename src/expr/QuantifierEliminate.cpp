@@ -1043,6 +1043,7 @@ Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
             Debug("expr-qetest")<<args.size()<<"\n";
             Debug("expr-qetest")<<boundVar.size()<<"\n";
           }
+          Debug("expr-qetest")<<temp3<<"\n";
           final = temp3.negate();
         }
         else
@@ -1071,6 +1072,7 @@ Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
         Debug("expr-qetest")<<args.size()<<"\n";
         Debug("expr-qetest")<<boundVar.size()<<"\n";
       }
+      Debug("expr-qetest")<<temp3<<"\n";
       final = temp3;
     }
     else
