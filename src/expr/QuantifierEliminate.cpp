@@ -1055,7 +1055,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     }
     boundVar.push_back(n[0]);
     args.push_back(n[1]);
-    computeProjections(n[1]);
+    return computeProjections(n[1]);
   }
   else
   {
@@ -1081,8 +1081,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
       return final;
     }
   }
-  Debug("expr-qetest")<<"Final "<<final<<"\n";
-  return final;
+//  Debug("expr-qetest")<<"Final "<<final<<"\n";
+//  return final;
   /*Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
   Debug("expr-qetest") << n << "\n";
   Node result;
