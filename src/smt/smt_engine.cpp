@@ -3354,15 +3354,12 @@ std::string SmtEngine::eliminateQuantifier(Expr ex) {
   Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
   Node processedNode = QuantifierEliminate::doPreprocessing(ex);
   Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
-//  Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
-//
-//  Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
-//  std::vector<Node> boundVar;
-//  std::vector<Node> args;
+  std::vector<Node> boundVar;
+  std::vector<Node> args;
 //  Node checkRewrittenNode = Rewriter::rewrite(ex);
 //  Debug("expr-qetest")<<"Separate rewriting "<<checkRewrittenNode<<n";
-//  Node finalNode = QuantifierEliminate::computeProjections(processedNode,boundVar,args);
-//  Debug("expr-qetest")<<"Final Node "<<finalNode<<"\n";
+  Node finalNode = QuantifierEliminate::computeProjections(processedNode,boundVar,args);
+  Debug("expr-qetest")<<"Final Node "<<finalNode<<"\n";
   return "success";
 
 }
