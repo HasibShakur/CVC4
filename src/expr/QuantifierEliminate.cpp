@@ -1012,7 +1012,69 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
 
 Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
                                              std::vector<Node> args) {
-  Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
+  Node temp1;
+  Node temp2;
+  Node temp3;
+  Node final;
+  if((n.getKind() == kind::NOT) ||(n.getKind() == kind::FORALL) || (n.getKind() == kind::EXISTS))
+  {
+    if(n.getKind() == kind::NOT)
+    {
+      if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS))
+      {
+        boundVar.push_back(n[0][0]);
+        args.push_back(n[0][1]);
+        computeProjections(n[0][1].negate(),boundVar,args);
+      }
+      else
+      {
+        if((args.size() > 0) && (boundVar.size() > 0))
+        {
+          while((args.size() > 0) && (boundVar.size() > 0))
+          {
+            temp1 = args.back();
+            temp2 = boundVar.back();
+            temp3 = performCaseAnalysis(temp1,temp2 );
+            args.pop_back();
+            boundVar.pop_back();
+            Debug("expr-qetest")<<args.size()<<"\n";
+            Debug("expr-qetest")<<boundVar.size()<<"\n";
+          }
+          final = temp3.negate();
+        }
+        else
+        {
+          final = n;
+        }
+      }
+    }
+    boundVar.push_back(n[0]);
+    boundVar.push_back(n[1]);
+    computeProjections(n[1],boundVar,args);
+  }
+  else
+  {
+    if((args.size() > 0) && (boundVar.size() > 0))
+    {
+      while((args.size() > 0) && (boundVar.size() > 0))
+      {
+        temp1 = args.back();
+        temp2 = boundVar.back();
+        temp3 = performCaseAnalysis(temp1,temp2);
+        args.pop_back();
+        boundVar.pop_back();
+        Debug("expr-qetest")<<args.size()<<"\n";
+        Debug("expr-qetest")<<boundVar.size()<<"\n";
+      }
+      final = temp3;
+    }
+    else
+    {
+      final = n;
+    }
+  }
+  return final;
+  /*Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
   Debug("expr-qetest") << n << "\n";
   Node result;
   Node temp;
@@ -1072,6 +1134,7 @@ Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
   else
   {
     return n;
-  }
+  }*/
+
 }
 
