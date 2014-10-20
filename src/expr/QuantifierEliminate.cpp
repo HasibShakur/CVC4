@@ -1018,6 +1018,9 @@ Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
   Node final;
   if((n.getKind() == kind::NOT) ||(n.getKind() == kind::FORALL) || (n.getKind() == kind::EXISTS))
   {
+    Debug("expr-qetest")<<args.size()<<"\n";
+    Debug("expr-qetest")<<boundVar.size()<<"\n";
+
     if(n.getKind() == kind::NOT)
     {
       if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS))
