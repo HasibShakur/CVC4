@@ -9,6 +9,8 @@
 namespace CVC4{
 class CVC4_PUBLIC QuantifierEliminate {
 private:
+  static vector<Node> boundVar;
+  static vector<Node> args;
 //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
 //  static Node convertToNNFQE(Node body);
   static Node doRewriting(Node n, Node boundVar);
@@ -39,7 +41,7 @@ public:
 //  static Node postRewriteForPrenex(Node n);
   static bool isLiteralQE (Node body);
   static bool isRelationalOperatorTypeQE(Kind k);
-  static Node computeProjections(Node n,std::vector<Node> boundVar,std::vector<Node> args);
+  static Node computeProjections(Node n);
 };
 }
 #endif

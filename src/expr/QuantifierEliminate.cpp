@@ -28,6 +28,9 @@ using namespace CVC4::theory::arith;
 //};
 //typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
 
+std::vector<Node> QuantifierEliminate::boundVar;
+std::vector<Node> QuantifierEliminate::args;
+
 bool QuantifierEliminate::isLiteralQE(Node n) {
   switch(n.getKind()) {
   case kind::NOT:
@@ -1010,8 +1013,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
   return n;
 }
 
-Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
-                                             std::vector<Node> args) {
+Node QuantifierEliminate::computeProjections(Node n) {
   Node temp1;
   Node temp2;
   Node temp3;
@@ -1027,7 +1029,7 @@ Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
       {
         boundVar.push_back(n[0][0]);
         args.push_back(n[0][1]);
-        computeProjections(n[0][1].negate(),boundVar,args);
+        computeProjections(n[0][1].negate());
       }
       else
       {
@@ -1056,7 +1058,7 @@ Node QuantifierEliminate::computeProjections(Node n, std::vector<Node> boundVar,
     Debug("expr-qetest")<<n[0]<<"\n";
     args.push_back(n[1]);
     Debug("expr-qetest")<<n[1]<<"\n";
-    computeProjections(n[1],boundVar,args);
+    computeProjections(n[1]);
   }
   else
   {
