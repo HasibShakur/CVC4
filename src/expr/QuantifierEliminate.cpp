@@ -1044,6 +1044,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
           }
           Debug("expr-qetest")<<"Temp3 "<<temp3<<"\n";
           final = temp3.negate();
+          Debug("expr-qetest")<<"final "<<final<<"\n";
         }
         else
         {
@@ -1071,13 +1072,15 @@ Node QuantifierEliminate::computeProjections(Node n) {
       }
       Debug("expr-qetest")<<"Temp3 "<<temp3<<"\n";
       final = temp3;
+      Debug("expr-qetest")<<"final "<<final<<"\n";
+
     }
     else
     {
       final = n;
     }
   }
-  Debug("expr-qetest")<<"Final Node "<<final<<"\n";
+  Debug("expr-qetest")<<"Final "<<final<<"\n";
   return final;
   /*Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
   Debug("expr-qetest") << n << "\n";
