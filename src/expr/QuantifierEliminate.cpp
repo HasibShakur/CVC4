@@ -1024,7 +1024,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     {
       if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS))
       {
-        boundVar.push_back(n[0][0]);
+        boundVar.push_back(n[0][0][0]);
         args.push_back(n[0][1]);
         computeProjections(n[0][1].negate());
       }
@@ -1053,7 +1053,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         }
       }
     }
-    boundVar.push_back(n[0]);
+    boundVar.push_back(n[0][0]);
     args.push_back(n[1]);
     return computeProjections(n[1]);
   }
@@ -1081,69 +1081,5 @@ Node QuantifierEliminate::computeProjections(Node n) {
       return final;
     }
   }
-//  Debug("expr-qetest")<<"Final "<<final<<"\n";
-//  return final;
-  /*Debug("expr-qetest") << "------- Inside Compute Projection Method ------" << "\n";
-  Debug("expr-qetest") << n << "\n";
-  Node result;
-  Node temp;
-  Debug("expr-qetest") << "boundVar size" << boundVar.size()<<"\n";
-  Debug("expr-qetest") << "args size" << args.size()<<"\n";
-  if(n.getKind() == kind::NOT)
-  {
-    temp = n[0];
-  }
-  else
-  {
-    temp = n;
-  }
-  if(temp.getKind()==kind::EXISTS || temp.getKind() == kind::FORALL || (!boundVar.empty() && !args.empty()))
-  {
-    if(temp.getKind()==kind::EXISTS || temp.getKind() == kind::FORALL)
-    {
-      boundVar.push_back(temp[0]);
-      Debug("expr-qetest")<<"Bound Variable "<<boundVar.back()<<"\n";
-      args.push_back(temp[1]);
-      Debug("expr-qetest")<<"Argument "<<args.back()<<"\n";
-    }
-    Node n1 = args.back();
-    if((n1.getKind() == kind::EXISTS || n1.getKind() == kind::FORALL || n1.getKind() == kind::NOT) && (!boundVar.empty() && !args.empty()) )
-    {
-      return computeProjections(n1,boundVar,args);
-    }
-    else
-    {
-      while(!boundVar.empty() && !args.empty())
-      {
-        Node varToElim = boundVar.back();
-        Node finalNode = performCaseAnalysis(n1,varToElim);
-        args.pop_back();
-        boundVar.pop_back();
-        if(n1.getKind() == kind::NOT)
-        {
-          n1 = finalNode.notNode();
-        }
-        else
-        {
-          n1 = finalNode;
-        }
-        result = n1;
-      }
-    }
-    if(n.getKind() == kind::NOT)
-    {
-      result = result.notNode();
-      return result;
-    }
-    else
-    {
-      return result;
-    }
-  }
-  else
-  {
-    return n;
-  }*/
-
 }
 
