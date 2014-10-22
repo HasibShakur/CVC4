@@ -986,6 +986,8 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
  */
 
 Node QuantifierEliminate::doRewriting(Node n, Node boundVar) {
+  Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
+  Debug("expr-qetest")<<"Bound variable type "<<boundVar << " " <<boundVar.getType()<<std::endl;
   return n;
 }
 bool QuantifierEliminate::computeLeftProjection(Node n, Node boundVar) {
@@ -1030,8 +1032,6 @@ Node QuantifierEliminate::computeProjections(Node n) {
       }
       else
       {
-        Debug("expr-qetest")<<args.size()<<"\n";
-        Debug("expr-qetest")<<boundVar.size()<<"\n";
         if((args.size() > 0) && (boundVar.size() > 0))
         {
           while((args.size() > 0) && (boundVar.size() > 0))
@@ -1054,9 +1054,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       }
     }
     boundVar.push_back(n[0][0]);
-    Debug("expr-qetest")<<"boundVar "<<boundVar.back()<<std::endl;
     args.push_back(n[1]);
-    Debug("expr-qetest")<<"args "<<args.back()<<std::endl;
     return computeProjections(n[1]);
   }
   else
