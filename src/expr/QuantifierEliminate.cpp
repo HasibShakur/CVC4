@@ -1043,7 +1043,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
             boundVar.pop_back();
           }
           Debug("expr-qetest")<<"Temp3 "<<temp3<<"\n";
-          final = temp3.negate();
+          final = temp3;
           return final;
         }
         else
