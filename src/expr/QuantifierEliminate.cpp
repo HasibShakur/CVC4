@@ -1054,13 +1054,13 @@ Node QuantifierEliminate::computeProjections(Node n) {
       }
     }
     boundVar.push_back(n[0][0]);
+    Debug("expr-qetest")<<"boundVar "<<boundVar.back()<<std::endl;
     args.push_back(n[1]);
+    Debug("expr-qetest")<<"args "<<args.back()<<std::endl;
     return computeProjections(n[1]);
   }
   else
   {
-    Debug("expr-qetest")<<args.size()<<"\n";
-    Debug("expr-qetest")<<boundVar.size()<<"\n";
     if((args.size() > 0) && (boundVar.size() > 0))
     {
       while((args.size() > 0) && (boundVar.size() > 0))
