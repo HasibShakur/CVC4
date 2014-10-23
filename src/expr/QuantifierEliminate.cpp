@@ -1032,9 +1032,6 @@ Node QuantifierEliminate::computeProjections(Node n) {
       if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS))
       {
         std::vector<Node> multipleBoundVar1;
-        Debug("expr-qetest")<<"BoundVar inside not "<<n[0][0]<<"\n";
-        Debug("expr-qetest")<<"BoundVar inside not "<<n[0][0][0]<<"\n";
-        Debug("expr-qetest")<<"BoundVar inside not "<<n[0][0][1]<<"\n";
         if(n[0][0].getNumChildren() > 1)
         {
           for(int i=0;i<(int)n[0][0].getNumChildren();i++)
