@@ -1040,7 +1040,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
           for(int i=0;i<(int)n[0][0].getNumChildren();i++)
           {
             Debug("expr-qetest")<<"For not multiple boundVars "<<n[0][0][i]<<"\n";
-            multipleBoundVar1.push_back(n[0][0][i][0]);
+            multipleBoundVar1.push_back(n[0][0][i]);
           }
           boundVar.push_back(multipleBoundVar1);
         }
