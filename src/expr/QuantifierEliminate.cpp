@@ -987,9 +987,11 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
 
 Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> boundVars) {
   Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
+  Node t;
   for(int i=0;i<boundVars.size();i++)
   {
-    Debug("expr-qetest")<<"Bound variable type "<<boundVar.back() << " " <<boundVar.back().getType()<<std::endl;
+    t = boundVar.back()
+    Debug("expr-qetest")<<"Bound variable type "<<t << " " <<t.getType()<<std::endl;
   }
   return n;
 }
@@ -1036,7 +1038,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
           {
             multipleBoundVar1.push_back(n[0][0][i][0]);
           }
-          boundVar.push_back(multipleBoundVar1s);
+          boundVar.push_back(multipleBoundVar1);
         }
         else
         {
