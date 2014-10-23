@@ -1046,7 +1046,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
           boundVar.push_back(multipleBoundVar1);
         }
         args.push_back(n[0][1]);
-        computeProjections(n[0][1].negate());
+        return computeProjections(n[0][1].negate());
       }
       else
       {
@@ -1060,7 +1060,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
             args.pop_back();
             boundVar.pop_back();
           }
-          Debug("expr-qetest")<<"Temp3 "<<temp3<<"\n";
+          Debug("expr-qetest")<<"Temp3 for Not"<<temp3<<"\n";
           final = temp3;
           return final;
         }
