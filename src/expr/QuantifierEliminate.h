@@ -9,7 +9,7 @@
 namespace CVC4{
 class CVC4_PUBLIC QuantifierEliminate {
 private:
-  static std::vector<std::vector<Node>> boundVar;
+  static std::vector<std::vector<Node> > boundVar;
   static std::vector<Node> args;
 //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
 //  static Node convertToNNFQE(Node body);
