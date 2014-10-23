@@ -985,28 +985,28 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
  }
  */
 
-Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> boundVars) {
+Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
   Node t;
-  for(int i=0;i<boundVars.size();i++)
+  for(int i=0;i<bv.size();i++)
   {
-    t = boundVars.back()
-    Debug("expr-qetest")<<"Bound variable type "<<t << " " <<t.getType()<<std::endl;
+    t = bv.back()
+    Debug("expr-qetest")<<"Bound variable "<<t << " " <<t.getType()<<std::endl;
   }
   return n;
 }
-bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> boundVars) {
+bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
   return true;
 }
-Node QuantifierEliminate::computeRightProjection(Node n, std::vector<Node> boundVar) {
+Node QuantifierEliminate::computeRightProjection(Node n, std::vector<Node> bv) {
   return n;
 }
-Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> boundVar) {
-  Node rewrittenNode = doRewriting(n, boundVar);
+Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
+  Node rewrittenNode = doRewriting(n, bv);
   Debug("expr-qetest")<<"After rewriting "<<rewrittenNode<<"\n";
-  bool left = computeLeftProjection(rewrittenNode, boundVar);
+  bool left = computeLeftProjection(rewrittenNode, bv);
   Debug("expr-qetest")<<"After left projection "<<left<<"\n";
-  Node right = computeRightProjection(rewrittenNode, boundVar);
+  Node right = computeRightProjection(rewrittenNode, bv);
   Debug("expr-qetest")<<"After right projection "<<right<<"\n";
   //Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
   //right);
