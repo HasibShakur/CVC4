@@ -28,7 +28,7 @@ using namespace CVC4::theory::arith;
 //};
 //typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
 
-std::vector<Node> QuantifierEliminate::boundVar;
+std::vector< <std::vector<Node> >  QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
 
 bool QuantifierEliminate::isLiteralQE(Node n) {

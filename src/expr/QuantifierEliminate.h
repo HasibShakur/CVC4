@@ -13,7 +13,7 @@ private:
   static std::vector<Node> args;
 //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
 //  static Node convertToNNFQE(Node body);
-  static Node doRewriting(Node n, std::vector<Node> boundVar);
+  static Node doRewriting(Node n, std::vector<Node> bv);
 //  static Node eliminateImpliesQE(Node body);
 //  static Node processRelationOperatorQE(Node n,bool negationEnabled);
 //  static Node replaceGEQQE(Node n,bool negationEnabled);
@@ -23,14 +23,14 @@ private:
 //  static Node replaceEqualQE(Node n,bool negationEnabled);
 //  static Node internalProcessNodeQE(Node n);
 //  static Node normalizeAtom(Node n);
-  static bool computeLeftProjection(Node n, std::vector<Node> boundVar);
+  static bool computeLeftProjection(Node n, std::vector<Node> bv);
 //  static bool evaluateBoolean(Node n);
-  static Node computeRightProjection(Node n, std::vector<Node> boundVar);
+  static Node computeRightProjection(Node n, std::vector<Node> bv);
 //  static Node preProcessingForRightProjection(Node n);
 //  static Node preProcessing2ForRightProjection(Node n);
 //  static Node evaluateForRightProjection(Node n, Node replacement);
 //  static Node computeOperationQE(Node n, bool isNested);
-  static Node performCaseAnalysis(Node n,std::vector<Node> boundVar);
+  static Node performCaseAnalysis(Node n,std::vector<Node> bv);
 //  static void setQENestedQuantifiers( Node n, Node q );
 //  static void setQENestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
 //  static void setAttributesQE( Node in, Node n );
