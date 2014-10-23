@@ -988,7 +988,7 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
 Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
   Node t;
-  for(int i=0;i<bv.size();i++)
+  for(int i=0;i<(int)bv.size();i++)
   {
     t = bv.back()
     Debug("expr-qetest")<<"Bound variable "<<t << " " <<t.getType()<<std::endl;
