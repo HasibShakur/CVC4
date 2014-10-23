@@ -1036,6 +1036,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         {
           for(int i=0;i<(int)n[0][0].getNumChildren();i++)
           {
+            Debug("expr-qetest")<<"For not multiple boundVars "<<n[0][0][i][0]<<"\n";
             multipleBoundVar1.push_back(n[0][0][i][0]);
           }
           boundVar.push_back(multipleBoundVar1);
@@ -1076,6 +1077,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     {
       for(int i=0;i<(int)n[0].getNumChildren();i++)
       {
+        Debug("expr-qetest")<<"Multiple boundVars "<<n[0][i][0]<<"\n";
         multipleBoundVar2.push_back(n[0][i][0]);
       }
       boundVar.push_back(multipleBoundVar2);
