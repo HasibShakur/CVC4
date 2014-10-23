@@ -1056,7 +1056,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
             }
             args.push_back(temp3);
           }
-          Debug("expr-qetest")<<"Temp3 for Not"<<args.back()<"\n";
+          Debug("expr-qetest")<<"Temp3 for Not"<<args.back()<<"\n";
           final = args.back();
           args.pop_back();
           return final;
