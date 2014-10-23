@@ -1032,7 +1032,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         std::vector<Node> multipleBoundVar1;
         if(n[0][0].getNumChildren() > 1)
         {
-          for(int i=0;i<n[0][0].getNumChildren();i++)
+          for(int i=0;i<(int)n[0][0].getNumChildren();i++)
           {
             multipleBoundVar1.push_back(n[0][0][i][0]);
           }
@@ -1072,7 +1072,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     std::vector<Node> multipleBoundVar2;
     if(n[0].getNumChildren()>1)
     {
-      for(int i=0;i<n[0].getNumChildren();i++)
+      for(int i=0;i<(int)n[0].getNumChildren();i++)
       {
         multipleBoundVar2.push_back(n[0][i][0]);
       }
