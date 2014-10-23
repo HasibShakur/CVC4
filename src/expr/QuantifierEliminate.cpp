@@ -985,18 +985,21 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
  }
  */
 
-Node QuantifierEliminate::doRewriting(Node n, Node boundVar) {
+Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> boundVars) {
   Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
-  Debug("expr-qetest")<<"Bound variable type "<<boundVar << " " <<boundVar.getType()<<std::endl;
+  for(int i=0;i<boundVars.size();i++)
+  {
+    Debug("expr-qetest")<<"Bound variable type "<<boundVar.back() << " " <<boundVar.back().getType()<<std::endl;
+  }
   return n;
 }
-bool QuantifierEliminate::computeLeftProjection(Node n, Node boundVar) {
+bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> boundVars) {
   return true;
 }
-Node QuantifierEliminate::computeRightProjection(Node n, Node boundVar) {
+Node QuantifierEliminate::computeRightProjection(Node n, std::vector<Node> boundVar) {
   return n;
 }
-Node QuantifierEliminate::performCaseAnalysis(Node n, Node boundVar) {
+Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> boundVar) {
   Node rewrittenNode = doRewriting(n, boundVar);
   Debug("expr-qetest")<<"After rewriting "<<rewrittenNode<<"\n";
   bool left = computeLeftProjection(rewrittenNode, boundVar);
@@ -1017,7 +1020,7 @@ Node QuantifierEliminate::doPreprocessing(Expr ex) {
 
 Node QuantifierEliminate::computeProjections(Node n) {
   Node temp1;
-  Node temp2;
+  std::vector<Node> temp2;
   Node temp3;
   Node final;
   if((n.getKind() == kind::NOT) ||(n.getKind() == kind::FORALL) || (n.getKind() == kind::EXISTS))
@@ -1026,7 +1029,20 @@ Node QuantifierEliminate::computeProjections(Node n) {
     {
       if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS))
       {
-        boundVar.push_back(n[0][0][0]);
+        std::vector<Node> multipleBoundVar1;
+        if(n[0][0].getNumChildren() > 1)
+        {
+          for(int i=0;i<n[0][0].getNumChildren();i++)
+          {
+            multipleBoundVar1.push_back(n[0][0][i][0]);
+          }
+          boundVar.push_back(multipleBoundVar1s);
+        }
+        else
+        {
+          multipleBoundVar1.push_back(n[0][0][0]);
+          boundVar.push_back(multipleBoundVar1);
+        }
         args.push_back(n[0][1]);
         computeProjections(n[0][1].negate());
       }
@@ -1053,7 +1069,20 @@ Node QuantifierEliminate::computeProjections(Node n) {
         }
       }
     }
-    boundVar.push_back(n[0][0]);
+    std::vector<Node> multipleBoundVar2;
+    if(n[0].getNumChildren()>1)
+    {
+      for(int i=0;i<n[0].getNumChildren();i++)
+      {
+        multipleBoundVar2.push_back(n[0][i][0]);
+      }
+      boundVar.push_back(multipleBoundVar2);
+    }
+    else
+    {
+      multipleBoundVar2.push_back(n[0][0]);
+      boundVar.push_back(multipleBoundVar2);
+    }
     args.push_back(n[1]);
     return computeProjections(n[1]);
   }
