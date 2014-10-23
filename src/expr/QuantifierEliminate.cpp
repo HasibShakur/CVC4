@@ -23,12 +23,11 @@ using namespace CVC4::theory;
 using namespace CVC4::theory::arith;
 //using namespace CVC4::theory::quantifiers;
 
-
 //struct QENestedQuantAttributeId {
 //};
 //typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
 
-std::vector< std::vector<Node> >  QuantifierEliminate::boundVar;
+std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
 
 bool QuantifierEliminate::isLiteralQE(Node n) {
@@ -1025,17 +1024,13 @@ Node QuantifierEliminate::computeProjections(Node n) {
   std::vector<Node> temp2;
   Node temp3;
   Node final;
-  if((n.getKind() == kind::NOT) ||(n.getKind() == kind::FORALL) || (n.getKind() == kind::EXISTS))
-  {
-    if(n.getKind() == kind::NOT)
-    {
-      if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS))
-      {
+  if((n.getKind() == kind::NOT) || (n.getKind() == kind::FORALL)
+      || (n.getKind() == kind::EXISTS)) {
+    if(n.getKind() == kind::NOT) {
+      if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS)) {
         std::vector<Node> multipleBoundVar1;
-        if(n[0][0].getNumChildren() > 1)
-        {
-          for(int i=0;i<(int)n[0][0].getNumChildren();i++)
-          {
+        if(n[0][0].getNumChildren() > 1) {
+          for(int i = 0; i < (int) n[0][0].getNumChildren(); i++) {
             Debug("expr-qetest")<<"For not multiple boundVars "<<n[0][0][i]<<"\n";
             multipleBoundVar1.push_back(n[0][0][i]);
           }
@@ -1048,20 +1043,15 @@ Node QuantifierEliminate::computeProjections(Node n) {
         }
         args.push_back(n[0][1]);
         return computeProjections(n[0][1].negate());
-      }
-      else
-      {
-        if((args.size() > 0) && (boundVar.size() > 0))
-        {
-          while((args.size() > 0) && (boundVar.size() > 0))
-          {
+      } else {
+        if((args.size() > 0) && (boundVar.size() > 0)) {
+          while((args.size() > 0) && (boundVar.size() > 0)) {
             temp1 = args.back();
             temp2 = boundVar.back();
-            temp3 = performCaseAnalysis(temp1,temp2 );
+            temp3 = performCaseAnalysis(temp1, temp2);
             //args.pop_back();
             boundVar.pop_back();
-            for(int i=0;i<(int) args.size();i++)
-            {
+            while(!args.empty()) {
               args.pop_back();
             }
             args.push_back(temp3);
@@ -1069,9 +1059,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
           Debug("expr-qetest")<<"Temp3 for Not"<<temp3<<"\n";
           final = temp3;
           return final;
-        }
-        else
-        {
+        } else {
           final = n;
           return final;
         }
@@ -1079,10 +1067,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
     }
     std::vector<Node> multipleBoundVar2;
     Debug("expr-qetest")<<"BoundVar "<<n[0]<<"\n";
-    if(n[0].getNumChildren()>1)
-    {
-      for(int i=0;i<(int)n[0].getNumChildren();i++)
-      {
+    if(n[0].getNumChildren() > 1) {
+      for(int i = 0; i < (int) n[0].getNumChildren(); i++) {
         Debug("expr-qetest")<<"Multiple boundVars "<<n[0][i]<<"\n";
         multipleBoundVar2.push_back(n[0][i]);
       }
@@ -1095,19 +1081,14 @@ Node QuantifierEliminate::computeProjections(Node n) {
     }
     args.push_back(n[1]);
     return computeProjections(n[1]);
-  }
-  else
-  {
-    if((args.size() > 0) && (boundVar.size() > 0))
-    {
-      while((args.size() > 0) && (boundVar.size() > 0))
-      {
+  } else {
+    if((args.size() > 0) && (boundVar.size() > 0)) {
+      while((args.size() > 0) && (boundVar.size() > 0)) {
         temp1 = args.back();
         temp2 = boundVar.back();
-        temp3 = performCaseAnalysis(temp1,temp2);
+        temp3 = performCaseAnalysis(temp1, temp2);
         boundVar.pop_back();
-        for(int i=0;i<(int) args.size();i++)
-        {
+        while(!args.empty()) {
           args.pop_back();
         }
         args.push_back(temp3);
@@ -1115,9 +1096,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       Debug("expr-qetest")<<"Temp3 "<<temp3<<"\n";
       final = temp3;
       return final;
-    }
-    else
-    {
+    } else {
       final = n;
       return final;
     }
