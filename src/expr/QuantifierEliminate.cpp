@@ -990,7 +990,7 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   Node t;
   for(int i=0;i<(int)bv.size();i++)
   {
-    t = bv.back()
+    t = bv.back();
     Debug("expr-qetest")<<"Bound variable "<<t << " " <<t.getType()<<std::endl;
   }
   return n;
