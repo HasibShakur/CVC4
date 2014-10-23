@@ -1058,8 +1058,13 @@ Node QuantifierEliminate::computeProjections(Node n) {
             temp1 = args.back();
             temp2 = boundVar.back();
             temp3 = performCaseAnalysis(temp1,temp2 );
-            args.pop_back();
+            //args.pop_back();
             boundVar.pop_back();
+            for(int i=0;i<(int) args.size();i++)
+            {
+              args.pop_back();
+            }
+            args.push_back(temp3);
           }
           Debug("expr-qetest")<<"Temp3 for Not"<<temp3<<"\n";
           final = temp3;
@@ -1100,8 +1105,12 @@ Node QuantifierEliminate::computeProjections(Node n) {
         temp1 = args.back();
         temp2 = boundVar.back();
         temp3 = performCaseAnalysis(temp1,temp2);
-        args.pop_back();
         boundVar.pop_back();
+        for(int i=0;i<(int) args.size();i++)
+        {
+          args.pop_back();
+        }
+        args.push_back(temp3);
       }
       Debug("expr-qetest")<<"Temp3 "<<temp3<<"\n";
       final = temp3;
