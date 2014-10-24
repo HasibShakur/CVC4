@@ -988,12 +988,12 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
   Node t;
   Debug("expr-qetest")<<"Size of BV "<<bv.size()<<std::endl;
-  for(int i=(int) bv.size();i>0;i--)
-  {
-    t = bv.at(i);
-    Debug("expr-qetest")<<"Bound variable "<<t << " " <<t.getType()<<std::endl;
-    t = t.null();
-  }
+//  for(int i= 0)
+//  {
+//    t = bv.at(i);
+//    Debug("expr-qetest")<<"Bound variable "<<t << " " <<t.getType()<<std::endl;
+//    t = t.null();
+//  }
   return n;
 }
 bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
@@ -1036,6 +1036,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
             Debug("expr-qetest")<<"Inside not multiple boundVars "<<n[0][0][i]<<"\n";
             multipleBoundVar1.push_back(n[0][0][i]);
           }
+          Debug("expr-qetest")<<"Size of multiple variables for a quantifier "<<multipleBoundVar1.size()<<std::endl;
           boundVar.push_back(multipleBoundVar1);
         }
         else
