@@ -1090,6 +1090,10 @@ Node QuantifierEliminate::computeProjections(Node n) {
         temp1 = args.back();
         temp2 = boundVar.back();
         temp3 = performCaseAnalysis(temp1, temp2);
+        if(n.getKind() == kind::NOT)
+        {
+          temp3 = temp3.negate();
+        }
         boundVar.pop_back();
         while(!args.empty()) {
           args.pop_back();
