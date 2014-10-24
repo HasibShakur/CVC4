@@ -992,7 +992,6 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   {
     t = bv.back();
     Debug("expr-qetest")<<"Bound variable "<<t << " " <<t.getType()<<std::endl;
-    t = t.null();
   }
   return n;
 }
@@ -1061,10 +1060,11 @@ Node QuantifierEliminate::computeProjections(Node n) {
           }
           Debug("expr-qetest")<<"Temp3 for Not"<<args.back()<<"\n";
           final = args.back();
+          final = final.negate();
           args.pop_back();
           return final;
         } else {
-          final = n;
+          final = n.negate();
           return final;
         }
       }
