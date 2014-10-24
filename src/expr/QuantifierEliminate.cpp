@@ -1044,7 +1044,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
           boundVar.push_back(multipleBoundVar1);
         }
         args.push_back(n[0][1]);
-        return computeProjections(n[0][1]);
+        return computeProjections(n[0][1].negate());
       } else {
         if(boundVar.size() > 0) {
           while(boundVar.size() > 0) {
