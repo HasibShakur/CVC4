@@ -992,7 +992,7 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   {
     t = bv.at(i);
     Debug("expr-qetest")<<"Bound variable "<<t << " " <<t.getType()<<std::endl;
-    t = null;
+    t = t.null();
   }
   return n;
 }
