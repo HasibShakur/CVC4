@@ -987,10 +987,12 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
 Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
   Node t;
-  for(int i=0;i<(int)bv.size();i++)
+  Debug("expr-qetest")<<"Size of BV "<<bv.size()<<std::endl;
+  for(int i=(int) bv.size();i>0;i--)
   {
-    t = bv.back();
-    Debug("expr-qetest")<<"Bound variable "<<bv.back() << " " <<t.getType()<<std::endl;
+    t = bv.at(i);
+    Debug("expr-qetest")<<"Bound variable "<<t << " " <<t.getType()<<std::endl;
+    t = null;
   }
   return n;
 }
@@ -1031,7 +1033,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         std::vector<Node> multipleBoundVar1;
         if(n[0][0].getNumChildren() > 1) {
           for(int i = 0; i < (int) n[0][0].getNumChildren(); i++) {
-            Debug("expr-qetest")<<"For not multiple boundVars "<<n[0][0][i]<<"\n";
+            Debug("expr-qetest")<<"Inside not multiple boundVars "<<n[0][0][i]<<"\n";
             multipleBoundVar1.push_back(n[0][0][i]);
           }
           boundVar.push_back(multipleBoundVar1);
@@ -1067,10 +1069,9 @@ Node QuantifierEliminate::computeProjections(Node n) {
       }
     }
     std::vector<Node> multipleBoundVar2;
-    Debug("expr-qetest")<<"BoundVar "<<n[0]<<"\n";
     if(n[0].getNumChildren() > 1) {
       for(int i = 0; i < (int) n[0].getNumChildren(); i++) {
-        Debug("expr-qetest")<<"Multiple boundVars "<<n[0][i]<<"\n";
+        Debug("expr-qetest")<<"multiple boundVars "<<n[0][i]<<"\n";
         multipleBoundVar2.push_back(n[0][i]);
       }
       boundVar.push_back(multipleBoundVar2);
