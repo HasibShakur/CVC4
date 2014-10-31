@@ -3348,9 +3348,10 @@ Result SmtEngine::assertFormula(const Expr& ex) throw (TypeCheckingException,
  * The eliminateQuantifier function will eliminate quantifiers from an
  * expression.
  */
-std::string SmtEngine::eliminateQuantifier(Expr ex) {
+std::string SmtEngine::eliminateQuantifier(Expr ex, int numbOfQuantifiersToEliminate) {
   Assert(ex.getExprManager() == d_exprManager);
   SmtScope smts(this);
+  Debug("expr-qetest")<<"Num of Quantifiers to Eliminate "<<numbOfQuantifiersToEliminate<<"\n"
   Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
   Node processedNode = QuantifierEliminate::doPreprocessing(ex);
   Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";

@@ -381,9 +381,19 @@ command returns [CVC4::Command* cmd = NULL]
     { cmd = new AssertCommand(expr); }
   |  /* Md Hasib Bin Shakur, June 11, 2014 QE simplify */
     QESIMPLIFY_TOK { PARSER_STATE->checkThatLogicIsSet(); }
-	symbolList[names,CHECK_NONE,SYM_SORT]
-    term[expr, expr2]
-    { cmd = new QESimplifyCommand(expr); } 
+	term[expr, expr2]
+	k=INTEGER_LITERAL
+	{
+		unsigned n = AntlrInput::tokenToUnsigned(k);
+		if(n == 0)
+		{
+			cmd = new QESimplifyCommand(expr);
+		}
+		else
+		{
+			cmd = new QESimplifyCommand(expr,n);
+		}
+	}
   | /* check-sat */
     CHECKSAT_TOK { PARSER_STATE->checkThatLogicIsSet(); }
     ( term[expr, expr2]

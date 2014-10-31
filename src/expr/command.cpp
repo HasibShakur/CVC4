@@ -195,12 +195,18 @@ std::string EchoCommand::getCommandName() const throw() {
 
 
 // Edited by Md Hasib Bin Shakur, June 11, 2014
+QESimplifyCommand::QESimplifyCommand(const Expr& e, int n) throw() :
+  d_expr(e),numOfQuantifiers(n) {
+}
 QESimplifyCommand::QESimplifyCommand(const Expr& e) throw() :
-  d_expr(e) {
+  d_expr(e),numOfQuantifiers(0) {
 }
 
 CVC4::Expr QESimplifyCommand::getExpr() const throw() {
   return d_expr;
+}
+int QESimplifyCommand::getNumOfQuantifiersToEliminate() const throw() {
+  return numOfQuantifiers;
 }
 
 void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
