@@ -993,7 +993,7 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv)
               i != i_end;
               ++i)
    {
-     Debug("expr-qetest")<<*i<<std::endl;
+     Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
    }
    //for(TNode::kinded_iterator i = expl.begin(kind::AND),
    //        i_end = expl.end(kind::AND);
