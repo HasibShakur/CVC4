@@ -988,8 +988,8 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv)
    Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
    Debug("expr-qetest")<<"BoundVar"<<bv<<std::endl;
    //
-   for(Node::kinded_iterator i = n.begin(kind::BOUND_VAR),
-                 i_end = n.end(kind::BOUND_VAR);
+   for(Node::kinded_iterator i = n.begin(kind::BOUND_VARIABLE),
+                 i_end = n.end(kind::BOUND_VARIABLE);
               i != i_end;
               ++i)
    {
