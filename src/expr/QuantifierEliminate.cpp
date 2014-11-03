@@ -983,6 +983,26 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
  return toCompute;
  }
  */
+Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv)
+{
+   Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
+   Debug("expr-qetest")<<"BoundVar"<<bv<<std::endl;
+   //
+   for(Node::kinded_iterator i = n.begin(kind::BOUND_VAR),
+                 i_end = n.end(kind::BOUND_VAR);
+              i != i_end;
+              ++i)
+   {
+     Debug("expr-qetest")<<i<<std::endl;
+   }
+   //for(TNode::kinded_iterator i = expl.begin(kind::AND),
+   //        i_end = expl.end(kind::AND);
+   //      i != i_end;
+   //      ++i)
+
+
+   return n;
+}
 
 Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
@@ -993,8 +1013,10 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   {
     t = temp.back();
     Debug("expr-qetest")<<"Bound variable "<<t << " " <<t.getType()<<std::endl;
+    n = rewriteForSameCoefficients(n,t);
     temp.pop_back();
   }
+
   return n;
 }
 bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
