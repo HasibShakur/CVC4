@@ -3353,11 +3353,9 @@ std::string SmtEngine::eliminateQuantifier(Expr ex, int numOfQuantifiersToElimin
   SmtScope smts(this);
   Debug("expr-qetest")<<"Number of Quantifiers to Eliminate "<<numOfQuantifiersToEliminate<<"\n";
   Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
-  Node processedNode = QuantifierEliminate::doPreprocessing(ex);
-  Debug("expr-qetest")<<"After processing "<<processedNode<<"\n";
 //  Node checkRewrittenNode = Rewriter::rewrite(ex);
 //  Debug("expr-qetest")<<"Separate rewriting "<<checkRewrittenNode<<n";
-  Node finalNode = QuantifierEliminate::computeProjections(processedNode);
+  Node finalNode = QuantifierEliminate::computeProjections(NodeTemplate<true>(ex));
   Debug("expr-qetest")<<"Final Node "<<finalNode<<"\n";
   return "success";
 

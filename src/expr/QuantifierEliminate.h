@@ -37,7 +37,6 @@ private:
   //static Node replaceForall(Node body);
   static Node rewriteForSameCoefficients(Node n, Node boundVar);
 public:
-  static Node doPreprocessing(Expr ex);
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
   static bool isLiteralQE (Node body);

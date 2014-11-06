@@ -996,11 +996,22 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv)
      Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
    }*/
    Debug("expr-qetest")<<"Number of Children"<<n.getNumChildren()<<std::endl;
+//   if(n.getNumChildren() == 2)
+//   {
+//     if()
+//   }
+//   if(n.getKind() == kind::NOT)
+//   {
+//
+//   }
+//   else
+//   {
+//
+//   }
    for(int i=0;i<(int)n.getNumChildren();i++)
    {
      Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<std::endl;
    }
-
 
 
 
@@ -1011,7 +1022,7 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
   std::vector<Node> temp = bv;
   Node t;
-  Debug("expr-qetest")<<"Size of BV "<<bv.size()<<std::endl;
+  n = Rewriter::rewrite(n);
   for(int i= 0;i<(int) temp.size();i++)
   {
     t = temp.back();
@@ -1019,7 +1030,7 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
     n = rewriteForSameCoefficients(n,t);
     temp.pop_back();
   }
-
+  Debug("expr-qetest")<<"After rewriting"<<n<<std::endl;
   return n;
 }
 bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
@@ -1059,11 +1070,9 @@ Node QuantifierEliminate::computeProjections(Node n) {
         std::vector<Node> multipleBoundVar1;
         if(n[0][0].getNumChildren() > 1) {
           for(int i = 0; i < (int) n[0][0].getNumChildren(); i++) {
-            Debug("expr-qetest")<<"Inside not multiple boundVars "<<n[0][0][i]<<"\n";
-            multipleBoundVar1.push_back(n[0][0][i]);
+             multipleBoundVar1.push_back(n[0][0][i]);
           }
-          Debug("expr-qetest")<<"Size of multiple variables for a quantifier "<<multipleBoundVar1.size()<<std::endl;
-          boundVar.push_back(multipleBoundVar1);
+            boundVar.push_back(multipleBoundVar1);
         }
         else
         {
@@ -1086,7 +1095,6 @@ Node QuantifierEliminate::computeProjections(Node n) {
             }
             args.push_back(temp3);
           }
-          Debug("expr-qetest")<<"Temp3 for Not"<<args.back()<<"\n";
           final = args.back();
           args.pop_back();
           return final;
@@ -1099,7 +1107,6 @@ Node QuantifierEliminate::computeProjections(Node n) {
     std::vector<Node> multipleBoundVar2;
     if(n[0].getNumChildren() > 1) {
       for(int i = 0; i < (int) n[0].getNumChildren(); i++) {
-        Debug("expr-qetest")<<"multiple boundVars "<<n[0][i]<<"\n";
         multipleBoundVar2.push_back(n[0][i]);
       }
       boundVar.push_back(multipleBoundVar2);
@@ -1127,7 +1134,6 @@ Node QuantifierEliminate::computeProjections(Node n) {
         }
         args.push_back(temp3);
       }
-      Debug("expr-qetest")<<"Temp3 "<<args.back()<<"\n";
       final = args.back();
       args.pop_back();
       return final;
