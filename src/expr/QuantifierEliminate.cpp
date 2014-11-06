@@ -1052,12 +1052,6 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
   return finalNode;
 }
 
-Node QuantifierEliminate::doPreprocessing(Expr ex) {
-  Node temp_in = NodeTemplate<true>(ex);
-  Node n = Rewriter::rewrite(temp_in);
-  return n;
-}
-
 Node QuantifierEliminate::computeProjections(Node n) {
   Node temp1;
   std::vector<Node> temp2;
