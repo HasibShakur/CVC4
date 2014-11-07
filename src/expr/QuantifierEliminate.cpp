@@ -60,6 +60,38 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
     return false;
   }
 }
+bool QuantifierEliminate::isConstQE(Node n)
+{
+  if(n.isConst())
+    return true;
+  else
+    return false;
+}
+bool QuantifierEliminate::isVarQE(Node n)
+{
+  if(n.isVar() && n.getType().isInteger() )
+    return true;
+  else
+    return false;
+}
+bool QuantifierEliminate::isVarWithCoefficientsQE(Node n)
+{
+  if(n.getKind()==kind::MULT && (isVarQE(n[0]) || isConstQE(n[0])) && (isVarQE(n[1])||isConstQE(n[1])))
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+bool QuantifierEliminate::isEquationQE(Node n)
+{
+  if(isRelationalOperatorTypeQE(n.getKind()))
+    return true;
+  else
+    return false;
+}
 
 //void QuantifierEliminate::setQENestedQuantifiers(Node n, Node q) {
 //  std::vector<Node> processed;
@@ -983,10 +1015,27 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
  return toCompute;
  }
  */
+static Node QuantifierEliminate::parseEquation(Node n, Node bv)
+{
+   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
+   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
+//   if(isConstQE(n))
+//   {
+//
+//   }
+   for(Node::kinded_iterator i = n.begin(n.getKind()),
+       i_end = n.end(n.getKind());
+       i!=i_end;
+       ++i)
+   {
+     Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
+   }
+   return n;
+}
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv)
 {
-   Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
-   Debug("expr-qetest")<<"BoundVar"<<bv<<std::endl;
+   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
+   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
    //
    /*for(Node::kinded_iterator i = n.begin(kind::BOUND_VARIABLE),
                  i_end = n.end(kind::BOUND_VARIABLE);
@@ -995,23 +1044,21 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv)
    {
      Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
    }*/
+
    Debug("expr-qetest")<<"Number of Children"<<n.getNumChildren()<<std::endl;
-//   if(n.getNumChildren() == 2)
-//   {
-//     if()
-//   }
-//   if(n.getKind() == kind::NOT)
-//   {
-//
-//   }
-//   else
-//   {
-//
-//   }
    for(int i=0;i<(int)n.getNumChildren();i++)
+        {
+          Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<std::endl;
+        }
+   if(n.getKind() == kind::NOT)
    {
-     Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<std::endl;
+     n = parseEquation(n[0],bv);
    }
+   else
+   {
+     n = parseEquation(n,bv);
+   }
+
 
 
 
@@ -1026,7 +1073,6 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   for(int i= 0;i<(int) temp.size();i++)
   {
     t = temp.back();
-    Debug("expr-qetest")<<"Bound variable "<<t << " " <<t.getType()<<std::endl;
     n = rewriteForSameCoefficients(n,t);
     temp.pop_back();
   }

@@ -23,6 +23,7 @@ private:
 //  static Node replaceEqualQE(Node n,bool negationEnabled);
 //  static Node internalProcessNodeQE(Node n);
 //  static Node normalizeAtom(Node n);
+  static Node parseEquation(Node n,Node bv);
   static bool computeLeftProjection(Node n, std::vector<Node> bv);
 //  static bool evaluateBoolean(Node n);
   static Node computeRightProjection(Node n, std::vector<Node> bv);
@@ -40,6 +41,11 @@ public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
   static bool isLiteralQE (Node body);
+  static bool isConstQE(Node n);
+  static bool isVarQE(Node n);
+  static bool isVarWithCoefficientsQE(Node n);
+  static bool isEquationQE(Node n);
+  static bool isLinearEquationQE(Node n);
   static bool isRelationalOperatorTypeQE(Kind k);
   static Node computeProjections(Node n);
 };
