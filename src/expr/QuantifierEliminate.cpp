@@ -93,6 +93,18 @@ bool QuantifierEliminate::isEquationQE(Node n)
     return false;
 }
 
+Node QuantifierEliminate::returnCoefficientQE(Node n)
+{
+  if(isVarWithCoefficientsQE(n))
+  {
+    return n[0];
+  }
+  else
+  {
+    return n;
+  }
+}
+
 //void QuantifierEliminate::setQENestedQuantifiers(Node n, Node q) {
 //  std::vector<Node> processed;
 //  setQENestedQuantifiers2(n, q, processed);
@@ -1029,6 +1041,12 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv)
        ++i)
    {
      Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
+     Node child = *i;
+     for(Node::iterator j= child.begin(),end = child.end();j!=end;++j )
+     {
+       Debug("expr-qetest")<<"Inside inner Iterator "<<*j<<std::endl;
+       Debug("expr-qetest")<<"Coefficient "<<returnCoefficientQE(*j)<<std::endl;
+     }
    }
    return n;
 }

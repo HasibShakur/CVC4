@@ -37,6 +37,7 @@ private:
 //  static void setAttributesQE( Node in, Node n );
   //static Node replaceForall(Node body);
   static Node rewriteForSameCoefficients(Node n, Node boundVar);
+  static Node returnCoefficientQE(Node n);
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
