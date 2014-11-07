@@ -1015,7 +1015,7 @@ bool QuantifierEliminate::isEquationQE(Node n)
  return toCompute;
  }
  */
-static Node QuantifierEliminate::parseEquation(Node n, Node bv)
+Node QuantifierEliminate::parseEquation(Node n, Node bv)
 {
    Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
    Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
