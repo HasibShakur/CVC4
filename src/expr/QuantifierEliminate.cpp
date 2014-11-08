@@ -106,7 +106,7 @@ Node QuantifierEliminate::returnCoefficientQE(Node n)
  }
  else if(isVarQE(n))
  {
-   Constant c(1);
+   Constant c(n);
    c.mkOne();
    returnValue = mkRationalNode(c);
  }
@@ -116,16 +116,19 @@ Node QuantifierEliminate::returnCoefficientQE(Node n)
     {
       if(isVarWithCoefficientsQE(*i))
       {
-        returnValue = *i[0];
+        Node child = *i;
+        returnValue = child[0];
       }
       else if(isConstQE(*i))
       {
-        returnValue = *i;
+        Node child = *i;
+        returnValue = child;
       }
       else
       {
         //variable
-        Constant c(*i);
+        Node child = *i;
+        Constant c(child);
         returnValue = mkRationalNode(c.mkOne());
       }
     }
