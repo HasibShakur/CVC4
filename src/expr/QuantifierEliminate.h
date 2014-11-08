@@ -6,6 +6,7 @@
 #include<iostream>
 #include<vector>
 #include "expr/node.h"
+#include "theory/arith/normal_form.h"
 namespace CVC4{
 class CVC4_PUBLIC QuantifierEliminate {
 private:

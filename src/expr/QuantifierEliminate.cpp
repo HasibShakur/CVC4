@@ -95,19 +95,20 @@ bool QuantifierEliminate::isEquationQE(Node n)
 
 Node QuantifierEliminate::returnCoefficientQE(Node n)
 {
-  Node returnNode;
+  Node returnValue;
  if(isVarWithCoefficientsQE(n))
  {
-   returnNode = n[0];
+   returnValue = n[0];
  }
  else if(isConstQE(n))
  {
-   returnNode = n;
+   returnValue = n;
  }
  else if(isVarQE(n))
  {
-   Constant c(n);
-   returnNode =c.mkOne();
+   Constant c(1);
+   c.mkOne();
+   returnValue = mkRationalNode(c);
  }
  else
  {
@@ -115,22 +116,22 @@ Node QuantifierEliminate::returnCoefficientQE(Node n)
     {
       if(isVarWithCoefficientsQE(*i))
       {
-        returnNode = *i[0];
+        returnValue = *i[0];
       }
       else if(isConstQE(*i))
       {
-        returnNode = *i;
+        returnValue = *i;
       }
       else
       {
         //variable
         Constant c(*i);
-        returnNode =c.mkOne();
+        returnValue = mkRationalNode(c.mkOne());
       }
     }
 
  }
- return returnNode;
+ return returnValue;
 }
 
 //void QuantifierEliminate::setQENestedQuantifiers(Node n, Node q) {
