@@ -106,7 +106,7 @@ Node QuantifierEliminate::returnCoefficientQE(Node n)
  }
  else if(isVarQE(n))
  {
-   Constant c;
+   Constant c(n);
    returnNode =c.mkOne();
  }
  else
