@@ -115,16 +115,16 @@ Node QuantifierEliminate::returnCoefficientQE(Node n)
     {
       if(isVarWithCoefficientsQE(*i))
       {
-        returnNode = n[0];
+        returnNode = *i[0];
       }
       else if(isConstQE(*i))
       {
-        returnNode = n;
+        returnNode = *i;
       }
       else
       {
         //variable
-        Constant c;
+        Constant c(*i);
         returnNode =c.mkOne();
       }
     }
