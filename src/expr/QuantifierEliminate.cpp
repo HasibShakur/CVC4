@@ -106,9 +106,8 @@ Node QuantifierEliminate::returnCoefficientQE(Node n)
  }
  else if(isVarQE(n))
  {
-   Constant c(n);
-   c.mkOne();
-   returnValue = NodeManager::currentNM()->mkConst(c);
+   Constant c = Constant::mkOne();
+   returnValue = c.getNode();
  }
  else
  {
@@ -126,10 +125,8 @@ Node QuantifierEliminate::returnCoefficientQE(Node n)
       }
       else
       {
-        //variable
-        Node child = *i;
-        Constant c(child);
-        returnValue = NodeManager::currentNM()->mkConst(c);
+        Constant c = Constant::mkOne();
+        returnValue = c.getNode();
       }
     }
 
