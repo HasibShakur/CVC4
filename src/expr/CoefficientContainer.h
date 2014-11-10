@@ -1,7 +1,7 @@
 #include "cvc4_public.h"
 
-#ifndef __CVC4__PARSER_QUANTIFIERELIMINATE_H
-#define __CVC4__PARSER_QUANTIFIERELIMINATE_H
+#ifndef __CVC4__PARSER_COEFFICIENTCONTAINER_H
+#define __CVC4__PARSER_COEFFICIENTCONTAINER_H
 
 #include<iostream>
 #include "expr/node.h"
