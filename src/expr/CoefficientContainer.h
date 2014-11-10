@@ -10,7 +10,7 @@ namespace CVC4{
 class CVC4_PUBLIC CoefficientContainer
 {
 private:
-  static int id = 1;
+  static int id ;
   static Node var;
   static Node coefficient;
 public:
