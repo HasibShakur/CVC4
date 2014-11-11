@@ -91,44 +91,48 @@ bool QuantifierEliminate::isEquationQE(Node n) {
 Node QuantifierEliminate::returnCoefficientQE(Node n) {
   std::vector<Node> var;
   std::vector<Node> coeff;
-  for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
+  if(isConstQE(n))
+  {
+    var.push_back(child);
+    coeff.push_back(child);
+  }
+  else if(isVarWithCoefficientsQE(n)) {
+     var.push_back(n);
+     coeff.push_back(n[0]);
+  }
+  else if(isVarQE(n)) {
+        Constant one = Constant::mkOne();
+        var.push_back(child);
+        coeff.push_back(one.getNode());
+      }
+  else
+  {
+    for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
     Node child = *i;
-    Debug("expr-qetest")<<child<<std::endl;
-/*    if(isConstQE(child)) {
-      var.push_back(child);
-      coeff.push_back(child);
-    } else if(isVarWithCoefficientsQE(child)) {
-      var.push_back(child);
-      coeff.push_back(child[0]);
-    } else if(isVarQE(child)) {
+    if(isConstQE(child)) {
+          var.push_back(child);
+          coeff.push_back(child);
+        }
+    else if(isVarWithCoefficientsQE(child)) {
+          var.push_back(child);
+          coeff.push_back(child[0]);
+        }
+    else
+    {
       Constant one = Constant::mkOne();
       var.push_back(child);
       coeff.push_back(one.getNode());
-    } else if(isEquationQE(child)) {
-      for(Node::iterator j = child.begin(), end = child.end(); j != end; ++j) {
-        Node inner = *j;
-        if(isConstQE(inner)) {
-          var.push_back(inner);
-          coeff.push_back(inner);
-        } else if(isVarWithCoefficientsQE(inner)) {
-          var.push_back(inner);
-          coeff.push_back(inner[0]);
-        } else if(isVarQE(inner)) {
-          Constant one = Constant::mkOne();
-          var.push_back(inner);
-          coeff.push_back(one.getNode());
-        }
-      }
-    }*/
+    }
   }
-  /*Debug("expr-qetest")<<"Size of var "<<var.size()<<std::endl;
+  }
+  Debug("expr-qetest")<<"Size of var "<<var.size()<<std::endl;
   Debug("expr-qetest")<<"Size of coeff "<<coeff.size()<<std::endl;
   for(int i = 0; i < (int) var.size() && i < (int) coeff.size(); i++) {
     Debug("expr-qetest")<<"Variable "<<i<<" "<<var.back()<<std::endl;
     Debug("expr-qetest")<<"Coefficient "<<i<<" "<<coeff.back()<<std::endl;
     var.pop_back();
     coeff.pop_back();
-  }*/
+  }
   return n;
 }
 
