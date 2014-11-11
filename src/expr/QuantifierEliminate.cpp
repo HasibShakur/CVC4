@@ -93,7 +93,8 @@ Node QuantifierEliminate::returnCoefficientQE(Node n) {
   std::vector<Node> coeff;
   for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
     Node child = *i;
-    if(isConstQE(child)) {
+    Debug("expr-qetest")<<child<<std::endl;
+/*    if(isConstQE(child)) {
       var.push_back(child);
       coeff.push_back(child);
     } else if(isVarWithCoefficientsQE(child)) {
@@ -118,16 +119,16 @@ Node QuantifierEliminate::returnCoefficientQE(Node n) {
           coeff.push_back(one.getNode());
         }
       }
-    }
+    }*/
   }
-  Debug("expr-qetest")<<"Size of var "<<var.size()<<std::endl;
+  /*Debug("expr-qetest")<<"Size of var "<<var.size()<<std::endl;
   Debug("expr-qetest")<<"Size of coeff "<<coeff.size()<<std::endl;
   for(int i = 0; i < (int) var.size() && i < (int) coeff.size(); i++) {
     Debug("expr-qetest")<<"Variable "<<i<<" "<<var.back()<<std::endl;
     Debug("expr-qetest")<<"Coefficient "<<i<<" "<<coeff.back()<<std::endl;
     var.pop_back();
     coeff.pop_back();
-  }
+  }*/
   return n;
 }
 
