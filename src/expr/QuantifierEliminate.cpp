@@ -12,7 +12,7 @@
 #include "util/rational.h"
 #include "util/integer.h"
 #include "theory/arith/arith_utilities.h"
-#include "expr/CoefficientContainer.h"
+
 //#include "theory/quantifiers/quantifiers_rewriter.h"
 
 using namespace std;
@@ -30,6 +30,7 @@ using namespace CVC4::theory::arith;
 
 std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
+
 
 bool QuantifierEliminate::isLiteralQE(Node n) {
   switch(n.getKind()) {
@@ -96,7 +97,8 @@ bool QuantifierEliminate::isEquationQE(Node n)
 
 Node QuantifierEliminate::returnCoefficientQE(Node n)
 {
-  std::vector<CoefficientContainer> container;
+  std::vector<Node> var;
+  std::vector<Node> coeff;
   for(Node::iterator i= n.begin(),end = n.end();
       i != end;
       ++i)
@@ -104,19 +106,19 @@ Node QuantifierEliminate::returnCoefficientQE(Node n)
     Node child = *i;
     if(isConstQE(child))
     {
-      CoefficientContainer c(child,child);
-      container.push_back(c);
+      var.push_back(child);
+      coeff.push_back(child);
     }
     else if(isVarWithCoefficientsQE(child))
     {
-      CoefficientContainer c(child[0],child[1]);
-      container.push_back(c);
+      var.push_back(child);
+      coeff.push_back(child[0]);
     }
     else if(isVarQE(child))
     {
       Constant one = Constant::mkOne();
-      CoefficientContainer c(one.getNode(),child);
-      container.push_back(c);
+      var.push_back(child);
+      coeff.push_back(one.getNode());
     }
     else if(isEquationQE(child))
     {
@@ -127,68 +129,33 @@ Node QuantifierEliminate::returnCoefficientQE(Node n)
         Node inner = *j;
         if(isConstQE(inner))
         {
-          CoefficientContainer c_inner(inner,inner);
-          container.push_back(c_inner);
+          var.push_back(inner);
+          coeff.push_back(inner);
         }
         else if(isVarWithCoefficientsQE(inner))
         {
-          CoefficientContainer c_inner(inner[0],inner[1]);
-          container.push_back(c_inner);
+          var.push_back(inner);
+          coeff.push_back(inner[0]);
         }
         else if(isVarQE(inner))
         {
           Constant one = Constant::mkOne();
-          CoefficientContainer c_inner(one.getNode(),inner);
-          container.push_back(c_inner);
+          var.push_back(inner);
+          coeff.push_back(one.getNode());
         }
       }
     }
-    Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
-    for(int i=0;i<(int)container.size();i++)
+    Debug("expr-qetest")<<"Size of var "<<var.size()<<std::endl;
+    Debug("expr-qetest")<<"Size of coeff "<<coeff.size()<<std::endl;
+    for(int i=0;i<(int)var.size() && i<(int)coeff.size();i++)
     {
-      CoefficientContainer cc = container.back();
-      Debug("expr-qetest")<<"Container element "<<i<<" "<<cc.getVar()<<" "<<cc.getCoefficient()<<std::endl;
-      container.pop_back();
+      Debug("expr-qetest")<<"Variable "<<i<<" "<<var.back()<<std::endl;
+      Debug("expr-qetest")<<"Coefficient "<<i<<" "<<coeff.back()<<std::endl;
+      var.pop_back();
+      coeff.pop_back();
     }
   }
   return n;
-// Node returnValue;
-// if(isVarWithCoefficientsQE(n))
-// {
-//   returnValue = n[0];
-// }
-// else if(isConstQE(n))
-// {
-//   returnValue = n;
-// }
-// else if(isVarQE(n))
-// {
-//   Constant c = Constant::mkOne();
-//   returnValue = c.getNode();
-// }
-// else
-// {
-//   for(Node::iterator i=n.begin(), end =n.end();i!=end;++i)
-//    {
-//      if(isVarWithCoefficientsQE(*i))
-//      {
-//        Node child = *i;
-//        returnValue = child[0];
-//      }
-//      else if(isConstQE(*i))
-//      {
-//        Node child = *i;
-//        returnValue = child;
-//      }
-//      else
-//      {
-//        Constant c = Constant::mkOne();
-//        returnValue = c.getNode();
-//      }
-//    }
-//
-// }
-// return returnValue;
 }
 
 //void QuantifierEliminate::setQENestedQuantifiers(Node n, Node q) {

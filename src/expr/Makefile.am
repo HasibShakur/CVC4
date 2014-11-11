@@ -39,9 +39,7 @@ libexpr_la_SOURCES = \
 	expr_stream.h \
 	kind_map.h \
 	QuantifierEliminate.h \
-	QuantifierEliminate.cpp \
-	CoefficientContainer.h \
-	CoefficientContainer.cpp
+	QuantifierEliminate.cpp 
 
 nodist_libexpr_la_SOURCES = \
 	kind.h \
