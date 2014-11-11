@@ -31,7 +31,6 @@ using namespace CVC4::theory::arith;
 std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
 
-
 bool QuantifierEliminate::isLiteralQE(Node n) {
   switch(n.getKind()) {
   case kind::NOT:
@@ -62,98 +61,72 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
     return false;
   }
 }
-bool QuantifierEliminate::isConstQE(Node n)
-{
+bool QuantifierEliminate::isConstQE(Node n) {
   if(n.isConst())
     return true;
   else
     return false;
 }
-bool QuantifierEliminate::isVarQE(Node n)
-{
-  if(n.isVar() && n.getType().isInteger() )
+bool QuantifierEliminate::isVarQE(Node n) {
+  if(n.isVar() && n.getType().isInteger())
     return true;
   else
     return false;
 }
-bool QuantifierEliminate::isVarWithCoefficientsQE(Node n)
-{
-  if(n.getKind()==kind::MULT && (isVarQE(n[0]) || isConstQE(n[0])) && (isVarQE(n[1])||isConstQE(n[1])))
-  {
+bool QuantifierEliminate::isVarWithCoefficientsQE(Node n) {
+  if(n.getKind() == kind::MULT && (isVarQE(n[0]) || isConstQE(n[0]))
+      && (isVarQE(n[1]) || isConstQE(n[1]))) {
     return true;
-  }
-  else
-  {
+  } else {
     return false;
   }
 }
-bool QuantifierEliminate::isEquationQE(Node n)
-{
+bool QuantifierEliminate::isEquationQE(Node n) {
   if(isRelationalOperatorTypeQE(n.getKind()))
     return true;
   else
     return false;
 }
 
-Node QuantifierEliminate::returnCoefficientQE(Node n)
-{
+Node QuantifierEliminate::returnCoefficientQE(Node n) {
   std::vector<Node> var;
   std::vector<Node> coeff;
-  for(Node::iterator i= n.begin(),end = n.end();
-      i != end;
-      ++i)
-  {
+  for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
     Node child = *i;
-    if(isConstQE(child))
-    {
+    if(isConstQE(child)) {
       var.push_back(child);
       coeff.push_back(child);
-    }
-    else if(isVarWithCoefficientsQE(child))
-    {
+    } else if(isVarWithCoefficientsQE(child)) {
       var.push_back(child);
       coeff.push_back(child[0]);
-    }
-    else if(isVarQE(child))
-    {
+    } else if(isVarQE(child)) {
       Constant one = Constant::mkOne();
       var.push_back(child);
       coeff.push_back(one.getNode());
-    }
-    else if(isEquationQE(child))
-    {
-      for(Node::iterator j = child.begin(),end = child.end();
-          j!= end;
-          ++j)
-      {
+    } else if(isEquationQE(child)) {
+      for(Node::iterator j = child.begin(), end = child.end(); j != end; ++j) {
         Node inner = *j;
-        if(isConstQE(inner))
-        {
+        if(isConstQE(inner)) {
           var.push_back(inner);
           coeff.push_back(inner);
-        }
-        else if(isVarWithCoefficientsQE(inner))
-        {
+        } else if(isVarWithCoefficientsQE(inner)) {
           var.push_back(inner);
           coeff.push_back(inner[0]);
-        }
-        else if(isVarQE(inner))
-        {
+        } else if(isVarQE(inner)) {
           Constant one = Constant::mkOne();
           var.push_back(inner);
           coeff.push_back(one.getNode());
         }
       }
     }
-    Debug("expr-qetest")<<"Size of var "<<var.size()<<std::endl;
-    Debug("expr-qetest")<<"Size of coeff "<<coeff.size()<<std::endl;
-    for(int i=0;i<(int)var.size() && i<(int)coeff.size();i++)
-    {
-      Debug("expr-qetest")<<"Variable "<<i<<" "<<var.back()<<std::endl;
-      Debug("expr-qetest")<<"Coefficient "<<i<<" "<<coeff.back()<<std::endl;
-      var.pop_back();
-      coeff.pop_back();
-    }
+  }
+  Debug("expr-qetest")<<"Size of var "<<var.size()<<std::endl;
+  Debug("expr-qetest")<<"Size of coeff "<<coeff.size()<<std::endl;
+  for(int i = 0; i < (int) var.size() && i < (int) coeff.size(); i++) {
+    Debug("expr-qetest")<<"Variable "<<i<<" "<<var.back()<<std::endl;
+    Debug("expr-qetest")<<"Coefficient "<<i<<" "<<coeff.back()<<std::endl;
+    var.pop_back();
+    coeff.pop_back();
   }
   return n;
 }
@@ -1080,60 +1053,55 @@ Node QuantifierEliminate::returnCoefficientQE(Node n)
  return toCompute;
  }
  */
-Node QuantifierEliminate::parseEquation(Node n, Node bv)
-{
-   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
-   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
+Node QuantifierEliminate::parseEquation(Node n, Node bv) {
+  Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
+  Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
 //   if(isConstQE(n))
 //   {
 //
 //   }
-   for(Node::kinded_iterator i = n.begin(n.getKind()),
-       i_end = n.end(n.getKind());
-       i!=i_end;
-       ++i)
-   {
-     Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
-     Node child = *i;
-     for(Node::iterator j= child.begin(),end = child.end();j!=end;++j )
-     {
-       Debug("expr-qetest")<<"Inside inner Iterator "<<*j<<std::endl;
-       Debug("expr-qetest")<<"Coefficient "<<returnCoefficientQE(*j)<<std::endl;
-     }
-   }
-   return n;
+  for(Node::kinded_iterator i = n.begin(n.getKind()),
+  i_end = n.end(n.getKind());
+  i!=i_end;
+  ++i)
+  {
+    Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
+    Node child = *i;
+    for(Node::iterator j= child.begin(),end = child.end();j!=end;++j )
+    {
+      Debug("expr-qetest")<<"Inside inner Iterator "<<*j<<std::endl;
+      Debug("expr-qetest")<<"Coefficient "<<returnCoefficientQE(*j)<<std::endl;
+    }
+  }
+  return n;
 }
-Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv)
-{
-   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
-   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
-   //
-   /*for(Node::kinded_iterator i = n.begin(kind::BOUND_VARIABLE),
-                 i_end = n.end(kind::BOUND_VARIABLE);
-              i != i_end;
-              ++i)
+Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
+  Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
+  Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
+  //
+  /*for(Node::kinded_iterator i = n.begin(kind::BOUND_VARIABLE),
+   i_end = n.end(kind::BOUND_VARIABLE);
+   i != i_end;
+   ++i)
    {
-     Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
+   Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
    }*/
 
-   Debug("expr-qetest")<<"Number of Children"<<n.getNumChildren()<<std::endl;
-   for(int i=0;i<(int)n.getNumChildren();i++)
-        {
-          Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<std::endl;
-        }
-   if(n.getKind() == kind::NOT)
-   {
-     n = parseEquation(n[0],bv);
-   }
-   else
-   {
-     n = parseEquation(n,bv);
-   }
+  Debug("expr-qetest")<<"Number of Children"<<n.getNumChildren()<<std::endl;
+  for(int i=0;i<(int)n.getNumChildren();i++)
+  {
+    Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<std::endl;
+  }
+  if(n.getKind() == kind::NOT)
+  {
+    n = parseEquation(n[0],bv);
+  }
+  else
+  {
+    n = parseEquation(n,bv);
+  }
 
-
-
-
-   return n;
+  return n;
 }
 
 Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
@@ -1181,12 +1149,10 @@ Node QuantifierEliminate::computeProjections(Node n) {
         std::vector<Node> multipleBoundVar1;
         if(n[0][0].getNumChildren() > 1) {
           for(int i = 0; i < (int) n[0][0].getNumChildren(); i++) {
-             multipleBoundVar1.push_back(n[0][0][i]);
+            multipleBoundVar1.push_back(n[0][0][i]);
           }
-            boundVar.push_back(multipleBoundVar1);
-        }
-        else
-        {
+          boundVar.push_back(multipleBoundVar1);
+        } else {
           multipleBoundVar1.push_back(n[0][0][0]);
           boundVar.push_back(multipleBoundVar1);
         }
@@ -1221,9 +1187,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         multipleBoundVar2.push_back(n[0][i]);
       }
       boundVar.push_back(multipleBoundVar2);
-    }
-    else
-    {
+    } else {
       multipleBoundVar2.push_back(n[0][0]);
       boundVar.push_back(multipleBoundVar2);
     }
@@ -1235,8 +1199,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         temp1 = args.back();
         temp2 = boundVar.back();
         temp3 = performCaseAnalysis(temp1, temp2);
-        if(n.getKind() == kind::NOT)
-        {
+        if(n.getKind() == kind::NOT) {
           temp3 = temp3.negate();
         }
         boundVar.pop_back();
