@@ -93,8 +93,8 @@ Node QuantifierEliminate::returnCoefficientQE(Node n) {
   std::vector<Node> coeff;
   if(isConstQE(n))
   {
-    var.push_back(child);
-    coeff.push_back(child);
+    var.push_back(n);
+    coeff.push_back(n);
   }
   else if(isVarWithCoefficientsQE(n)) {
      var.push_back(n);
@@ -102,7 +102,7 @@ Node QuantifierEliminate::returnCoefficientQE(Node n) {
   }
   else if(isVarQE(n)) {
         Constant one = Constant::mkOne();
-        var.push_back(child);
+        var.push_back(n);
         coeff.push_back(one.getNode());
       }
   else
