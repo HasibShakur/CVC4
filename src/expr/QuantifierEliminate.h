@@ -12,6 +12,8 @@ class CVC4_PUBLIC QuantifierEliminate {
 private:
   static std::vector<std::vector<Node> > boundVar;
   static std::vector<Node> args;
+  static std::vector<Node> variables;
+  static std::vector<Node> coefficients;
 //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
 //  static Node convertToNNFQE(Node body);
   static Node doRewriting(Node n, std::vector<Node> bv);

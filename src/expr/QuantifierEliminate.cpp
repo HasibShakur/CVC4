@@ -30,6 +30,8 @@ using namespace CVC4::theory::arith;
 
 std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
+std::vector<Node> QuantifierEliminate::variables;
+std::vector<Node> QuantifierEliminate::coefficients;
 
 bool QuantifierEliminate::isLiteralQE(Node n) {
   switch(n.getKind()) {
@@ -1010,14 +1012,55 @@ bool QuantifierEliminate::isEquationQE(Node n) {
  }
  */
 Node QuantifierEliminate::returnCoefficientQE(Node n) {
-  std::vector<Node> var;
-  std::vector<Node> coeff;
   for(Node::iterator i = n.begin(), end = n.end();
       i != end;
       ++i)
   {
     Node child = *i;
     Debug("expr-qetest")<<"child "<<child<<std::endl;
+    if(isVarWithCoefficientsQE(child))
+    {
+      variables.push_back(child[1]);
+      coefficients.push_back(child[0]);
+    }
+    else if(isConstQE(child))
+    {
+      variables.push_back(child);
+      coefficients.push_back(child);
+    }
+    else if(isVarQE(child))
+    {
+      Constant one = Constant::mkOne();
+      variables.push_back(child);
+      coefficients.push_back(one.getNode());
+    }
+    else
+    {
+      Kind k = child.getKind();
+      for(Node::iterator j = child.begin(k),end = child.end();
+          j!= end;
+          ++j)
+      {
+        Node inner = *j;
+        if(isConstQE(inner))
+        {
+          variables.push_back(inner);
+          coefficients.push_back(inner);
+        }
+        else if(isVarQE(inner))
+        {
+          Constant one = Constant::mkOne();
+          variables.push_back(inner);
+          coefficients.push_back(one.getNode());
+        }
+        else
+        {
+          variables.push_back(inner[1]);
+          coefficients.push_back(inner[0]);
+        }
+      }
+    }
+
   }
 //  if(isConstQE(n))
 //  {
