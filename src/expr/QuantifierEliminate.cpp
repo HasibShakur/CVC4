@@ -1065,9 +1065,13 @@ std::vector<Node> QuantifierEliminate::calculateLCMofCoeff(std::vector<Node> coe
 {
   for(int i=0;i<(int)coeffs.size();i++)
   {
-    Constant c = Constant::mkConstant(coeffs[i]);
-    Integer a(c.getValue()) ;
-    Debug("expr-qetest")<<"s "<<a.getSignedInt()<<std::endl;
+    Constant c = Constant::mkConst(coeffs[i]);
+    if(c.isIntegral())
+    {
+      Debug("expr-qetest")<<"c is integer "<<std::endl;
+      int a = c.getValue();
+      Debug("expr-qetest")<<a<<std::endl;
+    }
   }
   return coeffs;
 }
