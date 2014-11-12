@@ -84,7 +84,7 @@ bool QuantifierEliminate::isVarWithCoefficientsQE(Node n) {
   }
 }
 bool QuantifierEliminate::isEquationQE(Node n) {
-  if(isRelationalOperatorTypeQE(n.getKind())||(n.getKind() == kind::PLUS) || (n.getKind() == kind::MINUS))
+  if((isRelationalOperatorTypeQE(n.getKind())) || (n.getKind() == kind::PLUS) || (n.getKind() == kind::MINUS))
     return true;
   else
     return false;
