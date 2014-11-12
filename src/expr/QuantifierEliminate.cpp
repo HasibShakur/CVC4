@@ -1012,7 +1012,7 @@ bool QuantifierEliminate::isEquationQE(Node n) {
 Node QuantifierEliminate::returnCoefficientQE(Node n) {
   std::vector<Node> var;
   std::vector<Node> coeff;
-  for(Node::iterator i = n.begin(n.getKind()), end = n.end();
+  for(Node::iterator i = n.begin(), end = n.end();
       i != end;
       ++i)
   {
