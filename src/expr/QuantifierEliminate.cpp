@@ -1037,7 +1037,7 @@ Node QuantifierEliminate::returnCoefficientQE(Node n) {
     else
     {
       Kind k = child.getKind();
-      for(Node::iterator j = child.begin(k),end = child.end();
+      for(Node::iterator j = child.begin(),end = child.end();
           j!= end;
           ++j)
       {
