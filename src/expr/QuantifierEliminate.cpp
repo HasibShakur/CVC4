@@ -1100,6 +1100,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       boundVarCoeff.push_back(container[i].getCoefficient());
     }
   }
+  boundVarCoeff = calculateLCMofCoeff(boundVarCoeff);
 
   return n;
 }
