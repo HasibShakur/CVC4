@@ -87,55 +87,6 @@ bool QuantifierEliminate::isEquationQE(Node n) {
   else
     return false;
 }
-
-Node QuantifierEliminate::returnCoefficientQE(Node n) {
-  std::vector<Node> var;
-  std::vector<Node> coeff;
-  if(isConstQE(n))
-  {
-    var.push_back(n);
-    coeff.push_back(n);
-  }
-  else if(isVarWithCoefficientsQE(n)) {
-     var.push_back(n);
-     coeff.push_back(n[0]);
-  }
-  else if(isVarQE(n)) {
-        Constant one = Constant::mkOne();
-        var.push_back(n);
-        coeff.push_back(one.getNode());
-      }
-  else
-  {
-    for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
-    Node child = *i;
-    if(isConstQE(child)) {
-          var.push_back(child);
-          coeff.push_back(child);
-        }
-    else if(isVarWithCoefficientsQE(child)) {
-          var.push_back(child);
-          coeff.push_back(child[0]);
-        }
-    else
-    {
-      Constant one = Constant::mkOne();
-      var.push_back(child);
-      coeff.push_back(one.getNode());
-    }
-  }
-  }
-  Debug("expr-qetest")<<"Size of var "<<var.size()<<std::endl;
-  Debug("expr-qetest")<<"Size of coeff "<<coeff.size()<<std::endl;
-  for(int i = 0; i < (int) var.size() && i < (int) coeff.size(); i++) {
-    Debug("expr-qetest")<<"Variable "<<i<<" "<<var.back()<<std::endl;
-    Debug("expr-qetest")<<"Coefficient "<<i<<" "<<coeff.back()<<std::endl;
-    var.pop_back();
-    coeff.pop_back();
-  }
-  return n;
-}
-
 //void QuantifierEliminate::setQENestedQuantifiers(Node n, Node q) {
 //  std::vector<Node> processed;
 //  setQENestedQuantifiers2(n, q, processed);
@@ -1058,25 +1009,71 @@ Node QuantifierEliminate::returnCoefficientQE(Node n) {
  return toCompute;
  }
  */
+Node QuantifierEliminate::returnCoefficientQE(Node n) {
+  std::vector<Node> var;
+  std::vector<Node> coeff;
+  for(Node::iterator i = n.begin(n.getKind()), end = n.end(n.getKind());
+      i != end;
+      ++i)
+  {
+    Node child = *i;
+    Debug("expr-qetest")<<"child "<<child<<std::endl;
+  }
+//  if(isConstQE(n))
+//  {
+//    var.push_back(n);
+//    coeff.push_back(n);
+//  }
+//  else if(isVarWithCoefficientsQE(n)) {
+//     var.push_back(n);
+//     coeff.push_back(n[0]);
+//  }
+//  else if(isVarQE(n)) {
+//        Constant one = Constant::mkOne();
+//        var.push_back(n);
+//        coeff.push_back(one.getNode());
+//      }
+//  else
+//  {
+//    for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
+//    Node child = *i;
+//    if(isConstQE(child)) {
+//          var.push_back(child);
+//          coeff.push_back(child);
+//        }
+//    else if(isVarWithCoefficientsQE(child)) {
+//          var.push_back(child);
+//          coeff.push_back(child[0]);
+//        }
+//    else
+//    {
+//      Constant one = Constant::mkOne();
+//      var.push_back(child);
+//      coeff.push_back(one.getNode());
+//    }
+//  }
+//  }
+//  Debug("expr-qetest")<<"Size of var "<<var.size()<<std::endl;
+//  Debug("expr-qetest")<<"Size of coeff "<<coeff.size()<<std::endl;
+//  for(int i = 0; i < (int) var.size() && i < (int) coeff.size(); i++) {
+//    Debug("expr-qetest")<<"Variable "<<i<<" "<<var.back()<<std::endl;
+//    Debug("expr-qetest")<<"Coefficient "<<i<<" "<<coeff.back()<<std::endl;
+//    var.pop_back();
+//    coeff.pop_back();
+//  }
+  return n;
+}
 Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
-//   if(isConstQE(n))
-//   {
-//
-//   }
   for(Node::kinded_iterator i = n.begin(n.getKind()),
   i_end = n.end(n.getKind());
   i!=i_end;
   ++i)
   {
-    Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
     Node child = *i;
-    for(Node::iterator j= child.begin(),end = child.end();j!=end;++j )
-    {
-      Debug("expr-qetest")<<"Inside inner Iterator "<<*j<<std::endl;
-      Debug("expr-qetest")<<"Coefficient "<<returnCoefficientQE(*j)<<std::endl;
-    }
+    Debug("expr-qetest")<<"Inside Iterator "<<child<<std::endl;
+    Debug("expr-qetest")<<returnCoefficientQE(child)<<std::endl;
   }
   return n;
 }
