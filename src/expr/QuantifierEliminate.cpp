@@ -1063,16 +1063,19 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
 }
 std::vector<Node> QuantifierEliminate::calculateLCMofCoeff(std::vector<Node> coeffs)
 {
+  std::vector<int> rationalCoeff;
   for(int i=0;i<(int)coeffs.size();i++)
   {
     Constant c = Constant::mkConstant(coeffs[i]);
     if(c.isIntegral())
     {
-      Debug("expr-qetest")<<"c is integer "<<std::endl;
       Rational r = c.getValue();
-      Debug("expr-qetest")<<r<<std::endl;
+      int n = r.getNumerator();
+      Debug("expr-qetest")<<n<<std::endl;
+      rationalCoeff.push_back(n);
     }
   }
+
   return coeffs;
 }
 Node QuantifierEliminate::parseEquation(Node n, Node bv) {
