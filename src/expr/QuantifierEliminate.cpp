@@ -1021,23 +1021,17 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
     {
       Container c(child[1],child[0]);
       container.push_back(c);
-//      variables.push_back(child[1]);
-//      coefficients.push_back(child[0]);
     }
     else if(isConstQE(child))
     {
       Container c(child,child);
       container.push_back(c);
-//      variables.push_back(child);
-//      coefficients.push_back(child);
     }
     else if(isVarQE(child))
     {
       Constant one = Constant::mkOne();
       Container c(child,one.getNode());
       container.push_back(c);
-//      variables.push_back(child);
-//      coefficients.push_back(one.getNode());
     }
     else
     {
@@ -1050,23 +1044,17 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
         {
           Container c(inner,inner);
           container.push_back(c);
-//          variables.push_back(inner);
-//          coefficients.push_back(inner);
         }
         else if(isVarQE(inner))
         {
           Constant one = Constant::mkOne();
           Container c(inner,one.getNode());
           container.push_back(c);
-//          variables.push_back(inner);
-//          coefficients.push_back(one.getNode());
         }
         else
         {
           Container c(inner[1],inner[0]);
           container.push_back(c);
-//          variables.push_back(inner[1]);
-//          coefficients.push_back(inner[0]);
         }
       }
     }
@@ -1125,9 +1113,7 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   n = Rewriter::rewrite(n);
   for(int i= 0;i<(int) temp.size();i++)
   {
-    t = temp.back();
-    n = rewriteForSameCoefficients(n,t);
-    temp.pop_back();
+    n = rewriteForSameCoefficients(n,temp[i]);
   }
   Debug("expr-qetest")<<"After rewriting"<<n<<std::endl;
   return n;
