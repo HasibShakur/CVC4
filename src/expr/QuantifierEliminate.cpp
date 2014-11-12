@@ -1066,8 +1066,8 @@ std::vector<Node> QuantifierEliminate::calculateLCMofCoeff(std::vector<Node> coe
   for(int i=0;i<(int)coeffs.size();i++)
   {
     Constant c = Constant::mkConstant(coeffs[i]);
-    Integer a = c.getValue();
-    Debug("expr-qetest")<<"s "<<a<<std::endl;
+    Integer a(c) ;
+    Debug("expr-qetest")<<"s "<<a.getSignedInt()<<std::endl;
   }
   return coeffs;
 }
@@ -1076,7 +1076,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
   std::vector<Node> boundVarCoeff;
   for(Node::kinded_iterator i = n.begin(n.getKind()),
-  i_end = n.end();
+  i_end = n.end(n.getKind());
   i!=i_end;
   ++i)
   {
