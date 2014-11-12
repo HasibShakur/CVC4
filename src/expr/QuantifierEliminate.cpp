@@ -1012,7 +1012,7 @@ bool QuantifierEliminate::isEquationQE(Node n) {
 Node QuantifierEliminate::returnCoefficientQE(Node n) {
   std::vector<Node> var;
   std::vector<Node> coeff;
-  for(Node::iterator i = n.begin(n.getKind()), end = n.end(n.getKind());
+  for(Node::iterator i = n.begin(n.getKind()), end = n.end();
       i != end;
       ++i)
   {
@@ -1067,7 +1067,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
   for(Node::kinded_iterator i = n.begin(n.getKind()),
-  i_end = n.end();
+  i_end = n.end(n.getKind());
   i!=i_end;
   ++i)
   {
