@@ -43,6 +43,7 @@ private:
   //static Node replaceForall(Node body);
   static Node rewriteForSameCoefficients(Node n, Node boundVar);
   static void parseCoefficientQE(Node n);
+  static std::vector<Node> calculateLCMofCoeff(std::vector<Node> coeffs);
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);

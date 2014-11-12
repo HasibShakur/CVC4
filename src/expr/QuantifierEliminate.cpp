@@ -1061,11 +1061,22 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
 
   }
 }
+std::vector<Node> QuantifierEliminate::calculateLCMofCoeff(std::vector<Node> coeffs)
+{
+  for(int i=0;i<(int)coeffs.size();i++)
+  {
+    Constant c = Constant::mkConstant(coeffs[i]);
+    Integer a = c.getValue();
+    Debug("expr-qetest")<<"s "<<a<<std::endl;
+  }
+  return coeffs;
+}
 Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
+  std::vector<Node> boundVarCoeff;
   for(Node::kinded_iterator i = n.begin(n.getKind()),
-  i_end = n.end(n.getKind());
+  i_end = n.end();
   i!=i_end;
   ++i)
   {
@@ -1082,8 +1093,10 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
     if(container[i].getVariable() == bv)
     {
       Debug("expr-qetest")<<"Element "<<i<<" "<<container[i].getVariable()<<" "<<container[i].getCoefficient()<<std::endl;
+      boundVarCoeff.push_back(container[i].getCoefficient());
     }
   }
+
   return n;
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
