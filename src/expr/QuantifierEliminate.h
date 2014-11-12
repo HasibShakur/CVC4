@@ -8,12 +8,14 @@
 #include "expr/node.h"
 #include "theory/arith/normal_form.h"
 namespace CVC4{
+class Container;
 class CVC4_PUBLIC QuantifierEliminate {
 private:
   static std::vector<std::vector<Node> > boundVar;
   static std::vector<Node> args;
-  static std::vector<Node> variables;
-  static std::vector<Node> coefficients;
+  /*static std::vector<Node> variables;
+  static std::vector<Node> coefficients;*/
+  static std::vector<Container> container;
 //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
 //  static Node convertToNNFQE(Node body);
   static Node doRewriting(Node n, std::vector<Node> bv);
@@ -51,6 +53,27 @@ public:
   static bool isEquationQE(Node n);
   static bool isRelationalOperatorTypeQE(Kind k);
   static Node computeProjections(Node n);
+};
+
+class Container
+{
+private:
+  Node variable;
+  Node coefficient;
+public:
+  Container(Node v,Node c)
+{
+    variable = v;
+    coefficient = c;
+}
+  Node getVariable()
+  {
+    return variable;
+  }
+  Node getCoefficinet()
+  {
+    return coefficient;
+  }
 };
 }
 #endif

@@ -30,8 +30,7 @@ using namespace CVC4::theory::arith;
 
 std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
-std::vector<Node> QuantifierEliminate::variables;
-std::vector<Node> QuantifierEliminate::coefficients;
+std::vector<Container> QuantifierEliminate::container;
 
 bool QuantifierEliminate::isLiteralQE(Node n) {
   switch(n.getKind()) {
@@ -1020,19 +1019,25 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
     Debug("expr-qetest")<<"child "<<child<<std::endl;
     if(isVarWithCoefficientsQE(child))
     {
-      variables.push_back(child[1]);
-      coefficients.push_back(child[0]);
+      Container c(child[1],child[0]);
+      container.push_back(c);
+//      variables.push_back(child[1]);
+//      coefficients.push_back(child[0]);
     }
     else if(isConstQE(child))
     {
-      variables.push_back(child);
-      coefficients.push_back(child);
+      Container c(child,child);
+      container.push_back(c);
+//      variables.push_back(child);
+//      coefficients.push_back(child);
     }
     else if(isVarQE(child))
     {
       Constant one = Constant::mkOne();
-      variables.push_back(child);
-      coefficients.push_back(one.getNode());
+      Container c(child,one.getNode());
+      container.push_back(c);
+//      variables.push_back(child);
+//      coefficients.push_back(one.getNode());
     }
     else
     {
@@ -1043,19 +1048,25 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
         Node inner = *j;
         if(isConstQE(inner))
         {
-          variables.push_back(inner);
-          coefficients.push_back(inner);
+          Container c(inner,inner);
+          container.push_back(c);
+//          variables.push_back(inner);
+//          coefficients.push_back(inner);
         }
         else if(isVarQE(inner))
         {
           Constant one = Constant::mkOne();
-          variables.push_back(inner);
-          coefficients.push_back(one.getNode());
+          Container c(inner,one.getNode());
+          container.push_back(c);
+//          variables.push_back(inner);
+//          coefficients.push_back(one.getNode());
         }
         else
         {
-          variables.push_back(inner[1]);
-          coefficients.push_back(inner[0]);
+          Container c(inner[1],inner[0]);
+          container.push_back(c);
+//          variables.push_back(inner[1]);
+//          coefficients.push_back(inner[0]);
         }
       }
     }
@@ -1073,18 +1084,18 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
     Node child = *i;
     Debug("expr-qetest")<<"Inside Iterator "<<child<<std::endl;
     parseCoefficientQE(child);
-    std::vector<Node> vars = variables;
-    std::vector<Node> coeff = coefficients;
-    for(int k=0;k<(int) vars.size();k++)
-    {
-      Debug("expr-qetest")<<"Variable "<<vars.back()<<std::endl;
-      vars.pop_back();
-    }
-    for(int k=0;k<(int) coeff.size();k++)
-    {
-      Debug("expr-qetest")<<"Coefficeint "<<coeff.back()<<std::endl;
-      coeff.pop_back();
-    }
+//    std::vector<Node> vars = variables;
+//    std::vector<Node> coeff = coefficients;
+//    for(int k=0;k<(int) vars.size();k++)
+//    {
+//      Debug("expr-qetest")<<"Variable "<<vars.back()<<std::endl;
+//      vars.pop_back();
+//    }
+//    for(int k=0;k<(int) coeff.size();k++)
+//    {
+//      Debug("expr-qetest")<<"Coefficeint "<<coeff.back()<<std::endl;
+//      coeff.pop_back();
+//    }
   }
   return n;
 }
