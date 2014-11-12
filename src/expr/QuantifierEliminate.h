@@ -40,7 +40,7 @@ private:
 //  static void setAttributesQE( Node in, Node n );
   //static Node replaceForall(Node body);
   static Node rewriteForSameCoefficients(Node n, Node boundVar);
-  static Node returnCoefficientQE(Node n);
+  static void parseCoefficientQE(Node n);
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
@@ -49,7 +49,6 @@ public:
   static bool isVarQE(Node n);
   static bool isVarWithCoefficientsQE(Node n);
   static bool isEquationQE(Node n);
-  static bool isLinearEquationQE(Node n);
   static bool isRelationalOperatorTypeQE(Kind k);
   static Node computeProjections(Node n);
 };

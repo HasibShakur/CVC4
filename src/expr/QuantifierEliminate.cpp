@@ -70,7 +70,7 @@ bool QuantifierEliminate::isConstQE(Node n) {
     return false;
 }
 bool QuantifierEliminate::isVarQE(Node n) {
-  if(n.isVar() && n.getType().isInteger())
+  if(n.isVar() && n.getType().isInteger() && !isVarWithCoefficientsQE(n) && !isEquationQE(n))
     return true;
   else
     return false;
@@ -84,7 +84,7 @@ bool QuantifierEliminate::isVarWithCoefficientsQE(Node n) {
   }
 }
 bool QuantifierEliminate::isEquationQE(Node n) {
-  if(isRelationalOperatorTypeQE(n.getKind()))
+  if(isRelationalOperatorTypeQE(n.getKind())||(n.getKind() == kind::PLUS) || (n.getKind() == kind::MINUS))
     return true;
   else
     return false;
@@ -1011,7 +1011,7 @@ bool QuantifierEliminate::isEquationQE(Node n) {
  return toCompute;
  }
  */
-Node QuantifierEliminate::returnCoefficientQE(Node n) {
+void QuantifierEliminate::parseCoefficientQE(Node n) {
   for(Node::iterator i = n.begin(), end = n.end();
       i != end;
       ++i)
@@ -1036,8 +1036,7 @@ Node QuantifierEliminate::returnCoefficientQE(Node n) {
     }
     else
     {
-      Kind k = child.getKind();
-      for(Node::iterator j = child.begin(),end = child.end();
+     for(Node::iterator j = child.begin(),end = child.end();
           j!= end;
           ++j)
       {
@@ -1062,49 +1061,6 @@ Node QuantifierEliminate::returnCoefficientQE(Node n) {
     }
 
   }
-//  if(isConstQE(n))
-//  {
-//    var.push_back(n);
-//    coeff.push_back(n);
-//  }
-//  else if(isVarWithCoefficientsQE(n)) {
-//     var.push_back(n);
-//     coeff.push_back(n[0]);
-//  }
-//  else if(isVarQE(n)) {
-//        Constant one = Constant::mkOne();
-//        var.push_back(n);
-//        coeff.push_back(one.getNode());
-//      }
-//  else
-//  {
-//    for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
-//    Node child = *i;
-//    if(isConstQE(child)) {
-//          var.push_back(child);
-//          coeff.push_back(child);
-//        }
-//    else if(isVarWithCoefficientsQE(child)) {
-//          var.push_back(child);
-//          coeff.push_back(child[0]);
-//        }
-//    else
-//    {
-//      Constant one = Constant::mkOne();
-//      var.push_back(child);
-//      coeff.push_back(one.getNode());
-//    }
-//  }
-//  }
-  Debug("expr-qetest")<<"Size of variables "<<variables.size()<<std::endl;
-  Debug("expr-qetest")<<"Size of coefficients "<<coefficients.size()<<std::endl;
-  for(int i = 0; i < (int) variables.size() && i < (int) coefficients.size(); i++) {
-    Debug("expr-qetest")<<"Variable "<<i<<" "<<variables.back()<<std::endl;
-    Debug("expr-qetest")<<"Coefficient "<<i<<" "<<coefficients.back()<<std::endl;
-    variables.pop_back();
-    coefficients.pop_back();
-  }
-  return n;
 }
 Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
@@ -1116,22 +1072,25 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   {
     Node child = *i;
     Debug("expr-qetest")<<"Inside Iterator "<<child<<std::endl;
-    Debug("expr-qetest")<<returnCoefficientQE(child)<<std::endl;
+    Debug("expr-qetest")<<parseCoefficientQE(child)<<std::endl;
+    std::vector<Node> vars = variables;
+    std::vector<Node> coeff = coefficients;
+    for(int k=0;k<(int) vars.size();k++)
+    {
+      Debug("expr-qetest")<<"Variable "<<vars.back()<<std::endl;
+      vars.pop_back();
+    }
+    for(int k=0;k<(int) coeff.size();k++)
+    {
+      Debug("expr-qetest")<<"Coefficeint "<<coeff.back()<<std::endl;
+      coeff.pop_back();
+    }
   }
   return n;
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
-  //
-  /*for(Node::kinded_iterator i = n.begin(kind::BOUND_VARIABLE),
-   i_end = n.end(kind::BOUND_VARIABLE);
-   i != i_end;
-   ++i)
-   {
-   Debug("expr-qetest")<<"Inside Iterator "<<*i<<std::endl;
-   }*/
-
   Debug("expr-qetest")<<"Number of Children"<<n.getNumChildren()<<std::endl;
   for(int i=0;i<(int)n.getNumChildren();i++)
   {
