@@ -1067,7 +1067,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
   for(Node::kinded_iterator i = n.begin(n.getKind()),
-  i_end = n.end(n.getKind());
+  i_end = n.end();
   i!=i_end;
   ++i)
   {
