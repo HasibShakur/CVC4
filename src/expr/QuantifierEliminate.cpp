@@ -1096,14 +1096,14 @@ Node QuantifierEliminate::returnCoefficientQE(Node n) {
 //    }
 //  }
 //  }
-//  Debug("expr-qetest")<<"Size of var "<<var.size()<<std::endl;
-//  Debug("expr-qetest")<<"Size of coeff "<<coeff.size()<<std::endl;
-//  for(int i = 0; i < (int) var.size() && i < (int) coeff.size(); i++) {
-//    Debug("expr-qetest")<<"Variable "<<i<<" "<<var.back()<<std::endl;
-//    Debug("expr-qetest")<<"Coefficient "<<i<<" "<<coeff.back()<<std::endl;
-//    var.pop_back();
-//    coeff.pop_back();
-//  }
+  Debug("expr-qetest")<<"Size of variables "<<variables.size()<<std::endl;
+  Debug("expr-qetest")<<"Size of coefficients "<<coefficients.size()<<std::endl;
+  for(int i = 0; i < (int) variables.size() && i < (int) coefficients.size(); i++) {
+    Debug("expr-qetest")<<"Variable "<<i<<" "<<variables.back()<<std::endl;
+    Debug("expr-qetest")<<"Coefficient "<<i<<" "<<coefficients.back()<<std::endl;
+    variables.pop_back();
+    coefficients.pop_back();
+  }
   return n;
 }
 Node QuantifierEliminate::parseEquation(Node n, Node bv) {
