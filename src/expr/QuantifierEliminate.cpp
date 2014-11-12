@@ -1072,7 +1072,7 @@ std::vector<Node> QuantifierEliminate::calculateLCMofCoeff(std::vector<Node> coe
       Rational r = c.getValue();
       Integer n = r.getNumerator();
       Debug("expr-qetest")<<n<<std::endl;
-      rationalCoeff.push_back(n);
+      intCoeff.push_back(n);
     }
   }
 
