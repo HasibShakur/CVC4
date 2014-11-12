@@ -1069,8 +1069,8 @@ std::vector<Node> QuantifierEliminate::calculateLCMofCoeff(std::vector<Node> coe
     if(c.isIntegral())
     {
       Debug("expr-qetest")<<"c is integer "<<std::endl;
-      int a = c.getValue();
-      Debug("expr-qetest")<<a<<std::endl;
+      Rational r = c.getValue();
+      Debug("expr-qetest")<<r<<std::endl;
     }
   }
   return coeffs;
