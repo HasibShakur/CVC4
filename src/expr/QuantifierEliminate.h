@@ -70,7 +70,7 @@ public:
   {
     return variable;
   }
-  Node getCoefficinet()
+  Node getCoefficient()
   {
     return coefficient;
   }
