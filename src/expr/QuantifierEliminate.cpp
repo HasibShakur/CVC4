@@ -1084,22 +1084,17 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
     Node child = *i;
     Debug("expr-qetest")<<"Inside Iterator "<<child<<std::endl;
     parseCoefficientQE(child);
-//    std::vector<Node> vars = variables;
-//    std::vector<Node> coeff = coefficients;
-//    for(int k=0;k<(int) vars.size();k++)
-//    {
-//      Debug("expr-qetest")<<"Variable "<<vars.back()<<std::endl;
-//      vars.pop_back();
-//    }
-//    for(int k=0;k<(int) coeff.size();k++)
-//    {
-//      Debug("expr-qetest")<<"Coefficeint "<<coeff.back()<<std::endl;
-//      coeff.pop_back();
-//    }
   }
   for(int i=0;i<(int)container.size();i++)
   {
     Debug("expr-qetest")<<"Element "<<i<<" "<<container[i].getVariable()<<" "<<container[i].getCoefficient()<<std::endl;
+  }
+  for(int i=0;i<(int)container.size();i++)
+  {
+    if(container[i].getVariable() == bv)
+    {
+      Debug("expr-qetest")<<"Element "<<i<<" "<<container[i].getVariable()<<" "<<container[i].getCoefficient()<<std::endl;
+    }
   }
   return n;
 }
