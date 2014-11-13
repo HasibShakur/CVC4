@@ -1015,8 +1015,8 @@ Integer QuantifierEliminate::getIntegerFromNode(Node n)
 {
   Constant c = Constant::mkConstant(n);
   Rational r = c.getValue();
-  Integer n = r.getNumerator();
-  return n;
+  Integer i = r.getNumerator();
+  return i;
 }
 void QuantifierEliminate::parseCoefficientQE(Node n) {
   for(Node::iterator i = n.begin(), end = n.end();
