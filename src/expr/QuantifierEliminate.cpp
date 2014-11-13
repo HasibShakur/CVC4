@@ -1082,7 +1082,8 @@ Integer QuantifierEliminate::lcmQE(Integer a, Integer b)
 }
 Integer QuantifierEliminate::calculateLCMofCoeff(std::vector<Integer> coeffs)
 {
-  Integer lcmResult = std::accumulate(coeffs.begin(),coeffs.end(),1,lcmQE );
+  Integer one = 1;
+  Integer lcmResult = std::accumulate(coeffs.begin(),coeffs.end(),one,lcmQE );
   return lcmResult.abs();
 }
 Node QuantifierEliminate::parseEquation(Node n, Node bv) {
