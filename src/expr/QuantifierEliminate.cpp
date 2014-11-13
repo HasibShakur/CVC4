@@ -1119,7 +1119,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
     n = lcmResult.exactQuotient(n);
     container[i].setCoefficient(n);
   }
-  Debug("expr-qetest")<<"After lcm calculation "
+  Debug("expr-qetest")<<"After lcm calculation "<<std::endl;
   for(int i=0;i<(int)container.size();i++)
    {
      Debug("expr-qetest")<<"Element "<<i<<" "<<container[i].getVariable()<<" "<<container[i].getCoefficient()<<std::endl;
