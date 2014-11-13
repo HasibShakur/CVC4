@@ -78,6 +78,10 @@ public:
   {
     return coefficient;
   }
+  void setCoefficient(Integer c)
+  {
+    coefficient = c;
+  }
 };
 }
 #endif

@@ -1113,6 +1113,17 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   }
   Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
+  for(int i = 0;i<(int)container.size();i++)
+  {
+    Integer n = container[i].getCoefficient();
+    n = lcmResult.exactQuotient(n);
+    container[i].setCoefficient(n);
+  }
+  Debug("expr-qetest")<<"After lcm calculation "
+  for(int i=0;i<(int)container.size();i++)
+   {
+     Debug("expr-qetest")<<"Element "<<i<<" "<<container[i].getVariable()<<" "<<container[i].getCoefficient()<<std::endl;
+   }
   return n;
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
