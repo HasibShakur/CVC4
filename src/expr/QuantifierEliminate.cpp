@@ -1107,7 +1107,6 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   {
     if(container[i].getVariable() == bv)
     {
-      Debug("expr-qetest")<<"Element "<<i<<" "<<container[i].getVariable()<<" "<<container[i].getCoefficient()<<std::endl;
       boundVarCoeff.push_back(container[i].getCoefficient());
     }
   }
@@ -1124,6 +1123,12 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
    {
      Debug("expr-qetest")<<"Element "<<i<<" "<<container[i].getVariable()<<" "<<container[i].getCoefficient()<<std::endl;
    }
+  for(Node::iterator i = n.begin(),end = n.end();
+      i!=end;
+      ++i)
+  {
+    Debug("expr-qetest")<<*i<<std::endl;
+  }
   return n;
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
