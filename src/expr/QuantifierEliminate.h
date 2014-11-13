@@ -43,7 +43,8 @@ private:
   //static Node replaceForall(Node body);
   static Node rewriteForSameCoefficients(Node n, Node boundVar);
   static void parseCoefficientQE(Node n);
-  static std::vector<Node> calculateLCMofCoeff(std::vector<Node> coeffs);
+  static Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
+
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
@@ -54,15 +55,17 @@ public:
   static bool isEquationQE(Node n);
   static bool isRelationalOperatorTypeQE(Kind k);
   static Node computeProjections(Node n);
+  static Integer getIntegerFromNode(Node n);
+  static Integer lcmQE(Integer a,Integer b);
 };
 
 class Container
 {
 private:
   Node variable;
-  Node coefficient;
+  Integer coefficient;
 public:
-  Container(Node v,Node c)
+  Container(Node v,Integer c)
 {
     variable = v;
     coefficient = c;
@@ -71,7 +74,7 @@ public:
   {
     return variable;
   }
-  Node getCoefficient()
+  Integer getCoefficient()
   {
     return coefficient;
   }

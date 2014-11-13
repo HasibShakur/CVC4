@@ -2,6 +2,7 @@
 
 #include<iostream>
 #include<vector>
+#include<numeric>
 #include "expr/node.h"
 #include "expr/QuantifierEliminate.h"
 #include "expr/attribute.h"
@@ -1010,6 +1011,13 @@ bool QuantifierEliminate::isEquationQE(Node n) {
  return toCompute;
  }
  */
+Integer QuantifierEliminate::getIntegerFromNode(Node n)
+{
+  Constant c = Constant::mkConstant(n);
+  Rational r = c.getValue();
+  Integer n = r.getNumerator();
+  return n;
+}
 void QuantifierEliminate::parseCoefficientQE(Node n) {
   for(Node::iterator i = n.begin(), end = n.end();
       i != end;
@@ -1019,18 +1027,22 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
     Debug("expr-qetest")<<"child "<<child<<std::endl;
     if(isVarWithCoefficientsQE(child))
     {
-      Container c(child[1],child[0]);
+      Integer n = getIntegerFromNode(child[0]);
+      Container c(child[1],n);
       container.push_back(c);
     }
     else if(isConstQE(child))
     {
-      Container c(child,child);
+      Integer n = getIntegerFromNode(child);
+      Container c(child,n);
       container.push_back(c);
     }
     else if(isVarQE(child))
     {
+
       Constant one = Constant::mkOne();
-      Container c(child,one.getNode());
+      Integer n = getIntegerFromNode(one.getNode());
+      Container c(child,n);
       container.push_back(c);
     }
     else
@@ -1042,18 +1054,21 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
         Node inner = *j;
         if(isConstQE(inner))
         {
-          Container c(inner,inner);
+          Integer n = getIntegerFromNode(inner);
+          Container c(inner,n);
           container.push_back(c);
         }
         else if(isVarQE(inner))
         {
           Constant one = Constant::mkOne();
-          Container c(inner,one.getNode());
+          Integer n = getIntegerFromNode(one.getNode());
+          Container c(inner,n);
           container.push_back(c);
         }
         else
         {
-          Container c(inner[1],inner[0]);
+          Integer n = getIntegerFromNode(inner[0]);
+          Container c(inner[1],n);
           container.push_back(c);
         }
       }
@@ -1061,27 +1076,19 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
 
   }
 }
-std::vector<Node> QuantifierEliminate::calculateLCMofCoeff(std::vector<Node> coeffs)
+Integer QuantifierEliminate::lcmQE(Integer a, Integer b)
 {
-  std::vector<Integer> intCoeff;
-  for(int i=0;i<(int)coeffs.size();i++)
-  {
-    Constant c = Constant::mkConstant(coeffs[i]);
-    if(c.isIntegral())
-    {
-      Rational r = c.getValue();
-      Integer n = r.getNumerator();
-      Debug("expr-qetest")<<n<<std::endl;
-      intCoeff.push_back(n);
-    }
-  }
-
-  return coeffs;
+  return a.lcm(b);
+}
+Integer QuantifierEliminate::calculateLCMofCoeff(std::vector<Integer> coeffs)
+{
+  Integer lcmResult = std::accumulate(coeffs.begin(),coeffs.end(),1,lcmQE );
+  return lcmResult.abs();
 }
 Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
-  std::vector<Node> boundVarCoeff;
+  std::vector<Integer> boundVarCoeff;
   for(Node::kinded_iterator i = n.begin(n.getKind()),
   i_end = n.end(n.getKind());
   i!=i_end;
@@ -1103,8 +1110,8 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       boundVarCoeff.push_back(container[i].getCoefficient());
     }
   }
-  boundVarCoeff = calculateLCMofCoeff(boundVarCoeff);
-
+  Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
+  Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
   return n;
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
