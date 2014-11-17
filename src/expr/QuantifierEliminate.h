@@ -9,6 +9,7 @@
 #include "theory/arith/normal_form.h"
 namespace CVC4{
 class Container;
+class ExpressionContainer;
 class CVC4_PUBLIC QuantifierEliminate {
 private:
   static std::vector<std::vector<Node> > boundVar;
