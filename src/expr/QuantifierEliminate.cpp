@@ -1205,8 +1205,8 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
         Debug("expr-qetest")<<multiplier<<std::endl;
       }
       else {
-        Integer i = getIntegerFromNode(child[0][0]);
-        multiplier = i.euclidianDivideQuotient(lcmResult);
+        Integer x = getIntegerFromNode(child[0][0]);
+        multiplier = lcmResult.euclidianDivideQuotient(x);
         Debug("expr-qetest")<<multiplier<<std::endl;
       }
     }
