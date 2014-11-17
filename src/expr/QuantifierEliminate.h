@@ -101,7 +101,7 @@ public:
   {
     return expression;
   }
-  Node getMultiplier()
+  Integer getMultiplier()
   {
     return multiplier;
   }
