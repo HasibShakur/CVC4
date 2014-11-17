@@ -1196,10 +1196,12 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       if(isVarQE(child[0]))
       {
         multiplier = multiplier*lcmResult;
+        multiplier = multiplier.abs();
       }
       else {
         Integer x = getIntegerFromNode(child[0][0]);
         multiplier = lcmResult.euclidianDivideQuotient(x);
+        multiplier = multiplier.abs();
       }
     }
     else
@@ -1207,11 +1209,13 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       if(isVarQE(child[1]))
       {
         multiplier = multiplier*lcmResult;
+        multiplier = multiplier.abs();
       }
       else if(isVarWithCoefficientsQE(child[1]))
       {
         Integer x = getIntegerFromNode(child[1][0]);
         multiplier = lcmResult.euclidianDivideQuotient(x);
+        multiplier = multiplier.abs();
       }
       else
       {
@@ -1223,11 +1227,13 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
           if(isVarQE(right))
           {
             multiplier = multiplier * lcmResult;
+            multiplier = multiplier.abs();
           }
           else if(isVarWithCoefficientsQE(right))
           {
             Integer x = getIntegerFromNode(right[0]);
             multiplier = lcmResult.euclidianDivideQuotient(x);
+            multiplier = multiplier.abs();
           }
           else
           {}
