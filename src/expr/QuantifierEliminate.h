@@ -16,10 +16,11 @@ private:
   /*static std::vector<Node> variables;
   static std::vector<Node> coefficients;*/
   static std::vector<Container> container;
+  static std::vector<ExpressionContainer> expressionContainer;
 //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
-//  static Node convertToNNFQE(Node body);
+  static Node convertToNNFQE(Node body);
   static Node doRewriting(Node n, std::vector<Node> bv);
-//  static Node eliminateImpliesQE(Node body);
+  static Node eliminateImpliesQE(Node body);
 //  static Node processRelationOperatorQE(Node n,bool negationEnabled);
 //  static Node replaceGEQQE(Node n,bool negationEnabled);
 //  static Node replaceGTQE(Node n,bool negationEnabled);
@@ -44,6 +45,7 @@ private:
   static Node rewriteForSameCoefficients(Node n, Node boundVar);
   static void parseCoefficientQE(Node n);
   static Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
+  static bool containsSameBoundVar(Node n,Node bv);
 
 public:
 //  static Node preRewriteForPrenex(Node n);
@@ -57,6 +59,7 @@ public:
   static Node computeProjections(Node n);
   static Integer getIntegerFromNode(Node n);
   static Integer lcmQE(Integer a,Integer b);
+  static Node fromIntegerToNodeQE(Integer n);
 };
 
 class Container
@@ -82,6 +85,35 @@ public:
   {
     coefficient = c;
   }
+};
+class ExpressionContainer
+{
+private:
+  Node expression;
+  Integer coefficient;
+public:
+  ExpressionContainer(Node e, Integer i)
+{
+    expression = e;
+    coefficient = i;
+}
+  Node getExpression()
+  {
+    return expression;
+  }
+  Node getCoefficient()
+  {
+    return coefficient;
+  }
+  void setExpression(Node e)
+  {
+    expression = e;
+  }
+  void setCoefficient(Integer i)
+  {
+    coefficient = i;
+  }
+
 };
 }
 #endif
