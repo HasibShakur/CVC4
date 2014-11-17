@@ -1245,7 +1245,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       }
     }
     ExpressionContainer e(child,multiplier);
-    expressionContainer.push_back(child,multiplier);
+    expressionContainer.push_back(e);
   }
   Debug("expr-qetest")<<"Size of expressionContainer "<<expressionContainer.size()<<std::endl;
   for(int i= 0;i<(int)expressionContainer.size();i++)
