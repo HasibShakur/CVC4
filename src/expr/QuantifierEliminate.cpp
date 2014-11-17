@@ -1234,13 +1234,13 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
           if(isVarQE(right))
           {
             multiplier = multiplier * lcmResult;
-            break;
+            Debug("expr-qetest")<<multiplier<<std::endl;
           }
           else if(isVarWithCoefficientsQE(right))
           {
             Integer x = getIntegerFromNode(right[0]);
             multiplier = lcmResult.euclidianDivideQuotient(x);
-            break;
+            Debug("expr-qetest")<<multiplier<<std::endl;
           }
           else
           {
