@@ -1230,6 +1230,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
             ++j)
         {
           Node right = *j;
+          Debug("expr-qetest")<<right<<std::endl;
           if(isVarQE(right))
           {
             multiplier = multiplier * lcmResult;
