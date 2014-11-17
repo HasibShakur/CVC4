@@ -90,28 +90,28 @@ class ExpressionContainer
 {
 private:
   Node expression;
-  Integer coefficient;
+  Integer multiplier;
 public:
   ExpressionContainer(Node e, Integer i)
 {
     expression = e;
-    coefficient = i;
+    multiplier = i;
 }
   Node getExpression()
   {
     return expression;
   }
-  Node getCoefficient()
+  Node getMultiplier()
   {
-    return coefficient;
+    return multiplier;
   }
   void setExpression(Node e)
   {
     expression = e;
   }
-  void setCoefficient(Integer i)
+  void setMultiplier(Integer i)
   {
-    coefficient = i;
+    multiplier = i;
   }
 
 };
