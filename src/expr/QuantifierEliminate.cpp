@@ -1202,10 +1202,12 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       if(isVarQE(child[0]))
       {
         multiplier = multiplier*lcmResult;
+        Debug("expr-qetest")<<multiplier<<std::endl;
       }
       else {
         Integer i = getIntegerFromNode(child[0][0]);
         multiplier = i.euclidianDivideQuotient(lcmResult);
+        Debug("expr-qetest")<<multiplier<<std::endl;
       }
     }
     else
@@ -1213,11 +1215,13 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       if(isVarQE(child[1]))
       {
         multiplier = multiplier*lcmResult;
+        Debug("expr-qetest")<<multiplier<<std::endl;
       }
       else if(isVarWithCoefficientsQE(child[1]))
       {
-        Integer i = getIntegerFromNode(child[1][0]);
-        multiplier = lcmResult.euclidianDivideQuotient(i);
+        Integer x = getIntegerFromNode(child[1][0]);
+        multiplier = lcmResult.euclidianDivideQuotient(x);
+        Debug("expr-qetest")<<multiplier<<std::endl;
       }
       else
       {
@@ -1233,8 +1237,8 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
           }
           else if(isVarWithCoefficientsQE(right))
           {
-            Integer i = getIntegerFromNode(right[0]);
-            multiplier = lcmResult.euclidianDivideQuotient(i);
+            Integer x = getIntegerFromNode(right[0]);
+            multiplier = lcmResult.euclidianDivideQuotient(x);
             break;
           }
           else
