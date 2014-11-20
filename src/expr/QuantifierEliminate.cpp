@@ -1345,6 +1345,7 @@ std::vector<Node> finalExpr;
     finalExpr.push_back(child_temp);
   }
    Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
+   finalNode = Rewriter::rewrite(finalNode);
    Debug("expr-qetest")<<"After processing finalNode"<<finalNode<<std::endl;
 //  std::vector<Node> expr;
 //  for(int i=0;i<(int)expressionContainer.size();i++)
