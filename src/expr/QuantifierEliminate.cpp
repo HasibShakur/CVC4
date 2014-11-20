@@ -1264,16 +1264,18 @@ std::vector<Node> finalExpr;
         Debug("expr-qetest")<<"Constant Only"<<std::endl;
         Integer x = getIntegerFromNode(child[p]);
         x = x*multiple;
-        child[p] = fromIntegerToNodeQE(x);
-        Debug("expr-qetest")<<child[p]<<std::endl;
+        Node temp = fromIntegerToNodeQE(x);
+        child_expr.push_back(temp);
+        Debug("expr-qetest")<<temp<<std::endl;
       }
       else if(isVarQE(child[p]))
       {
         Debug("expr-qetest")<<"Var Only"<<std::endl;
         Node var = child[p];
         Node coeff = fromIntegerToNodeQE(multiple);
-        child[p] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-        Debug("expr-qetest")<<child[p]<<std::endl;
+        Node temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+        child_expr.push_back(temp);
+        Debug("expr-qetest")<<temp<<std::endl;
       }
       else if(isVarWithCoefficientsQE(child[p]))
       {
@@ -1285,8 +1287,9 @@ std::vector<Node> finalExpr;
         Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
         Node coeff = fromIntegerToNodeQE(b);
         Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
-        child[p] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-        Debug("expr-qetest")<<child[p]<<std::endl;
+        Node temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+        child_expr.push_back(temp);
+        Debug("expr-qetest")<<temp<<std::endl;
       }
       else
       {
@@ -1303,16 +1306,18 @@ std::vector<Node> finalExpr;
             Debug("expr-qetest")<<"Constant inside equation"<<std::endl;
             Integer x = getIntegerFromNode(c);
             x = x*multiple;
-            c = fromIntegerToNodeQE(x);
-            Debug("expr-qetest")<<c<<std::endl;
+            Node c_temp = fromIntegerToNodeQE(x);
+            right.push_back(c_temp);
+            Debug("expr-qetest")<<c_temp<<std::endl;
           }
           else if(isVarQE(c))
           {
             Debug("expr-qetest")<<"var inside equation"<<std::endl;
             Node var = c;
             Node coeff = fromIntegerToNodeQE(multiple);
-            c = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-            Debug("expr-qetest")<<c<<std::endl;
+            Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+            right.push_back(c_temp);
+            Debug("expr-qetest")<<c_temp<<std::endl;
           }
           else
           {
@@ -1324,20 +1329,20 @@ std::vector<Node> finalExpr;
             Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
             Node coeff = fromIntegerToNodeQE(b);
             Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
-            c = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-            Debug("expr-qetest")<<c<<std::endl;
+            Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+            right.push_back(c_temp);
+            Debug("expr-qetest")<<c_temp<<std::endl;
           }
-          right.push_back(c);
+
         }
-        child[p] = NodeManager::currentNM()->mkNode(k_child,right);
-        Debug("expr-qetest")<<child[p]<<std::endl;
+        Node temp = NodeManager::currentNM()->mkNode(k_child,right);
+        Debug("expr-qetest")<<temp<<std::endl;
+        child_expr.push_back(temp);
       }
-      Debug("expr-qetest")<<"After processing "<<child[p]<<std::endl;
-      child_expr.push_back(child[p]);
     }
-    child = NodeManager::currentNM()->mkNode(k1,child_expr);
-    Debug("expr-qetest")<<"After processing child "<<child<<std::endl;
-    finalExpr.push_back(child);
+    Node child_temp = NodeManager::currentNM()->mkNode(k1,child_expr);
+    Debug("expr-qetest")<<"After processing child "<<child_temp<<std::endl;
+    finalExpr.push_back(child_temp);
   }
    Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
    Debug("expr-qetest")<<"After processing finalNode"<<finalNode<<std::endl;
