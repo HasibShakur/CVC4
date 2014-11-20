@@ -1031,7 +1031,6 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
       ++i)
   {
     Node child = *i;
-    Debug("expr-qetest")<<"child "<<child<<std::endl;
     if(isVarWithCoefficientsQE(child))
     {
       Integer n = getIntegerFromNode(child[0]);
@@ -1351,14 +1350,7 @@ std::vector<Node> finalExpr;
    return finalNode;
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
-  Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
-  Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
-  Debug("expr-qetest")<<"Number of Children"<<n.getNumChildren()<<std::endl;
-  for(int i=0;i<(int)n.getNumChildren();i++)
-  {
-    Debug("expr-qetest")<<"Child "<<i<<" "<<n[i]<<std::endl;
-  }
-  if(n.getKind() == kind::NOT)
+ if(n.getKind() == kind::NOT)
   {
     n = parseEquation(n[0],bv);
   }
@@ -1371,7 +1363,6 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
 }
 
 Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
-  Debug("expr-qetest")<<"To rewrite"<<n<<std::endl;
   std::vector<Node> temp = bv;
   Node t;
   t = eliminateImpliesQE(n);
@@ -1381,7 +1372,6 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   {
     t = rewriteForSameCoefficients(t,temp[i]);
   }
-  Debug("expr-qetest")<<"After rewriting"<<t<<std::endl;
   return t;
 }
 bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
@@ -1392,12 +1382,9 @@ Node QuantifierEliminate::computeRightProjection(Node n, std::vector<Node> bv) {
 }
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
   Node rewrittenNode = doRewriting(n, bv);
-  Debug("expr-qetest")<<"After rewriting "<<rewrittenNode<<"\n";
   bool left = computeLeftProjection(rewrittenNode, bv);
-  Debug("expr-qetest")<<"After left projection "<<left<<"\n";
   Node right = computeRightProjection(rewrittenNode, bv);
-  Debug("expr-qetest")<<"After right projection "<<right<<"\n";
-  //Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
+ //Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
   //right);
   Node finalNode = Rewriter::rewrite(right);
   return finalNode;
