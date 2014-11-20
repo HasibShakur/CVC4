@@ -1320,8 +1320,8 @@ std::vector<Node> finalExpr;
         Debug("expr-qetest")<<child[p]<<std::endl;
       }
       Debug("expr-qetest")<<"After processing "<<child[p]<<std::endl;
+      child_expr.push_back(child[p]);
     }
-    child_expr.push_back(child[p]);
     child = NodeManager::currentNM()->mkNode(k1,child_expr);
     Debug("expr-qetest")<<"After processing child "<<child<<std::endl;
     finalExpr.push_back(child);
