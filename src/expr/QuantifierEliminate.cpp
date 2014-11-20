@@ -65,13 +65,13 @@ bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
   }
 }
 bool QuantifierEliminate::isConstQE(Node n) {
-  if(n.isConst()&&(n.getNumChildren() == 1))
+  if(n.isConst())
     return true;
   else
     return false;
 }
 bool QuantifierEliminate::isVarQE(Node n) {
-  if(n.isVar() && (n.getNumChildren() == 1) && n.getType().isInteger() && !isVarWithCoefficientsQE(n) && !isEquationQE(n))
+  if(n.isVar() && n.getType().isInteger() && !isVarWithCoefficientsQE(n) && !isEquationQE(n))
     return true;
   else
     return false;
@@ -1243,10 +1243,10 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
     ExpressionContainer e(child,multiplier);
     expressionContainer.push_back(e);
   }
-//  for(int i= 0;i<(int)expressionContainer.size();i++)
-//  {
-//    Debug("expr-qetest")<<"Expression "<<expressionContainer[i].getExpression()<<" multiplier "<<expressionContainer[i].getMultiplier()<<std::endl;
-//  }
+  for(int i= 0;i<(int)expressionContainer.size();i++)
+  {
+    Debug("expr-qetest")<<"Expression "<<expressionContainer[i].getExpression()<<" multiplier "<<expressionContainer[i].getMultiplier()<<std::endl;
+  }
 std::vector<Node> finalExpr;
  for(int i=0;i<(int)expressionContainer.size();i++)
   {
