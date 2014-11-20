@@ -1175,10 +1175,6 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       boundVarCoeff.push_back(container[i].getCoefficient());
     }
   }
-  for(int i=0;i<(int) boundVarCoeff.size();i++)
-  {
-    Debug("expr-qetest")<<boundVarCoeff[i]<<std::endl;
-  }
   Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
   Kind k = n.getKind();
@@ -1190,6 +1186,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   {
     Node child = *i;
     multiplier = 1;
+    Debug("expr-qetest")<<"child 0"<<child<<std::endl;
     Debug("expr-qetest")<<"child 0"<<child[0]<<std::endl;
     Debug("expr-qetest")<<"child 1"<<child[1]<<std::endl;
     Debug("expr-qetest")<<containsSameBoundVar(child[0],bv)<<std::endl;
