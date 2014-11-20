@@ -1261,6 +1261,7 @@ std::vector<Node> finalExpr;
       Debug("expr-qetest")<<"child "<<p<<" "<<child[p]<<std::endl;
       if(isConstQE(child[p]))
       {
+        Debug("expr-qetest")<<"Constant Only"<<std::endl;
         Integer x = getIntegerFromNode(child[p]);
         x = x*multiple;
         child[p] = fromIntegerToNodeQE(x);
@@ -1268,6 +1269,7 @@ std::vector<Node> finalExpr;
       }
       else if(isVarQE(child[p]))
       {
+        Debug("expr-qetest")<<"Var Only"<<std::endl;
         Node var = child[p];
         Node coeff = fromIntegerToNodeQE(multiple);
         child[p] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
@@ -1275,6 +1277,7 @@ std::vector<Node> finalExpr;
       }
       else if(isVarWithCoefficientsQE(child[p]))
       {
+        Debug("expr-qetest")<<"Var with coefficient"<<std::endl;
         Node var = child[p][1];
         Integer b = getIntegerFromNode(child[p][0]);
         b = b*multiple;
@@ -1284,6 +1287,7 @@ std::vector<Node> finalExpr;
       }
       else
       {
+        Debug("expr-qetest")<<"equation"<<std::endl;
         std::vector<Node> right;
         Kind k_child = child[p].getKind();
         for(Node::iterator j = child[p].begin(),j_end = child[p].end();
@@ -1293,6 +1297,7 @@ std::vector<Node> finalExpr;
           Node c = *j;
           if(isConstQE(c))
           {
+            Debug("expr-qetest")<<"Constant inside equation"<<std::endl;
             Integer x = getIntegerFromNode(c);
             x = x*multiple;
             c = fromIntegerToNodeQE(x);
@@ -1300,6 +1305,7 @@ std::vector<Node> finalExpr;
           }
           else if(isVarQE(c))
           {
+            Debug("expr-qetest")<<"var inside equation"<<std::endl;
             Node var = c;
             Node coeff = fromIntegerToNodeQE(multiple);
             c = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
@@ -1307,6 +1313,7 @@ std::vector<Node> finalExpr;
           }
           else
           {
+            Debug("expr-qetest")<<"var with coefficient inside equation"<<std::endl;
             Node var = c[1];
             Integer b = getIntegerFromNode(c[0]);
             b = b*multiple;
