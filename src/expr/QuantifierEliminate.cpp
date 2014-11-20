@@ -1244,86 +1244,93 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
     ExpressionContainer e(child,multiplier);
     expressionContainer.push_back(e);
   }
-  for(int i= 0;i<(int)expressionContainer.size();i++)
-  {
-    Debug("expr-qetest")<<"Expression "<<expressionContainer[i].getExpression()<<" multiplier "<<expressionContainer[i].getMultiplier()<<std::endl;
-  }
+//  for(int i= 0;i<(int)expressionContainer.size();i++)
+//  {
+//    Debug("expr-qetest")<<"Expression "<<expressionContainer[i].getExpression()<<" multiplier "<<expressionContainer[i].getMultiplier()<<std::endl;
+//  }
  for(int i=0;i<(int)expressionContainer.size();i++)
   {
     Node child = expressionContainer[i].getExpression();
     Integer multiple = expressionContainer[i].getMultiplier();
-    for(int k = 0;k<(int)child.getNumChildren();k++)
+    Debug("expr-qetest")<<"Expression "<<child;
+    Debug("expr-qetest")<<"Multiplier "<<multiple;
+    for(int i=0;i<(int)child.getNumChildren();i++)
     {
-      if(isConstQE(child[k]))
-          {
-            Integer x = getIntegerFromNode(child[k]);
-            x = x*multiple;
-            child[k] = fromIntegerToNodeQE(x);
-            Debug("expr-qetest")<<child[k]<<std::endl;
-          }
-          else if(isVarQE(child[k]))
-          {
-            Node var = child[k];
-            Node coeff = fromIntegerToNodeQE(multiple);
-            child[k] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-            Debug("expr-qetest")<<child[k]<<std::endl;
-          }
-          else if(isVarQE(child[k]))
-          {
-            Node var = child[k][1];
-            Integer b = getIntegerFromNode(child[k][0]);
-            b = b*multiple;
-            Node coeff = fromIntegerToNodeQE(b);
-            child[k] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-            Debug("expr-qetest")<<child[k]<<std::endl;
-          }
-          else
-          {
-            std::vector<Node> right;
-            for(Node::iterator j = child[k].begin(),j_end = child[k].end();
-                j!=j_end;
-                ++j)
-            {
-              Node c = *j;
-              if(isConstQE(c))
-              {
-                Integer x = getIntegerFromNode(c);
-                x = x*multiple;
-                c = fromIntegerToNodeQE(x);
-                Debug("expr-qetest")<<c<<std::endl;
-              }
-              else if(isVarQE(c))
-              {
-                Node var = c;
-                Node coeff = fromIntegerToNodeQE(multiple);
-                c = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-                Debug("expr-qetest")<<c<<std::endl;
-              }
-              else
-              {
-                Node var = c[1];
-                Integer b = getIntegerFromNode(c[0]);
-                b = b*multiple;
-                Node coeff = fromIntegerToNodeQE(b);
-                c = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-                Debug("expr-qetest")<<c<<std::endl;
-              }
-              right.push_back(c);
-            }
-            child[k] = NodeManager::currentNM()->mkNode(child[k].getKind(),right);
-            Debug("expr-qetest")<<child[k]<<std::endl;
-          }
+      Debug("expr-qetest")<<"child "<<i<<" "<<child[i]<<std::endl;
     }
-    child = NodeManager::currentNM()->mkNode(child.getKind(),child[0],child[1]);
-    expressionContainer[i].setExpression(child);
+//    for(int k = 0;k<(int)child.getNumChildren();k++)
+//    {
+//      if(isConstQE(child[k]))
+//          {
+//            Integer x = getIntegerFromNode(child[k]);
+//            x = x*multiple;
+//            child[k] = fromIntegerToNodeQE(x);
+//            Debug("expr-qetest")<<child[k]<<std::endl;
+//          }
+//          else if(isVarQE(child[k]))
+//          {
+//            Node var = child[k];
+//            Node coeff = fromIntegerToNodeQE(multiple);
+//            child[k] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+//            Debug("expr-qetest")<<child[k]<<std::endl;
+//          }
+//          else if(isVarQE(child[k]))
+//          {
+//            Node var = child[k][1];
+//            Integer b = getIntegerFromNode(child[k][0]);
+//            b = b*multiple;
+//            Node coeff = fromIntegerToNodeQE(b);
+//            child[k] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+//            Debug("expr-qetest")<<child[k]<<std::endl;
+//          }
+//          else
+//          {
+//            std::vector<Node> right;
+//            for(Node::iterator j = child[k].begin(),j_end = child[k].end();
+//                j!=j_end;
+//                ++j)
+//            {
+//              Node c = *j;
+//              if(isConstQE(c))
+//              {
+//                Integer x = getIntegerFromNode(c);
+//                x = x*multiple;
+//                c = fromIntegerToNodeQE(x);
+//                Debug("expr-qetest")<<c<<std::endl;
+//              }
+//              else if(isVarQE(c))
+//              {
+//                Node var = c;
+//                Node coeff = fromIntegerToNodeQE(multiple);
+//                c = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+//                Debug("expr-qetest")<<c<<std::endl;
+//              }
+//              else
+//              {
+//                Node var = c[1];
+//                Integer b = getIntegerFromNode(c[0]);
+//                b = b*multiple;
+//                Node coeff = fromIntegerToNodeQE(b);
+//                c = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+//                Debug("expr-qetest")<<c<<std::endl;
+//              }
+//              right.push_back(c);
+//            }
+//            child[k] = NodeManager::currentNM()->mkNode(child[k].getKind(),right);
+//            Debug("expr-qetest")<<child[k]<<std::endl;
+//          }
+//    }
+//    child = NodeManager::currentNM()->mkNode(child.getKind(),child[0],child[1]);
+//    expressionContainer[i].setExpression(child);
   }
-  std::vector<Node> expr;
-  for(int i=0;i<(int)expressionContainer.size();i++)
-  {
-    expr.push_back(expressionContainer[i].getExpression());
-  }
-  Node returnExpression = NodeManager::currentNM()->mkNode(k,expr);
-  return returnExpression;
+//  std::vector<Node> expr;
+//  for(int i=0;i<(int)expressionContainer.size();i++)
+//  {
+//    expr.push_back(expressionContainer[i].getExpression());
+//  }
+//  Node returnExpression = NodeManager::currentNM()->mkNode(k,expr);
+//  return returnExpression;
+ return n;
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
