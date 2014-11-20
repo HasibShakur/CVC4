@@ -1344,19 +1344,11 @@ std::vector<Node> finalExpr;
     Debug("expr-qetest")<<"After processing child "<<child_temp<<std::endl;
     finalExpr.push_back(child_temp);
   }
-   //Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
-   Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr[0],finalExpr[1],finalExpr[2]);
+   Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
    Debug("expr-qetest")<<"Before rewriting finalNode"<<finalNode<<std::endl;
    finalNode = Rewriter::rewrite(finalNode);
    Debug("expr-qetest")<<"After rewriting finalNode"<<finalNode<<std::endl;
-//  std::vector<Node> expr;
-//  for(int i=0;i<(int)expressionContainer.size();i++)
-//  {
-//    expr.push_back(expressionContainer[i].getExpression());
-//  }
-//  Node returnExpression = NodeManager::currentNM()->mkNode(k,expr);
-//  return returnExpression;
- return finalNode;
+   return finalNode;
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
   Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
