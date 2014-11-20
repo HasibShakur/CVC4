@@ -1124,9 +1124,7 @@ bool QuantifierEliminate::containsSameBoundVar(Node n,Node bv)
     {
       Node child = *i;
       if(isConstQE(child))
-      {
-        ++i;
-      }
+      {}
       else
       {
         if(isVarWithCoefficientsQE(child))
@@ -1134,7 +1132,6 @@ bool QuantifierEliminate::containsSameBoundVar(Node n,Node bv)
           if(child[1] == bv)
           {
             return true;
-            break;
           }
           else
           {
@@ -1146,7 +1143,6 @@ bool QuantifierEliminate::containsSameBoundVar(Node n,Node bv)
           if(child == bv)
           {
             return true;
-            break;
           }
           else
           {
