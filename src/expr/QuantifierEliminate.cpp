@@ -1186,6 +1186,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   {
     Node child = *i;
     multiplier = 1;
+    Debug("expr-qetest")<<containsSameBoundVar(child[0],bv)<<std::endl;
     if(child[0].hasBoundVar() && containsSameBoundVar(child[0],bv))
     {
       if(isVarQE(child[0]))
