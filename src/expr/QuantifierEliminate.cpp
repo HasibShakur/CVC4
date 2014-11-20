@@ -1256,37 +1256,37 @@ std::vector<Node> finalExpr;
     std::vector<Node> child_expr;
     Debug("expr-qetest")<<"Expression "<<child<<"\t";
     Debug("expr-qetest")<<"Multiplier "<<multiple<<std::endl;
-    for(int k=0;k<(int)child.getNumChildren();k++)
+    for(int p=0;p<(int)child.getNumChildren();p++)
     {
-      Debug("expr-qetest")<<"child "<<k<<" "<<child[k]<<std::endl;
-      if(isConstQE(child[k]))
+      Debug("expr-qetest")<<"child "<<p<<" "<<child[p]<<std::endl;
+      if(isConstQE(child[p]))
       {
-        Integer x = getIntegerFromNode(child[k]);
+        Integer x = getIntegerFromNode(child[p]);
         x = x*multiple;
-        child[k] = fromIntegerToNodeQE(x);
-        Debug("expr-qetest")<<child[k]<<std::endl;
+        child[p] = fromIntegerToNodeQE(x);
+        Debug("expr-qetest")<<child[p]<<std::endl;
       }
-      else if(isVarQE(child[k]))
+      else if(isVarQE(child[p]))
       {
-        Node var = child[k];
+        Node var = child[p];
         Node coeff = fromIntegerToNodeQE(multiple);
-        child[k] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-        Debug("expr-qetest")<<child[k]<<std::endl;
+        child[p] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+        Debug("expr-qetest")<<child[p]<<std::endl;
       }
-      else if(isVarWithCoefficientsQE(child[k]))
+      else if(isVarWithCoefficientsQE(child[p]))
       {
-        Node var = child[k][1];
-        Integer b = getIntegerFromNode(child[k][0]);
+        Node var = child[p][1];
+        Integer b = getIntegerFromNode(child[p][0]);
         b = b*multiple;
         Node coeff = fromIntegerToNodeQE(b);
-        child[k] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-        Debug("expr-qetest")<<child[k]<<std::endl;
+        child[p] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+        Debug("expr-qetest")<<child[p]<<std::endl;
       }
       else
       {
         std::vector<Node> right;
-        Kind k_child = child[k].getKind();
-        for(Node::iterator j = child[k].begin(),j_end = child[k].end();
+        Kind k_child = child[p].getKind();
+        for(Node::iterator j = child[p].begin(),j_end = child[p].end();
             j!=j_end;
             ++j)
         {
@@ -1316,12 +1316,12 @@ std::vector<Node> finalExpr;
           }
           right.push_back(c);
         }
-        child[k] = NodeManager::currentNM()->mkNode(k_child,right);
-        Debug("expr-qetest")<<child[k]<<std::endl;
+        child[p] = NodeManager::currentNM()->mkNode(k_child,right);
+        Debug("expr-qetest")<<child[p]<<std::endl;
       }
-      Debug("expr-qetest")<<"After processing "<<child[k]<<std::endl;
+      Debug("expr-qetest")<<"After processing "<<child[p]<<std::endl;
     }
-    child_expr.push_back(child[k]);
+    child_expr.push_back(child[p]);
     child = NodeManager::currentNM()->mkNode(k1,child_expr);
     Debug("expr-qetest")<<"After processing child "<<child<<std::endl;
     finalExpr.push_back(child);
