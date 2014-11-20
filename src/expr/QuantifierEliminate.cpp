@@ -1280,8 +1280,11 @@ std::vector<Node> finalExpr;
         Debug("expr-qetest")<<"Var with coefficient"<<std::endl;
         Node var = child[p][1];
         Integer b = getIntegerFromNode(child[p][0]);
+        Debug("expr-qetest")<<"b before multiply is "<<b<<std::endl;
         b = b*multiple;
+        Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
         Node coeff = fromIntegerToNodeQE(b);
+        Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
         child[p] = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
         Debug("expr-qetest")<<child[p]<<std::endl;
       }
@@ -1316,8 +1319,11 @@ std::vector<Node> finalExpr;
             Debug("expr-qetest")<<"var with coefficient inside equation"<<std::endl;
             Node var = c[1];
             Integer b = getIntegerFromNode(c[0]);
+            Debug("expr-qetest")<<"b before multiply is "<<b<<std::endl;
             b = b*multiple;
+            Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
             Node coeff = fromIntegerToNodeQE(b);
+            Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
             c = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
             Debug("expr-qetest")<<c<<std::endl;
           }
