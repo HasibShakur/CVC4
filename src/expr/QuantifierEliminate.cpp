@@ -1175,7 +1175,6 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       boundVarCoeff.push_back(container[i].getCoefficient());
     }
   }
-  Debug("expr-qetest")<<"child 0"<<child[0]<<std::endl;
   for(int i=0;i<(int) boundVarCoeff.size();i++)
   {
     Debug("expr-qetest")<<boundVarCoeff[i]<<std::endl;
