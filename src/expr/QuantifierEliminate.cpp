@@ -1243,7 +1243,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
           }
         }
       }
-
+    }
       ExpressionContainer e(child,multiplier);
       expressionContainer.push_back(e);
     }
@@ -1352,6 +1352,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
     Debug("expr-qetest")<<"FinalNode"<<finalNode<<std::endl;
     return finalNode;
   }
+
   Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
     if(n.getKind() == kind::NOT) {
       n = parseEquation(n[0], bv);
