@@ -1215,7 +1215,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                     multiplier = multiplier*lcmResult;
                     multiplier = multiplier.abs();
                   }
-                  else if(isVarQE(child_inner_inner))
+                  else if(isVarWithCoefficientsQE(child_inner_inner))
                   {
                     Integer z = getIntegerFromNode(child_inner_inner[0]);
                     Debug("expr-qetest")<<"z "<<z<<std::endl;
