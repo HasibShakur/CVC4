@@ -1130,64 +1130,70 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   }
   Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
-  Kind k = n.getKind();
-  Debug("expr-qetest")<<k<<std::endl;
-  Integer multiplier = 1;
-  for(Node::iterator i = n.begin(),i_end = n.end();
-  i!=i_end;
-  ++i)
+  if(lcmResult == 1)
   {
-    Node child = *i;
-    Debug("expr-qetest")<<"child "<<child<<std::endl;
-    multiplier = 1;
-    if(isConstQE(child))
-    {}
-    else if(isVarQE(child) && child.hasBoundVar() && containsSameBoundVar(child,bv))
+    return n;
+  }
+  else
+  {
+    Kind k = n.getKind();
+    Debug("expr-qetest")<<k<<std::endl;
+    Integer multiplier = 1;
+    for(Node::iterator i = n.begin(),i_end = n.end();
+    i!=i_end;
+    ++i)
     {
-      multiplier = multiplier*lcmResult;
-      multiplier = multiplier.abs();
-    }
-    else if(isVarWithCoefficientsQE(child) && child.hasBoundVar() && containsSameBoundVar(child,bv))
-    {
-      Integer x = getIntegerFromNode(child[0]);
-      multiplier = lcmResult.euclidianDivideQuotient(x);
-      multiplier = multiplier.abs();
-    }
-    else
-    {
-      //child is an equation
-      //1. It doesn't contain relational operator
-      //2. It contains a relational operator like <,>,=<,>=,=
-      if(!isRelationalOperatorTypeQE(child.getKind()))
+      Node child = *i;
+      Debug("expr-qetest")<<"child "<<child<<std::endl;
+      multiplier = 1;
+      if(isConstQE(child))
+      {}
+      else if(isVarQE(child) && child.hasBoundVar() && containsSameBoundVar(child,bv))
       {
-        for(Node::iterator j = child.begin(),j_end = child.end();
-        j != j_end;
-        ++j)
-        {
-          Node child_inner = *j;
-          if(isConstQE(child_inner))
-          {}
-          else if(isVarQE(child_inner) && child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
-          {
-            multiplier = multiplier*lcmResult;
-            multiplier = multiplier.abs();
-          }
-          else if(isVarWithCoefficientsQE(child_inner) && child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
-          {
-            Integer x = getIntegerFromNode(child[0]);
-            multiplier = lcmResult.euclidianDivideQuotient(x);
-            multiplier = multiplier.abs();
-          }
-        }
+        multiplier = multiplier*lcmResult;
+        multiplier = multiplier.abs();
+      }
+      else if(isVarWithCoefficientsQE(child) && child.hasBoundVar() && containsSameBoundVar(child,bv))
+      {
+        Integer x = getIntegerFromNode(child[0]);
+        multiplier = lcmResult.euclidianDivideQuotient(x);
+        multiplier = multiplier.abs();
       }
       else
       {
-        for(Node::iterator j1 = child.begin(),j1_end = child.end();
-        j1 != j1_end;
-        ++j1)
+        //child is an equation
+        //1. It doesn't contain relational operator
+        //2. It contains a relational operator like <,>,=<,>=,=
+        if(!isRelationalOperatorTypeQE(child.getKind()))
         {
-          Node child_inner1 = *j1;
-          if(child_inner1.hasBoundVar() && containsSameBoundVar(child_inner1,bv))
+          for(Node::iterator j = child.begin(),j_end = child.end();
+          j != j_end;
+          ++j)
+          {
+            Node child_inner = *j;
+            if(isConstQE(child_inner))
+            {}
+            else if(isVarQE(child_inner) && child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
+            {
+              multiplier = multiplier*lcmResult;
+              multiplier = multiplier.abs();
+            }
+            else if(isVarWithCoefficientsQE(child_inner) && child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
+            {
+              Integer x = getIntegerFromNode(child[0]);
+              multiplier = lcmResult.euclidianDivideQuotient(x);
+              multiplier = multiplier.abs();
+            }
+          }
+        }
+        else
+        {
+          for(Node::iterator j1 = child.begin(),j1_end = child.end();
+          j1 != j1_end;
+          ++j1)
+          {
+            Node child_inner1 = *j1;
+            if(child_inner1.hasBoundVar() && containsSameBoundVar(child_inner1,bv))
             {
               if(isVarQE(child_inner1))
               {
@@ -1230,116 +1236,118 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
               Debug("expr-qetest")<<"child inner1 "<<child_inner1<<" do nothing"<<std::endl;
             }
 
+          }
         }
       }
+      ExpressionContainer e(child,multiplier);
+      expressionContainer.push_back(e);
     }
-    ExpressionContainer e(child,multiplier);
-    expressionContainer.push_back(e);
-  }
- for(int i= 0;i<(int)expressionContainer.size();i++)
-  {
-    Debug("expr-qetest")<<"Expression "<<expressionContainer[i].getExpression()<<" multiplier "<<expressionContainer[i].getMultiplier()<<std::endl;
-  }
-  std::vector<Node> finalExpr;
-  for(int i=0;i<(int)expressionContainer.size();i++)
-  {
-    Node child = expressionContainer[i].getExpression();
-    Integer multiple = expressionContainer[i].getMultiplier();
-    Kind k1 = child.getKind();
-    std::vector<Node> child_expr;
-    Debug("expr-qetest")<<"Expression "<<child<<"\t";
-    Debug("expr-qetest")<<"Multiplier "<<multiple<<std::endl;
-    for(int p=0;p<(int)child.getNumChildren();p++)
+    for(int i= 0;i<(int)expressionContainer.size();i++)
     {
-      Debug("expr-qetest")<<"child "<<p<<" "<<child[p]<<std::endl;
-      if(isConstQE(child[p]))
-      {
-        Debug("expr-qetest")<<"Constant Only"<<std::endl;
-        Integer x = getIntegerFromNode(child[p]);
-        x = x*multiple;
-        Node temp = fromIntegerToNodeQE(x);
-        child_expr.push_back(temp);
-        Debug("expr-qetest")<<temp<<std::endl;
-      }
-      else if(isVarQE(child[p]))
-      {
-        Debug("expr-qetest")<<"Var Only"<<std::endl;
-        Node var = child[p];
-        Node coeff = fromIntegerToNodeQE(multiple);
-        Node temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-        child_expr.push_back(temp);
-        Debug("expr-qetest")<<temp<<std::endl;
-      }
-      else if(isVarWithCoefficientsQE(child[p]))
-      {
-        Debug("expr-qetest")<<"Var with coefficient"<<std::endl;
-        Node var = child[p][1];
-        Integer b = getIntegerFromNode(child[p][0]);
-        Debug("expr-qetest")<<"b before multiply is "<<b<<std::endl;
-        b = b*multiple;
-        Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
-        Node coeff = fromIntegerToNodeQE(b);
-        Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
-        Node temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-        child_expr.push_back(temp);
-        Debug("expr-qetest")<<temp<<std::endl;
-      }
-      else
-      {
-        Debug("expr-qetest")<<"equation"<<std::endl;
-        std::vector<Node> right;
-        Kind k_child = child[p].getKind();
-        for(Node::iterator j = child[p].begin(),j_end = child[p].end();
-        j!=j_end;
-        ++j)
-        {
-          Node c = *j;
-          if(isConstQE(c))
-          {
-            Debug("expr-qetest")<<"Constant inside equation"<<std::endl;
-            Integer x = getIntegerFromNode(c);
-            x = x*multiple;
-            Node c_temp = fromIntegerToNodeQE(x);
-            right.push_back(c_temp);
-            Debug("expr-qetest")<<c_temp<<std::endl;
-          }
-          else if(isVarQE(c))
-          {
-            Debug("expr-qetest")<<"var inside equation"<<std::endl;
-            Node var = c;
-            Node coeff = fromIntegerToNodeQE(multiple);
-            Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-            right.push_back(c_temp);
-            Debug("expr-qetest")<<c_temp<<std::endl;
-          }
-          else
-          {
-            Debug("expr-qetest")<<"var with coefficient inside equation"<<std::endl;
-            Node var = c[1];
-            Integer b = getIntegerFromNode(c[0]);
-            Debug("expr-qetest")<<"b before multiply is "<<b<<std::endl;
-            b = b*multiple;
-            Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
-            Node coeff = fromIntegerToNodeQE(b);
-            Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
-            Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-            right.push_back(c_temp);
-            Debug("expr-qetest")<<c_temp<<std::endl;
-          }
-
-        }
-        Node temp = NodeManager::currentNM()->mkNode(k_child,right);
-        Debug("expr-qetest")<<temp<<std::endl;
-        child_expr.push_back(temp);
-      }
+      Debug("expr-qetest")<<"Expression "<<expressionContainer[i].getExpression()<<" multiplier "<<expressionContainer[i].getMultiplier()<<std::endl;
     }
-    Node child_temp = NodeManager::currentNM()->mkNode(k1,child_expr);
-    Debug("expr-qetest")<<"After processing child "<<child_temp<<std::endl;
-    finalExpr.push_back(child_temp);
+    std::vector<Node> finalExpr;
+    for(int i=0;i<(int)expressionContainer.size();i++)
+    {
+      Node child = expressionContainer[i].getExpression();
+      Integer multiple = expressionContainer[i].getMultiplier();
+      Kind k1 = child.getKind();
+      std::vector<Node> child_expr;
+      Debug("expr-qetest")<<"Expression "<<child<<"\t";
+      Debug("expr-qetest")<<"Multiplier "<<multiple<<std::endl;
+      for(int p=0;p<(int)child.getNumChildren();p++)
+      {
+        Debug("expr-qetest")<<"child "<<p<<" "<<child[p]<<std::endl;
+        if(isConstQE(child[p]))
+        {
+          Debug("expr-qetest")<<"Constant Only"<<std::endl;
+          Integer x = getIntegerFromNode(child[p]);
+          x = x*multiple;
+          Node temp = fromIntegerToNodeQE(x);
+          child_expr.push_back(temp);
+          Debug("expr-qetest")<<temp<<std::endl;
+        }
+        else if(isVarQE(child[p]))
+        {
+          Debug("expr-qetest")<<"Var Only"<<std::endl;
+          Node var = child[p];
+          Node coeff = fromIntegerToNodeQE(multiple);
+          Node temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+          child_expr.push_back(temp);
+          Debug("expr-qetest")<<temp<<std::endl;
+        }
+        else if(isVarWithCoefficientsQE(child[p]))
+        {
+          Debug("expr-qetest")<<"Var with coefficient"<<std::endl;
+          Node var = child[p][1];
+          Integer b = getIntegerFromNode(child[p][0]);
+          Debug("expr-qetest")<<"b before multiply is "<<b<<std::endl;
+          b = b*multiple;
+          Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
+          Node coeff = fromIntegerToNodeQE(b);
+          Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
+          Node temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+          child_expr.push_back(temp);
+          Debug("expr-qetest")<<temp<<std::endl;
+        }
+        else
+        {
+          Debug("expr-qetest")<<"equation"<<std::endl;
+          std::vector<Node> right;
+          Kind k_child = child[p].getKind();
+          for(Node::iterator j = child[p].begin(),j_end = child[p].end();
+          j!=j_end;
+          ++j)
+          {
+            Node c = *j;
+            if(isConstQE(c))
+            {
+              Debug("expr-qetest")<<"Constant inside equation"<<std::endl;
+              Integer x = getIntegerFromNode(c);
+              x = x*multiple;
+              Node c_temp = fromIntegerToNodeQE(x);
+              right.push_back(c_temp);
+              Debug("expr-qetest")<<c_temp<<std::endl;
+            }
+            else if(isVarQE(c))
+            {
+              Debug("expr-qetest")<<"var inside equation"<<std::endl;
+              Node var = c;
+              Node coeff = fromIntegerToNodeQE(multiple);
+              Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+              right.push_back(c_temp);
+              Debug("expr-qetest")<<c_temp<<std::endl;
+            }
+            else
+            {
+              Debug("expr-qetest")<<"var with coefficient inside equation"<<std::endl;
+              Node var = c[1];
+              Integer b = getIntegerFromNode(c[0]);
+              Debug("expr-qetest")<<"b before multiply is "<<b<<std::endl;
+              b = b*multiple;
+              Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
+              Node coeff = fromIntegerToNodeQE(b);
+              Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
+              Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+              right.push_back(c_temp);
+              Debug("expr-qetest")<<c_temp<<std::endl;
+            }
+
+          }
+          Node temp = NodeManager::currentNM()->mkNode(k_child,right);
+          Debug("expr-qetest")<<temp<<std::endl;
+          child_expr.push_back(temp);
+        }
+      }
+      Node child_temp = NodeManager::currentNM()->mkNode(k1,child_expr);
+      Debug("expr-qetest")<<"After processing child "<<child_temp<<std::endl;
+      finalExpr.push_back(child_temp);
+    }
+    Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
+    Debug("expr-qetest")<<"FinalNode"<<finalNode<<std::endl;
+    return finalNode;
   }
-  Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
-  Debug("expr-qetest")<<"FinalNode"<<finalNode<<std::endl;
-  return finalNode;
+
 }
 
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
