@@ -1165,7 +1165,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
         ++j)
         {
           Node child_inner = *j;
-          Debug("expr-qetest")<<"child_inner "<<child_inner<<std::endl;
+          Debug("expr-qetest")<<"child_inner without relational operator "<<child_inner<<std::endl;
           if(isConstQE(child_inner))
           {}
           else if(isVarQE(child_inner) && child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
@@ -1188,7 +1188,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
         ++j)
         {
           Node child_inner = *j;
-          Debug("expr-qetest")<<"child_inner "<<child_inner<<std::endl;
+          Debug("expr-qetest")<<"child_inner with relational operator "<<child_inner<<std::endl;
           {
             if(child_inner[0].hasBoundVar() && containsSameBoundVar(child_inner[0],bv))
             {
