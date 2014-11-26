@@ -1343,6 +1343,8 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       Debug("expr-qetest")<<"After processing child "<<child_temp<<std::endl;
       finalExpr.push_back(child_temp);
     }
+    Node divisible = NodeManager::currentNM()->mkNode(kind::DIVISIBLE,bv,fromIntegerToNodeQE(lcmResult));
+    finalExpr.push_back(divisible);
     Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
     Debug("expr-qetest")<<"FinalNode"<<finalNode<<std::endl;
     return finalNode;
