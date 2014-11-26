@@ -1214,7 +1214,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                 Integer y = getIntegerFromNode(child_inner[0]);
                 multiplier = multiplier.euclidianDivideQuotient(y);
                 multiplier = multiplier.abs();
-                Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;s
+                Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
                 ExpressionContainer e(child,multiplier);
                 expressionContainer.push_back(e);
               }
