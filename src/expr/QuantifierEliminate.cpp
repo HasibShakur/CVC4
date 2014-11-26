@@ -1145,6 +1145,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
     {
       multiplier = multiplier*lcmResult;
       multiplier = multiplier.abs();
+      Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
       ExpressionContainer e(child,multiplier);
       expressionContainer.push_back(e);
     }
@@ -1153,6 +1154,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       Integer x = getIntegerFromNode(child[0]);
       multiplier = lcmResult.euclidianDivideQuotient(x);
       multiplier = multiplier.abs();
+      Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
       ExpressionContainer e(child,multiplier);
        expressionContainer.push_back(e);
     }
@@ -1174,6 +1176,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
           {
             multiplier = multiplier*lcmResult;
             multiplier = multiplier.abs();
+            Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
             ExpressionContainer e(child,multiplier);
             expressionContainer.push_back(e);
           }
@@ -1182,6 +1185,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
             Integer x = getIntegerFromNode(child[0]);
             multiplier = lcmResult.euclidianDivideQuotient(x);
             multiplier = multiplier.abs();
+            Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
             ExpressionContainer e(child,multiplier);
             expressionContainer.push_back(e);
           }
@@ -1201,6 +1205,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
               {
                 multiplier = multiplier*lcmResult;
                 multiplier = multiplier.abs();
+                Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
                 ExpressionContainer e(child,multiplier);
                 expressionContainer.push_back(e);
               }
@@ -1209,6 +1214,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                 Integer y = getIntegerFromNode(child_inner[0]);
                 multiplier = multiplier.euclidianDivideQuotient(y);
                 multiplier = multiplier.abs();
+                Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;s
                 ExpressionContainer e(child,multiplier);
                 expressionContainer.push_back(e);
               }
@@ -1223,6 +1229,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                   {
                     multiplier = multiplier*lcmResult;
                     multiplier = multiplier.abs();
+                    Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
                     ExpressionContainer e(child,multiplier);
                     expressionContainer.push_back(e);
                   }
@@ -1231,6 +1238,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                     Integer z = getIntegerFromNode(child_inner_inner[0]);
                     multiplier = multiplier.euclidianDivideQuotient(z);
                     multiplier = multiplier.abs();
+                    Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
                     ExpressionContainer e(child,multiplier);
                     expressionContainer.push_back(e);
                   }
