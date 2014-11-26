@@ -1138,6 +1138,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   ++i)
   {
     Node child = *i;
+    Debug("expr-qetest")<<"child "<<child<<std::endl;
     multiplier = 1;
     if(isConstQE(child))
     {}
@@ -1145,18 +1146,12 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
     {
       multiplier = multiplier*lcmResult;
       multiplier = multiplier.abs();
-      Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
-      ExpressionContainer e(child,multiplier);
-      expressionContainer.push_back(e);
     }
     else if(isVarWithCoefficientsQE(child) && child.hasBoundVar() && containsSameBoundVar(child,bv))
     {
       Integer x = getIntegerFromNode(child[0]);
       multiplier = lcmResult.euclidianDivideQuotient(x);
       multiplier = multiplier.abs();
-      Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
-      ExpressionContainer e(child,multiplier);
-      expressionContainer.push_back(e);
     }
     else
     {
@@ -1176,18 +1171,12 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
           {
             multiplier = multiplier*lcmResult;
             multiplier = multiplier.abs();
-            Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
-            ExpressionContainer e(child,multiplier);
-            expressionContainer.push_back(e);
           }
           else if(isVarWithCoefficientsQE(child_inner) && child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
           {
             Integer x = getIntegerFromNode(child[0]);
             multiplier = lcmResult.euclidianDivideQuotient(x);
             multiplier = multiplier.abs();
-            Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
-            ExpressionContainer e(child,multiplier);
-            expressionContainer.push_back(e);
           }
         }
       }
@@ -1198,6 +1187,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
         ++j1)
         {
           Node child_inner1 = *j1;
+          Debug("expr-qetest")<<"child inner "<<child_inner1<<std::endl;
           {
             if(child_inner1.hasBoundVar() && containsSameBoundVar(child_inner1,bv))
             {
@@ -1205,18 +1195,13 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
               {
                 multiplier = multiplier*lcmResult;
                 multiplier = multiplier.abs();
-                Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
-                ExpressionContainer e(child,multiplier);
-                expressionContainer.push_back(e);
+
               }
               else if(isVarWithCoefficientsQE(child_inner1))
               {
                 Integer y = getIntegerFromNode(child_inner1[0]);
                 multiplier = lcmResult.euclidianDivideQuotient(y);
                 multiplier = multiplier.abs();
-                Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
-                ExpressionContainer e(child,multiplier);
-                expressionContainer.push_back(e);
               }
               else
               {
@@ -1229,18 +1214,12 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                   {
                     multiplier = multiplier*lcmResult;
                     multiplier = multiplier.abs();
-                    Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
-                    ExpressionContainer e(child,multiplier);
-                    expressionContainer.push_back(e);
                   }
                   else if(isVarQE(child_inner_inner))
                   {
                     Integer z = getIntegerFromNode(child_inner_inner[0]);
                     multiplier = lcmResult.euclidianDivideQuotient(z);
                     multiplier = multiplier.abs();
-                    Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
-                    ExpressionContainer e(child,multiplier);
-                    expressionContainer.push_back(e);
                   }
                   else
                   {}
@@ -1252,7 +1231,8 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
         }
       }
     }
-
+    ExpressionContainer e(child,multiplier);
+    expressionContainer.push_back(e);
   }
   Debug("expr-qetest")<<"Expression container size  "<<expressionContainer.size()<<std::endl;
   for(int i= 0;i<(int)expressionContainer.size();i++)
