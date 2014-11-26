@@ -1190,32 +1190,16 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
           Node child_inner = *j;
           Debug("expr-qetest")<<"child_inner with relational operator "<<child_inner<<std::endl;
           {
-            if(child_inner[0].hasBoundVar() && containsSameBoundVar(child_inner[0],bv))
+            if(child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
             {
-              if(isVarQE(child_inner[0]))
+              if(isVarQE(child_inner))
               {
                 multiplier = multiplier*lcmResult;
                 multiplier = multiplier.abs();
               }
-              else if(isVarWithCoefficientsQE(child_inner[0]))
+              else if(isVarWithCoefficientsQE(child_inner))
               {
-                Integer y = getIntegerFromNode(child_inner[0][0]);
-                multiplier = multiplier.euclidianDivideQuotient(y);
-                multiplier = multiplier.abs();
-              }
-              else
-              {}
-            }
-            else
-            {
-              if(isVarQE(child_inner[1] ))
-              {
-                multiplier = multiplier*lcmResult;
-                multiplier = multiplier.abs();
-              }
-              else if(isVarWithCoefficientsQE(child_inner[1]))
-              {
-                Integer y = getIntegerFromNode(child_inner[0][0]);
+                Integer y = getIntegerFromNode(child_inner[0]);
                 multiplier = multiplier.euclidianDivideQuotient(y);
                 multiplier = multiplier.abs();
               }
@@ -1243,235 +1227,235 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                 }
               }
             }
-
+            else {}
           }
         }
       }
     }
-      ExpressionContainer e(child,multiplier);
-      expressionContainer.push_back(e);
-    }
-    for(int i= 0;i<(int)expressionContainer.size();i++)
+    ExpressionContainer e(child,multiplier);
+    expressionContainer.push_back(e);
+  }
+  for(int i= 0;i<(int)expressionContainer.size();i++)
+  {
+    Debug("expr-qetest")<<"Expression "<<expressionContainer[i].getExpression()<<" multiplier "<<expressionContainer[i].getMultiplier()<<std::endl;
+  }
+  std::vector<Node> finalExpr;
+  for(int i=0;i<(int)expressionContainer.size();i++)
+  {
+    Node child = expressionContainer[i].getExpression();
+    Integer multiple = expressionContainer[i].getMultiplier();
+    Kind k1 = child.getKind();
+    std::vector<Node> child_expr;
+    Debug("expr-qetest")<<"Expression "<<child<<"\t";
+    Debug("expr-qetest")<<"Multiplier "<<multiple<<std::endl;
+    for(int p=0;p<(int)child.getNumChildren();p++)
     {
-      Debug("expr-qetest")<<"Expression "<<expressionContainer[i].getExpression()<<" multiplier "<<expressionContainer[i].getMultiplier()<<std::endl;
-    }
-    std::vector<Node> finalExpr;
-    for(int i=0;i<(int)expressionContainer.size();i++)
-    {
-      Node child = expressionContainer[i].getExpression();
-      Integer multiple = expressionContainer[i].getMultiplier();
-      Kind k1 = child.getKind();
-      std::vector<Node> child_expr;
-      Debug("expr-qetest")<<"Expression "<<child<<"\t";
-      Debug("expr-qetest")<<"Multiplier "<<multiple<<std::endl;
-      for(int p=0;p<(int)child.getNumChildren();p++)
+      Debug("expr-qetest")<<"child "<<p<<" "<<child[p]<<std::endl;
+      if(isConstQE(child[p]))
       {
-        Debug("expr-qetest")<<"child "<<p<<" "<<child[p]<<std::endl;
-        if(isConstQE(child[p]))
+        Debug("expr-qetest")<<"Constant Only"<<std::endl;
+        Integer x = getIntegerFromNode(child[p]);
+        x = x*multiple;
+        Node temp = fromIntegerToNodeQE(x);
+        child_expr.push_back(temp);
+        Debug("expr-qetest")<<temp<<std::endl;
+      }
+      else if(isVarQE(child[p]))
+      {
+        Debug("expr-qetest")<<"Var Only"<<std::endl;
+        Node var = child[p];
+        Node coeff = fromIntegerToNodeQE(multiple);
+        Node temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+        child_expr.push_back(temp);
+        Debug("expr-qetest")<<temp<<std::endl;
+      }
+      else if(isVarWithCoefficientsQE(child[p]))
+      {
+        Debug("expr-qetest")<<"Var with coefficient"<<std::endl;
+        Node var = child[p][1];
+        Integer b = getIntegerFromNode(child[p][0]);
+        Debug("expr-qetest")<<"b before multiply is "<<b<<std::endl;
+        b = b*multiple;
+        Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
+        Node coeff = fromIntegerToNodeQE(b);
+        Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
+        Node temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+        child_expr.push_back(temp);
+        Debug("expr-qetest")<<temp<<std::endl;
+      }
+      else
+      {
+        Debug("expr-qetest")<<"equation"<<std::endl;
+        std::vector<Node> right;
+        Kind k_child = child[p].getKind();
+        for(Node::iterator j = child[p].begin(),j_end = child[p].end();
+        j!=j_end;
+        ++j)
         {
-          Debug("expr-qetest")<<"Constant Only"<<std::endl;
-          Integer x = getIntegerFromNode(child[p]);
-          x = x*multiple;
-          Node temp = fromIntegerToNodeQE(x);
-          child_expr.push_back(temp);
-          Debug("expr-qetest")<<temp<<std::endl;
-        }
-        else if(isVarQE(child[p]))
-        {
-          Debug("expr-qetest")<<"Var Only"<<std::endl;
-          Node var = child[p];
-          Node coeff = fromIntegerToNodeQE(multiple);
-          Node temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-          child_expr.push_back(temp);
-          Debug("expr-qetest")<<temp<<std::endl;
-        }
-        else if(isVarWithCoefficientsQE(child[p]))
-        {
-          Debug("expr-qetest")<<"Var with coefficient"<<std::endl;
-          Node var = child[p][1];
-          Integer b = getIntegerFromNode(child[p][0]);
-          Debug("expr-qetest")<<"b before multiply is "<<b<<std::endl;
-          b = b*multiple;
-          Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
-          Node coeff = fromIntegerToNodeQE(b);
-          Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
-          Node temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-          child_expr.push_back(temp);
-          Debug("expr-qetest")<<temp<<std::endl;
-        }
-        else
-        {
-          Debug("expr-qetest")<<"equation"<<std::endl;
-          std::vector<Node> right;
-          Kind k_child = child[p].getKind();
-          for(Node::iterator j = child[p].begin(),j_end = child[p].end();
-          j!=j_end;
-          ++j)
+          Node c = *j;
+          if(isConstQE(c))
           {
-            Node c = *j;
-            if(isConstQE(c))
-            {
-              Debug("expr-qetest")<<"Constant inside equation"<<std::endl;
-              Integer x = getIntegerFromNode(c);
-              x = x*multiple;
-              Node c_temp = fromIntegerToNodeQE(x);
-              right.push_back(c_temp);
-              Debug("expr-qetest")<<c_temp<<std::endl;
-            }
-            else if(isVarQE(c))
-            {
-              Debug("expr-qetest")<<"var inside equation"<<std::endl;
-              Node var = c;
-              Node coeff = fromIntegerToNodeQE(multiple);
-              Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-              right.push_back(c_temp);
-              Debug("expr-qetest")<<c_temp<<std::endl;
-            }
-            else
-            {
-              Debug("expr-qetest")<<"var with coefficient inside equation"<<std::endl;
-              Node var = c[1];
-              Integer b = getIntegerFromNode(c[0]);
-              Debug("expr-qetest")<<"b before multiply is "<<b<<std::endl;
-              b = b*multiple;
-              Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
-              Node coeff = fromIntegerToNodeQE(b);
-              Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
-              Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
-              right.push_back(c_temp);
-              Debug("expr-qetest")<<c_temp<<std::endl;
-            }
-
+            Debug("expr-qetest")<<"Constant inside equation"<<std::endl;
+            Integer x = getIntegerFromNode(c);
+            x = x*multiple;
+            Node c_temp = fromIntegerToNodeQE(x);
+            right.push_back(c_temp);
+            Debug("expr-qetest")<<c_temp<<std::endl;
           }
-          Node temp = NodeManager::currentNM()->mkNode(k_child,right);
-          Debug("expr-qetest")<<temp<<std::endl;
-          child_expr.push_back(temp);
+          else if(isVarQE(c))
+          {
+            Debug("expr-qetest")<<"var inside equation"<<std::endl;
+            Node var = c;
+            Node coeff = fromIntegerToNodeQE(multiple);
+            Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+            right.push_back(c_temp);
+            Debug("expr-qetest")<<c_temp<<std::endl;
+          }
+          else
+          {
+            Debug("expr-qetest")<<"var with coefficient inside equation"<<std::endl;
+            Node var = c[1];
+            Integer b = getIntegerFromNode(c[0]);
+            Debug("expr-qetest")<<"b before multiply is "<<b<<std::endl;
+            b = b*multiple;
+            Debug("expr-qetest")<<"b after multiply is "<<b<<std::endl;
+            Node coeff = fromIntegerToNodeQE(b);
+            Debug("expr-qetest")<<"Coeff is "<<coeff<<std::endl;
+            Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
+            right.push_back(c_temp);
+            Debug("expr-qetest")<<c_temp<<std::endl;
+          }
+
         }
+        Node temp = NodeManager::currentNM()->mkNode(k_child,right);
+        Debug("expr-qetest")<<temp<<std::endl;
+        child_expr.push_back(temp);
       }
-      Node child_temp = NodeManager::currentNM()->mkNode(k1,child_expr);
-      Debug("expr-qetest")<<"After processing child "<<child_temp<<std::endl;
-      finalExpr.push_back(child_temp);
     }
-    Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
-    Debug("expr-qetest")<<"FinalNode"<<finalNode<<std::endl;
-    return finalNode;
+    Node child_temp = NodeManager::currentNM()->mkNode(k1,child_expr);
+    Debug("expr-qetest")<<"After processing child "<<child_temp<<std::endl;
+    finalExpr.push_back(child_temp);
+  }
+  Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
+  Debug("expr-qetest")<<"FinalNode"<<finalNode<<std::endl;
+  return finalNode;
+}
+
+Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
+  if(n.getKind() == kind::NOT) {
+    n = parseEquation(n[0], bv);
+  } else {
+    n = parseEquation(n, bv);
   }
 
-  Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
+  return n;
+}
+
+Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
+  std::vector<Node> temp = bv;
+  Node t;
+  t = eliminateImpliesQE(n);
+  t = convertToNNFQE(t);
+  t = Rewriter::rewrite(t);
+  for(int i = 0; i < (int) temp.size(); i++) {
+    t = rewriteForSameCoefficients(t, temp[i]);
+  }
+  return t;
+}
+bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
+  return true;
+}
+Node QuantifierEliminate::computeRightProjection(Node n, std::vector<Node> bv) {
+  return n;
+}
+Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
+  Node rewrittenNode = doRewriting(n, bv);
+  bool left = computeLeftProjection(rewrittenNode, bv);
+  Node right = computeRightProjection(rewrittenNode, bv);
+  //Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
+  //right);
+  Node finalNode = Rewriter::rewrite(right);
+  return finalNode;
+}
+
+Node QuantifierEliminate::computeProjections(Node n) {
+  Node temp1;
+  std::vector<Node> temp2;
+  Node temp3;
+  Node final;
+  if((n.getKind() == kind::NOT) || (n.getKind() == kind::FORALL)
+      || (n.getKind() == kind::EXISTS)) {
     if(n.getKind() == kind::NOT) {
-      n = parseEquation(n[0], bv);
-    } else {
-      n = parseEquation(n, bv);
-    }
-
-    return n;
-  }
-
-  Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
-    std::vector<Node> temp = bv;
-    Node t;
-    t = eliminateImpliesQE(n);
-    t = convertToNNFQE(t);
-    t = Rewriter::rewrite(t);
-    for(int i = 0; i < (int) temp.size(); i++) {
-      t = rewriteForSameCoefficients(t, temp[i]);
-    }
-    return t;
-  }
-  bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
-    return true;
-  }
-  Node QuantifierEliminate::computeRightProjection(Node n, std::vector<Node> bv) {
-    return n;
-  }
-  Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
-    Node rewrittenNode = doRewriting(n, bv);
-    bool left = computeLeftProjection(rewrittenNode, bv);
-    Node right = computeRightProjection(rewrittenNode, bv);
-    //Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
-    //right);
-    Node finalNode = Rewriter::rewrite(right);
-    return finalNode;
-  }
-
-  Node QuantifierEliminate::computeProjections(Node n) {
-    Node temp1;
-    std::vector<Node> temp2;
-    Node temp3;
-    Node final;
-    if((n.getKind() == kind::NOT) || (n.getKind() == kind::FORALL)
-    || (n.getKind() == kind::EXISTS)) {
-      if(n.getKind() == kind::NOT) {
-        if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS)) {
-          std::vector<Node> multipleBoundVar1;
-          if(n[0][0].getNumChildren() > 1) {
-            for(int i = 0; i < (int) n[0][0].getNumChildren(); i++) {
-              multipleBoundVar1.push_back(n[0][0][i]);
-            }
-            boundVar.push_back(multipleBoundVar1);
-          } else {
-            multipleBoundVar1.push_back(n[0][0][0]);
-            boundVar.push_back(multipleBoundVar1);
+      if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS)) {
+        std::vector<Node> multipleBoundVar1;
+        if(n[0][0].getNumChildren() > 1) {
+          for(int i = 0; i < (int) n[0][0].getNumChildren(); i++) {
+            multipleBoundVar1.push_back(n[0][0][i]);
           }
-          args.push_back(n[0][1]);
-          return computeProjections(n[0][1].negate());
+          boundVar.push_back(multipleBoundVar1);
         } else {
-          if(boundVar.size() > 0) {
-            while(boundVar.size() > 0) {
-              temp1 = args.back();
-              temp2 = boundVar.back();
-              temp3 = performCaseAnalysis(temp1, temp2);
-              temp3 = temp3.negate();
-              //args.pop_back();
-              boundVar.pop_back();
-              while(!args.empty()) {
-                args.pop_back();
-              }
-              args.push_back(temp3);
-            }
-            final = args.back();
-            args.pop_back();
-            return final;
-          } else {
-            final = n.negate();
-            return final;
-          }
+          multipleBoundVar1.push_back(n[0][0][0]);
+          boundVar.push_back(multipleBoundVar1);
         }
-      }
-      std::vector<Node> multipleBoundVar2;
-      if(n[0].getNumChildren() > 1) {
-        for(int i = 0; i < (int) n[0].getNumChildren(); i++) {
-          multipleBoundVar2.push_back(n[0][i]);
-        }
-        boundVar.push_back(multipleBoundVar2);
+        args.push_back(n[0][1]);
+        return computeProjections(n[0][1].negate());
       } else {
-        multipleBoundVar2.push_back(n[0][0]);
-        boundVar.push_back(multipleBoundVar2);
-      }
-      args.push_back(n[1]);
-      return computeProjections(n[1]);
-    } else {
-      if(boundVar.size() > 0) {
-        while(boundVar.size() > 0) {
-          temp1 = args.back();
-          temp2 = boundVar.back();
-          temp3 = performCaseAnalysis(temp1, temp2);
-          if(n.getKind() == kind::NOT) {
+        if(boundVar.size() > 0) {
+          while(boundVar.size() > 0) {
+            temp1 = args.back();
+            temp2 = boundVar.back();
+            temp3 = performCaseAnalysis(temp1, temp2);
             temp3 = temp3.negate();
+            //args.pop_back();
+            boundVar.pop_back();
+            while(!args.empty()) {
+              args.pop_back();
+            }
+            args.push_back(temp3);
           }
-          boundVar.pop_back();
-          while(!args.empty()) {
-            args.pop_back();
-          }
-          args.push_back(temp3);
+          final = args.back();
+          args.pop_back();
+          return final;
+        } else {
+          final = n.negate();
+          return final;
         }
-        final = args.back();
-        args.pop_back();
-        return final;
-      } else {
-        final = n;
-        return final;
       }
     }
+    std::vector<Node> multipleBoundVar2;
+    if(n[0].getNumChildren() > 1) {
+      for(int i = 0; i < (int) n[0].getNumChildren(); i++) {
+        multipleBoundVar2.push_back(n[0][i]);
+      }
+      boundVar.push_back(multipleBoundVar2);
+    } else {
+      multipleBoundVar2.push_back(n[0][0]);
+      boundVar.push_back(multipleBoundVar2);
+    }
+    args.push_back(n[1]);
+    return computeProjections(n[1]);
+  } else {
+    if(boundVar.size() > 0) {
+      while(boundVar.size() > 0) {
+        temp1 = args.back();
+        temp2 = boundVar.back();
+        temp3 = performCaseAnalysis(temp1, temp2);
+        if(n.getKind() == kind::NOT) {
+          temp3 = temp3.negate();
+        }
+        boundVar.pop_back();
+        while(!args.empty()) {
+          args.pop_back();
+        }
+        args.push_back(temp3);
+      }
+      final = args.back();
+      args.pop_back();
+      return final;
+    } else {
+      final = n;
+      return final;
+    }
   }
+}
 
