@@ -1188,7 +1188,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
         {
           Node child_inner1 = *j1;
           Debug("expr-qetest")<<"child inner "<<child_inner1<<std::endl;
-          {
+
             if(child_inner1.hasBoundVar() && containsSameBoundVar(child_inner1,bv))
             {
               if(isVarQE(child_inner1))
@@ -1227,7 +1227,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
               }
             }
             else {}
-          }
+
         }
       }
     }
