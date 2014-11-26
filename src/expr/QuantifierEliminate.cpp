@@ -1138,6 +1138,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   ++i)
   {
     Node child = *i;
+    Debug("expr-qetest")<<"child "<<child<<std::endl;
     multiplier = 1;
     if(isConstQE(child))
     {}
@@ -1164,6 +1165,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
         ++j)
         {
           Node child_inner = *j;
+          Debug("expr-qetest")<<"child_inner "<<child_inner<<std::endl;
           if(isConstQE(child_inner))
           {}
           else if(isVarQE(child_inner) && child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
@@ -1186,6 +1188,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
         ++j)
         {
           Node child_inner = *j;
+          Debug("expr-qetest")<<"child_inner "<<child_inner<<std::endl;
           {
             if(child_inner[0].hasBoundVar() && containsSameBoundVar(child_inner[0],bv))
             {
@@ -1223,6 +1226,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                 ++k)
                 {
                   Node child_inner_inner = *k;
+                  Debug("expr-qetest")<<"child_inner_inner "<<child_inner_inner<<std::endl;
                   if(isVarQE(child_inner_inner))
                   {
                     multiplier = multiplier*lcmResult;
