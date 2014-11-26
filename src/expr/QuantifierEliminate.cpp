@@ -1218,7 +1218,9 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                   else if(isVarQE(child_inner_inner))
                   {
                     Integer z = getIntegerFromNode(child_inner_inner[0]);
+                    Debug("expr-qetest")<<"z "<<z<<std::endl;
                     multiplier = lcmResult.euclidianDivideQuotient(z);
+                    Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
                     multiplier = multiplier.abs();
                   }
                   else
