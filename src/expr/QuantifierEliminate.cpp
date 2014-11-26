@@ -1222,11 +1222,15 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                     multiplier = multiplier.abs();
                   }
                   else
-                  {}
+                  {
+                    Debug("expr-qetest")<<"child inner inner "<<child_inner_inner<<std::endl;
+                  }
                 }
               }
             }
-            else {}
+            else {
+              Debug("expr-qetest")<<"child inner1 "<<child_inner1<<" do nothing"<<std::endl;
+            }
 
         }
       }
