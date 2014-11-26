@@ -1156,7 +1156,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       multiplier = multiplier.abs();
       Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
       ExpressionContainer e(child,multiplier);
-       expressionContainer.push_back(e);
+      expressionContainer.push_back(e);
     }
     else
     {
@@ -1193,15 +1193,15 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
       }
       else
       {
-        for(Node::iterator j = child.begin(),j_end = child.end();
-        j != j_end;
-        ++j)
+        for(Node::iterator j1 = child.begin(),j1_end = child.end();
+        j1 != j1_end;
+        ++j1)
         {
-          Node child_inner = *j;
+          Node child_inner1 = *j1;
           {
-            if(child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
+            if(child_inner1.hasBoundVar() && containsSameBoundVar(child_inner1,bv))
             {
-              if(isVarQE(child_inner))
+              if(isVarQE(child_inner1))
               {
                 multiplier = multiplier*lcmResult;
                 multiplier = multiplier.abs();
@@ -1209,10 +1209,10 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                 ExpressionContainer e(child,multiplier);
                 expressionContainer.push_back(e);
               }
-              else if(isVarWithCoefficientsQE(child_inner))
+              else if(isVarWithCoefficientsQE(child_inner1))
               {
-                Integer y = getIntegerFromNode(child_inner[0]);
-                multiplier = multiplier.euclidianDivideQuotient(y);
+                Integer y = getIntegerFromNode(child_inner1[0]);
+                multiplier = lcmResult.euclidianDivideQuotient(y);
                 multiplier = multiplier.abs();
                 Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
                 ExpressionContainer e(child,multiplier);
@@ -1220,7 +1220,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
               }
               else
               {
-                for(Node::iterator k = child_inner[1].begin(),k_end = child_inner.end();
+                for(Node::iterator k = child_inner1.begin(),k_end = child_inner1.end();
                 k!= k_end;
                 ++k)
                 {
@@ -1236,7 +1236,7 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
                   else if(isVarQE(child_inner_inner))
                   {
                     Integer z = getIntegerFromNode(child_inner_inner[0]);
-                    multiplier = multiplier.euclidianDivideQuotient(z);
+                    multiplier = lcmResult.euclidianDivideQuotient(z);
                     multiplier = multiplier.abs();
                     Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
                     ExpressionContainer e(child,multiplier);
