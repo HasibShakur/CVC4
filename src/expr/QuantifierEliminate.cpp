@@ -1603,6 +1603,7 @@ Node QuantifierEliminate::replaceLEQQE(Node n) {
 }
 
 Node QuantifierEliminate::replaceEQUALQE(Node n) {
+  Debug("expr-qetest")<<"Before replacement "<<n<<std::endl;
   Node left = n[0];
   Node right = n[1];
   Node finalLeft;
@@ -1837,6 +1838,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
                                                     tempLeft);
       Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
                                                          finalRight);
+      Debug("expr-qetest")<<"after replacement "<<returnNode<<std::endl;
       return returnNode;
     }
 
