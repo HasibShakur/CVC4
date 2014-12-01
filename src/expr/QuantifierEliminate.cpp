@@ -2230,6 +2230,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, std::vector<Node> bv) {
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
   Node rewrittenNode = doRewriting(n, bv);
   bool left = computeLeftProjection(rewrittenNode, bv);
+  Debug("expr-qetest")<<"Left projection "<<left<<std::endl;
   Node right = computeRightProjection(rewrittenNode, bv);
   //Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
   //right);

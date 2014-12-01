@@ -69,7 +69,7 @@ public:
   static bool isVarWithCoefficientsQE(Node n);
   static bool isEquationQE(Node n);
   static bool isRelationalOperatorTypeQE(Kind k);
-  static Nde computeProjections(Node n);
+  static Node computeProjections(Node n);
   static Integer getIntegerFromNode(Node n);
   static Integer lcmQE(Integer a,Integer b);
   static Node fromIntegerToNodeQE(Integer n);
