@@ -2141,8 +2141,8 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n) {
   std::vector<Node> replaceNode;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
-      Node child = *i;
-      Node temp = replaceRelationOperatorQE(child);
+      Node c = *i;
+      Node temp = replaceRelationOperatorQE(c);
       replaceNode.push_back(temp);
     }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
