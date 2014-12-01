@@ -166,7 +166,7 @@ bool QuantifierEliminate::isEquationQE(Node n) {
 //      }
 //      if(in.getKind() == kind::NOT)
 //      {
-//        return n.noNode();
+//        return n.notNode();
 //      }
 //      else
 //      {
@@ -396,7 +396,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
       Kind k = body[0].getKind();
       if(body[0].getKind() == kind::OR || body[0].getKind() == kind::AND) {
         for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
-          children.push_back(convertToNNFQE(body[0][i].noNode()));
+          children.push_back(convertToNNFQE(body[0][i].notNode()));
         }
         k = body[0].getKind() == kind::AND ? kind::OR : kind::AND;
         Debug("expr-qetest")<<"New kind after negation "<<k<<"\n";
@@ -431,7 +431,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
  Constant c = Constant::mkConstant(n);
  Constant one = Constant::mkOne();
  Debug("expr-qetest")<<"Constant value "<<(c+one).getValue()<<"\n";
- Node temp = (c+one).geNode();
+ Node temp = (c+one).getNode();
  return temp;
  }
  else
@@ -441,7 +441,7 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
  Debug("expr-qetest")<<"Print the Node "<<n<<"\n";
  Constant one = Constant::mkOne();
  NodeBuilder<> nb(kind::PLUS);
- nb << n << one.geNode();
+ nb << n << one.getNode();
  n = nb;
  Debug("expr-qetest")<<"Print the new node "<<n<<"\n";
  return n;
@@ -1023,7 +1023,7 @@ Integer QuantifierEliminate::getIntegerFromNode(Node n) {
 Node QuantifierEliminate::fromIntegerToNodeQE(Integer n) {
   Rational r(n);
   Constant c = Constant::mkConstant(r);
-  return c.geNode();
+  return c.getNode();
 }
 void QuantifierEliminate::parseCoefficientQE(Node n) {
   for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
@@ -1039,7 +1039,7 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
     } else if(isVarQE(child)) {
 
       Constant one = Constant::mkOne();
-      Integer n = getIntegerFromNode(one.geNode());
+      Integer n = getIntegerFromNode(one.getNode());
       Container c(child, n);
       container.push_back(c);
     } else {
@@ -1051,7 +1051,7 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
           container.push_back(c);
         } else if(isVarQE(inner)) {
           Constant one = Constant::mkOne();
-          Integer n = getIntegerFromNode(one.geNode());
+          Integer n = getIntegerFromNode(one.getNode());
           Container c(inner, n);
           container.push_back(c);
         } else {
