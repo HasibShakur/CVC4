@@ -1623,10 +1623,11 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           Integer x = getIntegerFromNode(child);
           x = x + 1;
           Node change = fromIntegerToNodeQE(x);
+          Debug("expr-qetest")<<"change "<<change<<std::endl;
           TNode tn1 = child;
                     TNode tn2 = change;
           tempRight.substitute(tn1, tn2);
-          Debug("expr-qetest")<<"After replacement tempReft "<<tempRight<<std::endl;
+          Debug("expr-qetest")<<"After replacement tempLeft "<<tempRight<<std::endl;
           flag = true;
           break;
         } else {
