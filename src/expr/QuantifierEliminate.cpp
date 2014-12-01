@@ -1613,6 +1613,8 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
     if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
       Node tempLeft = left;
       Node tempRight = right;
+      Debug("expr-qetest")<<"Before replacement tempLeft "<<tempLeft<<std::endl;
+      Debug("expr-qetest")<<"Before replacement tempReft "<<tempRight<<std::endl;
       bool flag = false;
       for(Node::iterator j = tempRight.begin(), j_end = tempRight.end();
           j != j_end; ++j) {
@@ -1624,6 +1626,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           TNode tn1 = child;
                     TNode tn2 = change;
           tempRight.substitute(tn1, tn2);
+          Debug("expr-qetest")<<"After replacement tempReft "<<tempRight<<std::endl;
           flag = true;
           break;
         } else {
@@ -1635,6 +1638,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
       }
       finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
                                                    tempRight);
+      Debug("expr-qetest")<<"After replacement finalLeft "<<finalLeft<<std::endl;
       tempLeft = left;
       tempRight = right;
       bool flag1 = false;
@@ -1680,8 +1684,10 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
       }
       finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
                                                     tempRight);
+      Debug("expr-qetest")<<"After replacement finalRight "<<finalRight<<std::endl;
       Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, tempLeft,
                                                          tempRight);
+      Debug("expr-qetest")<<"After replacement returnNode "<<returnNode<<std::endl;
       return returnNode;
     } else {
       Node tempLeft = left;
