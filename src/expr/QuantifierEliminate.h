@@ -47,6 +47,18 @@ private:
   static void parseCoefficientQE(Node n);
   static Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
   static bool containsSameBoundVar(Node n,Node bv);
+  static Node rewriteRelationOperatorQE(Node n);
+  static Node replaceRelationOperatorQE(Node n);
+  static Node replaceGTQE(Node n);
+  static Node replaceGEQQE(Node n);
+  static Node replaceLEQQE(Node n);
+  static Node replaceEQUALQE(Node n);
+  static Node replaceLTQE(Node n);
+  static Node replaceNegateLTQE(Node n);
+  static Node replaceNegateLEQQE(Node n);
+  static Node replaceNegateGTQE(Node n);
+  static Node replaceNegateGEQQE(Node n);
+  static Node replaceNegateEQUALQE(Node n);
 
 public:
 //  static Node preRewriteForPrenex(Node n);
@@ -57,7 +69,7 @@ public:
   static bool isVarWithCoefficientsQE(Node n);
   static bool isEquationQE(Node n);
   static bool isRelationalOperatorTypeQE(Kind k);
-  static Node computeProjections(Node n);
+  static Nde computeProjections(Node n);
   static Integer getIntegerFromNode(Node n);
   static Integer lcmQE(Integer a,Integer b);
   static Node fromIntegerToNodeQE(Integer n);
