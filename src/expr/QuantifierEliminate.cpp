@@ -1735,7 +1735,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
     if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
       Node tempLeft = left;
       Node tempRight = right;
-      Debug("expr-qetest")<<"Before replacement bound var on right "<<tempLeft<<" "<<tempRight<<std::endl;
       bool flag = false;
       Node t;
       for(Node::iterator j = tempRight.begin(), j_end = tempRight.end();
@@ -1748,7 +1747,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           TNode tn1 = child;
           TNode tn2 = change;
           tempRight = tempRight.substitute(tn1, tn2);
-          Debug("expr-qetest")<<"After replacement tempRight "<<tempRight<<std::endl;
           flag = true;
         }
         if(child.hasBoundVar()) {
@@ -1756,17 +1754,21 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
             Integer p = getIntegerFromNode(child[0]);
             p = p * (-1);
             child[0] = fromIntegerToNodeQE(p);
+            Debug("expr-qetest")<<"child[0] > 0 "<<child[0]<<std::endl;
           } else {
             Integer p = getIntegerFromNode(child[0]);
             p = p.abs();
             child[0] = fromIntegerToNodeQE(p);
+            Debug("expr-qetest")<<"child[0] < 0 "<<child[0]<<std::endl;
           }
           if(getIntegerFromNode(tempLeft[0]) > 0) {
             Integer p = getIntegerFromNode(tempLeft[0]) * (-1);
             tempLeft[0] = fromIntegerToNodeQE(p);
+            Debug("expr-qetest")<<"tempLeft[0] > 0 "<<child[0]<<std::endl;
           } else {
             Integer p = getIntegerFromNode(tempLeft[0]).abs();
             tempLeft[0] = fromIntegerToNodeQE(p);
+            Debug("expr-qetest")<<"tempLeft[0] < 0 "<<child[0]<<std::endl;
           }
           t = child;
           TNode tn1 = child;
@@ -1805,16 +1807,20 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           if(getIntegerFromNode(tempLeft[0]) > 0) {
             Integer p = getIntegerFromNode(tempLeft[0]) * (-1);
             tempLeft[0] = fromIntegerToNodeQE(p);
+            Debug("expr-qetest")<<"tempLeft[0] > 0 "<<tempLeft[0]<<std::endl;
           } else {
             Integer p = getIntegerFromNode(tempLeft[0]).abs();
             tempLeft[0] = fromIntegerToNodeQE(p);
+            Debug("expr-qetest")<<"tempLeft[0] < 0 "<<tempLeft[0]<<std::endl;
           }
           if(getIntegerFromNode(child[0]) > 0) {
             Integer p = getIntegerFromNode(child[0]) * (-1);
             child[0] = fromIntegerToNodeQE(p);
+            Debug("expr-qetest")<<"child[0] > 0 "<<child[0]<<std::endl;
           } else {
             Integer p = getIntegerFromNode(child[0]).abs();
             child[0] = fromIntegerToNodeQE(p);
+            Debug("expr-qetest")<<"child[0] > 0 "<<child[0]<<std::endl;
           }
           t1 = child;
           TNode tn1 = child;
