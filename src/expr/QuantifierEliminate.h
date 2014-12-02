@@ -68,8 +68,6 @@ private:
   static Node replaceNegateGTQE(Node n);
   static Node replaceNegateGEQQE(Node n);
   static Node replaceNegateEQUALQE(Node n);
- // static Node substitutioForQE(Node original,Node toReplace,Node replacement);
-
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);

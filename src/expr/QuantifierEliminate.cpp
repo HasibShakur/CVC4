@@ -1670,6 +1670,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           TNode tn1 = child;
                     TNode tn2 = change;
           tempRight = tempRight.substitute(tn1, tn2);
+          flag1 = true;
         }
         if(child.hasBoundVar()) {
           if(getIntegerFromNode(tempLeft[0]) > 0) {
