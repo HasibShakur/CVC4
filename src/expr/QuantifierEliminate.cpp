@@ -1351,6 +1351,23 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   }
 
 }
+/*Node QuantifierEliminate::substitutioForQE(Node original,Node toReplace,Node replacement)
+{
+  std::vector<Node> nodes;
+  Kind k = original.getKind();
+  for(Node::iterator a = original.begin(),a_end = original.end();
+      a != a_end;
+      ++a)
+  {
+    Node b = *a;
+    nodes.push_back(b);
+  }
+  Node reconstructed = NodeManager::currentNM()->mkNode(k,nodes);
+  if(reconstructed != original)
+  {
+    Debug("expr-qetest") <<"Not same "<<original<<" "<<reconstructed<<std::endl;
+  }
+}*/
 Node QuantifierEliminate::replaceGTQE(Node n) {
   Node left = n[0];
   Node right = n[1];
@@ -1624,11 +1641,9 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           x = x + 1;
           Node change = fromIntegerToNodeQE(x);
           Debug("expr-qetest")<<"change "<<change<<std::endl;
-//          TNode tn1 = child;
-//                    TNode tn2 = change;
-//          tempRight.substitute(tn1, tn2);
-          *j = change;
-          Debug("expr-qetest")<<"After replacement tempLeft "<<tempRight<<std::endl;
+          TNode tn1 = child;
+                    TNode tn2 = change;
+          tempRight = tempRight.substitute(tn1, tn2);
           flag = true;
           break;
         } else {
@@ -1654,7 +1669,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           Node change = fromIntegerToNodeQE(x);
           TNode tn1 = child;
                     TNode tn2 = change;
-          tempRight.substitute(tn1, tn2);
+          tempRight = tempRight.substitute(tn1, tn2);
         }
         if(child.hasBoundVar()) {
           if(getIntegerFromNode(tempLeft[0]) > 0) {
@@ -1674,7 +1689,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           t = child;
           TNode tn1 = child;
                     TNode tn2 = tempLeft;
-          tempRight.substitute(tn1, tn2);
+          tempRight = tempRight.substitute(tn1, tn2);
           tempLeft = t;
           break;
         } else {
@@ -1735,7 +1750,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           Node change = fromIntegerToNodeQE(x);
           TNode tn1 = child;
                     TNode tn2 = change;
-          tempRight.substitute(tn1, tn2);
+          tempRight = tempRight.substitute(tn1, tn2);
           flag = true;
         }
         if(child.hasBoundVar()) {
@@ -1758,7 +1773,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           t = child;
           TNode tn1 = child;
                     TNode tn2 = tempLeft;
-          tempRight.substitute(tn1, tn2);
+          tempRight = tempRight.substitute(tn1, tn2);
           tempLeft = t;
           break;
         } else {
@@ -1783,7 +1798,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           Node change = fromIntegerToNodeQE(x);
           TNode tn1 = child;
                     TNode tn2 = change;
-          tempRight.substitute(tn1, tn2);
+          tempRight = tempRight.substitute(tn1, tn2);
           flag1 = true;
         }
         if(child.hasBoundVar()) {
@@ -1804,7 +1819,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           t1 = child;
           TNode tn1 = child;
                     TNode tn2 = tempLeft;
-          tempRight.substitute(tn1, tn2);
+          tempRight = tempRight.substitute(tn1, tn2);
           tempLeft = t1;
           break;
         } else {
