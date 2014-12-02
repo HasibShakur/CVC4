@@ -1703,8 +1703,8 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
       finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
                                                     tempLeft);
       Debug("expr-qetest")<<"After replacement finalRight "<<finalRight<<std::endl;
-      Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, tempLeft,
-                                                         tempRight);
+      Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
+                                                         finalRight);
       Debug("expr-qetest")<<"After replacement returnNode "<<returnNode<<std::endl;
       return returnNode;
     } else {
