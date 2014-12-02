@@ -1630,8 +1630,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
     if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
       Node tempLeft = left;
       Node tempRight = right;
-      Debug("expr-qetest")<<"Before replacement tempLeft "<<tempLeft<<std::endl;
-      Debug("expr-qetest")<<"Before replacement tempReft "<<tempRight<<std::endl;
       bool flag = false;
       for(Node::iterator j = tempRight.begin(), j_end = tempRight.end();
           j != j_end; ++j) {
@@ -1640,9 +1638,8 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           Integer x = getIntegerFromNode(child);
           x = x + 1;
           Node change = fromIntegerToNodeQE(x);
-          Debug("expr-qetest")<<"change "<<change<<std::endl;
-          TNode tn1 = child;
-                    TNode tn2 = change;
+         TNode tn1 = child;
+         TNode tn2 = change;
           tempRight = tempRight.substitute(tn1, tn2);
           flag = true;
           break;
@@ -1655,7 +1652,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
       }
       finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
                                                    tempRight);
-      Debug("expr-qetest")<<"After replacement finalLeft "<<finalLeft<<std::endl;
       tempLeft = left;
       tempRight = right;
       bool flag1 = false;
@@ -1702,7 +1698,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
       }
       finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
                                                     tempLeft);
-      Debug("expr-qetest")<<"After replacement finalRight "<<finalRight<<std::endl;
       Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
                                                          finalRight);
       Debug("expr-qetest")<<"After replacement returnNode "<<returnNode<<std::endl;
@@ -1740,6 +1735,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
     if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
       Node tempLeft = left;
       Node tempRight = right;
+      Debug("expr-qetest")<<"Before replacement bound var on right "<<tempLeft<<" "<<tempRight<<std::endl;
       bool flag = false;
       Node t;
       for(Node::iterator j = tempRight.begin(), j_end = tempRight.end();
@@ -1750,8 +1746,9 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           x = x + 1;
           Node change = fromIntegerToNodeQE(x);
           TNode tn1 = child;
-                    TNode tn2 = change;
+          TNode tn2 = change;
           tempRight = tempRight.substitute(tn1, tn2);
+          Debug("expr-qetest")<<"After replacement tempRight "<<tempRight<<std::endl;
           flag = true;
         }
         if(child.hasBoundVar()) {
@@ -1773,8 +1770,9 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
           }
           t = child;
           TNode tn1 = child;
-                    TNode tn2 = tempLeft;
+          TNode tn2 = tempLeft;
           tempRight = tempRight.substitute(tn1, tn2);
+          Debug("expr-qetest")<<"After replacement bound var on right "<<tempRight<<std::endl;
           tempLeft = t;
           break;
         } else {
@@ -1786,6 +1784,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
       }
       finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
                                                    tempRight);
+      Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
       tempLeft = left;
       tempRight = right;
       Node t1;
@@ -1832,8 +1831,10 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
       }
       finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
                                                     tempRight);
+      Debug("expr-qetest")<<"finalRight "<<finalRight<<std::endl;
       Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
                                                          finalRight);
+      Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
       return returnNode;
     } else {
       Node tempLeft = left;
