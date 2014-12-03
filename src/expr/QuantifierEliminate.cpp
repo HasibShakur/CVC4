@@ -2221,7 +2221,6 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node c = *i;
       Node temp = replaceRelationOperatorQE(c);
-      Debug("expr-qetest")<<"temp "<<temp<<std::endl;
       replaceNode.push_back(temp);
     }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
@@ -2262,12 +2261,26 @@ bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node child = *i;
-      if(child.getKind() == kind::NOT) {
-        if(child[0][0].hasBoundVar()) {
-          leftProjectionNode.push_back(false);
-        } else {
-          leftProjectionNode.push_back(true);
+      if(child.getKind() == kind::AND || child.getKind() == kind::OR) {
+        bool temp1 = true;
+        for(Node::iterator j = child.begin(), j_end = child.end(); j != j_end;
+            ++j) {
+          Node child_inner = *j;
+          if(child.getKind() == kind::AND) {
+            if(child_inner[0].hasBoundVar()) {
+              temp1 = temp1 & true;
+            } else {
+              temp1 = temp1 & false;
+            }
+          } else {
+            if(child_inner[0].hasBoundVar()) {
+              temp1 = temp1 | true;
+            } else {
+              temp1 = temp1 | false;
+            }
+          }
         }
+        leftProjectionNode.push_back(temp);
       } else {
         if(child[0].hasBoundVar()) {
           leftProjectionNode.push_back(true);
