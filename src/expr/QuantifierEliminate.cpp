@@ -1771,12 +1771,12 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
             tempLeft = tempLeft.substitute(tn1,tn2);
             Debug("expr-qetest")<<"tempLeft[0] < 0 "<<tempLeft[0]<<std::endl;
           }
-          t = child;
-          TNode tn1 = child;
-          TNode tn2 = tempLeft;
-          tempRight = tempRight.substitute(tn1, tn2);
-          Debug("expr-qetest")<<"After replacement bound var on right "<<tempRight<<std::endl;
-          tempLeft = t;
+//          t = child;
+//          TNode tn1 = child;
+//          TNode tn2 = tempLeft;
+//          tempRight = tempRight.substitute(tn1, tn2);
+//          Debug("expr-qetest")<<"After replacement bound var on right "<<tempRight<<std::endl;
+//          tempLeft = t;
           break;
         } else {
         }
