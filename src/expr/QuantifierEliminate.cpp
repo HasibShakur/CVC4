@@ -2280,7 +2280,7 @@ bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
             }
           }
         }
-        leftProjectionNode.push_back(temp);
+        leftProjectionNode.push_back(temp1);
       } else {
         if(child[0].hasBoundVar()) {
           leftProjectionNode.push_back(true);
