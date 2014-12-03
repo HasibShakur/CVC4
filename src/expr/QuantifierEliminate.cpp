@@ -1026,7 +1026,16 @@ Node QuantifierEliminate::fromIntegerToNodeQE(Integer n) {
   return c.getNode();
 }
 void QuantifierEliminate::parseCoefficientQE(Node n) {
-  for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
+  Node temp;
+  if(n.getKind() == kind::NOT)
+  {
+    temp = n[0];
+  }
+  else
+  {
+    temp = n;
+  }
+  for(Node::iterator i = temp.begin(), end = temp.end(); i != end; ++i) {
     Node child = *i;
     if(isVarWithCoefficientsQE(child)) {
       Integer n = getIntegerFromNode(child[0]);
