@@ -1118,12 +1118,12 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
   }
 
 }
-Node QuantifierEliminate::parseEquation(Node n, Node bv) {
-  Debug("expr-qetest")<<"To rewrite "<<n<<std::endl;
+Node QuantifierEliminate::parseEquation(Node t, Node bv) {
+  Debug("expr-qetest")<<"To rewrite "<<t<<std::endl;
   Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
   std::vector<Integer> boundVarCoeff;
-  for(Node::kinded_iterator i = n.begin(n.getKind()),
-  i_end = n.end(n.getKind());
+  for(Node::kinded_iterator i = t.begin(t.getKind()),
+  i_end = t.end(t.getKind());
   i!=i_end;
   ++i)
   {
@@ -1141,10 +1141,19 @@ Node QuantifierEliminate::parseEquation(Node n, Node bv) {
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
   if(lcmResult == 1)
   {
-    return n;
+    return t;
   }
   else
   {
+    Node n;
+    if(t.getKind() == kind::NOT)
+    {
+      n = t[0];
+    }
+    else
+    {
+      n = t;
+    }
     Kind k = n.getKind();
     Integer multiplier = 1;
     for(Node::iterator i = n.begin(),i_end = n.end();
