@@ -1748,14 +1748,14 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
             TNode tn1= child[0];
             TNode tn2 = fromIntegerToNodeQE(p);
             child = child.substitute(tn1,tn2);
-            Debug("expr-qetest")<<"child[0] > 0 "<<child[0]<<std::endl;
+            Debug("expr-qetest")<<"child[0] > 0 "<<child<<std::endl;
           } else {
             Integer p = getIntegerFromNode(child[0]);
             p = p.abs();
             TNode tn1= child[0];
             TNode tn2 = fromIntegerToNodeQE(p);
             child = child.substitute(tn1,tn2);
-            Debug("expr-qetest")<<"child[0] < 0 "<<child[0]<<std::endl;
+            Debug("expr-qetest")<<"child[0] < 0 "<<child<<std::endl;
           }
           if(getIntegerFromNode(tempLeft[0]) > 0) {
             Integer p = getIntegerFromNode(tempLeft[0]);
@@ -1763,20 +1763,20 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
             TNode tn1= tempLeft[0];
             TNode tn2 = fromIntegerToNodeQE(p);
             tempLeft = tempLeft.substitute(tn1,tn2);
-            Debug("expr-qetest")<<"tempLeft[0] > 0 "<<tempLeft[0]<<std::endl;
+            Debug("expr-qetest")<<"tempLeft[0] > 0 "<<tempLeft<<std::endl;
           } else {
             Integer p = getIntegerFromNode(tempLeft[0]).abs();
             TNode tn1= tempLeft[0];
             TNode tn2 = fromIntegerToNodeQE(p);
             tempLeft = tempLeft.substitute(tn1,tn2);
-            Debug("expr-qetest")<<"tempLeft[0] < 0 "<<tempLeft[0]<<std::endl;
+            Debug("expr-qetest")<<"tempLeft[0] < 0 "<<tempLeft<<std::endl;
           }
-//          t = child;
-//          TNode tn1 = child;
-//          TNode tn2 = tempLeft;
-//          tempRight = tempRight.substitute(tn1, tn2);
-//          Debug("expr-qetest")<<"After replacement bound var on right "<<tempRight<<std::endl;
-//          tempLeft = t;
+          t = child;
+          TNode tn1 = child;
+          TNode tn2 = tempLeft;
+          tempRight = tempRight.substitute(tn1, tn2);
+          Debug("expr-qetest")<<"After replacement bound var on right "<<tempRight<<std::endl;
+          tempLeft = t;
           break;
         } else {
         }
