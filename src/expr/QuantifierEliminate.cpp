@@ -1638,7 +1638,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
       tempRight = right;
       bool flag1 = false;
       Node replaceChild;
-      Node replaceLeft
+      Node replaceLeft;
       for(Node::iterator j = tempRight.begin(), j_end = tempRight.end();
       j != j_end; ++j) {
         Node child = *j;
