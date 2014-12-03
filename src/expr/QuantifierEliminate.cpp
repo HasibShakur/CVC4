@@ -2433,6 +2433,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
   std::vector<Node> temp2;
   Node temp3;
   Node final;
+  n = Rewriter::rewrite(n);
   if((n.getKind() == kind::NOT) || (n.getKind() == kind::FORALL)
       || (n.getKind() == kind::EXISTS)) {
     if(n.getKind() == kind::NOT) {
