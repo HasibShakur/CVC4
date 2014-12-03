@@ -1382,7 +1382,6 @@ Node QuantifierEliminate::replaceGTQE(Node n) {
             TNode tn1 = left[0];
             TNode tn2 = fromIntegerToNodeQE(p);
             replaceLeft = left.substitute(tn1, tn2);
-            ;
           } else {
             Integer p = getIntegerFromNode(left[0]);
             p = p.abs();
@@ -1391,9 +1390,9 @@ Node QuantifierEliminate::replaceGTQE(Node n) {
             replaceLeft = left.substitute(tn1, tn2);
           }
           TNode tn1 = child;
-          TNode tn2 = left;
+          TNode tn2 = replaceLeft;
           right = right.substitute(tn1, tn2);
-          left = replaceLeft;
+          left = replaceChild;
           break;
         } else {
         }
@@ -1473,7 +1472,6 @@ Node QuantifierEliminate::replaceGEQQE(Node n) {
             TNode tn1 = left[0];
             TNode tn2 = fromIntegerToNodeQE(p);
             replaceLeft = left.substitute(tn1, tn2);
-            ;
           } else {
             Integer p = getIntegerFromNode(left[0]).abs();
             TNode tn1 = left[0];
@@ -1493,9 +1491,9 @@ Node QuantifierEliminate::replaceGEQQE(Node n) {
             replaceChild = child.substitute(tn1, tn2);
           }
           TNode tn1 = child;
-          TNode tn2 = left;
+          TNode tn2 = replaceLeft;
           right = right.substitute(tn1, tn2);
-          left = replaceLeft;
+          left = replaceChild;
           break;
         } else {
         }
@@ -1609,9 +1607,9 @@ Node QuantifierEliminate::replaceLEQQE(Node n) {
             replaceChild = child.substitute(tn1, tn2);
           }
           TNode tn1 = child;
-          TNode tn2 = left;
+          TNode tn2 = replaceLeft;
           right = right.substitute(tn1, tn2);
-          left = replaceLeft;
+          left = replaceChild;
           break;
         } else {
         }
@@ -1716,9 +1714,9 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
             replaceChild = child.substitute(tn1,tn2);
           }
           TNode tn1 = child;
-          TNode tn2 = tempLeft;
+          TNode tn2 = replaceLeft;
           tempRight = tempRight.substitute(tn1, tn2);
-          tempLeft = replaceLeft;
+          tempLeft = replaceChild;
           break;
         } else {
         }
@@ -1905,7 +1903,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
       tempRight);
       tempLeft = left;
       tempRight = right;
-      if(isConstQE(right)) {
+      if(isConstQE(tempRight)) {
         Integer x = getIntegerFromNode(tempRight);
         x = x - 1;
         TNode tn1 = tempRight;
@@ -1933,30 +1931,41 @@ Node QuantifierEliminate::replaceLTQE(Node n) {
     return n;
   } else {
     if(n.getKind() == kind::PLUS || n.getKind() == kind::MINUS) {
-      Node t;
+      Node replaceChild;
+      Node replaceLeft;
       for(Node::iterator j = right.begin(), j_end = right.end(); j != j_end;
           ++j) {
         Node child = *j;
         if(child.hasBoundVar()) {
           if(getIntegerFromNode(left[0]) > 0) {
-            Integer p = getIntegerFromNode(left[0]) * (-1);
-            left[0] = fromIntegerToNodeQE(p);
+            Integer p = getIntegerFromNode(left[0]);
+            p = p * (-1);
+            TNode tn1 = left[0];
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceLeft = left.substitute(tn1, tn2);
+
           } else {
             Integer p = getIntegerFromNode(left[0]).abs();
-            left[0] = fromIntegerToNodeQE(p);
+            TNode tn1 = left[0];
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceLeft = left.substitute(tn1, tn2);
           }
           if(getIntegerFromNode(child[0]) > 0) {
-            Integer p = getIntegerFromNode(child[0]) * (-1);
-            child[0] = fromIntegerToNodeQE(p);
+            Integer p = getIntegerFromNode(child[0]);
+            p = p * (-1);
+            TNode tn1 = child[0];
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceChild = child.substitute(tn1, tn2);
           } else {
             Integer p = getIntegerFromNode(child[0]).abs();
-            child[0] = fromIntegerToNodeQE(p);
+            TNode tn1 = child[0];
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceChild = child.substitute(tn1, tn2);
           }
-          t = child;
           TNode tn1 = child;
-          TNode tn2 = left;
-          right.substitute(tn1, tn2);
-          left = t;
+          TNode tn2 = replaceLeft;
+          right = right.substitute(tn1, tn2);
+          left = replaceChild;
           break;
         } else {
         }
@@ -1981,7 +1990,8 @@ Node QuantifierEliminate::replaceNegateLEQQE(Node n) {
   } else {
 
     if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
-      Node t;
+      Node replaceChild;
+      Node replaceLeft;
       for(Node::iterator j = right.begin(), j_end = right.end(); j != j_end;
           ++j) {
         Node child = *j;
@@ -1989,26 +1999,33 @@ Node QuantifierEliminate::replaceNegateLEQQE(Node n) {
           if(getIntegerFromNode(child[0]) > 0) {
             Integer p = getIntegerFromNode(child[0]);
             p = p * (-1);
-            child[0] = fromIntegerToNodeQE(p);
+            TNode tn1 = child[0];
+                        TNode tn2 = fromIntegerToNodeQE(p);
+                        replaceChild = child.substitute(tn1, tn2);
           } else {
             Integer p = getIntegerFromNode(child[0]);
             p = p.abs();
-            child[0] = fromIntegerToNodeQE(p);
+            TNode tn1 = child[0];
+                        TNode tn2 = fromIntegerToNodeQE(p);
+                        replaceChild = child.substitute(tn1, tn2);
           }
           if(getIntegerFromNode(left[0]) > 0) {
             Integer p = getIntegerFromNode(left[0]);
             p = p * (-1);
-            left[0] = fromIntegerToNodeQE(p);
+            TNode tn1 = left[0];
+                        TNode tn2 = fromIntegerToNodeQE(p);
+                        replaceLeft = left.substitute(tn1, tn2);
           } else {
             Integer p = getIntegerFromNode(left[0]);
             p = p.abs();
-            left[0] = fromIntegerToNodeQE(p);
+            TNode tn1 = left[0];
+                                   TNode tn2 = fromIntegerToNodeQE(p);
+                                   replaceLeft = left.substitute(tn1, tn2);
           }
-          t = child;
           TNode tn1 = child;
-          TNode tn2 = left;
-          right.substitute(tn1, tn2);
-          left = t;
+          TNode tn2 = replaceLeft;
+          right = right.substitute(tn1, tn2);
+          left = replaceChild;
           break;
         } else {
         }
@@ -2055,7 +2072,9 @@ Node QuantifierEliminate::replaceNegateGTQE(Node n) {
       if(isConstQE(right)) {
         Integer x = getIntegerFromNode(right);
         x = x + 1;
-        right = fromIntegerToNodeQE(x);
+        TNode tn1 = right;
+        TNode tn2 = fromIntegerToNodeQE(x);
+        right = right.substitute(tn1,tn2);
       } else {
         right = NodeManager::currentNM()->mkNode(kind::PLUS, right,
                                                  fromIntegerToNodeQE(1));
@@ -2065,7 +2084,8 @@ Node QuantifierEliminate::replaceNegateGTQE(Node n) {
     }
   } else {
     if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
-      Node t;
+      Node replaceChild;
+      Node replaceLeft;
       bool flag = false;
       for(Node::iterator j = right.begin(), j_end = right.end(); j != j_end;
           ++j) {
@@ -2076,33 +2096,40 @@ Node QuantifierEliminate::replaceNegateGTQE(Node n) {
           Node change = fromIntegerToNodeQE(x);
           TNode tn1 = child;
           TNode tn2 = change;
-          right.substitute(tn1, tn2);
+          right = right.substitute(tn1, tn2);
           flag = true;
         }
         if(child.hasBoundVar()) {
           if(getIntegerFromNode(child[0]) > 0) {
             Integer p = getIntegerFromNode(child[0]);
             p = p * (-1);
-            child[0] = fromIntegerToNodeQE(p);
+            TNode tn1 = child[0];
+                                   TNode tn2 = fromIntegerToNodeQE(p);
+                                   replaceChild = child.substitute(tn1, tn2);
           } else {
             Integer p = getIntegerFromNode(child[0]);
             p = p.abs();
-            child[0] = fromIntegerToNodeQE(p);
+            TNode tn1 = child[0];
+                                   TNode tn2 = fromIntegerToNodeQE(p);
+                                   replaceChild = child.substitute(tn1, tn2);;
           }
           if(getIntegerFromNode(left[0]) > 0) {
             Integer p = getIntegerFromNode(left[0]);
             p = p * (-1);
-            left[0] = fromIntegerToNodeQE(p);
+            TNode tn1 = left[0];
+                                   TNode tn2 = fromIntegerToNodeQE(p);
+                                   replaceLeft = left.substitute(tn1, tn2);
           } else {
             Integer p = getIntegerFromNode(left[0]);
             p = p.abs();
-            left[0] = fromIntegerToNodeQE(p);
+            TNode tn1 = left[0];
+                                   TNode tn2 = fromIntegerToNodeQE(p);
+                                   replaceLeft = left.substitute(tn1, tn2);
           }
-          t = child;
           TNode tn1 = child;
-          TNode tn2 = left;
-          right.substitute(tn1, tn2);
-          left = t;
+          TNode tn2 = replaceLeft;
+          right = right.substitute(tn1, tn2);
+          left = replaceChild;
           break;
         } else {
         }
@@ -2117,8 +2144,10 @@ Node QuantifierEliminate::replaceNegateGTQE(Node n) {
       if(isConstQE(left)) {
         Integer x = getIntegerFromNode(left);
         x = x - 1;
-        left = fromIntegerToNodeQE(x);
-      } else {
+        TNode tn1 = left;
+        TNode tn2 = fromIntegerToNodeQE(x);
+        left = left.substitute(tn1,tn2);
+              } else {
         left = NodeManager::currentNM()->mkNode(kind::PLUS, left,
                                                 fromIntegerToNodeQE(-1));
       }
@@ -2159,21 +2188,21 @@ Node QuantifierEliminate::replaceNegateGEQQE(Node n) {
           if(getIntegerFromNode(left[0]) > 0) {
             Integer p = getIntegerFromNode(left[0]);
             p = p * (-1);
-            TNode tn1 = child[0];
+            TNode tn1 = left[0];
             TNode tn2 = fromIntegerToNodeQE(p);
             replaceLeft = left.substitute(tn1, tn2);
             ;
           } else {
             Integer p = getIntegerFromNode(left[0]);
             p = p.abs();
-            TNode tn1 = child[0];
+            TNode tn1 = left[0];
             TNode tn2 = fromIntegerToNodeQE(p);
             replaceLeft = left.substitute(tn1, tn2);
           }
           TNode tn1 = child;
-          TNode tn2 = left;
+          TNode tn2 = replaceLeft;
           right = right.substitute(tn1, tn2);
-          left = replaceLeft;
+          left = replaceChild;
           break;
         } else {
         }
@@ -2232,9 +2261,9 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n) {
             replaceChild = child.substitute(tn1, tn2);
           }
           TNode tn1 = child;
-          TNode tn2 = tempLeft;
+          TNode tn2 = replaceLeft;
           tempRight = tempRight.substitute(tn1, tn2);
-          tempLeft = replaceLeft;
+          tempLeft = replaceChild;
           break;
         } else {
         }
