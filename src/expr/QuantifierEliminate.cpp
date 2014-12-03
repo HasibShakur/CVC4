@@ -1838,8 +1838,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
         tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
         fromIntegerToNodeQE(-1));
       }
-      Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
-      Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
       finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
       tempLeft);
       Debug("expr-qetest")<<"finalRight "<<finalRight<<std::endl;
@@ -2223,13 +2221,17 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node c = *i;
       Node temp = replaceRelationOperatorQE(c);
+      Debug("expr-qetest")<<"temp "<<temp<<std::endl;
       replaceNode.push_back(temp);
     }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
                                                        replaceNode);
+    Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   } else {
-    return replaceRelationOperatorQE(n);
+    Node returnNode = replaceRelationOperatorQE(n);
+    Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
+    return returnNode;
   }
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
