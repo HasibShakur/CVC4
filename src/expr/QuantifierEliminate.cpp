@@ -2365,7 +2365,6 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   Node t;
   t = eliminateImpliesQE(n);
   t = convertToNNFQE(t);
-  t = Rewriter::rewrite(t);
   for(int i = 0; i < (int) temp.size(); i++) {
     t = rewriteForSameCoefficients(t, temp[i]);
   }
