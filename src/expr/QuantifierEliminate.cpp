@@ -2452,6 +2452,40 @@ Node QuantifierEliminate::computeProjections(Node n) {
   Node final;
   n = Rewriter::rewrite(n);
   Debug("expr-qetest")<<"Input expression "<<n<<std::endl;
+  if((n.getKind() == kind::AND)||(n.getKind() == kind::OR))
+  {
+    std::vector<Node> argsMiniScoped;
+    Node result;
+    for(Node::iterator i = n.begin(), i_end = n.end();
+        i != i_end;
+        ++i)
+    {
+      Node child = *i;
+      std::vector<Node> multipleBoundVar2;
+      if(child.getKind() == kind::FORALL)
+      {
+        if(child[0].getNumChildren() > 1)
+        {
+          for(int j = 0;j<(int)child.getNumChildren();j++)
+          {
+            multipleBoundVar2.push_back(child[0][i]);
+          }
+          boundVar.push_back(multipleBoundVar2);
+        }
+        else
+        {
+          multipleBoundVar2.push_back(child[0][0]);
+          boundVar.push_back(multipleBoundVar2);
+        }
+      }
+      args.push_back(child[1]);
+      result = performCaseAnalysis(args.back(),boundVar);
+      argsMiniScoped.push_back(result);
+    }
+    result = NodeManager::currentNM()->mkNode(n.getKind(),argsMiniScoped);
+
+    return result;
+  }
   if((n.getKind() == kind::NOT) || (n.getKind() == kind::FORALL)
       || (n.getKind() == kind::EXISTS)) {
     if(n.getKind() == kind::NOT) {
@@ -2467,7 +2501,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
           boundVar.push_back(multipleBoundVar1);
         }
         args.push_back(n[0][1]);
-        return computeProjections(n[0][1]);
+        return computeProjections(n[0][1].negate());
       } else {
         if(boundVar.size() > 0) {
           while(boundVar.size() > 0) {
