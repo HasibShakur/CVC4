@@ -2468,7 +2468,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         {
           for(int j = 0;j<(int)child.getNumChildren();j++)
           {
-            multipleBoundVar2.push_back(child[0][i]);
+            multipleBoundVar2.push_back(child[0][j]);
           }
           boundVar.push_back(multipleBoundVar2);
         }
