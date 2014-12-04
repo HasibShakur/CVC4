@@ -2452,6 +2452,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
   Node temp3;
   Node final;
   n = Rewriter::rewrite(n);
+  Debug("expr-qetest")<<"Input expression "<<n<<std::endl;
   if((n.getKind() == kind::NOT) || (n.getKind() == kind::FORALL)
       || (n.getKind() == kind::EXISTS)) {
     if(n.getKind() == kind::NOT) {
