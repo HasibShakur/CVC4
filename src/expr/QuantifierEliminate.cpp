@@ -2479,7 +2479,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         }
       }
       args.push_back(child[1]);
-      result = performCaseAnalysis(args.back(),boundVar);
+      result = performCaseAnalysis(args.back(),boundVar.back());
       argsMiniScoped.push_back(result);
     }
     result = NodeManager::currentNM()->mkNode(n.getKind(),argsMiniScoped);
