@@ -2477,10 +2477,14 @@ Node QuantifierEliminate::computeProjections(Node n) {
           multipleBoundVar2.push_back(child[0][0]);
           boundVar.push_back(multipleBoundVar2);
         }
+        args.push_back(child[1]);
+              Node temp1 = args.back();
+              std::vector<Node> temp2 = boundVar.back();
+              result = performCaseAnalysis(temp1,boundVar.back());
+              argsMiniScoped.push_back(result);
       }
-      args.push_back(child[1]);
-      result = performCaseAnalysis(args.back(),boundVar.back());
-      argsMiniScoped.push_back(result);
+      args.pop_back();
+      boundVar.pop_back();
     }
     result = NodeManager::currentNM()->mkNode(n.getKind(),argsMiniScoped);
 
