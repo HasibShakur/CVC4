@@ -2462,6 +2462,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
 
 std::vector<Node> QuantifierEliminate::computeMultipleBoundVariables(Node n) {
   std::vector<Node> multipleBoundVars;
+  Debug("expr-qetest")<<"n[0] "<<n[0]<<std::endl;
   if(n[0].getNumChildren() > 1) {
     for(int i = 0; i < (int) n.getNumChildren(); i++) {
       Debug("expr-qetest")<<"boundVar "<<n[0][i][0]<<std::endl;
@@ -2521,6 +2522,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         Node r = args.back();
         Debug("expr-qetest")<<"r.negate "<<r.negate()<<std::endl;
         final = r.negate();
+        args.pop_back();
       } else {
         while(!boundVar.empty()) {
           temp1 = args.back();
@@ -2535,6 +2537,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         Node r = args.back();
         Debug("expr-qetest")<<"r.negate "<<r.negate()<<std::endl;
         final = r.negate();
+        args.pop_back();
       }
     }
   } else if(n.getKind() == kind::FORALL) {
@@ -2572,6 +2575,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       Node r = args.back();
       Debug("expr-qetest")<<"r "<<r<<std::endl;
       final = r;
+      args.pop_back();
     } else {
       while(!boundVar.empty()) {
         temp1 = args.back();
@@ -2586,6 +2590,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       Node r = args.back();
       Debug("expr-qetest")<<"r "<<r<<std::endl;
       final = r;
+      args.pop_back();
     }
 
   }
