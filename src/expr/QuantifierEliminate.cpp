@@ -2480,9 +2480,9 @@ Node QuantifierEliminate::computeProjections(Node n) {
   Node temp3;
   Node final;
   Node temp;
+  Debug("expr-qetest")<<"Initial Node "<<n<<std::endl;
   if(n.getKind() == kind::NOT) {
     temp = n[0];
-    Debug("expr-qetest")<<"temp "<<temp<<std::endl;
     if(temp.getKind() == kind::FORALL) {
       std::vector < Node > bv = computeMultipleBoundVariables(temp[0]);
       boundVar.push_back(bv);
