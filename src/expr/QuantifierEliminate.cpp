@@ -2491,11 +2491,12 @@ Node QuantifierEliminate::computeProjections(Node n) {
     } else if(temp.getKind() == kind::AND) {
       std::vector<Node> miniscopedNode;
       Node result;
+      std::vector<Node> bv_child;
       for(Node::iterator i = temp.begin(), i_end = temp.end(); i != i_end;
           ++i) {
         Node child = *i;
         if(child.getKind() == kind::FORALL) {
-          std::vector<Node> bv_child = computeMultipleBoundVariables(child);
+          bv_child = computeMultipleBoundVariables(child);
           result = performCaseAnalysis(child[1], bv_child);
           miniscopedNode.push_back(result);
         } else {
@@ -2544,7 +2545,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
   } else if(n.getKind() == kind::AND) {
     std::vector<Node> miniscopedNode1;
     Node result1;
-    std::vector<Node> bv_child1
+    std::vector<Node> bv_child1;
     for(Node::iterator j = n.begin(), j_end = n.end(); j != j_end; ++j) {
       Node child1 = *j;
       if(child1.getKind() == kind::FORALL) {
