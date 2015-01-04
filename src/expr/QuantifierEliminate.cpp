@@ -2565,7 +2565,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         while(!args.empty()) {
           args.pop_back();
         }
-        args.push_back(result);
+        args.push_back(result1);
       }
       Node r = args.back();
       Debug("expr-qetest")<<"r "<<r<<std::endl;
@@ -2579,7 +2579,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         while(!args.empty()) {
           args.pop_back();
         }
-        args.push_back(result);
+        args.push_back(result1);
       }
       Node r = args.back();
       Debug("expr-qetest")<<"r "<<r<<std::endl;
