@@ -2463,6 +2463,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
 std::vector<Node> QuantifierEliminate::computeMultipleBoundVariables(Node n) {
   std::vector<Node> multipleBoundVars;
   Debug("expr-qetest")<<"n[0] "<<n[0]<<std::endl;
+  Debug("expr-qetest")<<"n[0] num of child "<<n[0].getNumChildren()<<std::endl;
   if(n[0].getNumChildren() > 1) {
     for(int i = 0; i < (int) n.getNumChildren(); i++) {
       Debug("expr-qetest")<<"boundVar "<<n[0][i][0]<<std::endl;
