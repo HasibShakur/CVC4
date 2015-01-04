@@ -2457,6 +2457,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     args = final;
     bv.pop_back();
   }
+  Debug("expr-qetest")<<"args "<<args<<std::endl;
   return args;
 }
 
@@ -2563,6 +2564,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     if(miniscopedNode1.size() > 0) {
       Node newNode1 = NodeManager::currentNM()->mkNode(kind::AND,
                                                       miniscopedNode1);
+      Debug("expr-qetest")<<"newNode1 "<<newNode1<<std::endl;
       args.push_back(newNode1);
       while(!boundVar.empty()) {
         temp1 = args.back();
