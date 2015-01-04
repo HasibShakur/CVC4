@@ -2453,7 +2453,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     var = bv.back();
     Debug("expr-qetest")<<"left "<<args<<std::endl;
     Debug("expr-qetest")<<"right "<<args<<std::endl;
-    final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
+    final = NodeManager::currentNM()->mkNode(kind::OR, args, args);
     args = final;
     bv.pop_back();
   }
