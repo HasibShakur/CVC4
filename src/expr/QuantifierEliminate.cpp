@@ -1027,12 +1027,9 @@ Node QuantifierEliminate::fromIntegerToNodeQE(Integer n) {
 }
 void QuantifierEliminate::parseCoefficientQE(Node n) {
   Node temp;
-  if(n.getKind() == kind::NOT)
-  {
+  if(n.getKind() == kind::NOT) {
     temp = n[0];
-  }
-  else
-  {
+  } else {
     temp = n;
   }
   for(Node::iterator i = temp.begin(), end = temp.end(); i != end; ++i) {
@@ -2018,27 +2015,27 @@ Node QuantifierEliminate::replaceNegateLEQQE(Node n) {
             Integer p = getIntegerFromNode(child[0]);
             p = p * (-1);
             TNode tn1 = child[0];
-                        TNode tn2 = fromIntegerToNodeQE(p);
-                        replaceChild = child.substitute(tn1, tn2);
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceChild = child.substitute(tn1, tn2);
           } else {
             Integer p = getIntegerFromNode(child[0]);
             p = p.abs();
             TNode tn1 = child[0];
-                        TNode tn2 = fromIntegerToNodeQE(p);
-                        replaceChild = child.substitute(tn1, tn2);
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceChild = child.substitute(tn1, tn2);
           }
           if(getIntegerFromNode(left[0]) > 0) {
             Integer p = getIntegerFromNode(left[0]);
             p = p * (-1);
             TNode tn1 = left[0];
-                        TNode tn2 = fromIntegerToNodeQE(p);
-                        replaceLeft = left.substitute(tn1, tn2);
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceLeft = left.substitute(tn1, tn2);
           } else {
             Integer p = getIntegerFromNode(left[0]);
             p = p.abs();
             TNode tn1 = left[0];
-                                   TNode tn2 = fromIntegerToNodeQE(p);
-                                   replaceLeft = left.substitute(tn1, tn2);
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceLeft = left.substitute(tn1, tn2);
           }
           TNode tn1 = child;
           TNode tn2 = replaceLeft;
@@ -2092,7 +2089,7 @@ Node QuantifierEliminate::replaceNegateGTQE(Node n) {
         x = x + 1;
         TNode tn1 = right;
         TNode tn2 = fromIntegerToNodeQE(x);
-        right = right.substitute(tn1,tn2);
+        right = right.substitute(tn1, tn2);
       } else {
         right = NodeManager::currentNM()->mkNode(kind::PLUS, right,
                                                  fromIntegerToNodeQE(1));
@@ -2122,27 +2119,28 @@ Node QuantifierEliminate::replaceNegateGTQE(Node n) {
             Integer p = getIntegerFromNode(child[0]);
             p = p * (-1);
             TNode tn1 = child[0];
-                                   TNode tn2 = fromIntegerToNodeQE(p);
-                                   replaceChild = child.substitute(tn1, tn2);
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceChild = child.substitute(tn1, tn2);
           } else {
             Integer p = getIntegerFromNode(child[0]);
             p = p.abs();
             TNode tn1 = child[0];
-                                   TNode tn2 = fromIntegerToNodeQE(p);
-                                   replaceChild = child.substitute(tn1, tn2);;
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceChild = child.substitute(tn1, tn2);
+            ;
           }
           if(getIntegerFromNode(left[0]) > 0) {
             Integer p = getIntegerFromNode(left[0]);
             p = p * (-1);
             TNode tn1 = left[0];
-                                   TNode tn2 = fromIntegerToNodeQE(p);
-                                   replaceLeft = left.substitute(tn1, tn2);
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceLeft = left.substitute(tn1, tn2);
           } else {
             Integer p = getIntegerFromNode(left[0]);
             p = p.abs();
             TNode tn1 = left[0];
-                                   TNode tn2 = fromIntegerToNodeQE(p);
-                                   replaceLeft = left.substitute(tn1, tn2);
+            TNode tn2 = fromIntegerToNodeQE(p);
+            replaceLeft = left.substitute(tn1, tn2);
           }
           TNode tn1 = child;
           TNode tn2 = replaceLeft;
@@ -2164,8 +2162,8 @@ Node QuantifierEliminate::replaceNegateGTQE(Node n) {
         x = x - 1;
         TNode tn1 = left;
         TNode tn2 = fromIntegerToNodeQE(x);
-        left = left.substitute(tn1,tn2);
-              } else {
+        left = left.substitute(tn1, tn2);
+      } else {
         left = NodeManager::currentNM()->mkNode(kind::PLUS, left,
                                                 fromIntegerToNodeQE(-1));
       }
@@ -2370,7 +2368,7 @@ Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
   }
   return t;
 }
-bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
+Node QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
   std::vector<bool> leftProjectionNode;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
@@ -2414,19 +2412,20 @@ bool QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
         leftProjectionNode.pop_back();
       }
     }
-    return temp;
+    Node returnNode = mkBoolNode(temp);
+    return returnNode;
   } else {
     if(n.getKind() == kind::NOT) {
       if(n[0][0].hasBoundVar()) {
-        return false;
+        return mkBoolNode(false);
       } else {
-        return true;
+        return mkBoolNode(true);
       }
     } else {
       if(n[0].hasBoundVar()) {
-        return true;
+        return mkBoolNode(true);
       } else {
-        return false;
+        return mkBoolNode(false);
       }
     }
   }
@@ -2435,134 +2434,298 @@ Node QuantifierEliminate::computeRightProjection(Node n, std::vector<Node> bv) {
   return n;
 }
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
-  Node rewrittenNode = doRewriting(n, bv);
-  bool left = computeLeftProjection(rewrittenNode, bv);
-  Debug("expr-qetest")<<"Left projection "<<left<<std::endl;
-  Node right = computeRightProjection(rewrittenNode, bv);
-  //Node finalNode = NodeManager::currentNM()->mkNode(kind::OR, mkBoolNode(left),
-  //right);
-  Node finalNode = Rewriter::rewrite(right);
-  return finalNode;
+  // Node rewrittenNode = doRewriting(n, bv);
+  Node args = n;
+  Node var;
+  Node left;
+  Node right;
+  Node final;
+ /* while(bv.size() > 0) {
+    var = bv.back();
+    left = computeLeftProjection(args, var);
+    right = computeRightProjection(args, var);
+    final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
+    args = final;
+    bv.pop_back();
+  }*/
+  while(bv.size() > 0)
+  {
+    var = bv.back();
+    Debug("expr-qetest")<<"left "<<args<<std::endl;
+    Debug("expr-qetest")<<"right "<<args<<std::endl;
+    final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
+    args = final;
+    bv.pop_back();
+  }
+  return args;
 }
 
+std::vector<Node> computeMultipleBoundVariables(Node n) {
+  std::vector<Node> multipleBoundVars;
+  if(n.getNumChildren() > 1) {
+    for(int i = 0; i < (int) n.getNumChildren(); i++) {
+      Debug("expr-qetest")<<"boundVar "<<n[i][0]<<std::endl;
+      multipleBoundVars.push_back(n[i][0]);
+    }
+  }
+  else
+  {
+    multipleBoundVars.push_back(n[0]);
+  }
+  return multipleBoundVars;
+}
 Node QuantifierEliminate::computeProjections(Node n) {
   Node temp1;
   std::vector<Node> temp2;
   Node temp3;
   Node final;
-  n = Rewriter::rewrite(n);
-  Debug("expr-qetest")<<"Input expression "<<n<<std::endl;
-  if((n.getKind() == kind::AND)||(n.getKind() == kind::OR))
-  {
-    std::vector<Node> argsMiniScoped;
-    Node result;
-    for(Node::iterator i = n.begin(), i_end = n.end();
-        i != i_end;
-        ++i)
-    {
-      Node child = *i;
-      std::vector<Node> multipleBoundVar2;
-      if(child.getKind() == kind::FORALL)
-      {
-        if(child[0].getNumChildren() > 1)
-        {
-          for(int j = 0;j<(int)child.getNumChildren();j++)
-          {
-            multipleBoundVar2.push_back(child[0][j]);
-          }
-          boundVar.push_back(multipleBoundVar2);
-        }
-        else
-        {
-          multipleBoundVar2.push_back(child[0][0]);
-          boundVar.push_back(multipleBoundVar2);
-        }
-        args.push_back(child[1]);
-              Node temp1 = args.back();
-              std::vector<Node> temp2 = boundVar.back();
-              result = performCaseAnalysis(temp1,boundVar.back());
-              argsMiniScoped.push_back(result);
-      }
-      args.pop_back();
-      boundVar.pop_back();
-    }
-    result = NodeManager::currentNM()->mkNode(n.getKind(),argsMiniScoped);
-
-    return result;
-  }
-  if((n.getKind() == kind::NOT) || (n.getKind() == kind::FORALL)
-      || (n.getKind() == kind::EXISTS)) {
-    if(n.getKind() == kind::NOT) {
-      if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS)) {
-        std::vector<Node> multipleBoundVar1;
-        if(n[0][0].getNumChildren() > 1) {
-          for(int i = 0; i < (int) n[0][0].getNumChildren(); i++) {
-            multipleBoundVar1.push_back(n[0][0][i]);
-          }
-          boundVar.push_back(multipleBoundVar1);
+  Node temp;
+  if(n.getKind() == kind::NOT) {
+    temp = n[0];
+    Debug("expr-qetest")<<"temp "<<temp<<std::endl;
+    if(temp.getKind() == kind::FORALL) {
+      std::vector < Node > bv = computeMultipleBoundVariables(temp[0]);
+      boundVar.push_back(bv);
+      args.push_back(temp[1]);
+      return computeProjections(temp[1]);
+    } else if(temp.getKind() == kind::AND) {
+      std::vector<Node> miniscopedNode;
+      Node result;
+      for(Node::iterator i = temp.begin(), i_end = temp.end(); i != i_end;
+          ++i) {
+        Node child = *i;
+        if(child.getKind() == kind::FORALL) {
+          std::vector<Node> bv_child = computeMultipleBoundVariables(child[0]);
+          result = performCaseAnalysis(child[1], bv_child);
+          miniscopedNode.push_back(result);
         } else {
-          multipleBoundVar1.push_back(n[0][0][0]);
-          boundVar.push_back(multipleBoundVar1);
+          //case to handle in case of no miniscoping
+          // do nothing
         }
-        args.push_back(n[0][1]);
-        return computeProjections(n[0][1].negate());
+      }
+      if(miniscopedNode.size() > 0) {
+        Node newNode = NodeManager::currentNM()->mkNode(kind::AND,
+                                                        miniscopedNode);
+        args.push_back(newNode.negate());
+        while(!boundVar.empty()) {
+          temp1 = args.back();
+          temp2 = boundVar.back();
+          result = performCaseAnalysis(temp1, temp2);
+          boundVar.pop_back();
+          while(!args.empty()) {
+            args.pop_back();
+          }
+          args.push_back(result);
+        }
+        Node r = args.back();
+        Debug("expr-qetest")<<"r.negate "<<r.negate()<<std::endl;
+        final = r.negate();
       } else {
-        if(boundVar.size() > 0) {
-          while(boundVar.size() > 0) {
-            temp1 = args.back();
-            temp2 = boundVar.back();
-            temp3 = performCaseAnalysis(temp1, temp2);
-            temp3 = temp3.negate();
-            //args.pop_back();
-            boundVar.pop_back();
-            while(!args.empty()) {
-              args.pop_back();
-            }
-            args.push_back(temp3);
+        while(!boundVar.empty()) {
+          temp1 = args.back();
+          temp2 = boundVar.back();
+          result = performCaseAnalysis(temp1, temp2);
+          boundVar.pop_back();
+          while(!args.empty()) {
+            args.pop_back();
           }
-          final = args.back();
-          args.pop_back();
-          return final;
-        } else {
-          final = n.negate();
-          return final;
+          args.push_back(result);
         }
+        Node r = args.back();
+        Debug("expr-qetest")<<"r.negate "<<r.negate()<<std::endl;
+        final = r.negate();
       }
     }
-    std::vector<Node> multipleBoundVar2;
-    if(n[0].getNumChildren() > 1) {
-      for(int i = 0; i < (int) n[0].getNumChildren(); i++) {
-        multipleBoundVar2.push_back(n[0][i]);
-      }
-      boundVar.push_back(multipleBoundVar2);
-    } else {
-      multipleBoundVar2.push_back(n[0][0]);
-      boundVar.push_back(multipleBoundVar2);
-    }
-    args.push_back(n[1]);
+  } else if(n.getKind() == kind::FORALL) {
+    std::vector < Node > bv = computeMultipleBoundVariables(n[0]);
+    args.push_backn(n[1]);
+    boundVar.push_back(bv);
     return computeProjections(n[1]);
-  } else {
-    if(boundVar.size() > 0) {
-      while(boundVar.size() > 0) {
+  } else if(n.getKind() == kind::AND) {
+    std::vector<Node> miniscopedNode1;
+    Node result1;
+    for(Node::iterator j = n.begin(), j_end = n.end(); j != j_end; ++j) {
+      Node child1 = *j;
+      if(child1.getKind() == kind::FORALL) {
+        std::vector<Node> bv_child1 = computeMultipleBoundVariables(child[0]);
+        result1 = performCaseAnalysis(child1[1], bv_child1);
+        miniscopedNode1.push_back(result1);
+      } else {
+      }
+    }
+    if(miniscopedNode1.size() > 0) {
+      Node newNode1 = NodeManager::currentNM()->mkNode(kind::AND,
+                                                      miniscopedNode1);
+      args.push_back(newNode1);
+      while(!boundVar.empty()) {
         temp1 = args.back();
         temp2 = boundVar.back();
-        temp3 = performCaseAnalysis(temp1, temp2);
-        if(n.getKind() == kind::NOT) {
-          temp3 = temp3.negate();
-        }
+        result = performCaseAnalysis(temp1, temp2);
         boundVar.pop_back();
         while(!args.empty()) {
           args.pop_back();
         }
-        args.push_back(temp3);
+        args.push_back(result);
       }
-      final = args.back();
-      args.pop_back();
-      return final;
+      Node r = args.back();
+      Debug("expr-qetest")<<"r "<<r<<std::endl;
+      final = r;
     } else {
-      final = n;
-      return final;
+      while(!boundVar.empty()) {
+        temp1 = args.back();
+        temp2 = boundVar.back();
+        result = performCaseAnalysis(temp1, temp2);
+        boundVar.pop_back();
+        while(!args.empty()) {
+          args.pop_back();
+        }
+        args.push_back(result);
+      }
+      Node r = args.back();
+      Debug("expr-qetest")<<"r "<<r<<std::endl;
+      final = r;
     }
+
   }
+  Debug("expr-qetest")<<"final "<<final<<std::endl;
+  return final;
 }
+  /*  if(n.getKind() == kind::NOT)
+   {
+   temp = n[0];
+   if(temp.getKind() == kind::AND)
+   {
+   std::vector<Node> miniscopedNode;
+   Node result;
+   for(Node::iterator i = temp.begin(),i_end = temp.end();
+   i!= i_end;
+   ++i)
+   {
+   Node child = *i;
+   if(child.getKind() == kind::FORALL)
+   {
+   std::vector<Node> multipleBoundVars;
+   if(child[0].getNumChildren() > 1)
+   {
+   for(int j= 0 ;j<(int)child[0].getNumChildren();j++)
+   {
+   multipleBoundVars.push_back(child[0][i][0]);
+   }
+   }
+   else
+   {
+   multipleBoundVars.push_back(child[0][0][0]);
+   }
+   // call to case analysis multiple times
+   result = performCaseAnalysis(child[1],multipleBoundVars);
+   miniscopedNode.push_back(result);
+   }
+   else
+   {}
+   }
+   if(miniscopedNode.size() > 0)
+   {
+   final = NodeManager::currentNM()->mkNode(kind::AND,miniscopedNode);
+   return final.negate();
+   }
+   else
+   {
+   return temp.negate();
+   }
+   }
+   else if(temp.getKind() == kind::FORALL)
+   {
+   std::vector<Node> multipleBoundVar1;
+   if(temp[0].getNumChildren() > 1)
+   {
+   for(int i = 0;i<(int)temp[0].getNumChildren();i++)
+   {
+   multipleBoundVar1.push_back(temp[0][i][0]);
+   }
+   boundVar.push_back(multipleBoundVar1);
+   }
+   else
+   {
+   multipleBoundVar1.push_back(temp[0][0]);
+   boundVar.push_back(multipleBoundVar1);
+   }
+   args.push_back(temp[1]);
+   return computeProjections(temp[1].negate);
+   }
+   }
+   if((n.getKind() == kind::NOT) || (n.getKind() == kind::FORALL)
+   || (n.getKind() == kind::EXISTS)) {
+   if(n.getKind() == kind::NOT) {
+   if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS)) {
+   std::vector<Node> multipleBoundVar1;
+   if(n[0][0].getNumChildren() > 1) {
+   for(int i = 0; i < (int) n[0][0].getNumChildren(); i++) {
+   multipleBoundVar1.push_back(n[0][0][i]);
+   }
+   boundVar.push_back(multipleBoundVar1);
+   } else {
+   multipleBoundVar1.push_back(n[0][0][0]);
+   boundVar.push_back(multipleBoundVar1);
+   }
+   args.push_back(n[0][1]);
+   return computeProjections(n[0][1].negate());
+   } else {
+   if(boundVar.size() > 0) {
+   while(boundVar.size() > 0) {
+   temp1 = args.back();
+   temp2 = boundVar.back();
+   temp3 = performCaseAnalysis(temp1, temp2);
+   temp3 = temp3.negate();
+   //args.pop_back();
+   boundVar.pop_back();
+   while(!args.empty()) {
+   args.pop_back();
+   }
+   args.push_back(temp3);
+   }
+   final = args.back();
+   args.pop_back();
+   return final;
+   } else {
+   final = n.negate();
+   return final;
+   }
+   }
+   }
+   std::vector<Node> multipleBoundVar2;
+   if(n[0].getNumChildren() > 1) {
+   for(int i = 0; i < (int) n[0].getNumChildren(); i++) {
+   multipleBoundVar2.push_back(n[0][i]);
+   }
+   boundVar.push_back(multipleBoundVar2);
+   } else {
+   multipleBoundVar2.push_back(n[0][0]);
+   boundVar.push_back(multipleBoundVar2);
+   }
+   args.push_back(n[1]);
+   return computeProjections(n[1]);
+   } else {
+   if(boundVar.size() > 0) {
+   while(boundVar.size() > 0) {
+   temp1 = args.back();
+   temp2 = boundVar.back();
+   temp3 = performCaseAnalysis(temp1, temp2);
+   if(n.getKind() == kind::NOT) {
+   temp3 = temp3.negate();
+   }
+   boundVar.pop_back();
+   while(!args.empty()) {
+   args.pop_back();
+   }
+   args.push_back(temp3);
+   }
+   final = args.back();
+   args.pop_back();
+   return final;
+   } else {
+   final = n;
+   return final;
+   }
+   }*/
+
 

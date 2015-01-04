@@ -31,7 +31,7 @@ private:
 //  static Node internalProcessNodeQE(Node n);
 //  static Node normalizeAtom(Node n);
   static Node parseEquation(Node n, Node bv);
-  static bool computeLeftProjection(Node n, std::vector<Node> bv);
+  static Node computeLeftProjection(Node n, std::vector<Node> bv);
 //  static bool evaluateBoolean(Node n);
   static Node computeRightProjection(Node n, std::vector<Node> bv);
 //  static Node preProcessingForRightProjection(Node n);
@@ -39,6 +39,7 @@ private:
 //  static Node evaluateForRightProjection(Node n, Node replacement);
 //  static Node computeOperationQE(Node n, bool isNested);
   static Node performCaseAnalysis(Node n, std::vector<Node> bv);
+  static std::vector<Node> computeMultipleBoundVariables(Node n);
 //  static void setQENestedQuantifiers( Node n, Node q );
 //  static void setQENestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
 //  static void setAttributesQE( Node in, Node n );
