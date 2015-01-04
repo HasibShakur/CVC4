@@ -2547,7 +2547,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     for(Node::iterator j = n.begin(), j_end = n.end(); j != j_end; ++j) {
       Node child1 = *j;
       if(child1.getKind() == kind::FORALL) {
-        std::vector<Node> bv_child1 = computeMultipleBoundVariables(child[0]);
+        std::vector<Node> bv_child1 = computeMultipleBoundVariables(child1[0]);
         result1 = performCaseAnalysis(child1[1], bv_child1);
         miniscopedNode1.push_back(result1);
       } else {
