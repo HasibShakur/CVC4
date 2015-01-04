@@ -2467,12 +2467,13 @@ std::vector<Node> QuantifierEliminate::computeMultipleBoundVariables(Node n) {
   if(n[0].getNumChildren() > 1) {
     for(int i = 0; i < (int) n.getNumChildren(); i++) {
       Debug("expr-qetest")<<"boundVar "<<n[0][i]<<std::endl;
-      multipleBoundVars.push_back(n[0][i][0]);
+      multipleBoundVars.push_back(n[0][i]);
     }
   }
   else
   {
-    multipleBoundVars.push_back(n[0][0]);
+    Debug("expr-qetest")<<"boundVar "<<n[0]<<std::endl;
+    multipleBoundVars.push_back(n[0]);
   }
   return multipleBoundVars;
 }
