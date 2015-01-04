@@ -2462,15 +2462,15 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
 
 std::vector<Node> QuantifierEliminate::computeMultipleBoundVariables(Node n) {
   std::vector<Node> multipleBoundVars;
-  if(n.getNumChildren() > 1) {
+  if(n[0].getNumChildren() > 1) {
     for(int i = 0; i < (int) n.getNumChildren(); i++) {
-      Debug("expr-qetest")<<"boundVar "<<n[i][0]<<std::endl;
-      multipleBoundVars.push_back(n[i][0]);
+      Debug("expr-qetest")<<"boundVar "<<n[0][i][0]<<std::endl;
+      multipleBoundVars.push_back(n[0][i][0]);
     }
   }
   else
   {
-    multipleBoundVars.push_back(n[0]);
+    multipleBoundVars.push_back(n[0][0]);
   }
   return multipleBoundVars;
 }
@@ -2495,7 +2495,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
           ++i) {
         Node child = *i;
         if(child.getKind() == kind::FORALL) {
-          std::vector<Node> bv_child = computeMultipleBoundVariables(child[0]);
+          std::vector<Node> bv_child = computeMultipleBoundVariables(child);
           result = performCaseAnalysis(child[1], bv_child);
           miniscopedNode.push_back(result);
         } else {
@@ -2544,10 +2544,11 @@ Node QuantifierEliminate::computeProjections(Node n) {
   } else if(n.getKind() == kind::AND) {
     std::vector<Node> miniscopedNode1;
     Node result1;
+    std::vector<Node> bv_child1
     for(Node::iterator j = n.begin(), j_end = n.end(); j != j_end; ++j) {
       Node child1 = *j;
       if(child1.getKind() == kind::FORALL) {
-        std::vector<Node> bv_child1 = computeMultipleBoundVariables(child1[0]);
+         bv_child1 = computeMultipleBoundVariables(child1);
         result1 = performCaseAnalysis(child1[1], bv_child1);
         miniscopedNode1.push_back(result1);
       } else {
