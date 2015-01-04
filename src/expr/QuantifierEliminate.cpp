@@ -2560,7 +2560,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       while(!boundVar.empty()) {
         temp1 = args.back();
         temp2 = boundVar.back();
-        result = performCaseAnalysis(temp1, temp2);
+        result1 = performCaseAnalysis(temp1, temp2);
         boundVar.pop_back();
         while(!args.empty()) {
           args.pop_back();
@@ -2574,7 +2574,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       while(!boundVar.empty()) {
         temp1 = args.back();
         temp2 = boundVar.back();
-        result = performCaseAnalysis(temp1, temp2);
+        result1 = performCaseAnalysis(temp1, temp2);
         boundVar.pop_back();
         while(!args.empty()) {
           args.pop_back();
