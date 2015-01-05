@@ -2365,7 +2365,7 @@ Node QuantifierEliminate::doRewriting(Node n, Node bv) {
   t = rewriteForSameCoefficients(t,bv);
   return t;
 }
-Node QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
+Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
   std::vector<bool> leftProjectionNode;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
@@ -2427,7 +2427,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
     }
   }
 }
-Node QuantifierEliminate::computeRightProjection(Node n, std::vector<Node> bv) {
+Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
   return n;
 }
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {

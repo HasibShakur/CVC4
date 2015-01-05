@@ -31,9 +31,9 @@ private:
 //  static Node internalProcessNodeQE(Node n);
 //  static Node normalizeAtom(Node n);
   static Node parseEquation(Node n, Node bv);
-  static Node computeLeftProjection(Node n, std::vector<Node> bv);
+  static Node computeLeftProjection(Node n, Node bv);
 //  static bool evaluateBoolean(Node n);
-  static Node computeRightProjection(Node n, std::vector<Node> bv);
+  static Node computeRightProjection(Node n, Node bv);
 //  static Node preProcessingForRightProjection(Node n);
 //  static Node preProcessing2ForRightProjection(Node n);
 //  static Node evaluateForRightProjection(Node n, Node replacement);
