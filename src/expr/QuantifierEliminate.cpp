@@ -1220,7 +1220,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
               }
               else if(isVarWithCoefficientsQE(child_inner1))
               {
-                Integer y = getIntegerFromNode(child_inner1[0]);
+                Integer y = getIntegerFromNode(child_inner1[0]).abs();
                 multiplier = lcmResult.euclidianDivideQuotient(y);
                 multiplier = multiplier.abs();
               }
@@ -1238,7 +1238,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
                   }
                   else if(isVarWithCoefficientsQE(child_inner_inner))
                   {
-                    Integer z = getIntegerFromNode(child_inner_inner[0]);
+                    Integer z = getIntegerFromNode(child_inner_inner[0]).abs();
                     multiplier = lcmResult.euclidianDivideQuotient(z);
                     multiplier = multiplier.abs();
                   }
