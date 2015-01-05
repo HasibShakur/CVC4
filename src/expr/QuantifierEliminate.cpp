@@ -1035,20 +1035,23 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
   for(Node::iterator i = temp.begin(), end = temp.end(); i != end; ++i) {
     Node child = *i;
     if(isVarWithCoefficientsQE(child)) {
+      Debug("expr-qetest")<<"VarWithCoefficientsQE "<<child<<std::endl;
       Integer n = getIntegerFromNode(child[0]);
       Container c(child[1], n);
       container.push_back(c);
     } else if(isConstQE(child)) {
+      Debug("expr-qetest")<<"ConstQE "<<child<<std::endl;
       Integer n = getIntegerFromNode(child);
       Container c(child, n);
       container.push_back(c);
     } else if(isVarQE(child)) {
-
+      Debug("expr-qetest")<<"VarQE "<<child<<std::endl;
       Constant one = Constant::mkOne();
       Integer n = getIntegerFromNode(one.getNode());
       Container c(child, n);
       container.push_back(c);
     } else {
+      Debug("expr-qetest")<<"ExprQE "<<child<<std::endl;
       for(Node::iterator j = child.begin(), end = child.end(); j != end; ++j) {
         Node inner = *j;
         if(isConstQE(inner)) {
@@ -1125,6 +1128,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
   ++i)
   {
     Node child = *i;
+    Debug("expr-qetest")<<"child "<<child<<std::endl;
     parseCoefficientQE(child);
   }
   for(int i=0;i<(int)container.size();i++)
