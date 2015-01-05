@@ -2358,14 +2358,11 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
   return n;
 }
 
-Node QuantifierEliminate::doRewriting(Node n, std::vector<Node> bv) {
-  std::vector<Node> temp = bv;
+Node QuantifierEliminate::doRewriting(Node n, Node bv) {
   Node t;
   t = eliminateImpliesQE(n);
   t = convertToNNFQE(t);
-  for(int i = 0; i < (int) temp.size(); i++) {
-    t = rewriteForSameCoefficients(t, temp[i]);
-  }
+  t = rewriteForSameCoefficients(t,bv);
   return t;
 }
 Node QuantifierEliminate::computeLeftProjection(Node n, std::vector<Node> bv) {
@@ -2440,20 +2437,15 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
   Node left;
   Node right;
   Node final;
- /* while(bv.size() > 0) {
+  while(bv.size() > 0) {
     var = bv.back();
+    args = doRewriting(n,var);
+    Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
     left = computeLeftProjection(args, var);
-    right = computeRightProjection(args, var);
-    final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
-    args = final;
-    bv.pop_back();
-  }*/
-  while(bv.size() > 0)
-  {
-    var = bv.back();
     Debug("expr-qetest")<<"left "<<args<<std::endl;
+    right = computeRightProjection(args, var);
     Debug("expr-qetest")<<"right "<<args<<std::endl;
-    final = NodeManager::currentNM()->mkNode(kind::OR, args, args);
+    final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final;
     bv.pop_back();
   }
@@ -2511,6 +2503,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       if(miniscopedNode.size() > 0) {
         Node newNode = NodeManager::currentNM()->mkNode(kind::AND,
                                                         miniscopedNode);
+        Debug("expr-qetest")<<"newNode "<<newNode<<std::endl;
         args.push_back(newNode.negate());
         while(!boundVar.empty()) {
           temp1 = args.back();

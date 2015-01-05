@@ -20,7 +20,7 @@ private:
   static std::vector<ExpressionContainer> expressionContainer;
 //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
   static Node convertToNNFQE(Node body);
-  static Node doRewriting(Node n, std::vector<Node> bv);
+  static Node doRewriting(Node n, Node bv);
   static Node eliminateImpliesQE(Node body);
 //  static Node processRelationOperatorQE(Node n,bool negationEnabled);
 //  static Node replaceGEQQE(Node n,bool negationEnabled);
