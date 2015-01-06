@@ -1026,11 +1026,6 @@ Node QuantifierEliminate::fromIntegerToNodeQE(Integer n) {
   return c.getNode();
 }
 void QuantifierEliminate::parseCoefficientQE(Node n) {
-  while(!container.empty())
-  {
-    container.pop_back();
-  }
-  Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
   Node temp;
   if(n.getKind() == kind::NOT) {
     temp = n[0];
@@ -1040,23 +1035,19 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
   for(Node::iterator i = temp.begin(), end = temp.end(); i != end; ++i) {
     Node child = *i;
     if(isVarWithCoefficientsQE(child)) {
-      Debug("expr-qetest")<<"VarWithCoefficientsQE "<<child<<std::endl;
       Integer n = getIntegerFromNode(child[0]);
       Container c(child[1], n);
       container.push_back(c);
     } else if(isConstQE(child)) {
-      Debug("expr-qetest")<<"ConstQE "<<child<<std::endl;
       Integer n = getIntegerFromNode(child);
       Container c(child, n);
       container.push_back(c);
     } else if(isVarQE(child)) {
-      Debug("expr-qetest")<<"VarQE "<<child<<std::endl;
       Constant one = Constant::mkOne();
       Integer n = getIntegerFromNode(one.getNode());
       Container c(child, n);
       container.push_back(c);
     } else {
-      Debug("expr-qetest")<<"ExprQE "<<child<<std::endl;
       for(Node::iterator j = child.begin(), end = child.end(); j != end; ++j) {
         Node inner = *j;
         if(isConstQE(inner)) {
@@ -1136,6 +1127,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
     Debug("expr-qetest")<<"child "<<child<<std::endl;
     parseCoefficientQE(child);
   }
+  Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
   Integer coeff = 1;
   for(int i=0;i<(int)container.size();i++)
   {
@@ -1150,7 +1142,10 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
   Integer multiple = lcmResult.euclidianDivideQuotient(coeff.abs());
   Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
-
+  while(!container.empty())
+  {
+    container.pop_back();
+  }
   if(lcmResult == 1 || multiple == 1)
   {
     Debug("expr-qetest")<<"t "<<t<<std::endl;
@@ -1179,49 +1174,49 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
       Debug("expr-qetest")<<"child "<<child<<std::endl;
       multiplier = 1;
       for(Node::iterator j = child.begin(),j_end = child.end();
-          j != j_end;
-          ++j )
+      j != j_end;
+      ++j )
       {
         Node child1 = *j;
         Debug("expr-qetest")<<"child1 "<<child1<<std::endl;
         if(child1.hasBoundVar() && containsSameBoundVar(child1,bv))
         {
-         if(isConstQE(child1)) {}
-         else if(isVarQE(child1))
-         {
-           multiplier = (multiplier*lcmResult).abs();
-         }
-         else if(isVarWithCoefficientsQE(child1))
-         {
-           Integer x = getIntegerFromNode(child1[0]).abs();
-           multiplier = lcmResult.euclidianDivideQuotient(x);
-         }
-         else
-         {
-           for(Node::iterator k = child1.begin(),k_end = child1.end();
-               k != k_end;
-               ++k)
-           {
-             Node child2 = *k;
-             Debug("expr-qetest")<<"child2 "<<child2<<std::endl;
-             if(child2.hasBoundVar() && containsSameBoundVar(child2,bv))
-             {
-               if(isVarQE(child2))
-               {
-                 multiplier = (multiplier*lcmResult).abs();
-               }
-               else if(isVarWithCoefficientsQE(child2))
-               {
-                 Integer x = getIntegerFromNode(child2[0]).abs();
-                 multiplier = lcmResult.euclidianDivideQuotient(x);
-               }
-               else
-               {}
-             }
-             else
-             {}
-           }
-         }
+          if(isConstQE(child1)) {}
+          else if(isVarQE(child1))
+          {
+            multiplier = (multiplier*lcmResult).abs();
+          }
+          else if(isVarWithCoefficientsQE(child1))
+          {
+            Integer x = getIntegerFromNode(child1[0]).abs();
+            multiplier = lcmResult.euclidianDivideQuotient(x);
+          }
+          else
+          {
+            for(Node::iterator k = child1.begin(),k_end = child1.end();
+            k != k_end;
+            ++k)
+            {
+              Node child2 = *k;
+              Debug("expr-qetest")<<"child2 "<<child2<<std::endl;
+              if(child2.hasBoundVar() && containsSameBoundVar(child2,bv))
+              {
+                if(isVarQE(child2))
+                {
+                  multiplier = (multiplier*lcmResult).abs();
+                }
+                else if(isVarWithCoefficientsQE(child2))
+                {
+                  Integer x = getIntegerFromNode(child2[0]).abs();
+                  multiplier = lcmResult.euclidianDivideQuotient(x);
+                }
+                else
+                {}
+              }
+              else
+              {}
+            }
+          }
         }
         else
         {}
@@ -2340,7 +2335,7 @@ Node QuantifierEliminate::doRewriting(Node n, Node bv) {
   Node t;
   t = eliminateImpliesQE(n);
   t = convertToNNFQE(t);
-  t = rewriteForSameCoefficients(t,bv);
+  t = rewriteForSameCoefficients(t, bv);
   return t;
 }
 Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
@@ -2417,7 +2412,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
   Node final;
   while(bv.size() > 0) {
     var = bv.back();
-    args = doRewriting(n,var);
+    args = doRewriting(n, var);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
     left = computeLeftProjection(args, var);
     Debug("expr-qetest")<<"left "<<args<<std::endl;
@@ -2526,7 +2521,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     for(Node::iterator j = n.begin(), j_end = n.end(); j != j_end; ++j) {
       Node child1 = *j;
       if(child1.getKind() == kind::FORALL) {
-         bv_child1 = computeMultipleBoundVariables(child1);
+        bv_child1 = computeMultipleBoundVariables(child1);
         result1 = performCaseAnalysis(child1[1], bv_child1);
         miniscopedNode1.push_back(result1);
       } else {
@@ -2534,7 +2529,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     }
     if(miniscopedNode1.size() > 0) {
       Node newNode1 = NodeManager::currentNM()->mkNode(kind::AND,
-                                                      miniscopedNode1);
+                                                       miniscopedNode1);
       Debug("expr-qetest")<<"newNode1 "<<newNode1<<std::endl;
       args.push_back(newNode1);
       while(!boundVar.empty()) {
@@ -2572,142 +2567,141 @@ Node QuantifierEliminate::computeProjections(Node n) {
   Debug("expr-qetest")<<"final "<<final<<std::endl;
   return final;
 }
-  /*  if(n.getKind() == kind::NOT)
-   {
-   temp = n[0];
-   if(temp.getKind() == kind::AND)
-   {
-   std::vector<Node> miniscopedNode;
-   Node result;
-   for(Node::iterator i = temp.begin(),i_end = temp.end();
-   i!= i_end;
-   ++i)
-   {
-   Node child = *i;
-   if(child.getKind() == kind::FORALL)
-   {
-   std::vector<Node> multipleBoundVars;
-   if(child[0].getNumChildren() > 1)
-   {
-   for(int j= 0 ;j<(int)child[0].getNumChildren();j++)
-   {
-   multipleBoundVars.push_back(child[0][i][0]);
-   }
-   }
-   else
-   {
-   multipleBoundVars.push_back(child[0][0][0]);
-   }
-   // call to case analysis multiple times
-   result = performCaseAnalysis(child[1],multipleBoundVars);
-   miniscopedNode.push_back(result);
-   }
-   else
-   {}
-   }
-   if(miniscopedNode.size() > 0)
-   {
-   final = NodeManager::currentNM()->mkNode(kind::AND,miniscopedNode);
-   return final.negate();
-   }
-   else
-   {
-   return temp.negate();
-   }
-   }
-   else if(temp.getKind() == kind::FORALL)
-   {
-   std::vector<Node> multipleBoundVar1;
-   if(temp[0].getNumChildren() > 1)
-   {
-   for(int i = 0;i<(int)temp[0].getNumChildren();i++)
-   {
-   multipleBoundVar1.push_back(temp[0][i][0]);
-   }
-   boundVar.push_back(multipleBoundVar1);
-   }
-   else
-   {
-   multipleBoundVar1.push_back(temp[0][0]);
-   boundVar.push_back(multipleBoundVar1);
-   }
-   args.push_back(temp[1]);
-   return computeProjections(temp[1].negate);
-   }
-   }
-   if((n.getKind() == kind::NOT) || (n.getKind() == kind::FORALL)
-   || (n.getKind() == kind::EXISTS)) {
-   if(n.getKind() == kind::NOT) {
-   if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS)) {
-   std::vector<Node> multipleBoundVar1;
-   if(n[0][0].getNumChildren() > 1) {
-   for(int i = 0; i < (int) n[0][0].getNumChildren(); i++) {
-   multipleBoundVar1.push_back(n[0][0][i]);
-   }
-   boundVar.push_back(multipleBoundVar1);
-   } else {
-   multipleBoundVar1.push_back(n[0][0][0]);
-   boundVar.push_back(multipleBoundVar1);
-   }
-   args.push_back(n[0][1]);
-   return computeProjections(n[0][1].negate());
-   } else {
-   if(boundVar.size() > 0) {
-   while(boundVar.size() > 0) {
-   temp1 = args.back();
-   temp2 = boundVar.back();
-   temp3 = performCaseAnalysis(temp1, temp2);
-   temp3 = temp3.negate();
-   //args.pop_back();
-   boundVar.pop_back();
-   while(!args.empty()) {
-   args.pop_back();
-   }
-   args.push_back(temp3);
-   }
-   final = args.back();
-   args.pop_back();
-   return final;
-   } else {
-   final = n.negate();
-   return final;
-   }
-   }
-   }
-   std::vector<Node> multipleBoundVar2;
-   if(n[0].getNumChildren() > 1) {
-   for(int i = 0; i < (int) n[0].getNumChildren(); i++) {
-   multipleBoundVar2.push_back(n[0][i]);
-   }
-   boundVar.push_back(multipleBoundVar2);
-   } else {
-   multipleBoundVar2.push_back(n[0][0]);
-   boundVar.push_back(multipleBoundVar2);
-   }
-   args.push_back(n[1]);
-   return computeProjections(n[1]);
-   } else {
-   if(boundVar.size() > 0) {
-   while(boundVar.size() > 0) {
-   temp1 = args.back();
-   temp2 = boundVar.back();
-   temp3 = performCaseAnalysis(temp1, temp2);
-   if(n.getKind() == kind::NOT) {
-   temp3 = temp3.negate();
-   }
-   boundVar.pop_back();
-   while(!args.empty()) {
-   args.pop_back();
-   }
-   args.push_back(temp3);
-   }
-   final = args.back();
-   args.pop_back();
-   return final;
-   } else {
-   final = n;
-   return final;
-   }
-   }*/
-
+/*  if(n.getKind() == kind::NOT)
+ {
+ temp = n[0];
+ if(temp.getKind() == kind::AND)
+ {
+ std::vector<Node> miniscopedNode;
+ Node result;
+ for(Node::iterator i = temp.begin(),i_end = temp.end();
+ i!= i_end;
+ ++i)
+ {
+ Node child = *i;
+ if(child.getKind() == kind::FORALL)
+ {
+ std::vector<Node> multipleBoundVars;
+ if(child[0].getNumChildren() > 1)
+ {
+ for(int j= 0 ;j<(int)child[0].getNumChildren();j++)
+ {
+ multipleBoundVars.push_back(child[0][i][0]);
+ }
+ }
+ else
+ {
+ multipleBoundVars.push_back(child[0][0][0]);
+ }
+ // call to case analysis multiple times
+ result = performCaseAnalysis(child[1],multipleBoundVars);
+ miniscopedNode.push_back(result);
+ }
+ else
+ {}
+ }
+ if(miniscopedNode.size() > 0)
+ {
+ final = NodeManager::currentNM()->mkNode(kind::AND,miniscopedNode);
+ return final.negate();
+ }
+ else
+ {
+ return temp.negate();
+ }
+ }
+ else if(temp.getKind() == kind::FORALL)
+ {
+ std::vector<Node> multipleBoundVar1;
+ if(temp[0].getNumChildren() > 1)
+ {
+ for(int i = 0;i<(int)temp[0].getNumChildren();i++)
+ {
+ multipleBoundVar1.push_back(temp[0][i][0]);
+ }
+ boundVar.push_back(multipleBoundVar1);
+ }
+ else
+ {
+ multipleBoundVar1.push_back(temp[0][0]);
+ boundVar.push_back(multipleBoundVar1);
+ }
+ args.push_back(temp[1]);
+ return computeProjections(temp[1].negate);
+ }
+ }
+ if((n.getKind() == kind::NOT) || (n.getKind() == kind::FORALL)
+ || (n.getKind() == kind::EXISTS)) {
+ if(n.getKind() == kind::NOT) {
+ if((n[0].getKind() == kind::FORALL) || (n[0].getKind() == kind::EXISTS)) {
+ std::vector<Node> multipleBoundVar1;
+ if(n[0][0].getNumChildren() > 1) {
+ for(int i = 0; i < (int) n[0][0].getNumChildren(); i++) {
+ multipleBoundVar1.push_back(n[0][0][i]);
+ }
+ boundVar.push_back(multipleBoundVar1);
+ } else {
+ multipleBoundVar1.push_back(n[0][0][0]);
+ boundVar.push_back(multipleBoundVar1);
+ }
+ args.push_back(n[0][1]);
+ return computeProjections(n[0][1].negate());
+ } else {
+ if(boundVar.size() > 0) {
+ while(boundVar.size() > 0) {
+ temp1 = args.back();
+ temp2 = boundVar.back();
+ temp3 = performCaseAnalysis(temp1, temp2);
+ temp3 = temp3.negate();
+ //args.pop_back();
+ boundVar.pop_back();
+ while(!args.empty()) {
+ args.pop_back();
+ }
+ args.push_back(temp3);
+ }
+ final = args.back();
+ args.pop_back();
+ return final;
+ } else {
+ final = n.negate();
+ return final;
+ }
+ }
+ }
+ std::vector<Node> multipleBoundVar2;
+ if(n[0].getNumChildren() > 1) {
+ for(int i = 0; i < (int) n[0].getNumChildren(); i++) {
+ multipleBoundVar2.push_back(n[0][i]);
+ }
+ boundVar.push_back(multipleBoundVar2);
+ } else {
+ multipleBoundVar2.push_back(n[0][0]);
+ boundVar.push_back(multipleBoundVar2);
+ }
+ args.push_back(n[1]);
+ return computeProjections(n[1]);
+ } else {
+ if(boundVar.size() > 0) {
+ while(boundVar.size() > 0) {
+ temp1 = args.back();
+ temp2 = boundVar.back();
+ temp3 = performCaseAnalysis(temp1, temp2);
+ if(n.getKind() == kind::NOT) {
+ temp3 = temp3.negate();
+ }
+ boundVar.pop_back();
+ while(!args.empty()) {
+ args.pop_back();
+ }
+ args.push_back(temp3);
+ }
+ final = args.back();
+ args.pop_back();
+ return final;
+ } else {
+ final = n;
+ return final;
+ }
+ }*/
 
