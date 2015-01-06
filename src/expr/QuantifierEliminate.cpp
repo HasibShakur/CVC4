@@ -1943,6 +1943,23 @@ Node QuantifierEliminate::computeProjections(Node n) {
     }
 
   }
+  else
+  {
+    while(!boundVar.empty()) {
+           temp1 = args.back();
+           temp2 = boundVar.back();
+           result1 = performCaseAnalysis(temp1, temp2);
+           boundVar.pop_back();
+           while(!args.empty()) {
+             args.pop_back();
+           }
+           args.push_back(result1);
+         }
+         Node r = args.back();
+         Debug("expr-qetest")<<"r "<<r<<std::endl;
+         final = r;
+         args.pop_back();
+  }
   Debug("expr-qetest")<<"final "<<final<<std::endl;
   return final;
 }
