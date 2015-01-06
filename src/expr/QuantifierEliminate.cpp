@@ -1148,6 +1148,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
 
   if(lcmResult == 1 || multiple == 1)
   {
+    Debug("expr-qetest")<<"t "<<t<<std::endl;
     return t;
   }
   else
@@ -1161,7 +1162,9 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
     {
       n = t;
     }
+    Debug("expr-qetest")<<"t "<<t<<std::endl;
     Kind k = n.getKind();
+    Debug("expr-qetest")<<"k "<<k<<std::endl;
     Integer multiplier = 1;
     for(Node::iterator i = n.begin(),i_end = n.end();
     i!=i_end;
@@ -1170,7 +1173,55 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
       Node child = *i;
       Debug("expr-qetest")<<"child "<<child<<std::endl;
       multiplier = 1;
-      if(isConstQE(child))
+      for(Node::iterator j = child.begin(),j_end = child.end();
+          j != j_end;
+          ++j )
+      {
+        Node child1 = *j;
+        Debug("expr-qetest")<<"child1 "<<child1<<std::endl;
+        if(child1.hasBoundVar() && containsSameBoundVar(child1,bv))
+        {
+         if(isConstQE(child1)) {}
+         else if(isVarQE(child1))
+         {
+           multiplier = (multiplier*lcmResult).abs();
+         }
+         else if(isVarWithCoefficientsQE(child1))
+         {
+           Integer x = getIntegerFromNode(child1[0]).abs();
+           multiplier = lcmResult.euclidianDivideQuotient(x);
+         }
+         else
+         {
+           for(Node::iterator k = child1.begin(),k_end = child1.end();
+               k != k_end;
+               ++k)
+           {
+             Node child2 = *k;
+             Debug("expr-qetest")<<"child2 "<<child2<<std::endl;
+             if(child2.hasBoundVar() && containsSameBoundVar(child2,bv))
+             {
+               if(isVarQE(child2))
+               {
+                 multiplier = (multiplier*lcmResult).abs();
+               }
+               else if(isVarWithCoefficientsQE(child2))
+               {
+                 Integer x = getIntegerFromNode(child2[0]).abs();
+                 multiplier = lcmResult.euclidianDivideQuotient(x);
+               }
+               else
+               {}
+             }
+             else
+             {}
+           }
+         }
+        }
+        else
+        {}
+      }
+     /* if(isConstQE(child))
       {}
       else if(isVarQE(child) && child.hasBoundVar() && containsSameBoundVar(child,bv))
       {
@@ -1263,7 +1314,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
 
           }
         }
-      }
+      }*/
       ExpressionContainer e(child,multiplier);
       Debug("expr-qetest")<<"expression "<<e.getExpression()<<std::endl;
       Debug("expr-qetest")<<"multiplier "<<e.getMultiplier()<<std::endl;
