@@ -2412,7 +2412,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
   Node final;
   while(bv.size() > 0) {
     var = bv.back();
-    args = doRewriting(n, var);
+    args = doRewriting(args, var);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
     left = computeLeftProjection(args, var);
     Debug("expr-qetest")<<"left "<<args<<std::endl;
@@ -2420,8 +2420,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     Debug("expr-qetest")<<"right "<<args<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final;
-    bv.pop_back();
-  }
+   }
   Debug("expr-qetest")<<"args "<<args<<std::endl;
   return args;
 }
