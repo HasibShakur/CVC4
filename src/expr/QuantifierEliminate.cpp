@@ -1945,15 +1945,16 @@ Node QuantifierEliminate::computeProjections(Node n) {
   }
   else
   {
+    Node result2;
     while(!boundVar.empty()) {
            temp1 = args.back();
            temp2 = boundVar.back();
-           result1 = performCaseAnalysis(temp1, temp2);
+           result2 = performCaseAnalysis(temp1, temp2);
            boundVar.pop_back();
            while(!args.empty()) {
              args.pop_back();
            }
-           args.push_back(result1);
+           args.push_back(result2);
          }
          Node r = args.back();
          Debug("expr-qetest")<<"r "<<r<<std::endl;
