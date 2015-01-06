@@ -1131,16 +1131,22 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
     Debug("expr-qetest")<<"child "<<child<<std::endl;
     parseCoefficientQE(child);
   }
+  Integer coeff = 1;
   for(int i=0;i<(int)container.size();i++)
   {
     if(container[i].getVariable() == bv)
     {
       boundVarCoeff.push_back(container[i].getCoefficient());
+      coeff = container[i].getCoefficient();
     }
   }
+  Debug("expr-qetest")<<"Coeff "<<coeff<<std::endl;
   Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
-  if(lcmResult == 1)
+  Integer multiple = lcmResult.euclidianDivideQuotient(coeff.abs());
+  Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
+
+  if(lcmResult == 1 || multiple == 1)
   {
     return t;
   }
@@ -1183,6 +1189,8 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
         //2. It contains a relational operator like <,>,=<,>=,=
         if(!isRelationalOperatorTypeQE(child.getKind()))
         {
+          Debug("expr-qetest")<<"child "<<child<<std::endl;
+          Debug("expr-qetest")<<"kind "<<child.getKind()<<std::endl;
           for(Node::iterator j = child.begin(),j_end = child.end();
           j != j_end;
           ++j)
@@ -1199,7 +1207,9 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
             else if(isVarWithCoefficientsQE(child_inner) && child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
             {
               Integer x = getIntegerFromNode(child[0]).abs();
+              Debug("expr-qetest")<<"x "<<x<<std::endl;
               multiplier = lcmResult.euclidianDivideQuotient(x);
+              Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
             }
           }
         }
