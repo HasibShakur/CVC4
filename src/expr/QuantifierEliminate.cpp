@@ -1026,6 +1026,11 @@ Node QuantifierEliminate::fromIntegerToNodeQE(Integer n) {
   return c.getNode();
 }
 void QuantifierEliminate::parseCoefficientQE(Node n) {
+  while(!container.empty())
+  {
+    container.pop_back();
+  }
+  Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
   Node temp;
   if(n.getKind() == kind::NOT) {
     temp = n[0];
@@ -1221,100 +1226,6 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
         else
         {}
       }
-     /* if(isConstQE(child))
-      {}
-      else if(isVarQE(child) && child.hasBoundVar() && containsSameBoundVar(child,bv))
-      {
-        multiplier = multiplier*lcmResult;
-        multiplier = multiplier.abs();
-      }
-      else if(isVarWithCoefficientsQE(child) && child.hasBoundVar() && containsSameBoundVar(child,bv))
-      {
-        Integer x = getIntegerFromNode(child[0]).abs();
-        multiplier = lcmResult.euclidianDivideQuotient(x);
-      }
-      else
-      {
-        //child is an equation
-        //1. It doesn't contain relational operator
-        //2. It contains a relational operator like <,>,=<,>=,=
-        if(!isRelationalOperatorTypeQE(child.getKind()))
-        {
-          Debug("expr-qetest")<<"child "<<child<<std::endl;
-          Debug("expr-qetest")<<"kind "<<child.getKind()<<std::endl;
-          for(Node::iterator j = child.begin(),j_end = child.end();
-          j != j_end;
-          ++j)
-          {
-            Node child_inner = *j;
-            Debug("expr-qetest")<<"child_inner "<<child_inner<<std::endl;
-            if(isConstQE(child_inner))
-            {}
-            else if(isVarQE(child_inner) && child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
-            {
-              multiplier = multiplier*lcmResult;
-              multiplier = multiplier.abs();
-            }
-            else if(isVarWithCoefficientsQE(child_inner) && child_inner.hasBoundVar() && containsSameBoundVar(child_inner,bv))
-            {
-              Integer x = getIntegerFromNode(child[0]).abs();
-              Debug("expr-qetest")<<"x "<<x<<std::endl;
-              multiplier = lcmResult.euclidianDivideQuotient(x);
-              Debug("expr-qetest")<<"multiplier "<<multiplier<<std::endl;
-            }
-          }
-        }
-        else
-        {
-          for(Node::iterator j1 = child.begin(),j1_end = child.end();
-          j1 != j1_end;
-          ++j1)
-          {
-            Node child_inner1 = *j1;
-            Debug("expr-qetest")<<"child_inner1 "<<child_inner1<<std::endl;
-            if(child_inner1.hasBoundVar() && containsSameBoundVar(child_inner1,bv))
-            {
-              if(isVarQE(child_inner1))
-              {
-                multiplier = multiplier*lcmResult;
-                multiplier = multiplier.abs();
-              }
-              else if(isVarWithCoefficientsQE(child_inner1))
-              {
-                Integer y = getIntegerFromNode(child_inner1[0]).abs();
-                multiplier = lcmResult.euclidianDivideQuotient(y);
-                multiplier = multiplier.abs();
-              }
-              else
-              {
-                for(Node::iterator k = child_inner1.begin(),k_end = child_inner1.end();
-                k!= k_end;
-                ++k)
-                {
-                  Node child_inner_inner = *k;
-                  if(isVarQE(child_inner_inner))
-                  {
-                    multiplier = multiplier*lcmResult;
-                    multiplier = multiplier.abs();
-                  }
-                  else if(isVarWithCoefficientsQE(child_inner_inner))
-                  {
-                    Integer z = getIntegerFromNode(child_inner_inner[0]).abs();
-                    multiplier = lcmResult.euclidianDivideQuotient(z);
-                    multiplier = multiplier.abs();
-                  }
-                  else
-                  {
-                  }
-                }
-              }
-            }
-            else {
-            }
-
-          }
-        }
-      }*/
       ExpressionContainer e(child,multiplier);
       Debug("expr-qetest")<<"expression "<<e.getExpression()<<std::endl;
       Debug("expr-qetest")<<"multiplier "<<e.getMultiplier()<<std::endl;
