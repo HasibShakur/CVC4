@@ -1718,6 +1718,7 @@ Node QuantifierEliminate::doRewriting(Node n, Node bv) {
   t = rewriteForSameCoefficients(t, bv);
   return t;
 }
+
 Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
   std::vector<bool> leftProjectionNode;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
@@ -1729,13 +1730,13 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
             ++j) {
           Node child_inner = *j;
           if(child.getKind() == kind::AND) {
-            if(child_inner[0].hasBoundVar()) {
+            if(child_inner[0].hasBoundVar() && containsSameBoundVar(child_inner[0],bv)) {
               temp1 = temp1 & true;
             } else {
               temp1 = temp1 & false;
             }
           } else {
-            if(child_inner[0].hasBoundVar()) {
+            if(child_inner[0].hasBoundVar() && containsSameBoundVar(child_inner[0],bv)) {
               temp1 = temp1 | true;
             } else {
               temp1 = temp1 | false;
@@ -1744,7 +1745,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
         }
         leftProjectionNode.push_back(temp1);
       } else {
-        if(child[0].hasBoundVar()) {
+        if(child[0].hasBoundVar() && containsSameBoundVar(child[0],bv)) {
           leftProjectionNode.push_back(true);
         } else {
           leftProjectionNode.push_back(false);
@@ -1766,13 +1767,13 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
     return returnNode;
   } else {
     if(n.getKind() == kind::NOT) {
-      if(n[0][0].hasBoundVar()) {
+      if(n[0][0].hasBoundVar() && containsSameBoundVar(n[0][0],bv)) {
         return mkBoolNode(false);
       } else {
         return mkBoolNode(true);
       }
     } else {
-      if(n[0].hasBoundVar()) {
+      if(n[0].hasBoundVar() && containsSameBoundVar(n[0],bv)) {
         return mkBoolNode(true);
       } else {
         return mkBoolNode(false);
