@@ -14,6 +14,7 @@ class CVC4_PUBLIC QuantifierEliminate {
 private:
   static std::vector<std::vector<Node> > boundVar;
   static std::vector<Node> args;
+  static Integer lcmValue;
   /*static std::vector<Node> variables;
    static std::vector<Node> coefficients;*/
   static std::vector<Container> container;

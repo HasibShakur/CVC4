@@ -33,6 +33,7 @@ std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
 std::vector<Container> QuantifierEliminate::container;
 std::vector<ExpressionContainer> QuantifierEliminate::expressionContainer;
+Integer lcmValue;
 
 bool QuantifierEliminate::isLiteralQE(Node n) {
   switch(n.getKind()) {
@@ -515,10 +516,14 @@ Integer QuantifierEliminate::getLcmResult(Node t,Node bv)
     }
     Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
     Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
+    lcmValue = lcmResult;
     return lcmResult;
 }
+
 Node QuantifierEliminate::parseEquation(Node t, Node bv) {
   Integer coeff = 1;
+  Integer lcmResult = getLcmResult(t,bv);
+  Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
   Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
   for(int i=0;i<(int)container.size();i++)
   {
@@ -528,8 +533,6 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
     }
   }
   Debug("expr-qetest")<<"Coeff "<<coeff<<std::endl;
-  Integer lcmResult = getLcmResult(t,bv);
-  Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
   Integer multiple = lcmResult.euclidianDivideQuotient(coeff.abs());
   Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
   while(!container.empty())
@@ -1824,7 +1827,6 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
 std::vector<Node> QuantifierEliminate::computeMultipleBoundVariables(Node n) {
   std::vector<Node> multipleBoundVars;
   Debug("expr-qetest")<<"n[0] "<<n[0]<<std::endl;
-  Debug("expr-qetest")<<"n[0] num of child "<<n[0].getNumChildren()<<std::endl;
   if(n[0].getNumChildren() > 1) {
     for(int i = 0; i < (int) n.getNumChildren(); i++) {
       Debug("expr-qetest")<<"boundVar "<<n[0][i]<<std::endl;
