@@ -33,7 +33,7 @@ std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
 std::vector<Container> QuantifierEliminate::container;
 std::vector<ExpressionContainer> QuantifierEliminate::expressionContainer;
-Integer lcmValue;
+Integer QuantifierEliminate::lcmValue;
 
 bool QuantifierEliminate::isLiteralQE(Node n) {
   switch(n.getKind()) {
@@ -516,7 +516,7 @@ Integer QuantifierEliminate::getLcmResult(Node t,Node bv)
     }
     Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
     Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
-    QuantifierEliminate::lcmValue = lcmResult;
+    lcmValue = lcmResult;
     return lcmResult;
 }
 
