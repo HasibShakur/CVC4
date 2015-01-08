@@ -411,42 +411,65 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
   } else {
     temp = n;
   }
-  for(Node::iterator i = temp.begin(), end = temp.end(); i != end; ++i) {
-    Node child = *i;
-    if(isVarWithCoefficientsQE(child)) {
-      Integer n = getIntegerFromNode(child[0]);
-      Container c(child[1], n);
-      container.push_back(c);
-    } else if(isConstQE(child)) {
-      Integer n = getIntegerFromNode(child);
-      Container c(child, n);
-      container.push_back(c);
-    } else if(isVarQE(child)) {
-      Constant one = Constant::mkOne();
-      Integer n = getIntegerFromNode(one.getNode());
-      Container c(child, n);
-      container.push_back(c);
-    } else {
-      for(Node::iterator j = child.begin(), end = child.end(); j != end; ++j) {
-        Node inner = *j;
-        if(isConstQE(inner)) {
-          Integer n = getIntegerFromNode(inner);
-          Container c(inner, n);
-          container.push_back(c);
-        } else if(isVarQE(inner)) {
-          Constant one = Constant::mkOne();
-          Integer n = getIntegerFromNode(one.getNode());
-          Container c(inner, n);
-          container.push_back(c);
-        } else {
-          Integer n = getIntegerFromNode(inner[0]);
-          Container c(inner[1], n);
-          container.push_back(c);
+  if(isConstQE(temp))
+  {
+    Integer n = getIntegerFromNode(temp);
+    Container c(temp,n);
+    container.push_back(c);
+  }
+  else if(isVarQE(temp))
+  {
+    Constant one = Constant::mkOne();
+    Integer n = getIntegerFromNode(one.getNode());
+    Container c(temp,n);
+    container.push_back(c);
+  }
+  else if(isVarWithCoefficientsQE(temp))
+  {
+    Integer n = getIntegerFromNode(temp[0]);
+    Container c(temp[1],n);
+    container.push_back(c);
+  }
+  else
+  {
+    for(Node::iterator i = temp.begin(), end = temp.end(); i != end; ++i) {
+      Node child = *i;
+      if(isVarWithCoefficientsQE(child)) {
+        Integer n = getIntegerFromNode(child[0]);
+        Container c(child[1], n);
+        container.push_back(c);
+      } else if(isConstQE(child)) {
+        Integer n = getIntegerFromNode(child);
+        Container c(child, n);
+        container.push_back(c);
+      } else if(isVarQE(child)) {
+        Constant one = Constant::mkOne();
+        Integer n = getIntegerFromNode(one.getNode());
+        Container c(child, n);
+        container.push_back(c);
+      } else {
+        for(Node::iterator j = child.begin(), end = child.end(); j != end; ++j) {
+          Node inner = *j;
+          if(isConstQE(inner)) {
+            Integer n = getIntegerFromNode(inner);
+            Container c(inner, n);
+            container.push_back(c);
+          } else if(isVarQE(inner)) {
+            Constant one = Constant::mkOne();
+            Integer n = getIntegerFromNode(one.getNode());
+            Container c(inner, n);
+            container.push_back(c);
+          } else {
+            Integer n = getIntegerFromNode(inner[0]);
+            Container c(inner[1], n);
+            container.push_back(c);
+          }
         }
       }
-    }
 
+    }
   }
+
 }
 Integer QuantifierEliminate::lcmQE(Integer a, Integer b) {
   return a.lcm(b);
