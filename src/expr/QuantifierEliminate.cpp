@@ -506,6 +506,10 @@ Integer QuantifierEliminate::getLcmResult(Node t,Node bv)
       parseCoefficientQE(child);
     }
     Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
+    for(int i=0;i<(int)container.size();i++)
+    {
+      Debug("expr-qetest")<<"Variable "<<container[i].getVariable()<<" Coefficient "<<container[i].getCoefficient()<<std::endl;
+    }
     Integer coeff = 1;
     for(int i=0;i<(int)container.size();i++)
     {
