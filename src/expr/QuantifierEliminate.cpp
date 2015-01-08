@@ -516,7 +516,7 @@ Integer QuantifierEliminate::getLcmResult(Node t,Node bv)
     }
     Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
     Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
-    lcmValue = lcmResult;
+    QuantifierEliminate::lcmValue = lcmResult;
     return lcmResult;
 }
 
