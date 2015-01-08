@@ -69,6 +69,7 @@ private:
   static Node replaceNegateGTQE(Node n);
   static Node replaceNegateGEQQE(Node n);
   static Node replaceNegateEQUALQE(Node n);
+  static Integer getLcmResult(Node t,Node bv);
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);

@@ -211,7 +211,6 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
   }
 }
 
-
 /* Node QuantifierEliminate::preProcessing2ForRightProjection(Node n) {
  Rational negOne(-1);
  Node test = mkRationalNode(negOne);
@@ -493,31 +492,43 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
   }
 
 }
+Integer QuantifierEliminate::getLcmResult(Node t,Node bv)
+{
+    std::vector<Integer> boundVarCoeff;
+    for(Node::kinded_iterator i = t.begin(t.getKind()),
+    i_end = t.end(t.getKind());
+    i!=i_end;
+    ++i)
+    {
+      Node child = *i;
+      Debug("expr-qetest")<<"child "<<child<<std::endl;
+      parseCoefficientQE(child);
+    }
+    Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
+    Integer coeff = 1;
+    for(int i=0;i<(int)container.size();i++)
+    {
+      if(container[i].getVariable() == bv)
+      {
+        boundVarCoeff.push_back(container[i].getCoefficient());
+       }
+    }
+    Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
+    Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
+    return lcmResult;
+}
 Node QuantifierEliminate::parseEquation(Node t, Node bv) {
-  Debug("expr-qetest")<<"To rewrite "<<t<<std::endl;
-  Debug("expr-qetest")<<"BoundVar "<<bv<<std::endl;
-  std::vector<Integer> boundVarCoeff;
-  for(Node::kinded_iterator i = t.begin(t.getKind()),
-  i_end = t.end(t.getKind());
-  i!=i_end;
-  ++i)
-  {
-    Node child = *i;
-    Debug("expr-qetest")<<"child "<<child<<std::endl;
-    parseCoefficientQE(child);
-  }
-  Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
   Integer coeff = 1;
+  Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
   for(int i=0;i<(int)container.size();i++)
   {
     if(container[i].getVariable() == bv)
     {
-      boundVarCoeff.push_back(container[i].getCoefficient());
       coeff = container[i].getCoefficient();
     }
   }
   Debug("expr-qetest")<<"Coeff "<<coeff<<std::endl;
-  Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
+  Integer lcmResult = getLcmResult(t,bv);
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
   Integer multiple = lcmResult.euclidianDivideQuotient(coeff.abs());
   Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
@@ -1730,13 +1741,15 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
             ++j) {
           Node child_inner = *j;
           if(child.getKind() == kind::AND) {
-            if(child_inner[0].hasBoundVar() && containsSameBoundVar(child_inner[0],bv)) {
+            if(child_inner[0].hasBoundVar()
+                && containsSameBoundVar(child_inner[0], bv)) {
               temp1 = temp1 & true;
             } else {
               temp1 = temp1 & false;
             }
           } else {
-            if(child_inner[0].hasBoundVar() && containsSameBoundVar(child_inner[0],bv)) {
+            if(child_inner[0].hasBoundVar()
+                && containsSameBoundVar(child_inner[0], bv)) {
               temp1 = temp1 | true;
             } else {
               temp1 = temp1 | false;
@@ -1745,7 +1758,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
         }
         leftProjectionNode.push_back(temp1);
       } else {
-        if(child[0].hasBoundVar() && containsSameBoundVar(child[0],bv)) {
+        if(child[0].hasBoundVar() && containsSameBoundVar(child[0], bv)) {
           leftProjectionNode.push_back(true);
         } else {
           leftProjectionNode.push_back(false);
@@ -1767,13 +1780,13 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
     return returnNode;
   } else {
     if(n.getKind() == kind::NOT) {
-      if(n[0][0].hasBoundVar() && containsSameBoundVar(n[0][0],bv)) {
+      if(n[0][0].hasBoundVar() && containsSameBoundVar(n[0][0], bv)) {
         return mkBoolNode(false);
       } else {
         return mkBoolNode(true);
       }
     } else {
-      if(n[0].hasBoundVar() && containsSameBoundVar(n[0],bv)) {
+      if(n[0].hasBoundVar() && containsSameBoundVar(n[0], bv)) {
         return mkBoolNode(true);
       } else {
         return mkBoolNode(false);
@@ -1782,6 +1795,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
   }
 }
 Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
+
   return n;
 }
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
@@ -1802,7 +1816,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final;
     bv.pop_back();
-   }
+  }
   Debug("expr-qetest")<<"args "<<args<<std::endl;
   return args;
 }
@@ -1890,6 +1904,28 @@ Node QuantifierEliminate::computeProjections(Node n) {
         args.pop_back();
       }
     }
+    else
+    {
+      if(boundVar.size() > 0) {
+        Node result3;
+        while(!boundVar.empty()) {
+          temp1 = args.back();
+          temp2 = boundVar.back();
+          result3 = performCaseAnalysis(temp1, temp2);
+          boundVar.pop_back();
+          while(!args.empty()) {
+            args.pop_back();
+          }
+          args.push_back(result2);
+        }
+        Node r = args.back();
+        Debug("expr-qetest")<<"r "<<r.negate()<<std::endl;
+        final = r.negate();
+        args.pop_back();
+      } else {
+        final = n;
+      }
+    }
   } else if(n.getKind() == kind::FORALL) {
     std::vector < Node > bv = computeMultipleBoundVariables(n[0]);
     args.push_back(n[1]);
@@ -1944,24 +1980,27 @@ Node QuantifierEliminate::computeProjections(Node n) {
       args.pop_back();
     }
 
-  }
-  else
-  {
-    Node result2;
-    while(!boundVar.empty()) {
-           temp1 = args.back();
-           temp2 = boundVar.back();
-           result2 = performCaseAnalysis(temp1, temp2);
-           boundVar.pop_back();
-           while(!args.empty()) {
-             args.pop_back();
-           }
-           args.push_back(result2);
-         }
-         Node r = args.back();
-         Debug("expr-qetest")<<"r "<<r<<std::endl;
-         final = r;
-         args.pop_back();
+  } else {
+    if(boundVar.size() > 0) {
+      Node result2;
+      while(!boundVar.empty()) {
+        temp1 = args.back();
+        temp2 = boundVar.back();
+        result2 = performCaseAnalysis(temp1, temp2);
+        boundVar.pop_back();
+        while(!args.empty()) {
+          args.pop_back();
+        }
+        args.push_back(result2);
+      }
+      Node r = args.back();
+      Debug("expr-qetest")<<"r "<<r<<std::endl;
+      final = r;
+      args.pop_back();
+    } else {
+      final = n;
+    }
+
   }
   Debug("expr-qetest")<<"final "<<final<<std::endl;
   return final;
