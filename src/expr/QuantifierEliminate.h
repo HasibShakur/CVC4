@@ -58,12 +58,12 @@ private:
   static Integer lcmQE(Integer a, Integer b);
   static Node fromIntegerToNodeQE(Integer n);
   static bool containsSameBoundVar(Node n, Node bv);
-  static Node rewriteRelationOperatorQE(Node n);
-  static Node replaceRelationOperatorQE(Node n);
+  static Node rewriteRelationOperatorQE(Node n,Node bv);
+  static Node replaceRelationOperatorQE(Node n,Node bv);
   static Node replaceGTQE(Node n);
   static Node replaceGEQQE(Node n);
   static Node replaceLEQQE(Node n);
-  static Node replaceEQUALQE(Node n);
+  static Node replaceEQUALQE(Node n,Node bv);
   static Node replaceLTQE(Node n);
   static Node replaceNegateLTQE(Node n);
   static Node replaceNegateLEQQE(Node n);

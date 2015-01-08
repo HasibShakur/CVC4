@@ -1047,14 +1047,14 @@ Node QuantifierEliminate::replaceLEQQE(Node n) {
   }
 }
 
-Node QuantifierEliminate::replaceEQUALQE(Node n) {
+Node QuantifierEliminate::replaceEQUALQE(Node n,Node bv) {
   Debug("expr-qetest")<<"Before replacement "<<n<<std::endl;
   Node left = n[0];
   Node right = n[1];
   Node finalLeft;
   Node finalRight;
 
-  if(left.hasBoundVar()) {
+  if(left.hasBoundVar() && containsSameBoundVar(left,bv)) {
     if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
       Node tempLeft = left;
       Node tempRight = right;
@@ -1305,8 +1305,8 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
         TNode tn2 = fromIntegerToNodeQE(x);
         tempRight = tempRight.substitute(tn1, tn2);
       } else {
-        tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-        fromIntegerToNodeQE(1));
+        tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+        fromIntegerToNodeQE(-1));
       }
       finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
       tempRight);
@@ -1314,13 +1314,17 @@ Node QuantifierEliminate::replaceEQUALQE(Node n) {
       tempRight = right;
       if(isConstQE(tempRight)) {
         Integer x = getIntegerFromNode(tempRight);
-        x = x - 1;
+        x = x + 1;
+        Node temporary = tempLeft;
         TNode tn1 = tempRight;
         TNode tn2 = fromIntegerToNodeQE(x);
-        tempRight = tempRight.substitute(tn1, tn2);
+        tempLeft = tempRight.substitute(tn1, tn2);
+        tempRight = temporary;
       } else {
-        tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-        fromIntegerToNodeQE(-1));
+        Node temporary = tempLeft;
+        tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+        fromIntegerToNodeQE(1));
+        tempRight = temporary;
       }
       finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
       tempRight);
@@ -1694,7 +1698,7 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n) {
     }
   }
 }
-Node QuantifierEliminate::replaceRelationOperatorQE(Node n) {
+Node QuantifierEliminate::replaceRelationOperatorQE(Node n,Node bv) {
   Node replaceNode;
   if(n.getKind() == kind::NOT) {
     Node temp = n[0];
@@ -1718,16 +1722,16 @@ Node QuantifierEliminate::replaceRelationOperatorQE(Node n) {
   } else if(n.getKind() == kind::GEQ) {
     replaceNode = replaceGEQQE(n);
   } else if(n.getKind() == kind::EQUAL) {
-    replaceNode = replaceEQUALQE(n);
+    replaceNode = replaceEQUALQE(n,bv);
   }
   return replaceNode;
 }
-Node QuantifierEliminate::rewriteRelationOperatorQE(Node n) {
+Node QuantifierEliminate::rewriteRelationOperatorQE(Node n,Node bv) {
   std::vector<Node> replaceNode;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node c = *i;
-      Node temp = replaceRelationOperatorQE(c);
+      Node temp = replaceRelationOperatorQE(c,bv);
       replaceNode.push_back(temp);
     }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
@@ -1735,7 +1739,7 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n) {
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   } else {
-    Node returnNode = replaceRelationOperatorQE(n);
+    Node returnNode = replaceRelationOperatorQE(n,bv);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   }
@@ -1743,10 +1747,10 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n) {
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
   if(n.getKind() == kind::NOT) {
     n = parseEquation(n[0], bv);
-    n = rewriteRelationOperatorQE(n);
+    n = rewriteRelationOperatorQE(n,bv);
   } else {
     n = parseEquation(n, bv);
-    n = rewriteRelationOperatorQE(n);
+    n = rewriteRelationOperatorQE(n,bv);
   }
 
   return n;
