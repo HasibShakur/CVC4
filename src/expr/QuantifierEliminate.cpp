@@ -1803,12 +1803,14 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
     bool temp = true;
     for(int i = 0; i < (int) leftProjectionNode.size(); i++) {
       if(n.getKind() == kind::AND) {
-        temp = temp & leftProjectionNode.back();
-        leftProjectionNode.pop_back();
+        temp = temp & leftProjectionNode[i];
       } else {
-        temp = temp | leftProjectionNode.back();
-        leftProjectionNode.pop_back();
+        temp = temp | leftProjectionNode[i];
       }
+    }
+    while(!leftProjectionNode.empty())
+    {
+      leftProjectionNode.pop_back();
     }
     Node returnNode = mkBoolNode(temp);
     return returnNode;
