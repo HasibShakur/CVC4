@@ -69,8 +69,10 @@ private:
   static Node replaceNegateLEQQE(Node n);
   static Node replaceNegateGTQE(Node n);
   static Node replaceNegateGEQQE(Node n);
-  static Node replaceNegateEQUALQE(Node n);
+  static Node replaceNegateEQUALQE(Node n,Node bv);
   static Integer getLcmResult(Node t,Node bv);
+  static Node getShiftedExpression(Node n,Node bv);
+  static Node separateBoundVarExpression(Node n, Node bv);
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
