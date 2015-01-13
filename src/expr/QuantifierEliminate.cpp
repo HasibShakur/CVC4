@@ -1767,7 +1767,7 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
                                                    tempRight);
       Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
       tempLeft = left;
-      if(!shiftFromRight.null) {
+      if(!shiftFromRight.null()) {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
                                                             shiftFromRight);
         }
