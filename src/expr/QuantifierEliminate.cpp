@@ -1109,7 +1109,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         }
       }
       if(!flag) {
-        if(!shiftFromLeft.null())
+        if(!shiftFromLeft.isNull())
         {
           tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
           fromIntegerToNodeQE(1),shiftFromLeft);
@@ -1123,7 +1123,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
       }
       else
       {
-        if(!shiftFromLeft.null())
+        if(!shiftFromLeft.isNull())
         {
           tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
         }
@@ -1149,7 +1149,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         {}
       }
       if(!flag1) {
-        if(!shiftFromLeft.null)
+        if(!shiftFromLeft.isNull())
         {
           tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
           fromIntegerToNodeQE(-1),shiftFromLeft);
@@ -1163,7 +1163,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
       }
       else
       {
-        if(!shiftFromLeft.null)
+        if(!shiftFromLeft.isNull())
         {
           tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
         }
@@ -1195,12 +1195,12 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         TNode tn1 = tempRight;
         TNode tn2 = fromIntegerToNodeQE(x);
         tempRight = tempRight.substitute(tn1, tn2);
-        if(!shiftFromLeft.null())
+        if(!shiftFromLeft.isNull())
         {
           tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
         }
       } else {
-        if(!shiftFromLeft.null())
+        if(!shiftFromLeft.isNull())
         {
           tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
           fromIntegerToNodeQE(1),shiftFromLeft);
@@ -1220,12 +1220,12 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         TNode tn1 = tempRight;
         TNode tn2 = fromIntegerToNodeQE(x);
         tempRight = tempRight.substitute(tn1, tn2);
-        if(!shiftFromLeft.null())
+        if(!shiftFromLeft.isNull())
         {
           tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
         }
       } else {
-        if(!shiftFromLeft.null())
+        if(!shiftFromLeft.isNull())
         {
           tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
           fromIntegerToNodeQE(-1),shiftFromLeft);
@@ -1281,7 +1281,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
       }
       if(!flag)
       {
-        if(!shiftFromRight.null())
+        if(!shiftFromRight.isNull())
         {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(-1),shiftFromRight);
         }
@@ -1292,7 +1292,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
       }
       else
       {
-        if(!shiftFromRight.null)
+        if(!shiftFromRight.isNull())
         {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,shiftFromRight);
         }
@@ -1319,7 +1319,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         {}
       }
       if(!flag1) {
-        if(!shiftFromRight.null)
+        if(!shiftFromRight.isNull())
         {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
           fromIntegerToNodeQE(1),shiftFromRight);
@@ -1332,7 +1332,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
       }
       else
       {
-        if(!shiftFromRight.null())
+        if(!shiftFromRight.isNull())
         {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
           shiftFromRight);
@@ -1367,14 +1367,14 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         TNode tn1 = tempLeft;
         TNode tn2 = change;
         tempLeft = tempLeft.substitute(tn1, tn2);
-        if(!shiftFromRight.null())
+        if(!shiftFromRight.isNull())
         {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,shiftFromRight);
         }
       }
       else
       {
-        if(!shiftFromRight.null())
+        if(!shiftFromRight.isNull())
         {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(-1),shiftFromRight);
         }
@@ -1395,14 +1395,14 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         TNode tn1 = tempLeft;
         TNode tn2 = change;
         tempLeft = tempLeft.substitute(tn1, tn2);
-        if(!shiftFromRight.null())
+        if(!shiftFromRight.isNull())
         {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,shiftFromRight);
         }
       }
       else
       {
-        if(!shiftFromRight.null())
+        if(!shiftFromRight.isNull())
         {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(1),shiftFromRight);
         }
@@ -1730,14 +1730,14 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
         tempLeft = separateBoundVarExpression(tempLeft, bv);
         Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
       }
-        if(!shiftFromLeft.null()) {
+        if(!shiftFromLeft.isNull()) {
           tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
                                                        shiftFromLeft);
         }
       finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
                                                    tempRight);
       tempRight = right;
-        if(!shiftFromLeft.null) {
+        if(!shiftFromLeft.isNull()) {
           tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
                                                        shiftFromLeft);
         }
@@ -1759,7 +1759,7 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
         tempRight = separateBoundVarExpression(tempRight, bv);
         Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
       }
-      if(!shiftFromRight.null()) {
+      if(!shiftFromRight.isNull()) {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
                                                            shiftFromRight);
         }
@@ -1767,7 +1767,7 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
                                                    tempRight);
       Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
       tempLeft = left;
-      if(!shiftFromRight.null()) {
+      if(!shiftFromRight.isNull()) {
           tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
                                                             shiftFromRight);
         }
