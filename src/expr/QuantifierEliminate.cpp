@@ -1953,12 +1953,8 @@ Node QuantifierEliminate::replaceRelationOperatorQE(Node n, Node bv) {
 }
 Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
   std::vector<Node> replaceNode;
-  Debug("expr-qetest")<<"Node n"<<n<<std::endl;
+  Debug("expr-qetest")<<"Node n "<<n<<std::endl;
   Debug("expr-qetest")<<"bound var "<<bv<<std::endl;
-  if(bv.getNumChildren() > 0)
-  {
-    bv = bv[0];
-  }
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node c = *i;
@@ -1983,15 +1979,39 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
     n = parseEquation(n, bv);
     n = rewriteRelationOperatorQE(n, bv);
   }
-
   return n;
+}
+
+Node QuantifierEliminate::getExpressionWithDivisibility(Node n,Node bv)
+{
+  Debug("expr-qetest")<<"Expression "<<n<<std::endl;
+  Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
+  if(lcmValue > 1)
+  {
+    Node modulus = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS, bv,lcmValue);
+    Debug("expr-qetest")<<"modulus "<<modulus<<std::endl;
+    Node modulusExpr = NodeManager::currentNM()->mkNode(kind::EQUAL, 0 ,modulus);
+    Debug("expr-qetest")<<"modulusExpr "<<modulusExpr<<std::endl;
+    n = NodeManager::currentNM()->mkNode(kind::AND,n,modulusExpr);
+    Debug("expr-qetest")<<"Final Node "<<n<<std::endl;
+    return n;
+  }
+  else
+  {
+    return n;
+  }
 }
 
 Node QuantifierEliminate::doRewriting(Node n, Node bv) {
   Node t;
+  if(bv.getNumChildren() > 0)
+  {
+    bv = bv[0];
+  }
   t = eliminateImpliesQE(n);
   t = convertToNNFQE(t);
   t = rewriteForSameCoefficients(t, bv);
+  t = getExpressionWithDivisibility(t,bv);
   return t;
 }
 
