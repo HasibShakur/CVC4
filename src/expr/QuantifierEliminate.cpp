@@ -1953,6 +1953,8 @@ Node QuantifierEliminate::replaceRelationOperatorQE(Node n, Node bv) {
 }
 Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
   std::vector<Node> replaceNode;
+  Debug("expr-qetest")<<"Node n"<<n<<std::endl;
+  Debug("expr-qetest")<<"bound var "<<bv<<std::endl;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node c = *i;
