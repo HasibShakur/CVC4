@@ -1237,11 +1237,18 @@ Node QuantifierEliminate::separateBoundVarExpression(Node n, Node bv) {
   for(Node::iterator inner = n.begin(), inner_end = n.end(); inner != inner_end;
       ++inner) {
     Node innerChild = *inner;
-    if(innerChild.hasBoundVar() && containsSameBoundVar(innerChild, bv)) {
-      toReturn = innerChild;
-      break;
+    if(isConstQE(innerChild)) {}
+    else
+    {
+      if(innerChild.hasBoundVar() && containsSameBoundVar(innerChild, bv)) {
+            toReturn = innerChild;
+            break;
+       }
+      else {}
     }
+
   }
+  Debug("expr-qetest")<<"toReturn "<<toReturn<<std::endl;
   return toReturn;
 }
 Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
@@ -1251,7 +1258,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
   Node finalLeft;
   Node finalRight;
   Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
-  if(left.hasBoundVar() && containsSameBoundVar(left,bv[0])) {
+  if(left.hasBoundVar() && containsSameBoundVar(left,bv)) {
     Debug("expr-qetest")<<"left side has boundVariable "<<bv<<std::endl;
     if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
       Node tempLeft = left;
