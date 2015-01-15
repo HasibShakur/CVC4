@@ -1219,8 +1219,17 @@ Node QuantifierEliminate::getShiftedExpression(Node n, Node bv) {
       }
     }
   }
-  shift = NodeManager::currentNM()->mkNode(kind::PLUS, shiftedNodes);
-  return shift;
+  if(shiftedNodes.size() > 1)
+  {
+    shift = NodeManager::currentNM()->mkNode(kind::PLUS, shiftedNodes);
+    return shift;
+  }
+  else
+  {
+    shift = shiftedNodes.back();
+    shiftedNodes.pop_back();
+    return shift;
+  }
 }
 Node QuantifierEliminate::separateBoundVarExpression(Node n, Node bv) {
   Node toReturn;
