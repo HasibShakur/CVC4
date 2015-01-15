@@ -1990,7 +1990,7 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n,Node bv)
   {
     Node modulus = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS, bv,lcmValue);
     Debug("expr-qetest")<<"modulus "<<modulus<<std::endl;
-    Node modulusExpr = NodeManager::currentNM()->mkNode(kind::EQUAL, 0 ,modulus);
+    Node modulusExpr = NodeManager::currentNM()->mkNode(kind::EQUAL, fromIntegerToNodeQE(0) ,modulus);
     Debug("expr-qetest")<<"modulusExpr "<<modulusExpr<<std::endl;
     n = NodeManager::currentNM()->mkNode(kind::AND,n,modulusExpr);
     Debug("expr-qetest")<<"Final Node "<<n<<std::endl;
