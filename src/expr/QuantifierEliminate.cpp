@@ -945,7 +945,7 @@ Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
       }
 
     } else {
-      if(tempLeft.getKind() == kind::PLUS || tempLeft.getKind == kind::MINUS) {
+      if(tempLeft.getKind() == kind::PLUS || tempLeft.getKind() == kind::MINUS) {
         bool flag = false;
         for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
             tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
@@ -1914,7 +1914,7 @@ Node QuantifierEliminate::replaceRelationOperatorQE(Node n, Node bv) {
     } else if(temp.getKind() == kind::LEQ) {
       replaceNode = replaceNegateLEQQE(n, bv);
     } else if(temp.getKind() == kind::GT) {
-      replaceNode = replaceNegateGTQE(n);
+      replaceNode = replaceNegateGTQE(n,bv);
     } else if(temp.getKind() == kind::GEQ) {
       replaceNode = replaceNegateGEQQE(n,bv);
     } else if(temp.getKind() == kind::EQUAL) {
