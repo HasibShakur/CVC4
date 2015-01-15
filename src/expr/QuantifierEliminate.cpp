@@ -1955,10 +1955,14 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
   std::vector<Node> replaceNode;
   Debug("expr-qetest")<<"Node n"<<n<<std::endl;
   Debug("expr-qetest")<<"bound var "<<bv<<std::endl;
+  if(bv.getNumChildren() > 0)
+  {
+    bv = bv[0];
+  }
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node c = *i;
-      Node temp = replaceRelationOperatorQE(c, bv[0]);
+      Node temp = replaceRelationOperatorQE(c, bv);
       replaceNode.push_back(temp);
     }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
@@ -1966,7 +1970,7 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   } else {
-    Node returnNode = replaceRelationOperatorQE(n, bv[0]);
+    Node returnNode = replaceRelationOperatorQE(n, bv);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   }
