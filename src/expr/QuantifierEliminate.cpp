@@ -1252,7 +1252,7 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
   Node finalRight;
   Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
   if(left.hasBoundVar() && containsSameBoundVar(left,bv)) {
-    Debug("expr-qetest")<<"left side has boundVariable "<<bv<std::endl;
+    Debug("expr-qetest")<<"left side has boundVariable "<<bv<<std::endl;
     if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
       Node tempLeft = left;
       Node tempRight = right;
