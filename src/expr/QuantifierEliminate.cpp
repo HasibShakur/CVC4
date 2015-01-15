@@ -1207,10 +1207,11 @@ Node QuantifierEliminate::getShiftedExpression(Node n, Node bv) {
         shiftedNodes.push_back(convertChildL);
       } else if(isVarWithCoefficientsQE(childL)) {
         Integer neg = getIntegerFromNode(childL[0]) * -1;
-        Node convertChildL = NodeManager::currentNM()->mkNode(
-            kind::MULT, fromIntegerToNodeQE(neg), childL);
-        Debug("expr-qetest")<<"convertChildL "<<convertChildL<<std::endl;
-        shiftedNodes.push_back(convertChildL);
+        TNode tn1 = childL[0];
+        TNode tn2 = fromIntegerToNodeQE(neg);
+        childL = childL.substitute(tn1,tn2);
+        Debug("expr-qetest")<<"convertChildL "<<childL<<std::endl;
+        shiftedNodes.push_back(childL);
       } else {
         Integer neg = getIntegerFromNode(childL) * -1;
         Node convertChildL = fromIntegerToNodeQE(neg);
