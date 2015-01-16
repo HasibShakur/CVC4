@@ -2076,6 +2076,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
       divisibilityNodes.pop_back();
     } else {
     }
+    returnNode = Rewriter::rewrite(returnNode);
     return returnNode;
   } else {
     if(n.getKind() == kind::NOT) {
@@ -2093,6 +2094,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
           divisibilityNodes.pop_back();
         } else {
         }
+        returnNode = Rewriter::rewrite(returnNode);
         return returnNode;
       } else {
         returnNode = mkBoolNode(true);
@@ -2108,6 +2110,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
           divisibilityNodes.pop_back();
         } else {
         }
+        returnNode = Rewriter::rewrite(returnNode);
         return returnNode;
       }
     } else {
@@ -2126,6 +2129,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
                    }
                    else
                    {}
+        returnNode = Rewriter::rewrite(returnNode);
         return returnNode;
       } else {
         returnNode = mkBoolNode(false);
@@ -2141,6 +2145,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
           divisibilityNodes.pop_back();
         } else {
         }
+        returnNode = Rewriter::rewrite(returnNode);
         return returnNode;
       }
     }
