@@ -2162,7 +2162,7 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n,Node bv)
     Node childRP = *r_begin;
     if(childRP.getKind() == kind::AND || childRP.getKind() == kind::OR)
     {
-      for(Node inner_begin = childRP.begin(), inner_end = childRP.end();
+      for(Node::iterator inner_begin = childRP.begin(), inner_end = childRP.end();
               inner_begin != inner_end;
               ++inner_begin)
           {
