@@ -2151,9 +2151,55 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
     }
   }
 }
-Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
+Node QuantifierEliminate::getMinimalExprForRightProjection(Node n,Node bv)
+{
+  Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
+  std::vector<Node> bExpression;
+  for(Node::iterator r_begin = n.begin(), r_end = n.end();
+      r_begin != r_end;
+      ++r_begin)
+  {
+    Node childRP = *r_begin;
+    if(childRP.getKind() == kind::AND || childRP.getKind() == kind::OR)
+    {
+      for(Node inner_begin = childRP.begin(), inner_end = childRP.end();
+              inner_begin != inner_end;
+              ++inner_begin)
+          {
+            Node childRP_inner = *inner_begin;
+            if(childRP_inner[1].hasBoundVar() && containsSameBoundVar(childRP_inner[1],bv))
+            {
+              Debug("expr-qetest")<<"b Expression "<<childRP_inner[0]<<std::endl;
+              bExpression.push_back(childRP_inner[0]);
+            }
+          }
+    }
+    else if(childRP.getKind() == kind::EQUAL) {}
+    else
+    {
+      if(childRP[1].hasBoundVar() && containsSameBoundVar(childRP[1],bv))
+      {
+        Debug("expr-qetest")<<"b Expression "<<childRP[0]<<std::endl;
+        bExpression.push_back(childRP[0]);
+      }
+    }
 
-  return n;
+  }
+  if(bExpression.size() > 0)
+  {
+    Node returnNode = bExpression.back();
+    Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
+    return returnNode;
+  }
+  else
+  {
+    return n;
+  }
+}
+Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
+  Node test = getMinimalExprForRightProjection(n,bv);
+  Debug("expr-qetest")<<"Minimal Expression "<<test<<std::endl;
+  return test;
 }
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
 // Node rewrittenNode = doRewriting(n, bv);
