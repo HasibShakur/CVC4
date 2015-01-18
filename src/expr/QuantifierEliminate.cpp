@@ -2000,9 +2000,6 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv) {
 
 Node QuantifierEliminate::doRewriting(Node n, Node bv) {
   Node t;
-  if(bv.getNumChildren() > 0) {
-    bv = bv[0];
-  }
   t = eliminateImpliesQE(n);
   t = convertToNNFQE(t);
   t = rewriteForSameCoefficients(t, bv);
@@ -2160,7 +2157,6 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n,Node bv)
       ++r_begin)
   {
     Node childRP = *r_begin;
-    Debug("expr-qetest")<<"childRP "<<childRP<<std::endl;
     if(childRP.getKind() == kind::AND || childRP.getKind() == kind::OR)
     {
       for(Node::iterator inner_begin = childRP.begin(), inner_end = childRP.end();
@@ -2168,11 +2164,6 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n,Node bv)
               ++inner_begin)
           {
             Node childRP_inner = *inner_begin;
-            Debug("expr-qetest")<<"childRP_inner "<<childRP_inner<<std::endl;
-            Debug("expr-qetest")<<"childRP_inner[0] "<<childRP_inner[0]<<std::endl;
-            Debug("expr-qetest")<<"childRP_inner[1] "<<childRP_inner[1]<<std::endl;
-            Debug("expr-qetest")<<"childRP_inner[1] has bound var "<<childRP_inner[1].hasBoundVar()<<std::endl;
-            Debug("expr-qetest")<<"childRP_inner[1] contains same bound var "<<containsSameBoundVar(childRP_inner[1],bv)<<std::endl;
             if(childRP_inner[1].hasBoundVar() && containsSameBoundVar(childRP_inner[1],bv))
             {
               Debug("expr-qetest")<<"b Expression "<<childRP_inner[0]<<std::endl;
@@ -2216,6 +2207,9 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
   Node final;
   while(bv.size() > 0) {
     var = bv.back();
+    if(var.getNumChildren() > 0) {
+       var = var[0];
+     }
     args = doRewriting(args, var);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
     left = computeLeftProjection(args, var);
