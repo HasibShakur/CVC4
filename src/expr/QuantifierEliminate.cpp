@@ -2160,6 +2160,7 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n,Node bv)
       ++r_begin)
   {
     Node childRP = *r_begin;
+    Debug("expr-qetest")<<"childRP "<<childRP<<std::endl;
     if(childRP.getKind() == kind::AND || childRP.getKind() == kind::OR)
     {
       for(Node::iterator inner_begin = childRP.begin(), inner_end = childRP.end();
@@ -2167,6 +2168,7 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n,Node bv)
               ++inner_begin)
           {
             Node childRP_inner = *inner_begin;
+            Debug("expr-qetest")<<"childRP_inner "<<childRP_inner<<std::endl;
             if(childRP_inner[1].hasBoundVar() && containsSameBoundVar(childRP_inner[1],bv))
             {
               Debug("expr-qetest")<<"b Expression "<<childRP_inner[0]<<std::endl;
