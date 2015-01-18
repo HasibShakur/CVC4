@@ -2171,6 +2171,8 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n,Node bv)
             Debug("expr-qetest")<<"childRP_inner "<<childRP_inner<<std::endl;
             Debug("expr-qetest")<<"childRP_inner[0] "<<childRP_inner[0]<<std::endl;
             Debug("expr-qetest")<<"childRP_inner[1] "<<childRP_inner[1]<<std::endl;
+            Debug("expr-qetest")<<"childRP_inner[1] has bound var "<<childRP_inner[1].hasBoundVar()<<std::endl;
+            Debug("expr-qetest")<<"childRP_inner[1] contains same bound var "<<containsSameBoundVar(childRP_inner[1],bv)<<std::endl;
             if(childRP_inner[1].hasBoundVar() && containsSameBoundVar(childRP_inner[1],bv))
             {
               Debug("expr-qetest")<<"b Expression "<<childRP_inner[0]<<std::endl;
