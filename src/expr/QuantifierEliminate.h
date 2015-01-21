@@ -67,6 +67,7 @@ private:
   static Node separateBoundVarExpression(Node n, Node bv);
   static Node getExpressionWithDivisibility(Node n, Node bv);
   static Node getMinimalExprForRightProjection(Node n,Node bv);
+  static Node replaceBoundVarRightProjection(Node n,TNode bExpr, Node bv);
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
