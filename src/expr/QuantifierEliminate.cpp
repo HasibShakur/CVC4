@@ -2298,8 +2298,9 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
   Node bExpr = NodeManager::currentNM()->mkNode(kind::PLUS, test, fromIntegerToNodeQE(lcmValue));
   TNode b = bExpr;
   Node result = replaceBoundVarRightProjection(n,b,bv);
+  result = Rewriter::rewrite(result);
   Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
-  return test;
+  return result;
 }
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
 // Node rewrittenNode = doRewriting(n, bv);
