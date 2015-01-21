@@ -2506,6 +2506,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     }
 
   }
+  final = Rewriter::rewrite(final);
   Debug("expr-qetest")<<"final "<<final<<std::endl;
   return final;
 }
