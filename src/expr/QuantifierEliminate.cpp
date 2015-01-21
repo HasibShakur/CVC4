@@ -2288,16 +2288,25 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
       {}
     }
   }
-  Debug("expr-qetest")<<"Modified Expression "<<temp<<std::endl;
+  Debug("expr-qetest")<<"Modified Expression before rewriting "<<temp<<std::endl;
+  temp = Rewriter::rewrite(temp);
+  Debug("expr-qetest")<<"Modified Expression after rewriting "<<temp<<std::endl;
   return temp;
 }
 
 Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
   Node test = getMinimalExprForRightProjection(n, bv);
   Debug("expr-qetest")<<"Minimal Expression "<<test<<std::endl;
-  Node bExpr = NodeManager::currentNM()->mkNode(kind::PLUS, test, fromIntegerToNodeQE(lcmValue));
-  TNode b = bExpr;
-  Node result = replaceBoundVarRightProjection(n,b,bv);
+  Integer j = 1;
+  TNode b;
+  std::vector<Node> rightProjections;
+  while(j <= lcmValue)
+  {
+    b = NodeManager::currentNM()->mkNode(kind::PLUS, test, fromIntegerToNodeQE(j));
+    rightProjections.push_back(replaceBoundVarRightProjection(n,b,bv));
+    j = j+1;
+  }
+  Node result = NodeManager::currentNM()->mkNode(kind::OR,rightProjections);
   result = Rewriter::rewrite(result);
   Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
   return result;
