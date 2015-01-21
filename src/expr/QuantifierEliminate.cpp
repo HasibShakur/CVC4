@@ -2299,10 +2299,12 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
   Debug("expr-qetest")<<"Minimal Expression "<<test<<std::endl;
   Integer j = 1;
   TNode b;
+  Node bExpr;
   std::vector<Node> rightProjections;
   while(j <= lcmValue)
   {
-    b = NodeManager::currentNM()->mkNode(kind::PLUS, test, fromIntegerToNodeQE(j));
+    bExpr  = NodeManager::currentNM()->mkNode(kind::PLUS, test, fromIntegerToNodeQE(j));
+    b = bExpr;
     rightProjections.push_back(replaceBoundVarRightProjection(n,b,bv));
     j = j+1;
   }
