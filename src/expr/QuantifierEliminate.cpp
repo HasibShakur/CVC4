@@ -536,9 +536,17 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv) {
 
 Node QuantifierEliminate::parseEquation(Node t, Node bv) {
   Integer coeff = 1;
-  Integer lcmResult = getLcmResult(t, bv);
+  Node n;
+  if(t.getKind() == kind::NOT)
+  {
+    n = t[0];
+  }
+  else
+  {
+    n = t;
+  }
+  Integer lcmResult = getLcmResult(n, bv);
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
-  Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
   for(int i = 0; i < (int) container.size(); i++) {
     if(container[i].getVariable() == bv) {
       coeff = container[i].getCoefficient();
@@ -552,7 +560,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
   }
   Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
   if(lcmResult == 1 || multiple == 1) {
-    Debug("expr-qetest")<<"t "<<t<<std::endl;
+    Debug("expr-qetest")<<"After lcm operation expression "<<t<<std::endl;
     return t;
   }
   else
@@ -720,8 +728,17 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
 //    Divisible
 //    finalExpr.push_back(divisible);
     Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
-    Debug("expr-qetest")<<"FinalNode"<<finalNode<<std::endl;
-    return finalNode;
+    if(t.getKind() == kind::NOT)
+    {
+      Debug("expr-qetest")<<"After lcm operation expression "<<finalNode.negate()<<std::endl;
+      return finalNode.negate();
+    }
+    else
+    {
+      Debug("expr-qetest")<<"After lcm operation expression "<<finalNode<<std::endl;
+      return finalNode;
+    }
+
   }
 
 }
@@ -1969,14 +1986,9 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
   }
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
-  if(n.getKind() == kind::NOT) {
-    n = parseEquation(n[0], bv);
-    n = rewriteRelationOperatorQE(n, bv);
-  } else {
-    n = parseEquation(n, bv);
-    n = rewriteRelationOperatorQE(n, bv);
-  }
-  return n;
+   n = parseEquation(n, bv);
+   n = rewriteRelationOperatorQE(n, bv);
+   return n;
 }
 
 Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv) {
