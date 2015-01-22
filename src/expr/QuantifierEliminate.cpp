@@ -2443,7 +2443,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     }
   } else if(n.getKind() == kind::FORALL) {
     std::vector < Node > bv = computeMultipleBoundVariables(n[0]);
-    args.push_back(n[1]);
+    args.push_back(n[1].negate());
     boundVar.push_back(bv);
     return computeProjections(n[1]);
   } else if(n.getKind() == kind::AND) {
