@@ -2325,7 +2325,14 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n)
     Integer j = 1;
     while(j <= lcmValue)
     {
-      t = replaceXForLeftProjection(t[0][0],t,j);
+      if(t[0].getKind() == kind::INTS_MODULUS)
+      {
+        t = replaceXForLeftProjection(t[0][0],t,j);
+      }
+      else
+      {
+        t = replaceXForLeftProjection(t[1][0],t,j);
+      }
       leftProjections.push_back(t);
       j = j+1;
     }
