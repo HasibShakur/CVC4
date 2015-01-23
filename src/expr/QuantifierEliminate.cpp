@@ -2020,6 +2020,7 @@ Node QuantifierEliminate::doRewriting(Node n, Node bv) {
 }
 
 Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
+  Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   std::vector<bool> leftProjectionNode;
   std::vector<Node> divisibilityNodes;
   Node returnNode;
