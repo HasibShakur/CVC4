@@ -2328,10 +2328,28 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n)
       if(t[0].getKind() == kind::INTS_MODULUS)
       {
         t = replaceXForLeftProjection(t[0][0],t,j);
+        Integer x = getIntegerFromNode(t[0][0]);
+        if((x % lcmValue) == 0)
+        {
+          t = mkBoolNode(true);
+        }
+        else
+        {
+          t = mkBoolNode(false);
+        }
       }
       else
       {
         t = replaceXForLeftProjection(t[1][0],t,j);
+        Integer x = getIntegerFromNode(t[0][0]);
+        if((x % lcmValue) == 0)
+        {
+          t = mkBoolNode(true);
+        }
+        else
+        {
+          t = mkBoolNode(false);
+        }
       }
       leftProjections.push_back(t);
       j = j+1;
