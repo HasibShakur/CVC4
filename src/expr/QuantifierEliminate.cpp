@@ -2309,6 +2309,34 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
   Debug("expr-qetest")<<"Modified Expression after rewriting "<<temp<<std::endl;
   return temp;
 }
+Node QuantifierEliminate::replaceXForLeftProjection(Node n,Node original, Integer rep)
+{
+  TNode tn1 = n;
+  TNode tn2 = fromIntegerToNodeQE(rep);
+  original = original.substitute(tn1,tn2);
+  return original;
+}
+Node QuantifierEliminate::computeXValueForLeftProjection(Node n)
+{
+  std::vector<Node> leftProjections;
+  Node t = n;
+  if(t.getKind() == kind::EQUAL)
+  {
+    Integer j = 1;
+    while(j <= lcmValue)
+    {
+      t = replaceXForLeftProjection(t[0][0],t,j);
+      leftProjections.push_back(t);
+      j = j+1;
+    }
+    t = NodeManager::currentNM()->mkNode(kind::OR,leftProjections);
+    return t;
+  }
+  else
+  {
+    return n;
+  }
+}
 
 Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
   Node test = getMinimalExprForRightProjection(n, bv);
@@ -2335,6 +2363,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
   Node var;
   Node left;
   Node right;
+  Node temp;
   Node final;
   while(bv.size() > 0) {
     var = bv.back();
@@ -2343,8 +2372,9 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     }
     args = doRewriting(args, var);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
-    left = computeLeftProjection(args, var);
+    temp = computeLeftProjection(args, var);
     Debug("expr-qetest")<<"left "<<left<<std::endl;
+    left = computeXValueForLeftProjection(temp);
     right = computeRightProjection(args, var);
     Debug("expr-qetest")<<"right "<<args<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);

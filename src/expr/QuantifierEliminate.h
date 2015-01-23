@@ -68,6 +68,8 @@ private:
   static Node getExpressionWithDivisibility(Node n, Node bv);
   static Node getMinimalExprForRightProjection(Node n,Node bv);
   static Node replaceBoundVarRightProjection(Node n,TNode bExpr, Node bv);
+  static Node computeXValueForLeftProjection(Node n);
+  static Node replaceXForLeftProjection(Node n,Node original,Integer rep);
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
