@@ -2327,7 +2327,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
 }
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
 // Node rewrittenNode = doRewriting(n, bv);
-  Node args = n;
+  Node args = n.negate();
   Node var;
   Node left;
   Node right;
@@ -2379,8 +2379,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
     if(temp.getKind() == kind::FORALL) {
       std::vector < Node > bv = computeMultipleBoundVariables(temp[0]);
       boundVar.push_back(bv);
-      args.push_back(temp[1].negate());
-      return computeProjections(temp[1].negate());
+      args.push_back(temp[1]);
+      return computeProjections(temp[1]);
     } else if(temp.getKind() == kind::AND) {
       std::vector<Node> miniscopedNode;
       Node result;
@@ -2404,6 +2404,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         args.push_back(newNode.negate());
         while(!boundVar.empty()) {
           temp1 = args.back();
+          Debug("expr-qetest")<<"args "<<temp1<<std::endl;
           temp2 = boundVar.back();
           result = performCaseAnalysis(temp1, temp2);
           boundVar.pop_back();
@@ -2419,6 +2420,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       } else {
         while(!boundVar.empty()) {
           temp1 = args.back();
+          Debug("expr-qetest")<<"args "<<temp1<<std::endl;
           temp2 = boundVar.back();
           result = performCaseAnalysis(temp1, temp2);
           boundVar.pop_back();
@@ -2437,6 +2439,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         Node result3;
         while(!boundVar.empty()) {
           temp1 = args.back();
+          Debug("expr-qetest")<<"args "<<temp1<<std::endl;
           temp2 = boundVar.back();
           result3 = performCaseAnalysis(temp1, temp2);
           boundVar.pop_back();
@@ -2455,9 +2458,9 @@ Node QuantifierEliminate::computeProjections(Node n) {
     }
   } else if(n.getKind() == kind::FORALL) {
     std::vector < Node > bv = computeMultipleBoundVariables(n[0]);
-    args.push_back(n[1].negate());
+    args.push_back(n[1]);
     boundVar.push_back(bv);
-    return computeProjections(n[1].negate());
+    return computeProjections(n[1]);
   } else if(n.getKind() == kind::AND) {
     std::vector<Node> miniscopedNode1;
     Node result1;
@@ -2493,6 +2496,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     } else {
       while(!boundVar.empty()) {
         temp1 = args.back();
+        Debug("expr-qetest")<<"args"<<temp1<<std::endl;
         temp2 = boundVar.back();
         result1 = performCaseAnalysis(temp1, temp2);
         boundVar.pop_back();
@@ -2512,6 +2516,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       Node result2;
       while(!boundVar.empty()) {
         temp1 = args.back();
+        Debug("expr-qetest")<<"args "<<temp1<<std::endl;
         temp2 = boundVar.back();
         result2 = performCaseAnalysis(temp1, temp2);
         boundVar.pop_back();
