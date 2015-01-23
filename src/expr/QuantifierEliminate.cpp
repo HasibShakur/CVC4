@@ -2330,6 +2330,8 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n)
       j = j+1;
     }
     t = NodeManager::currentNM()->mkNode(kind::OR,leftProjections);
+    t = convertToNNFQE(t);
+    t = Rewriter::rewrite(t);
     return t;
   }
   else
@@ -2379,6 +2381,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     Debug("expr-qetest")<<"right "<<args<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final.negate();
+    args = convertToNNFQE(args);
     args = Rewriter::rewrite(args);
     bv.pop_back();
   }
