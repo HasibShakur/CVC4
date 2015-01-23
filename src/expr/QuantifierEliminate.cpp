@@ -2581,10 +2581,10 @@ Node QuantifierEliminate::computeProjections(Node n) {
   }
   final = Rewriter::rewrite(final);
   Debug("expr-qetest")<<"final "<<final<<std::endl;
-  Node intTestTemp1 = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS,fromIntegerToNodeQE(1),fromIntegerToNodeQE(2))
+  Node intTestTemp1 = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS,fromIntegerToNodeQE(1),fromIntegerToNodeQE(2));
   Node it1 = NodeManager::currentNM()->mkNode(kind::EQUAL,intTestTemp1,fromIntegerToNodeQE(0));
   it1 = it1.negate();
-  Node intTestTemp2 = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS,fromIntegerToNodeQE(1),fromIntegerToNodeQE(2))
+  Node intTestTemp2 = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS,fromIntegerToNodeQE(1),fromIntegerToNodeQE(2));
   Node it2 = NodeManager::currentNM()->mkNode(kind::EQUAL,intTestTemp2,fromIntegerToNodeQE(0));
   it2 = it2.negate();
   Node it3 = NodeManager::currentNM(kind::AND,it1,it2);
