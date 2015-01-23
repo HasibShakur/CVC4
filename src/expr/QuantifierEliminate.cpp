@@ -2326,17 +2326,9 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
         Debug("expr-qetest")<<"x "<<x<<std::endl;
         if(x < lcmValue) {
           t = mkBoolNode(false);
-        } else if(x == lcmValue) {
-          t = mkBoolNode(true);
         } else {
-          x = x.euclidianDivideRemainder(lcmValue);
-          Debug("expr-qetest")<<"remainder "<<x<<std::endl;
-          if(x == 0) {
-            t = mkBoolNode(true);
-          } else {
-            t = mkBoolNode(false);
-          }
-        }
+          t = mkBoolNode(true);
+        } s
       } else {
         t = replaceXForLeftProjection(t[1][0], t, j);
         Debug("expr-qetest")<<"t "<<t<<std::endl;
@@ -2344,16 +2336,8 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
         Debug("expr-qetest")<<"x "<<x<<std::endl;
         if(x < lcmValue) {
           t = mkBoolNode(false);
-        } else if(x == lcmValue) {
-          t = mkBoolNode(true);
         } else {
-          x = x.euclidianDivideRemainder(lcmValue);
-          Debug("expr-qetest")<<"remainder "<<x<<std::endl;
-          if(x == 0) {
-            t = mkBoolNode(true);
-          } else {
-            t = mkBoolNode(false);
-          }
+          t = mkBoolNode(true);
         }
       }
       leftProjections.push_back(t);
