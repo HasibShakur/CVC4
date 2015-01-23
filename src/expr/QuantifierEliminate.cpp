@@ -2328,6 +2328,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n)
       if(t[0].getKind() == kind::INTS_MODULUS)
       {
         t = replaceXForLeftProjection(t[0][0],t,j);
+        Debug("expr-qetest")<<"t "<<t<<std::endl;
         Integer x = getIntegerFromNode(t[0][0]);
         if(x.euclidianDivideRemainder(lcmValue) == 0)
         {
@@ -2341,6 +2342,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n)
       else
       {
         t = replaceXForLeftProjection(t[1][0],t,j);
+        Debug("expr-qetest")<<"t "<<t<<std::endl;
         Integer x = getIntegerFromNode(t[1][0]);
         if(x.euclidianDivideRemainder(lcmValue) == 0)
         {
