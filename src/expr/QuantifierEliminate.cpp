@@ -2322,6 +2322,8 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
     Integer p = lcmValue;
     Debug("expr-qetest")<<"p "<<p<<std::endl;
     while(j <= lcmValue) {
+      Debug("expr-qetest")<<"t[0] "<<t[0]<<std::endl;
+      Debug("expr-qetest")<<"t[1] "<<t[1]<<std::endl;
       if(t[0].getKind() == kind::INTS_MODULUS) {
         t = replaceXForLeftProjection(t[0][0], t, j);
         Debug("expr-qetest")<<"t "<<t<<std::endl;
@@ -2329,7 +2331,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
         Debug("expr-qetest")<<"x "<<x<<std::endl;
         if(x < p) {
           Debug("expr-qetest")<<"comparison done "<<std::endl;
-         b = false;
+          b = false;
         } else {
           Debug("expr-qetest")<<"comparison done "<<std::endl;
           b = true;
@@ -2348,8 +2350,10 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
         }
       }
       t = mkBoolNode(b);
+      Debug("expr-qetest")<<"t "<<t<<std::endl;
       leftProjections.push_back(t);
       j = j + 1;
+      Debug("expr-qetest")<<"new j "<<j<<std::endl;
     }
     Debug("expr-qetest")<<"leftProjections size "<<leftProjections.size()<<std::endl;
     t = NodeManager::currentNM()->mkNode(kind::OR, leftProjections);
