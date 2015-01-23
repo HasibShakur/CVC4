@@ -2096,10 +2096,12 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
               kind::AND, divisibilityNodes);
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
                                                         divisibilities);
+          returnNode = returnNode.negate();
         } else if(divisibilityNodes.size() == 1) {
           Node divisibilities = divisibilityNodes.back();
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
                                                         divisibilities);
+          returnNode = returnNode.negate();
           divisibilityNodes.pop_back();
         } else {
         }
@@ -2112,10 +2114,12 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
               kind::AND, divisibilityNodes);
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
                                                         divisibilities);
+          returnNode = returnNode.negate();
         } else if(divisibilityNodes.size() == 1) {
           Node divisibilities = divisibilityNodes.back();
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
                                                         divisibilities);
+          returnNode = returnNode.negate();
           divisibilityNodes.pop_back();
         } else {
         }
@@ -2300,7 +2304,6 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
       {}
     }
   }
-  Debug("expr-qetest")<<"Modified Expression before rewriting "<<temp<<std::endl;
   temp = Rewriter::rewrite(temp);
   Debug("expr-qetest")<<"Modified Expression after rewriting "<<temp<<std::endl;
   return temp;
