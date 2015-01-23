@@ -2328,7 +2328,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
           t = mkBoolNode(false);
         } else {
           t = mkBoolNode(true);
-        } s
+        }
       } else {
         t = replaceXForLeftProjection(t[1][0], t, j);
         Debug("expr-qetest")<<"t "<<t<<std::endl;
