@@ -537,12 +537,9 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv) {
 Node QuantifierEliminate::parseEquation(Node t, Node bv) {
   Integer coeff = 1;
   Node n;
-  if(t.getKind() == kind::NOT)
-  {
+  if(t.getKind() == kind::NOT) {
     n = t[0];
-  }
-  else
-  {
+  } else {
     n = t;
   }
   Integer lcmResult = getLcmResult(n, bv);
@@ -1986,9 +1983,9 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
   }
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
-   n = parseEquation(n, bv);
-   n = rewriteRelationOperatorQE(n, bv);
-   return n;
+  n = parseEquation(n, bv);
+  n = rewriteRelationOperatorQE(n, bv);
+  return n;
 }
 
 Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv) {
@@ -2032,20 +2029,20 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
       } else if(child.getKind() == kind::AND || child.getKind() == kind::OR) {
         bool temp1 = true;
         for(Node::iterator j = child.begin(), j_end = child.end(); j != j_end;
-            ++j) {
+        ++j) {
           Node child_inner = *j;
           if(child_inner.getKind() == kind::EQUAL) {
             divisibilityNodes.push_back(child_inner);
           } else if(child.getKind() == kind::AND) {
             if(child_inner[0].hasBoundVar()
-                && containsSameBoundVar(child_inner[0], bv)) {
+            && containsSameBoundVar(child_inner[0], bv)) {
               temp1 = temp1 & true;
             } else {
               temp1 = temp1 & false;
             }
           } else {
             if(child_inner[0].hasBoundVar()
-                && containsSameBoundVar(child_inner[0], bv)) {
+            && containsSameBoundVar(child_inner[0], bv)) {
               temp1 = temp1 | true;
             } else {
               temp1 = temp1 | false;
@@ -2076,13 +2073,13 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
     returnNode = mkBoolNode(temp);
     if(divisibilityNodes.size() > 1) {
       Node divisibilities = NodeManager::currentNM()->mkNode(kind::AND,
-                                                             divisibilityNodes);
+      divisibilityNodes);
       returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
-                                                    divisibilities);
+      divisibilities);
     } else if(divisibilityNodes.size() == 1) {
       Node divisibilities = divisibilityNodes.back();
       returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
-                                                    divisibilities);
+      divisibilities);
       divisibilityNodes.pop_back();
     } else {
     }
@@ -2094,14 +2091,14 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
         returnNode = mkBoolNode(false);
         if(divisibilityNodes.size() > 1) {
           Node divisibilities = NodeManager::currentNM()->mkNode(
-              kind::AND, divisibilityNodes);
+          kind::AND, divisibilityNodes);
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
-                                                        divisibilities);
+          divisibilities);
           returnNode = returnNode.negate();
         } else if(divisibilityNodes.size() == 1) {
           Node divisibilities = divisibilityNodes.back();
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
-                                                        divisibilities);
+          divisibilities);
           returnNode = returnNode.negate();
           divisibilityNodes.pop_back();
         } else {
@@ -2112,14 +2109,14 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
         returnNode = mkBoolNode(true);
         if(divisibilityNodes.size() > 1) {
           Node divisibilities = NodeManager::currentNM()->mkNode(
-              kind::AND, divisibilityNodes);
+          kind::AND, divisibilityNodes);
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
-                                                        divisibilities);
+          divisibilities);
           returnNode = returnNode.negate();
         } else if(divisibilityNodes.size() == 1) {
           Node divisibilities = divisibilityNodes.back();
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
-                                                        divisibilities);
+          divisibilities);
           returnNode = returnNode.negate();
           divisibilityNodes.pop_back();
         } else {
@@ -2132,13 +2129,13 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
         returnNode = mkBoolNode(true);
         if(divisibilityNodes.size() > 1) {
           Node divisibilities = NodeManager::currentNM()->mkNode(
-              kind::AND, divisibilityNodes);
+          kind::AND, divisibilityNodes);
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
-                                                        divisibilities);
+          divisibilities);
         } else if(divisibilityNodes.size() == 1) {
           Node divisibilities = divisibilityNodes.back();
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
-                                                        divisibilities);
+          divisibilities);
           divisibilityNodes.pop_back();
         } else {
         }
@@ -2148,13 +2145,13 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
         returnNode = mkBoolNode(false);
         if(divisibilityNodes.size() > 1) {
           Node divisibilities = NodeManager::currentNM()->mkNode(
-              kind::AND, divisibilityNodes);
+          kind::AND, divisibilityNodes);
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
-                                                        divisibilities);
+          divisibilities);
         } else if(divisibilityNodes.size() == 1) {
           Node divisibilities = divisibilityNodes.back();
           returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
-                                                        divisibilities);
+          divisibilities);
           divisibilityNodes.pop_back();
         } else {
         }
@@ -2309,66 +2306,60 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
   Debug("expr-qetest")<<"Modified Expression after rewriting "<<temp<<std::endl;
   return temp;
 }
-Node QuantifierEliminate::replaceXForLeftProjection(Node n,Node original, Integer rep)
-{
+Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
+                                                    Integer rep) {
   TNode tn1 = n;
   TNode tn2 = fromIntegerToNodeQE(rep);
-  original = original.substitute(tn1,tn2);
+  original = original.substitute(tn1, tn2);
   return original;
 }
-Node QuantifierEliminate::computeXValueForLeftProjection(Node n)
-{
+Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
   std::vector<Node> leftProjections;
   Node t = n;
-  if(t.getKind() == kind::EQUAL)
-  {
+  if(t.getKind() == kind::EQUAL) {
     Integer j = 1;
-    while(j <= lcmValue)
-    {
-      if(t[0].getKind() == kind::INTS_MODULUS)
-      {
-        t = replaceXForLeftProjection(t[0][0],t,j);
+    while(j <= lcmValue) {
+      if(t[0].getKind() == kind::INTS_MODULUS) {
+        t = replaceXForLeftProjection(t[0][0], t, j);
         Debug("expr-qetest")<<"t "<<t<<std::endl;
         Integer x = getIntegerFromNode(t[0][0]);
         Debug("expr-qetest")<<"x "<<x<<std::endl;
-        x = lcmValue.euclidianDivideRemainder(x);
-        Debug("expr-qetest")<<"x "<<x<<std::endl;
-        if( x == 0)
-        {
-          t = mkBoolNode(true);
-        }
-        else
-        {
+        if(x < lcmValue) {
           t = mkBoolNode(false);
+        } else {
+          x = x.euclidianDivideRemainder(lcmValue);
+          Debug("expr-qetest")<<"remainder "<<x<<std::endl;
+          if(x == 0) {
+            t = mkBoolNode(true);
+          } else {
+            t = mkBoolNode(false);
+          }
         }
-      }
-      else
-      {
-        t = replaceXForLeftProjection(t[1][0],t,j);
+      } else {
+        t = replaceXForLeftProjection(t[1][0], t, j);
         Debug("expr-qetest")<<"t "<<t<<std::endl;
         Integer x = getIntegerFromNode(t[1][0]);
         Debug("expr-qetest")<<"x "<<x<<std::endl;
-        x = lcmValue.euclidianDivideRemainder(x);
-        Debug("expr-qetest")<<"x "<<x<<std::endl;
-        if( x == 0)
-        {
-          t = mkBoolNode(true);
-        }
-        else
-        {
+        if(x < lcmValue) {
           t = mkBoolNode(false);
+        } else {
+          x = x.euclidianDivideRemainder(lcmValue);
+          Debug("expr-qetest")<<"remainder "<<x<<std::endl;
+          if(x == 0) {
+            t = mkBoolNode(true);
+          } else {
+            t = mkBoolNode(false);
+          }
         }
       }
       leftProjections.push_back(t);
-      j = j+1;
+      j = j + 1;
     }
-    t = NodeManager::currentNM()->mkNode(kind::OR,leftProjections);
+    t = NodeManager::currentNM()->mkNode(kind::OR, leftProjections);
     t = convertToNNFQE(t);
     t = Rewriter::rewrite(t);
     return t;
-  }
-  else
-  {
+  } else {
     return n;
   }
 }
@@ -2380,14 +2371,14 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
   TNode b;
   Node bExpr;
   std::vector<Node> rightProjections;
-  while(j <= lcmValue)
-  {
-    bExpr  = NodeManager::currentNM()->mkNode(kind::PLUS, test, fromIntegerToNodeQE(j));
+  while(j <= lcmValue) {
+    bExpr = NodeManager::currentNM()->mkNode(kind::PLUS, test,
+                                             fromIntegerToNodeQE(j));
     b = bExpr;
-    rightProjections.push_back(replaceBoundVarRightProjection(n,b,bv));
-    j = j+1;
+    rightProjections.push_back(replaceBoundVarRightProjection(n, b, bv));
+    j = j + 1;
   }
-  Node result = NodeManager::currentNM()->mkNode(kind::OR,rightProjections);
+  Node result = NodeManager::currentNM()->mkNode(kind::OR, rightProjections);
   result = Rewriter::rewrite(result);
   Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
   return result;
@@ -2607,13 +2598,19 @@ Node QuantifierEliminate::computeProjections(Node n) {
   }
   final = Rewriter::rewrite(final);
   Debug("expr-qetest")<<"final "<<final<<std::endl;
-  Node intTestTemp1 = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS,fromIntegerToNodeQE(1),fromIntegerToNodeQE(2));
-  Node it1 = NodeManager::currentNM()->mkNode(kind::EQUAL,intTestTemp1,fromIntegerToNodeQE(0));
+  Node intTestTemp1 = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS,
+                                                       fromIntegerToNodeQE(1),
+                                                       fromIntegerToNodeQE(2));
+  Node it1 = NodeManager::currentNM()->mkNode(kind::EQUAL, intTestTemp1,
+                                              fromIntegerToNodeQE(0));
   it1 = it1.negate();
-  Node intTestTemp2 = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS,fromIntegerToNodeQE(1),fromIntegerToNodeQE(2));
-  Node it2 = NodeManager::currentNM()->mkNode(kind::EQUAL,intTestTemp2,fromIntegerToNodeQE(0));
+  Node intTestTemp2 = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS,
+                                                       fromIntegerToNodeQE(1),
+                                                       fromIntegerToNodeQE(2));
+  Node it2 = NodeManager::currentNM()->mkNode(kind::EQUAL, intTestTemp2,
+                                              fromIntegerToNodeQE(0));
   it2 = it2.negate();
-  Node it3 = NodeManager::currentNM()->mkNode(kind::AND,it1,it2);
+  Node it3 = NodeManager::currentNM()->mkNode(kind::AND, it1, it2);
   Debug("expr-qetest")<<"it3 before rewrite "<<it3<<std::endl;
   it3 = Rewriter::rewrite(it3);
   Debug("expr-qetest")<<"it3 after rewrite "<<it3<<std::endl;
