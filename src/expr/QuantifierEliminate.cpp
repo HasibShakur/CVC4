@@ -2329,7 +2329,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n)
       {
         t = replaceXForLeftProjection(t[0][0],t,j);
         Integer x = getIntegerFromNode(t[0][0]);
-        if((x % lcmValue) == 0)
+        if(x.euclidianDivideRemainder(lcmValue) == 0)
         {
           t = mkBoolNode(true);
         }
@@ -2342,7 +2342,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n)
       {
         t = replaceXForLeftProjection(t[1][0],t,j);
         Integer x = getIntegerFromNode(t[0][0]);
-        if((x % lcmValue) == 0)
+        if(x.euclidianDivideRemainder(lcmValue) == 0)
         {
           t = mkBoolNode(true);
         }
