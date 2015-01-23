@@ -2328,8 +2328,10 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
         Integer x = getIntegerFromNode(t[0][0]);
         Debug("expr-qetest")<<"x "<<x<<std::endl;
         if(x < p) {
+          Debug("expr-qetest")<<"comparison done "<<std::endl;
          b = false;
         } else {
+          Debug("expr-qetest")<<"comparison done "<<std::endl;
           b = true;
         }
       } else {
@@ -2338,8 +2340,10 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
         Integer x = getIntegerFromNode(t[1][0]);
         Debug("expr-qetest")<<"x "<<x<<std::endl;
         if(x < p) {
+          Debug("expr-qetest")<<"comparison done "<<std::endl;
           b = false;
         } else {
+          Debug("expr-qetest")<<"comparison done "<<std::endl;
           b = true;
         }
       }
