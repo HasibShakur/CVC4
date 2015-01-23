@@ -2382,8 +2382,8 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     args = doRewriting(args, var);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
     temp = computeLeftProjection(args, var);
-    Debug("expr-qetest")<<"left "<<left<<std::endl;
     left = computeXValueForLeftProjection(temp);
+    Debug("expr-qetest")<<"left "<<left<<std::endl;
     right = computeRightProjection(args, var);
     Debug("expr-qetest")<<"right "<<args<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
