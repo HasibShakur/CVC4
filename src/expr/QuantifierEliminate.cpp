@@ -2319,13 +2319,15 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
   if(t.getKind() == kind::EQUAL) {
     Integer j = 1;
     bool b;
+    Integer p = lcmValue;
+    Debug("expr-qetest")<<"p "<<p<<std::endl;
     while(j <= lcmValue) {
       if(t[0].getKind() == kind::INTS_MODULUS) {
         t = replaceXForLeftProjection(t[0][0], t, j);
         Debug("expr-qetest")<<"t "<<t<<std::endl;
         Integer x = getIntegerFromNode(t[0][0]);
         Debug("expr-qetest")<<"x "<<x<<std::endl;
-        if(x < lcmValue) {
+        if(x < p) {
          b = false;
         } else {
           b = true;
@@ -2335,7 +2337,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
         Debug("expr-qetest")<<"t "<<t<<std::endl;
         Integer x = getIntegerFromNode(t[1][0]);
         Debug("expr-qetest")<<"x "<<x<<std::endl;
-        if(x < lcmValue) {
+        if(x < p) {
           b = false;
         } else {
           b = true;
