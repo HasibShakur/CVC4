@@ -2316,45 +2316,74 @@ Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
 Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
   std::vector<Node> leftProjections;
   Node t = n;
-  if(t.getKind() == kind::EQUAL) {
+  if(t.getKind() == kind::AND || t.getKind() == kind::OR || t.getKind() == kind::EQUAL)
+  {
     Integer j = 1;
-    bool b;
-    Integer p = lcmValue;
-    while(j <= lcmValue) {
-      t = n;
-      if(t[0].getKind() == kind::INTS_MODULUS) {
-        t = replaceXForLeftProjection(t[0][0], t, j);
-        Debug("expr-qetest")<<"t "<<t<<std::endl;
-        Integer x = getIntegerFromNode(t[0][0]);
-        Debug("expr-qetest")<<"x "<<x<<std::endl;
-        if(x < p) {
-           b = false;
+      while(j <= lcmValue) {
+        if(t.getKind() == kind::AND || t.getKind() == kind::OR) {
+          std::vector<Node> innerLefts;
+          for(Node::iterator leftP = t.begin(), leftEnd = t.end(); leftP != leftEnd;
+              ++leftP) {
+            Node childLP = *leftP;
+            Debug("expr-qetest")<<"childLP "<<childLP<<std::endl;
+            if(childLP.getKind() == kind::EQUAL) {
+              if(childLP[0].getKind() == kind::INTS_MODULUS) {
+                childLP = replaceXForLeftProjection(childLP[0][0], childLP, j);
+                childLP = Rewriter::rewrite(childLP);
+                Integer x = getIntegerFromNode(childLP[0][0]);
+                if(x.euclidianDivideRemainder(lcmValue) == 1) {
+                  innerLefts.push_back(mkBoolNode(false));
+                } else {
+                  innerLefts.push_back(mkBoolNode(true));
+                }
+              } else {
+                childLP = replaceXForLeftProjection(childLP[1][0], childLP, j);
+                childLP = Rewriter::rewrite(childLP);
+                Integer x = getIntegerFromNode(childLP[1][0]);
+                if(x.euclidianDivideRemainder(lcmValue) == 1) {
+                  innerLefts.push_back(mkBoolNode(false));
+                } else {
+                  innerLefts.push_back(mkBoolNode(true));
+                }
+              }
+            } else {
+            }
+          }
+          Node lp = NodeManager::currentNM()->mkNode(t.getKind(), innerLefts);
+          lp = Rewriter::rewrite(lp);
+          leftProjections.push_back(lp);
         } else {
-           b = true;
+          t = n;
+          if(t[0].getKind() == kind::INTS_MODULUS) {
+            t = replaceXForLeftProjection(t[0][0], t, j);
+            t = Rewriter::rewrite(t);
+            Integer y = getIntegerFromNode(t[0][0]);
+            if(y.euclidianDivideRemainder(lcmValue) == 1) {
+              leftProjections.push_back(mkBoolNode(false));
+            } else {
+              leftProjections.push_back(mkBoolNode(false));
+            }
+          } else {
+            t = replaceXForLeftProjection(t[1][0], t, j);
+            t = Rewriter::rewrite(t);
+            Integer y = getIntegerFromNode(t[1][0]);
+            if(y.euclidianDivideRemainder(lcmValue) == 1) {
+              leftProjections.push_back(mkBoolNode(false));
+            } else {
+              leftProjections.push_back(mkBoolNode(false));
+            }
+          }
         }
-      } else {
-        t = replaceXForLeftProjection(t[1][0], t, j);
-        Debug("expr-qetest")<<"t "<<t<<std::endl;
-        Integer x = getIntegerFromNode(t[1][0]);
-        Debug("expr-qetest")<<"x "<<x<<std::endl;
-        if(x < p) {
-          b = false;
-        } else {
-          b = true;
-        }
+        j = j+1;
       }
-      t = mkBoolNode(b);
-      Debug("expr-qetest")<<"t "<<t<<std::endl;
-      leftProjections.push_back(t);
-      j = j + 1;
-    }
-    Debug("expr-qetest")<<"leftProjections size "<<leftProjections.size()<<std::endl;
-    t = NodeManager::currentNM()->mkNode(kind::OR, leftProjections);
-    Debug("expr-qetest")<<"t "<<t<<std::endl;
-    t = Rewriter::rewrite(t);
+      t = NodeManager::currentNM()->mkNode(kind::OR,leftProjections);
+      t = Rewriter::rewrite(t);
+      Debug("expr-qetest")<<"Final LeftProjection "<<t<<std::endl;
+      return t;
+  }
+  else
+  {
     return t;
-  } else {
-    return n;
   }
 }
 
