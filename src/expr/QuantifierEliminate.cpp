@@ -2361,7 +2361,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
             if(y.euclidianDivideRemainder(lcmValue) == 1) {
               leftProjections.push_back(mkBoolNode(false));
             } else {
-              leftProjections.push_back(mkBoolNode(false));
+              leftProjections.push_back(mkBoolNode(true));
             }
           } else {
             t = replaceXForLeftProjection(t[1][0], t, j);
@@ -2370,7 +2370,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
             if(y.euclidianDivideRemainder(lcmValue) == 1) {
               leftProjections.push_back(mkBoolNode(false));
             } else {
-              leftProjections.push_back(mkBoolNode(false));
+              leftProjections.push_back(mkBoolNode(true));
             }
           }
         }
