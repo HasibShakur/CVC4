@@ -2011,7 +2011,7 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv) {
 Node QuantifierEliminate::doRewriting(Node n, Node bv) {
   Node t;
   t = eliminateImpliesQE(n);
-  t = convertToNNFQE(t);
+//  t = convertToNNFQE(t);
   t = rewriteForSameCoefficients(t, bv);
   t = getExpressionWithDivisibility(t, bv);
   return t;
@@ -2501,7 +2501,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     Debug("expr-qetest")<<"right "<<right<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final.negate();
-    args = convertToNNFQE(args);
+  //  args = convertToNNFQE(args);
     args = Rewriter::rewrite(args);
     bv.pop_back();
   }
