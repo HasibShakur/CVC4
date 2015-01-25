@@ -1972,6 +1972,7 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
       Node c = *i;
       Debug("expr-qetest")<<"Node c "<<c<<std::endl;
       Node temp = replaceRelationOperatorQE(c, bv);
+      Debug("expr-qetest")<<"Node temp "<<temp<<std::endl;
       replaceNode.push_back(temp);
     }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
