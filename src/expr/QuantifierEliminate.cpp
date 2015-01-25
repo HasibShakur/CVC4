@@ -2444,7 +2444,14 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
       b = bExpr;
       rp = replaceBoundVarRightProjection(n, b, bv);
       Debug("expr-qetest")<<"rp "<<rp<<std::endl;
-      Debug("expr-qetest")<<"kind of rp "<<rp.getKind()<<std::endl;
+      if(rp == mkBoolNode(true))
+      {
+        rp = mkBoolNode(true);
+      }
+      else if(rp == mkBoolNode(false))
+      {
+        rp = mkBoolNode(false);
+      }
       rightProjections.push_back(rp);
       j = j + 1;
     }
