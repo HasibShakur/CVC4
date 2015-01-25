@@ -2326,7 +2326,26 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
     {
       if(childE.hasBoundVar() && containsSameBoundVar(childE,bv))
       {
-        TNode toReplace = childE;
+        TNode toReplace;
+        if(isVarQE(childE) || isVarWithCoefficientsQE(childE))
+        {
+          toReplace = childE;
+        }
+        else
+        {
+          for(Node::iterator replaceRP = childE.begin(), replaceRPEnd = childE.end();
+          replaceRP != replaceRPEnd;
+          ++replaceRP)
+          {
+            Node rp = *replaceRP;
+            if((isVarQE(rp) || isVarWithCoefficientsQE(rp)) && containsSameBoundVar(rp,bv))
+            {
+              toReplace = rp;
+              break;
+            }
+            else {}
+          }
+        }
         temp = temp.substitute(toReplace,bExpr);
       }
       else
@@ -2429,17 +2448,15 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
     Integer j = 1;
     TNode b;
     Node bExpr;
+
     std::vector<Node> rightProjections;
     while(j <= lcmValue) {
-      if(isConstQE(test))
-      {
+      if(isConstQE(test)) {
         Integer y = getIntegerFromNode(test) + j;
         bExpr = fromIntegerToNodeQE(y);
-      }
-      else
-      {
+      } else {
         bExpr = NodeManager::currentNM()->mkNode(kind::PLUS, test,
-                                                       fromIntegerToNodeQE(j));
+                                                 fromIntegerToNodeQE(j));
       }
       b = bExpr;
       rp = replaceBoundVarRightProjection(n, b, bv);
@@ -2447,15 +2464,12 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
       rightProjections.push_back(rp);
       j = j + 1;
     }
-    if(rightProjections.size() > 1)
-    {
+    if(rightProjections.size() > 1) {
       result = NodeManager::currentNM()->mkNode(kind::OR, rightProjections);
       result = Rewriter::rewrite(result);
       Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
       return result;
-    }
-    else
-    {
+    } else {
       result = rightProjections.back();
       result = Rewriter::rewrite(result);
       Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
@@ -2604,12 +2618,9 @@ Node QuantifierEliminate::computeProjections(Node n) {
     std::vector < Node > bv = computeMultipleBoundVariables(n[0]);
     args.push_back(n[1]);
     boundVar.push_back(bv);
-    if(n[1].getKind() == kind::NOT)
-    {
+    if(n[1].getKind() == kind::NOT) {
       return computeProjections(n[1][0]);
-    }
-    else
-    {
+    } else {
       return computeProjections(n[1]);
     }
   } else if(n.getKind() == kind::AND) {
