@@ -795,7 +795,7 @@ Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
   Node tempLeft;
   Node tempRight;
   Node returnNode;
-  if(tempLeft.hasBoundVar() && containsSameBoundVar(tempLeft, bv)) {
+  if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
     tempLeft = left;
     tempRight = right;
     if(tempLeft.getKind() == kind::PLUS || tempLeft.getKind() == kind::MINUS) {
@@ -996,6 +996,7 @@ Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
       }
     }
   }
+  return returnNode;
 }
 Node QuantifierEliminate::replaceLEQQE(Node n, Node bv) {
   Node left = n[0];
@@ -2461,7 +2462,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     left = computeXValueForLeftProjection(temp);
     Debug("expr-qetest")<<"left "<<left<<std::endl;
     right = computeRightProjection(args, var);
-    Debug("expr-qetest")<<"right "<<args<<std::endl;
+    Debug("expr-qetest")<<"right "<<right<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final.negate();
     args = convertToNNFQE(args);
