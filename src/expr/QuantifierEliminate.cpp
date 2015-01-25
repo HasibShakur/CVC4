@@ -2430,8 +2430,16 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
     Node bExpr;
     std::vector<Node> rightProjections;
     while(j <= lcmValue) {
-      bExpr = NodeManager::currentNM()->mkNode(kind::PLUS, test,
-                                               fromIntegerToNodeQE(j));
+      if(isConstQE(test))
+      {
+        Integer y = getIntegerFromNode(test) + j;
+        bExpr = fromIntegerToNodeQE(y);
+      }
+      else
+      {
+        bExpr = NodeManager::currentNM()->mkNode(kind::PLUS, test,
+                                                       fromIntegerToNodeQE(j));
+      }
       b = bExpr;
       rightProjections.push_back(replaceBoundVarRightProjection(n, b, bv));
       j = j + 1;
