@@ -2419,8 +2419,8 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
   Node test = getMinimalExprForRightProjection(n, bv);
   Debug("expr-qetest")<<"Minimal Expression "<<test<<std::endl;
   Node result;
-  if(!test) {
-    result = mkBoolNode(false);
+  if(test == mkBoolNode(false)) {
+    result = test;
     Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
     return result;
   } else {
