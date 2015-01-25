@@ -2437,6 +2437,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
 
 Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
   Node test = getMinimalExprForRightProjection(n, bv);
+  test = Rewriter::rewrite(test);
   Debug("expr-qetest")<<"Minimal Expression "<<test<<std::endl;
   Node result;
   Node rp;
