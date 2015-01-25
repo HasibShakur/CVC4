@@ -2011,7 +2011,7 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv) {
 Node QuantifierEliminate::doRewriting(Node n, Node bv) {
   Node t;
   t = eliminateImpliesQE(n);
-//  t = convertToNNFQE(t);
+  t = convertToNNFQE(t);
   t = rewriteForSameCoefficients(t, bv);
   t = getExpressionWithDivisibility(t, bv);
   return t;
