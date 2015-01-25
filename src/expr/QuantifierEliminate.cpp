@@ -1970,6 +1970,7 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node c = *i;
+      Debug("expr-qetest")<<"Node c "<<c<<std::endl;
       Node temp = replaceRelationOperatorQE(c, bv);
       replaceNode.push_back(temp);
     }
