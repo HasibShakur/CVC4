@@ -2467,6 +2467,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
 // Node rewrittenNode = doRewriting(n, bv);
   Node args = n.negate();
+  Debug("expr-qetest")<<"args in pca "<<args<<std::endl;
   Node var;
   Node left;
   Node right;
@@ -2603,7 +2604,14 @@ Node QuantifierEliminate::computeProjections(Node n) {
     std::vector < Node > bv = computeMultipleBoundVariables(n[0]);
     args.push_back(n[1]);
     boundVar.push_back(bv);
-    return computeProjections(n[1]);
+    if(n[1].getKind() == kind::NOT)
+    {
+      return computeProjections(n[1][0]);
+    }
+    else
+    {
+      return computeProjections(n[1]);
+    }
   } else if(n.getKind() == kind::AND) {
     std::vector<Node> miniscopedNode1;
     Node result1;
