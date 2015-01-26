@@ -2302,6 +2302,8 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv) {
     {
       Node childRP = *r_begin;
       Debug("expr-qetest")<<"child RP "<<childRP<<std::endl;
+      Debug("expr-qetest")<<"child RP[0] "<<childRP[0]<<std::endl;
+      Debug("expr-qetest")<<"child RP[1] "<<childRP[1]<<std::endl;
       if(childRP.getKind() == kind::AND || childRP.getKind() == kind::OR)
       {
         for(Node::iterator inner_begin = childRP.begin(), inner_end = childRP.end();
