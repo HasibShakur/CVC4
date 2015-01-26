@@ -544,6 +544,7 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv) {
 }
 
 Node QuantifierEliminate::parseEquation(Node t, Node bv) {
+  std::vector<ExpressionContainer> expressionContainer;
   Integer coeff = 1;
   Node n;
   if(t.getKind() == kind::NOT) {
