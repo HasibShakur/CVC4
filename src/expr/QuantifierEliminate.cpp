@@ -492,45 +492,28 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
         if(child[1] == bv) {
           return true;
         } else {
-          Debug("expr-qetest")<<"not match with bv "<<child<<" "<<bv<<std::endl;
         }
       } else if(isVarQE(child)) {
         if(child == bv) {
           return true;
         } else {
-          Debug("expr-qetest")<<"not match with bv "<<child<<" "<<bv<<std::endl;
         }
-      }
-      else
-      {
-        for(Node::iterator i_inner = child.begin(),i_end = child.end();
-        i_inner != i_end;
-        ++i_inner)
-        {
+      } else {
+        for(Node::iterator i_inner = child.begin(), i_end = child.end();
+            i_inner != i_end; ++i_inner) {
           Node child_inner = *i_inner;
-          if(isVarQE(child_inner))
-          {
-            if(child_inner == bv)
-            {
+          if(isVarQE(child_inner)) {
+            if(child_inner == bv) {
               return true;
+            } else {
             }
-            else
-            {
-              Debug("expr-qetest")<<"not match with bv "<<child_inner<<" "<<bv<<std::endl;
-            }
-          }
-          else if(isVarWithCoefficientsQE(child_inner))
-          {
-            if(child_inner[1] == bv)
-            {
+          } else if(isVarWithCoefficientsQE(child_inner)) {
+            if(child_inner[1] == bv) {
               return true;
+            } else {
             }
-            else
-            {
-              Debug("expr-qetest")<<"not match with bv "<<child_inner[1]<<" "<<bv<<std::endl;
-            }
+          } else {
           }
-          else {}
         }
       }
     }
@@ -597,62 +580,103 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
     }
     Kind k = n.getKind();
     Integer multiplier = 1;
+    bool singleExp = false;
     for(Node::iterator i = n.begin(),i_end = n.end();
     i!=i_end;
     ++i)
     {
       Node child = *i;
       multiplier = 1;
-      for(Node::iterator j = child.begin(),j_end = child.end();
-      j != j_end;
-      ++j )
+      Node tempChild;
+      if(child.getKind() == kind::NOT)
       {
-        Node child1 = *j;
-        Debug("expr-qetest") <<"child 1 "<<child1<<std::endl;
-        if(child1.hasBoundVar() && containsSameBoundVar(child1,bv))
+        tempChild = child[0];
+      }
+      else
+      {
+        tempChild = child;
+      }
+      if(child.hasBoundVar())
+      {
+        if(isConstQE(child))
+        {}
+        else if(isVarQE(child))
         {
-          if(isConstQE(child1)) {}
-          else if(isVarQE(child1))
-          {
-            multiplier = (multiplier*lcmResult).abs();
-            Debug("expr-qetest") <<"multiplier "<<multiplier<<std::endl;
-          }
-          else if(isVarWithCoefficientsQE(child1))
-          {
-            Integer x = getIntegerFromNode(child1[0]).abs();
-            multiplier = lcmResult.euclidianDivideQuotient(x);
-            Debug("expr-qetest") <<"multiplier "<<multiplier<<std::endl;
-          }
-          else
-          {
-            for(Node::iterator k = child1.begin(),k_end = child1.end();
-            k != k_end;
-            ++k)
-            {
-              Node child2 = *k;
-              if(child2.hasBoundVar() && containsSameBoundVar(child2,bv))
-              {
-                if(isVarQE(child2))
-                {
-                  multiplier = (multiplier*lcmResult).abs();
-                }
-                else if(isVarWithCoefficientsQE(child2))
-                {
-                  Integer x = getIntegerFromNode(child2[0]).abs();
-                  multiplier = lcmResult.euclidianDivideQuotient(x);
-                }
-                else
-                {}
-              }
-              else
-              {}
-            }
-          }
+          singleExp = true;
+          multiplier = (multiplier*lcmResult).abs();
+          Debug("expr-qetest") <<"multiplier "<<multiplier<<std::endl;
+        }
+        else if(isVarWithCoefficientsQE(child))
+        {
+          singleExp = true;
+          Integer x = getIntegerFromNode(child[0]).abs();
+          multiplier = lcmResult.euclidianDivideQuotient(x);
+          Debug("expr-qetest") <<"multiplier "<<multiplier<<std::endl;
         }
         else
-        {}
+        {
+          for(Node::iterator j = tempChild.begin(),j_end = tempChild.end();
+          j != j_end;
+          ++j )
+          {
+            Node child1 = *j;
+            Debug("expr-qetest") <<"child 1 "<<child1<<std::endl;
+            if(child1.hasBoundVar() && containsSameBoundVar(child1,bv))
+            {
+              if(isConstQE(child1)) {}
+              else if(isVarQE(child1))
+              {
+                multiplier = (multiplier*lcmResult).abs();
+                Debug("expr-qetest") <<"multiplier "<<multiplier<<std::endl;
+              }
+              else if(isVarWithCoefficientsQE(child1))
+              {
+                Integer x = getIntegerFromNode(child1[0]).abs();
+                multiplier = lcmResult.euclidianDivideQuotient(x);
+                Debug("expr-qetest") <<"multiplier "<<multiplier<<std::endl;
+              }
+              else
+              {
+                for(Node::iterator k = child1.begin(),k_end = child1.end();
+                k != k_end;
+                ++k)
+                {
+                  Node child2 = *k;
+                  if(child2.hasBoundVar() && containsSameBoundVar(child2,bv))
+                  {
+                    if(isVarQE(child2))
+                    {
+                      multiplier = (multiplier*lcmResult).abs();
+                    }
+                    else if(isVarWithCoefficientsQE(child2))
+                    {
+                      Integer x = getIntegerFromNode(child2[0]).abs();
+                      multiplier = lcmResult.euclidianDivideQuotient(x);
+                    }
+                    else
+                    {}
+                  }
+                  else
+                  {}
+                }
+              }
+            }
+            else
+            {}
+          }
+        }
+        if(!singleExp)
+        {
+          ExpressionContainer e(child,multiplier);
+          expressionContainer.push_back(e);
+        }
       }
-      ExpressionContainer e(child,multiplier);
+      else
+      {}
+    }
+    if(singleExp)
+    {
+      ExpressionContainer e(n,multiplier);
       expressionContainer.push_back(e);
     }
     for(int i= 0;i<(int)expressionContainer.size();i++)
@@ -666,7 +690,16 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
       Integer multiple = expressionContainer[i].getMultiplier();
       Kind k1 = child.getKind();
       std::vector<Node> child_expr;
-      for(Node::iterator p = child.begin(),pEnd = child.end();
+      Node tempChild;
+      if(child.getKind() == kind::NOT)
+      {
+        tempChild = child[0];
+      }
+      else
+      {
+        tempChild = child;
+      }
+      for(Node::iterator p = tempChild.begin(),pEnd = tempChild.end();
       p != pEnd;
       ++p)
       {
@@ -725,6 +758,10 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
         }
       }
       Node child_temp = NodeManager::currentNM()->mkNode(k1,child_expr);
+      if(child.getKind() == kind::NOT)
+      {
+        child_temp = child_temp.negate();
+      }
       finalExpr.push_back(child_temp);
     }
 //    Divisible
