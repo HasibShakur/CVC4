@@ -688,7 +688,6 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
     {
       Node child = expressionContainer[i].getExpression();
       Integer multiple = expressionContainer[i].getMultiplier();
-      Kind k1 = child.getKind();
       std::vector<Node> child_expr;
       Node tempChild;
       if(child.getKind() == kind::NOT)
@@ -765,17 +764,17 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
           child_expr.push_back(temp);
         }
       }
-      Node child_temp = NodeManager::currentNM()->mkNode(k1,child_expr);
+      Node child_temp = NodeManager::currentNM()->mkNode(tempChild.getKind(),child_expr);
       Debug("expr-qetest")<<"child_temp "<<child_temp<<std::endl;
       if(child.getKind() == kind::NOT)
       {
-        child_temp = child_temp.notNode();
+        child_temp = child_temp.negate();
       }
       finalExpr.push_back(child_temp);
     }
 //    Divisible
 //    finalExpr.push_back(divisible);
-    Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
+    Node finalNode = NodeManager::currentNM()->mkNode(,finalExpr);
     if(t.getKind() == kind::NOT)
     {
       Debug("expr-qetest")<<"After lcm operation expression "<<finalNode.negate()<<std::endl;
