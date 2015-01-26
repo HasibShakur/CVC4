@@ -707,16 +707,19 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
         Node child2 = *p;
         if(isConstQE(child2))
         {
+          Debug("expr-qetest")<<"constant "<<child2<<std::endl;
           Integer x = getIntegerFromNode(child2) * multiple;
           child_expr.push_back(fromIntegerToNodeQE(x));
         }
         else if(isVarQE(child2))
         {
+          Debug("expr-qetest")<<"var "<<child2<<std::endl;
           Node temp = NodeManager::currentNM()->mkNode(kind::MULT,child2,fromIntegerToNodeQE(multiple));
           child_expr.push_back(temp);
         }
         else if(isVarWithCoefficientsQE(child2))
         {
+          Debug("expr-qetest")<<"var with coeff "<<child2<<std::endl;
           Integer x = getIntegerFromNode(child2[0]) * multiple;
           Node temp = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(x),child2[1]);
           child_expr.push_back(temp);
@@ -732,12 +735,14 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
             Node child3 = *j;
             if(isConstQE(child3))
             {
+              Debug("expr-qetest")<<"inner constant "<<child3<<std::endl;
               Integer x = getIntegerFromNode(child3) * multiple;
               Node c_temp = fromIntegerToNodeQE(x);
               right.push_back(c_temp);
             }
             else if(isVarQE(child3))
             {
+              Debug("expr-qetest")<<"inner var "<<child3<<std::endl;
               Node var = child3;
               Node coeff = fromIntegerToNodeQE(multiple);
               Node c_temp = NodeManager::currentNM()->mkNode(kind::MULT,coeff,var);
@@ -746,6 +751,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
             }
             else
             {
+              Debug("expr-qetest")<<"inner var with coefficients "<<child3<<std::endl;
               Node var = child3[1];
               Integer b = getIntegerFromNode(child3[0]);
               b = b*multiple;
@@ -755,6 +761,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
             }
           }
           Node temp = NodeManager::currentNM()->mkNode(k_child,right);
+          Debug("expr-qetest")<<"temp "<<temp<<std::endl;
           child_expr.push_back(temp);
         }
       }
