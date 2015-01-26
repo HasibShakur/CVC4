@@ -1729,7 +1729,10 @@ Node QuantifierEliminate::replaceLTQE(Node n, Node bv) {
     return returnNode;
 
   } else {
-    return n;
+    Node left = n[0];
+    Node right = n[1];
+    Node returnNode = NodeManager::currentNM()->mkNode(kind::LT,left,right);
+    return returnNode;
   }
 }
 Node QuantifierEliminate::replaceNegateLTQE(Node n, Node bv) {
