@@ -16,7 +16,7 @@ private:
   static std::vector<Node> args;
   static Integer lcmValue;
   static Integer numOfQuantiferToElim;
-  static Node originalExpression;
+  Node originalExpression;
   /*static std::vector<Node> variables;
    static std::vector<Node> coefficients;*/
   static std::vector<Container> container;
@@ -72,7 +72,9 @@ private:
   static Node replaceBoundVarRightProjection(Node n,TNode bExpr, Node bv);
   static Node computeXValueForLeftProjection(Node n);
   static Node replaceXForLeftProjection(Node n,Node original,Integer rep);
-  static Node computeProjections(Node n);
+  static Node computeProjections(Node n,QuantifierEliminate q);
+  void setOriginalExpression(Node n);
+  Node getOriginalExpression();
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);

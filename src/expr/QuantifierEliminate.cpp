@@ -35,7 +35,6 @@ std::vector<Container> QuantifierEliminate::container;
 std::vector<ExpressionContainer> QuantifierEliminate::expressionContainer;
 Integer QuantifierEliminate::lcmValue;
 Integer QuantifierEliminate::numOfQuantiferToElim;
-Node QuantifierEliminate::originalExpression;
 
 bool QuantifierEliminate::isLiteralQE(Node n) {
   switch(n.getKind()) {
@@ -2723,7 +2722,7 @@ std::vector<Node> QuantifierEliminate::computeMultipleBoundVariables(Node n) {
   }
   return multipleBoundVars;
 }
-Node QuantifierEliminate::computeProjections(Node n) {
+Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
   Node temp1;
   std::vector<Node> temp2;
   Node temp3;
@@ -2737,7 +2736,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       std::vector < Node > bv = computeMultipleBoundVariables(temp[0]);
       boundVar.push_back(bv);
       args.push_back(temp[1]);
-      return computeProjections(temp[1]);
+      return computeProjections(temp[1],q);
      // return computeProjections(temp[1].negate());
     } else if(temp.getKind() == kind::AND) {
       std::vector<Node> miniscopedNode;
@@ -2761,7 +2760,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         Integer qen = 1;
         if(numOfQuantiferToElim <= 0) {
           Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
-          final = originalExpression;
+          final = q.getOriginalExpression();
           while(!args.empty()) {
             args.pop_back();
           }
@@ -2805,7 +2804,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
         Integer qen = 1;
         if(numOfQuantiferToElim <= 0) {
           Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
-          final = originalExpression;
+          final = q.getOriginalExpression();
           while(!args.empty()) {
             args.pop_back();
           }
@@ -2851,7 +2850,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       Integer qen = 1;
       if(numOfQuantiferToElim <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
-        final = originalExpression;
+        final = q.getOriginalExpression();
         while(!args.empty()) {
           args.pop_back();
         }
@@ -2903,9 +2902,9 @@ Node QuantifierEliminate::computeProjections(Node n) {
     args.push_back(n[1]);
     boundVar.push_back(bv);
     if(n[1].getKind() == kind::NOT) {
-     return computeProjections(n[1][0]);
+     return computeProjections(n[1][0],q);
     } else {
-     return computeProjections(n[1]);
+     return computeProjections(n[1],q);
     }
   } else if(n.getKind() == kind::AND) {
     std::vector<Node> miniscopedNode1;
@@ -2928,7 +2927,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       Integer qen = 1;
       if(numOfQuantiferToElim <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
-        final = originalExpression;
+        final = q.getOriginalExpression();
         while(!args.empty()) {
           args.pop_back();
         }
@@ -2972,7 +2971,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       Integer qen = 1;
       if(numOfQuantiferToElim <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
-        final = originalExpression;
+        final = q.getOriginalExpression();
         while(!args.empty()) {
           args.pop_back();
         }
@@ -3014,7 +3013,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
     Integer qen = 1;
     if(numOfQuantiferToElim <= 0) {
       Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
-      final = originalExpression;
+      final = q.getOriginalExpression();
       while(!args.empty()) {
         args.pop_back();
       }
@@ -3062,15 +3061,24 @@ Node QuantifierEliminate::computeProjections(Node n) {
   Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
   return final;
 }
+void QuantifierEliminate::setOriginalExpression(Node n)
+{
+  this->originalExpression = n;
+}
+Node QuantifierEliminate::getOriginalExpression()
+{
+  return this->originalExpression;
+}
 Node QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
   numOfQuantiferToElim = numOfQuantifiers;
-  originalExpression = n;
-  Debug("expr-qetest")<<"Before qe original "<<originalExpression<<std::endl;
+  QuantifierEliminate qe = new QuantifierEliminate();
+  qe.setOriginalExpression(n);
+  Debug("expr-qetest")<<"Before qe original "<<qe.getOriginalExpression()<<std::endl;
   Node temp = n;
   Node final;
-  final = computeProjections(temp);
+  final = computeProjections(temp,qe);
   Debug("expr-qetest")<<"After qe "<<final<<std::endl;
   return final;
 }
