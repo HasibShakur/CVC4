@@ -758,6 +758,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
         }
       }
       Node child_temp = NodeManager::currentNM()->mkNode(k1,child_expr);
+      Debug("expr-qetest")<<"child_temp "<<child_temp<<std::endl;
       if(child.getKind() == kind::NOT)
       {
         child_temp = child_temp.negate();
