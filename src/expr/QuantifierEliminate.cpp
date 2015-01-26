@@ -489,18 +489,23 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
   } else {
     for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
       Node child = *i;
+      Debug("expr-qetest")<<"child in contains same bound var call "<<child<<std::endl;
       if(isConstQE(child)) {
       } else {
         if(isVarWithCoefficientsQE(child)) {
           if(child[1] == bv) {
+            Debug("expr-qetest")<<"match with bv"<<child<<" "<<bv<<std::endl;
             return true;
           } else {
+            Debug("expr-qetest")<<"not match with bv"<<child<<" "<<bv<<std::endl;
             return false;
           }
         } else {
           if(child == bv) {
+            Debug("expr-qetest")<<"match with bv"<<child<<" "<<bv<<std::endl;
             return true;
           } else {
+            Debug("expr-qetest")<<"not match with bv"<<child<<" "<<bv<<std::endl;
             return false;
           }
         }
@@ -800,6 +805,7 @@ Node QuantifierEliminate::replaceGTQE(Node n, Node bv) {
 Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
   Node returnNode;
   if(n.hasBoundVar() && containsSameBoundVar(n, bv)) {
+    Debug("expr-qetest")<<"Has bound var"<<std::endl;
     Node left = n[0];
     Node right = n[1];
     Node tempLeft;
@@ -1009,6 +1015,7 @@ Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
       }
     }
   } else {
+    Debug("expr-qetest")<<"Doesn't have bound var "<<std::endl;
     Node left = n[0];
     Node right = n[1];
     if(isConstQE(right)) {
