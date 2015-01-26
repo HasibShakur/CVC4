@@ -186,7 +186,6 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
           children.push_back(convertToNNFQE(body[0][i].notNode()));
         }
         k = body[0].getKind() == kind::AND ? kind::OR : kind::AND;
-        Debug("expr-qetest")<<"New kind after negation "<<k<<"\n";
       }
       else {
         Notice() << "Unhandled Quantifiers NNF: " << body << std::endl;
@@ -597,23 +596,19 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
     {
       n = t;
     }
-    Debug("expr-qetest")<<"t "<<t<<std::endl;
     Kind k = n.getKind();
-    Debug("expr-qetest")<<"k "<<k<<std::endl;
     Integer multiplier = 1;
     for(Node::iterator i = n.begin(),i_end = n.end();
     i!=i_end;
     ++i)
     {
       Node child = *i;
-      Debug("expr-qetest")<<"child "<<child<<std::endl;
       multiplier = 1;
       for(Node::iterator j = child.begin(),j_end = child.end();
       j != j_end;
       ++j )
       {
         Node child1 = *j;
-        Debug("expr-qetest")<<"child1 "<<child1<<std::endl;
         if(child1.hasBoundVar() && containsSameBoundVar(child1,bv))
         {
           if(isConstQE(child1)) {}
@@ -633,7 +628,6 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
             ++k)
             {
               Node child2 = *k;
-              Debug("expr-qetest")<<"child2 "<<child2<<std::endl;
               if(child2.hasBoundVar() && containsSameBoundVar(child2,bv))
               {
                 if(isVarQE(child2))
@@ -824,7 +818,6 @@ Node QuantifierEliminate::replaceGTQE(Node n, Node bv) {
 Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
   Node returnNode;
   if(n.hasBoundVar() && containsSameBoundVar(n, bv)) {
-    Debug("expr-qetest")<<"Has bound var"<<std::endl;
     Node left = n[0];
     Node right = n[1];
     Node tempLeft;
@@ -1034,7 +1027,6 @@ Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
       }
     }
   } else {
-    Debug("expr-qetest")<<"Doesn't have bound var "<<std::endl;
     Node left = n[0];
     Node right = n[1];
     if(isConstQE(right)) {
@@ -1048,7 +1040,6 @@ Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
     }
     returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
   }
-  Debug("expr-qetest")<<"returnNode after replace GEQ"<<returnNode<<std::endl;
   return returnNode;
 }
 Node QuantifierEliminate::replaceLEQQE(Node n, Node bv) {
@@ -1291,19 +1282,16 @@ Node QuantifierEliminate::getShiftedExpression(Node n, Node bv) {
       if(isVarQE(childL)) {
         Node convertChildL = NodeManager::currentNM()->mkNode(
             kind::MULT, fromIntegerToNodeQE(-1), childL);
-        Debug("expr-qetest")<<"convertChildL "<<convertChildL<<std::endl;
         shiftedNodes.push_back(convertChildL);
       } else if(isVarWithCoefficientsQE(childL)) {
         Integer neg = getIntegerFromNode(childL[0]) * -1;
         TNode tn1 = childL[0];
         TNode tn2 = fromIntegerToNodeQE(neg);
         childL = childL.substitute(tn1, tn2);
-        Debug("expr-qetest")<<"convertChildL "<<childL<<std::endl;
         shiftedNodes.push_back(childL);
       } else {
         Integer neg = getIntegerFromNode(childL) * -1;
         Node convertChildL = fromIntegerToNodeQE(neg);
-        Debug("expr-qetest")<<"convertChildL "<<convertChildL<<std::endl;
         shiftedNodes.push_back(convertChildL);
       }
     }
@@ -1332,19 +1320,15 @@ Node QuantifierEliminate::separateBoundVarExpression(Node n, Node bv) {
     }
 
   }
-  Debug("expr-qetest")<<"toReturn "<<toReturn<<std::endl;
   return toReturn;
 }
 Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
   if(n.hasBoundVar() && containsSameBoundVar(n, bv)) {
-    Debug("expr-qetest")<<"Before replacement "<<n<<std::endl;
     Node left = n[0];
     Node right = n[1];
     Node finalLeft;
     Node finalRight;
-    Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
     if(left.hasBoundVar() && containsSameBoundVar(left,bv)) {
-      Debug("expr-qetest")<<"left side has boundVariable "<<bv<<std::endl;
       if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
         Node tempLeft = left;
         Node tempRight = right;
@@ -1358,7 +1342,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         {
           shiftFromLeft = getShiftedExpression(tempLeft,bv);
           tempLeft = separateBoundVarExpression(tempLeft,bv);
-          Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
         }
         for(Node::iterator j = tempRight.begin(), j_end = tempRight.end();
         j != j_end; ++j) {
@@ -1440,7 +1423,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         tempLeft);
         Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
         finalRight);
-        Debug("expr-qetest")<<"After replacement returnNode "<<returnNode<<std::endl;
         return returnNode;
       } else {
         Node tempLeft = left;
@@ -1454,7 +1436,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         {
           shiftFromLeft = getShiftedExpression(tempLeft,bv);
           tempLeft = separateBoundVarExpression(tempLeft,bv);
-          Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
         }
         if(isConstQE(tempRight)) {
           Integer x = getIntegerFromNode(tempRight);
@@ -1511,7 +1492,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         return returnNode;
       }
     } else {
-      Debug("expr-qetest")<<"right side has boundVariable "<<bv<<std::endl;
       if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
         Node tempLeft = left;
         Node tempRight = right;
@@ -1525,7 +1505,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         {
           shiftFromRight = getShiftedExpression(tempRight,bv);
           tempRight = separateBoundVarExpression(tempRight,bv);
-          Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
         }
         for(Node::iterator j = tempLeft.begin(), j_end = tempLeft.end();
         j != j_end;
@@ -1566,7 +1545,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         }
         finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
         tempRight);
-        Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
         tempLeft = left;
         bool flag1 = false;
         for(Node::iterator j = tempLeft.begin(), j_end = tempLeft.end();
@@ -1607,10 +1585,8 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         }
         finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
         tempLeft);
-        Debug("expr-qetest")<<"finalRight "<<finalRight<<std::endl;
         Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
         finalRight);
-        Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
         return returnNode;
       } else {
         Node tempLeft = left;
@@ -1624,7 +1600,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         {
           shiftFromRight = getShiftedExpression(tempRight,bv);
           tempRight = separateBoundVarExpression(tempRight,bv);
-          Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
         }
         if(isConstQE(tempLeft))
         {
@@ -1652,7 +1627,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         }
         finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
         tempRight);
-        Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
         tempLeft = left;
         if(isConstQE(tempLeft))
         {
@@ -1682,7 +1656,6 @@ Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
         tempLeft);
         Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
         finalRight);
-        Debug("expr-qetest")<<"after replacement "<<returnNode<<std::endl;
         return returnNode;
       }
 
@@ -1984,7 +1957,6 @@ Node QuantifierEliminate::replaceNegateGTQE(Node n, Node bv) {
       }
 
     }
-    Debug("expr-qetest")<<"after replacing negateLT "<<returnNode<<std::endl;
     return returnNode;
 
   } else {
@@ -2021,7 +1993,6 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
       } else {
         shiftFromLeft = getShiftedExpression(tempLeft, bv);
         tempLeft = separateBoundVarExpression(tempLeft, bv);
-        Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
       }
       if(!shiftFromLeft.isNull()) {
         tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
@@ -2038,7 +2009,6 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
                                                     tempLeft);
       Node returnNode = NodeManager::currentNM()->mkNode(kind::OR, finalLeft,
                                                          finalRight);
-      Debug("expr-qetest")<<"After replacement returnNode "<<returnNode<<std::endl;
       return returnNode;
     } else {
       //right has boundvar bv
@@ -2050,7 +2020,6 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
       } else {
         shiftFromRight = getShiftedExpression(tempRight, bv);
         tempRight = separateBoundVarExpression(tempRight, bv);
-        Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
       }
       if(!shiftFromRight.isNull()) {
         tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
@@ -2058,7 +2027,6 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
       }
       finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
                                                    tempRight);
-      Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
       tempLeft = left;
       if(!shiftFromRight.isNull()) {
         tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
@@ -2066,10 +2034,8 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
       }
       finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
                                                     tempLeft);
-      Debug("expr-qetest")<<"finalRight "<<finalRight<<std::endl;
       Node returnNode = NodeManager::currentNM()->mkNode(kind::OR, finalLeft,
                                                          finalRight);
-      Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
       return returnNode;
     }
   } else {
@@ -2090,12 +2056,8 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
 }
 Node QuantifierEliminate::replaceRelationOperatorQE(Node n, Node bv) {
   Node replaceNode;
-  Debug("expr-qetest")<<"Node "<<n<<std::endl;
-  Debug("expr-qetest")<<"Node kind "<<n.getKind()<<std::endl;
   if(n.getKind() == kind::NOT) {
     Node temp = n[0];
-    Debug("expr-qetest")<<"Node "<<temp<<std::endl;
-    Debug("expr-qetest")<<"Node kind "<<temp.getKind()<<std::endl;
     if(temp.getKind() == kind::LT) {
       replaceNode = replaceNegateLTQE(n, bv);
     } else if(temp.getKind() == kind::LEQ) {
@@ -2149,14 +2111,10 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
 }
 
 Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv) {
-  Debug("expr-qetest")<<"Expression "<<n<<std::endl;
-  Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
   if(lcmValue > 1)
   {
     Node modulus = NodeManager::currentNM()->mkNode(kind::INTS_MODULUS, bv,fromIntegerToNodeQE(lcmValue));
-    Debug("expr-qetest")<<"modulus "<<modulus<<std::endl;
     Node modulusExpr = NodeManager::currentNM()->mkNode(kind::EQUAL, fromIntegerToNodeQE(0) ,modulus);
-    Debug("expr-qetest")<<"modulusExpr "<<modulusExpr<<std::endl;
     n = NodeManager::currentNM()->mkNode(kind::AND,n,modulusExpr);
     Debug("expr-qetest")<<"Final Node "<<n<<std::endl;
     return n;
@@ -2332,9 +2290,6 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv) {
     ++r_begin)
     {
       Node childRP = *r_begin;
-      Debug("expr-qetest")<<"child RP "<<childRP<<std::endl;
-      Debug("expr-qetest")<<"child RP[0] "<<childRP[0]<<std::endl;
-      Debug("expr-qetest")<<"child RP[1] "<<childRP[1]<<std::endl;
       if(childRP.getKind() == kind::AND || childRP.getKind() == kind::OR)
       {
         for(Node::iterator inner_begin = childRP.begin(), inner_end = childRP.end();
@@ -2392,13 +2347,11 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv) {
   if(bExpression.size()>0)
   {
     Node returnNode = bExpression.back();
-    Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   }
   else
   {
     Node returnNode = mkBoolNode(false);
-    Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   }
 }
@@ -2515,8 +2468,8 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
       {}
     }
   }
-  temp = Rewriter::rewrite(temp);
-  Debug("expr-qetest")<<"Modified Expression after rewriting "<<temp<<std::endl;
+ // temp = Rewriter::rewrite(temp);
+ // Debug("expr-qetest")<<"Modified Expression after rewriting "<<temp<<std::endl;
   return temp;
 }
 Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
@@ -2538,7 +2491,6 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
         for(Node::iterator leftP = t.begin(), leftEnd = t.end();
             leftP != leftEnd; ++leftP) {
           Node childLP = *leftP;
-          Debug("expr-qetest")<<"childLP "<<childLP<<std::endl;
           if(childLP.getKind() == kind::EQUAL) {
             if(childLP[0].getKind() == kind::INTS_MODULUS) {
               childLP = replaceXForLeftProjection(childLP[0][0], childLP, j);
@@ -2624,18 +2576,17 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
       }
       b = bExpr;
       rp = replaceBoundVarRightProjection(n, b, bv);
-      Debug("expr-qetest")<<"rp "<<rp<<std::endl;
       rightProjections.push_back(rp);
       j = j + 1;
     }
     if(rightProjections.size() > 1) {
       result = NodeManager::currentNM()->mkNode(kind::OR, rightProjections);
-      result = Rewriter::rewrite(result);
+    //  result = Rewriter::rewrite(result);
       Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
       return result;
     } else {
       result = rightProjections.back();
-      result = Rewriter::rewrite(result);
+   //   result = Rewriter::rewrite(result);
       Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
       return result;
     }
@@ -2678,13 +2629,11 @@ std::vector<Node> QuantifierEliminate::computeMultipleBoundVariables(Node n) {
   Debug("expr-qetest")<<"n "<<n<<std::endl;
   if(n.getNumChildren() > 1) {
     for(int i = 0; i < (int) n.getNumChildren(); i++) {
-      Debug("expr-qetest")<<"boundVar "<<n[i]<<std::endl;
       multipleBoundVars.push_back(n[i]);
     }
   }
   else
   {
-    Debug("expr-qetest")<<"boundVar "<<n[0]<<std::endl;
     multipleBoundVars.push_back(n[0]);
   }
   return multipleBoundVars;
