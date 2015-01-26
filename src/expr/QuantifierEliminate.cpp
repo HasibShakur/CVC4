@@ -2600,13 +2600,13 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
   Node right;
   Node temp;
   Node final;
-  Node args;
+  Node args = n;
   while(bv.size() > 0) {
     var = bv.back();
     if(var.getNumChildren() > 0) {
       var = var[0];
     }
-    args = n.negate();
+    args = args.negate();
     Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
     args = doRewriting(args, var);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
