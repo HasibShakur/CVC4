@@ -490,25 +490,60 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
     for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
       Node child = *i;
       Debug("expr-qetest")<<"child in contains same bound var call "<<child<<std::endl;
-      if(isConstQE(child)) {
-      } else {
-        if(isVarWithCoefficientsQE(child)) {
-          if(child[1] == bv) {
+      if(isConstQE(child)) {}
+      else if(isVarWithCoefficientsQE(child)){
+        if(child[1] == bv) {
             Debug("expr-qetest")<<"match with bv"<<child<<" "<<bv<<std::endl;
             return true;
           } else {
             Debug("expr-qetest")<<"not match with bv"<<child<<" "<<bv<<std::endl;
             return false;
           }
-        } else {
+        } else if(isVarQE(child)){
           if(child == bv) {
-            Debug("expr-qetest")<<"match with bv"<<child<<" "<<bv<<std::endl;
+
             return true;
           } else {
             Debug("expr-qetest")<<"not match with bv"<<child<<" "<<bv<<std::endl;
             return false;
           }
         }
+        else
+        {
+          for(Node::iterator i_inner = child.begin(),i_end = child.end();
+              i_inner != i_end;
+              ++i_inner)
+          {
+            Node child_inner = *i_inner;
+            Debug("expr-qetest")<<"inner child "<<child_inner<<std::endl;
+            if(isVarQE(child_inner))
+            {
+              if(child_inner == bv)
+              {
+                Debug("expr-qetest")<<"match with bv"<<child_inner<<" "<<bv<<std::endl;
+                return true;
+              }
+              else
+              {
+                Debug("expr-qetest")<<"not match with bv"<<child_inner<<" "<<bv<<std::endl;
+                return false;
+              }
+            }
+            else if(isVarWithCoefficientsQE(child_inner))
+            {
+              if(child_inner[1] == bv)
+              {
+                Debug("expr-qetest")<<"match with bv"<<child_inner[1]<<" "<<bv<<std::endl;
+                return true;
+              }
+              else
+              {
+                Debug("expr-qetest")<<"not match with bv"<<child_inner[1]<<" "<<bv<<std::endl;
+                return false;
+              }
+            }
+            else {}
+          }
       }
     }
     return false;
