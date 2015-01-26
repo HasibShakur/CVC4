@@ -2293,6 +2293,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
 }
 Node QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
+  Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
   std::vector<Node> bExpression;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR)
   {
