@@ -2362,9 +2362,16 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
           }
           else if(isVarWithCoefficientsQE(childE_inner[0]))
           {
-            Node var = childE_inner[0][0];
-            var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
-            var = Rewriter::rewrite(var);
+            Node var;
+            if(getIntegerFromNode(childE_inner[0][0]) < 0)
+            {
+              var = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(-1),bExpr);
+              var = Rewriter::rewrite(var);
+            }
+            else
+            {
+              var = bExpr;
+            }
             TNode toReplace = childE_inner[0];
             TNode sub = var;
             temp = temp.substitute(toReplace,sub);
@@ -2383,9 +2390,16 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
               }
               else if(isVarWithCoefficientsQE(innerExpression))
               {
-                Node var = innerExpression[0];
-                var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
-                var = Rewriter::rewrite(var);
+                Node var;
+                if(getIntegerFromNode(innerExpression[0]) < 0)
+                {
+                  var = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(-1),bExpr);
+                  var = Rewriter::rewrite(var);
+                }
+                else
+                {
+                  var = bExpr;
+                }
                 TNode toReplace = innerExpression;
                 TNode sub = var;
                 temp = temp.substitute(toReplace,sub);
@@ -2404,9 +2418,16 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
           }
           else if(isVarWithCoefficientsQE(childE_inner[1]))
           {
-            Node var = childE_inner[1][0];
-            var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
-            var = Rewriter::rewrite(var);
+            Node var;
+            if(getIntegerFromNode(childE_inner[1][0]) < 0)
+            {
+              var = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(-1),bExpr);
+              var = Rewriter::rewrite(var);
+            }
+            else
+            {
+              var = bExpr;
+            }
             TNode toReplace = childE_inner[1];
             TNode sub = var;
             temp = temp.substitute(toReplace,sub);
@@ -2425,9 +2446,16 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
               }
               else if(isVarWithCoefficientsQE(innerExpression))
               {
-                Node var = innerExpression[0];
-                var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
-                var = Rewriter::rewrite(var);
+                Node var;
+                if(getIntegerFromNode(innerExpression[0]) < 0)
+                {
+                  var = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(-1),bExpr);
+                  var = Rewriter::rewrite(var);
+                }
+                else
+                {
+                  var = bExpr;
+                }
                 TNode toReplace = innerExpression;
                 TNode sub = var;
                 temp = temp.substitute(toReplace,sub);
@@ -2467,9 +2495,16 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
         }
         else if(isVarWithCoefficientsQE(childE))
         {
-          Node var = childE[0];
-          var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
-          var = Rewriter::rewrite(var);
+          Node var;
+          if(getIntegerFromNode(childE[0]) < 0)
+          {
+            var = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(-1),bExpr);
+            var = Rewriter::rewrite(var);
+          }
+          else
+          {
+            var = bExpr;
+          }
           TNode toReplace = childE;
           TNode sub = var;
           temp = temp.substitute(toReplace,sub);
@@ -2489,9 +2524,16 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
             }
             else if(isVarWithCoefficientsQE(rp) && containsSameBoundVar(rp,bv))
             {
-              Node var = rp[0];
-              var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
-              var = Rewriter::rewrite(var);
+              Node var;
+              if(getIntegerFromNode(rp[0]) < 0)
+              {
+                var = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(-1),bExpr);
+                var = Rewriter::rewrite(var);
+              }
+              else
+              {
+                var = bExpr;
+              }
               TNode toReplace = rp;
               TNode sub = var;
               temp = temp.substitute(toReplace,sub);
