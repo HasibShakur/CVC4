@@ -2768,10 +2768,12 @@ Node QuantifierEliminate::computeProjections(Node n) {
           {
             boundVar.pop_back();
           }
+          Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+          return final;
         }
         else
         {
-          while(!boundVar.empty() && qen <= numOfQuantiferToElim) {
+          while(!boundVar.empty() && (qen <= numOfQuantiferToElim)) {
             temp1 = args.back();
             Debug("expr-qetest")<<"args "<<temp1<<std::endl;
             temp2 = boundVar.back();
@@ -2810,10 +2812,12 @@ Node QuantifierEliminate::computeProjections(Node n) {
           {
             boundVar.pop_back();
           }
+          Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+          return final;
         }
         else
         {
-          while(!boundVar.empty() && qen <= numOfQuantiferToElim) {
+          while(!boundVar.empty() && (qen <= numOfQuantiferToElim)) {
             temp1 = args.back();
             Debug("expr-qetest")<<"args "<<temp1<<std::endl;
             temp2 = boundVar.back();
@@ -2854,10 +2858,12 @@ Node QuantifierEliminate::computeProjections(Node n) {
         {
           boundVar.pop_back();
         }
+        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+        return final;
       }
       else
       {
-        if(boundVar.size() > 0 && qen <= numOfQuantiferToElim) {
+        if(boundVar.size() > 0 && (qen <= numOfQuantiferToElim)) {
           Node result3;
           while(!boundVar.empty()) {
             temp1 = args.back();
@@ -2929,10 +2935,12 @@ Node QuantifierEliminate::computeProjections(Node n) {
         {
           boundVar.pop_back();
         }
+        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+        return final;
       }
       else
       {
-        while(!boundVar.empty() && qen <= numOfQuantiferToElim) {
+        while(!boundVar.empty() && (qen <= numOfQuantiferToElim)) {
           temp1 = args.back();
           temp2 = boundVar.back();
           result1 = performCaseAnalysis(temp1, temp2);
@@ -2971,8 +2979,10 @@ Node QuantifierEliminate::computeProjections(Node n) {
         {
           boundVar.pop_back();
         }
+        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+        return final;
       }
-      while(!boundVar.empty() && qen <= numOfQuantiferToElim) {
+      while(!boundVar.empty() && (qen <= numOfQuantiferToElim)) {
         temp1 = args.back();
         Debug("expr-qetest")<<"args"<<temp1<<std::endl;
         temp2 = boundVar.back();
@@ -3011,8 +3021,10 @@ Node QuantifierEliminate::computeProjections(Node n) {
       {
         boundVar.pop_back();
       }
+      Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+      return final;
     }
-    if(boundVar.size() > 0 && qen <= numOfQuantiferToElim) {
+    if(boundVar.size() > 0 && (qen <= numOfQuantiferToElim)) {
       Node result2;
       while(!boundVar.empty()) {
         temp1 = args.back();
@@ -3054,6 +3066,7 @@ Node QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
   numOfQuantiferToElim = numOfQuantifiers;
   originalExpression = n;
+  Debug("expr-qetest")<<"Before qe original "<<originalExpression<<std::endl;
   Node temp = n;
   Node final;
   final = computeProjections(temp);
