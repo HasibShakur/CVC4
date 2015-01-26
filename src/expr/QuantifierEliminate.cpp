@@ -2849,11 +2849,18 @@ Node QuantifierEliminate::computeProjections(Node n) {
     }
   }
   final = Rewriter::rewrite(final);
+  Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+  return final;
+}
+Node QuantifierEliminate::qeEngine(Node n)
+{
+  Node final = computeProjections(n);
   if(n.getKind() == kind::NOT)
   {
     final = final.negate();
   }
-  Debug("expr-qetest")<<"final "<<final<<std::endl;
+  Debug("expr-qetest")<<"Final expression "<<final<<std::endl;
   return final;
 }
+
 

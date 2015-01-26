@@ -70,11 +70,12 @@ private:
   static Node replaceBoundVarRightProjection(Node n,TNode bExpr, Node bv);
   static Node computeXValueForLeftProjection(Node n);
   static Node replaceXForLeftProjection(Node n,Node original,Integer rep);
+  static Node computeProjections(Node n);
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
+  static Node qeEngine(Node n);
 
-  static Node computeProjections(Node n);
 
 };
 
