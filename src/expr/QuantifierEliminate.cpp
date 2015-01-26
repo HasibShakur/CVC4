@@ -769,7 +769,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
       Debug("expr-qetest")<<"child_temp "<<child_temp<<std::endl;
       if(child.getKind() == kind::NOT)
       {
-        child_temp = child_temp.negate();
+        child_temp = child_temp.notNode();
       }
       finalExpr.push_back(child_temp);
     }
