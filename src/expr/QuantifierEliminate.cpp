@@ -774,7 +774,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
     }
 //    Divisible
 //    finalExpr.push_back(divisible);
-    Node finalNode = NodeManager::currentNM()->mkNode(,finalExpr);
+    Node finalNode = NodeManager::currentNM()->mkNode(k,finalExpr);
     if(t.getKind() == kind::NOT)
     {
       Debug("expr-qetest")<<"After lcm operation expression "<<finalNode.negate()<<std::endl;
