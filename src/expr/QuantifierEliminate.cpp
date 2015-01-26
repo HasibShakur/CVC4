@@ -2769,8 +2769,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
           {
             boundVar.pop_back();
           }
-          Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
-          return final;
+//          Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+//          return final;
         }
         else
         {
@@ -2813,8 +2813,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
           {
             boundVar.pop_back();
           }
-          Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
-          return final;
+//          Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+//          return final;
         }
         else
         {
@@ -2859,8 +2859,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
         {
           boundVar.pop_back();
         }
-        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
-        return final;
+//        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+//        return final;
       }
       else
       {
@@ -2936,8 +2936,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
         {
           boundVar.pop_back();
         }
-        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
-        return final;
+//        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+//        return final;
       }
       else
       {
@@ -2980,8 +2980,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
         {
           boundVar.pop_back();
         }
-        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
-        return final;
+//        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+//        return final;
       }
       while(!boundVar.empty() && (qen <= numOfQuantiferToElim)) {
         temp1 = args.back();
@@ -3022,8 +3022,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
       {
         boundVar.pop_back();
       }
-      Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
-      return final;
+//      Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
+//      return final;
     }
     if(boundVar.size() > 0 && (qen <= numOfQuantiferToElim)) {
       Node result2;
