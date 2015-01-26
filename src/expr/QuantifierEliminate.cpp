@@ -2856,8 +2856,9 @@ Node QuantifierEliminate::qeEngine(Node n)
 {
   Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
+  Node temp = n;
   Node final;
-  final = computeProjections(n);
+  final = computeProjections(temp);
   if(n.getKind() == kind::NOT)
   {
     final = final.negate();
