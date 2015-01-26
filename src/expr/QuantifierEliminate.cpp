@@ -2355,10 +2355,19 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
         Node childE_inner = *eInner_begin;
         if(childE_inner[0].hasBoundVar() && containsSameBoundVar(childE_inner[0],bv))
         {
-          if(isVarQE(childE_inner[0]) || isVarWithCoefficientsQE(childE_inner[0]))
+          if(isVarQE(childE_inner[0]))
           {
             TNode toReplace = childE_inner[0];
             temp = temp.substitute(toReplace,bExpr);
+          }
+          else if(isVarWithCoefficientsQE(child_inner[0]))
+          {
+            Node var = childE_inner[0][0];
+            var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
+            var = Rewriter::rewrite(var);
+            TNode toReplace = child_inner[0];
+            TNode sub = var;
+            temp = temp.substitute(toReplace,sub);
           }
           else
           {
@@ -2367,10 +2376,19 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
             ++inner_begin)
             {
               Node innerExpression = *inner_begin;
-              if(isVarQE(innerExpression) || isVarWithCoefficientsQE(innerExpression))
+              if(isVarQE(innerExpression))
               {
                 TNode toReplace = innerExpression;
                 temp = temp.substitute(toReplace,bExpr);
+              }
+              else if(isVarWithCoefficientsQE(innerExpression))
+              {
+                Node var = innerExpression[0];
+                var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
+                var = Rewriter::rewrite(var);
+                TNode toReplace = innerExpression;
+                TNode sub = var;
+                temp = temp.substitute(toReplace,sub);
               }
               else
               {}
@@ -2379,10 +2397,19 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
         }
         if(childE_inner[1].hasBoundVar() && containsSameBoundVar(childE_inner[1],bv))
         {
-          if(isVarQE(childE_inner[1]) || isVarWithCoefficientsQE(childE_inner[1]))
+          if(isVarQE(childE_inner[1]))
           {
             TNode toReplace = childE_inner[1];
             temp = temp.substitute(toReplace,bExpr);
+          }
+          else if(isVarWithCoefficientsQE(childE_inner[1]))
+          {
+            Node var = childE_inner[1][0];
+            var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
+            var = Rewriter::rewrite(var);
+            TNode toReplace = childE_inner[1];
+            TNode sub = var;
+            temp = temp.substitute(toReplace,sub);
           }
           else
           {
@@ -2391,10 +2418,19 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
             ++inner_begin)
             {
               Node innerExpression = *inner_begin;
-              if(isVarQE(innerExpression) || isVarWithCoefficientsQE(innerExpression))
+              if(isVarQE(innerExpression))
               {
                 TNode toReplace = innerExpression;
                 temp = temp.substitute(toReplace,bExpr);
+              }
+              else if(isVarWithCoefficientsQE(innerExpression))
+              {
+                Node var = innerExpression[0];
+                var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
+                var = Rewriter::rewrite(var);
+                TNode toReplace = innerExpression;
+                TNode sub = var;
+                temp = temp.substitute(toReplace,sub);
               }
               else
               {}
@@ -2424,9 +2460,19 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
       if(childE.hasBoundVar() && containsSameBoundVar(childE,bv))
       {
         TNode toReplace;
-        if(isVarQE(childE) || isVarWithCoefficientsQE(childE))
+        if(isVarQE(childE))
         {
           toReplace = childE;
+          temp = temp.substitute(toReplace,bExpr);
+        }
+        else if(isVarWithCoefficientsQE(childE))
+        {
+          Node var = childE[0];
+          var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
+          var = Rewriter::rewrite(var);
+          TNode toReplace = childE;
+          TNode sub = var;
+          temp = temp.substitute(toReplace,sub);
         }
         else
         {
@@ -2435,22 +2481,30 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
           ++replaceRP)
           {
             Node rp = *replaceRP;
-            if((isVarQE(rp) || isVarWithCoefficientsQE(rp)) && containsSameBoundVar(rp,bv))
+            if(isVarQE(rp) && containsSameBoundVar(rp,bv))
             {
               toReplace = rp;
+              temp = temp.substitute(toReplace,bExpr);
+              break;
+            }
+            else if(isVarWithCoefficientsQE(rp) && containsSameBoundVar(rp,bv))
+            {
+              Node var = rp[0];
+              var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
+              var = Rewriter::rewrite(var);
+              TNode toReplace = rp;
+              TNode sub = var;
+              temp = temp.substitute(toReplace,sub);
               break;
             }
             else {}
           }
         }
-        temp = temp.substitute(toReplace,bExpr);
       }
       else
       {}
     }
   }
-  // temp = Rewriter::rewrite(temp);
-  // Debug("expr-qetest")<<"Modified Expression after rewriting "<<temp<<std::endl;
   return temp;
 }
 Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
@@ -2852,19 +2906,13 @@ Node QuantifierEliminate::computeProjections(Node n) {
   Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
   return final;
 }
-Node QuantifierEliminate::qeEngine(Node n)
-{
+Node QuantifierEliminate::qeEngine(Node n) {
   Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
   Node temp = n;
   Node final;
   final = computeProjections(temp);
-  if(n.getKind() == kind::NOT)
-  {
-    final = final.negate();
-  }
   Debug("expr-qetest")<<"After qe "<<final<<std::endl;
   return final;
 }
-
 
