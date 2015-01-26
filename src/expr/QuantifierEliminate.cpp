@@ -699,6 +699,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
       {
         tempChild = child;
       }
+      Debug("expr-qetest")<<"tempChild "<<tempChild<<std::endl;
       for(Node::iterator p = tempChild.begin(),pEnd = tempChild.end();
       p != pEnd;
       ++p)
