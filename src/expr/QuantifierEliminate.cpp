@@ -2595,8 +2595,6 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
 }
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
 // Node rewrittenNode = doRewriting(n, bv);
-  Node args = n.negate();
-  Debug("expr-qetest")<<"args in pca "<<args<<std::endl;
   Node var;
   Node left;
   Node right;
@@ -2607,6 +2605,8 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     if(var.getNumChildren() > 0) {
       var = var[0];
     }
+    Node args = n.negate();
+    Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
     args = doRewriting(args, var);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
     temp = computeLeftProjection(args, var);
@@ -2618,6 +2618,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     args = final.negate();
     //  args = convertToNNFQE(args);
     args = Rewriter::rewrite(args);
+    Debug("expr-qetest")<<"args after pca "<<args<<std::endl;
     bv.pop_back();
   }
   Debug("expr-qetest")<<"args "<<args<<std::endl;
