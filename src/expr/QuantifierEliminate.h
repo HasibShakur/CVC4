@@ -20,7 +20,7 @@ private:
   /*static std::vector<Node> variables;
    static std::vector<Node> coefficients;*/
   static std::vector<Container> container;
-  static std::vector<ExpressionContainer> expressionContainer;
+  std::vector<ExpressionContainer> expressionContainer;
 //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
   static Node convertToNNFQE(Node body);
   static Node doRewriting(Node n, Node bv);

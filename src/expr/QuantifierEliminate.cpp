@@ -32,7 +32,7 @@ using namespace CVC4::theory::arith;
 std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
 std::vector<Container> QuantifierEliminate::container;
-std::vector<ExpressionContainer> QuantifierEliminate::expressionContainer;
+//std::vector<ExpressionContainer> QuantifierEliminate::expressionContainer;
 Integer QuantifierEliminate::lcmValue;
 Integer QuantifierEliminate::numOfQuantiferToElim;
 
