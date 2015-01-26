@@ -2854,7 +2854,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
 }
 Node QuantifierEliminate::qeEngine(Node n)
 {
-  Node final = computeProjections(n);
+  Node final;
+  final = computeProjections(n);
   if(n.getKind() == kind::NOT)
   {
     final = final.negate();
