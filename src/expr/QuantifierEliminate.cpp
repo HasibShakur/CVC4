@@ -489,11 +489,9 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
   } else {
     for(Node::iterator i = n.begin(), end = n.end(); i != end; ++i) {
       Node child = *i;
-      Debug("expr-qetest")<<"child in contains same bound var call "<<child<<std::endl;
       if(isConstQE(child)) {}
       else if(isVarWithCoefficientsQE(child)){
         if(child[1] == bv) {
-            Debug("expr-qetest")<<"match with bv "<<child<<" "<<bv<<std::endl;
             return true;
           } else {
             Debug("expr-qetest")<<"not match with bv "<<child<<" "<<bv<<std::endl;
@@ -512,12 +510,10 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
               ++i_inner)
           {
             Node child_inner = *i_inner;
-            Debug("expr-qetest")<<"inner child "<<child_inner<<std::endl;
             if(isVarQE(child_inner))
             {
               if(child_inner == bv)
               {
-                Debug("expr-qetest")<<"match with bv "<<child_inner<<" "<<bv<<std::endl;
                 return true;
               }
               else
@@ -529,8 +525,7 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
             {
               if(child_inner[1] == bv)
               {
-                Debug("expr-qetest")<<"match with b v"<<child_inner[1]<<" "<<bv<<std::endl;
-                return true;
+               return true;
               }
               else
               {
@@ -550,10 +545,8 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv) {
   for(Node::kinded_iterator i = t.begin(t.getKind()), i_end = t.end(
       t.getKind()); i != i_end; ++i) {
     Node child = *i;
-    Debug("expr-qetest")<<"child "<<child<<std::endl;
     parseCoefficientQE(child);
   }
-  Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
   for(int i = 0; i < (int) container.size(); i++) {
     Debug("expr-qetest")<<"Variable "<<container[i].getVariable()<<" Coefficient "<<container[i].getCoefficient()<<std::endl;
   }
@@ -564,7 +557,6 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv) {
     }
   }
   Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
-  Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
   lcmValue = lcmResult;
   return lcmResult;
 }
@@ -590,7 +582,6 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
   while(!container.empty()) {
     container.pop_back();
   }
-  Debug("expr-qetest")<<"Container size "<<container.size()<<std::endl;
   if(lcmResult == 1 || multiple == 1) {
     Debug("expr-qetest")<<"After lcm operation expression "<<t<<std::endl;
     return t;
@@ -666,8 +657,6 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
         {}
       }
       ExpressionContainer e(child,multiplier);
-      Debug("expr-qetest")<<"expression "<<e.getExpression()<<std::endl;
-      Debug("expr-qetest")<<"multiplier "<<e.getMultiplier()<<std::endl;
       expressionContainer.push_back(e);
     }
     for(int i= 0;i<(int)expressionContainer.size();i++)
