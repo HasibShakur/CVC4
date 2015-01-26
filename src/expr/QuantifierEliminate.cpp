@@ -2757,7 +2757,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
                                                         miniscopedNode);
         Debug("expr-qetest")<<"newNode "<<newNode<<std::endl;
         args.push_back(newNode.negate());
-        int qen = 1;
+        Integer qen = 1;
         if(numOfQuantiferToElim <= 0) {
           Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
           final = originalExpression;
@@ -2799,7 +2799,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
           }
         }
       } else {
-        int qen = 1;
+        Integer qen = 1;
         if(numOfQuantiferToElim <= 0) {
           Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
           final = originalExpression;
@@ -2843,7 +2843,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
 
       }
     } else {
-      int qen = 1;
+      Integer qen = 1;
       if(numOfQuantiferToElim <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
         final = originalExpression;
@@ -2918,7 +2918,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       miniscopedNode1);
       Debug("expr-qetest")<<"newNode1 "<<newNode1<<std::endl;
       args.push_back(newNode1);
-      int qen = 1;
+      Integer qen = 1;
       if(numOfQuantiferToElim <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
         final = originalExpression;
@@ -2960,7 +2960,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       }
 
     } else {
-      int qen = 1;
+      Integer qen = 1;
       if(numOfQuantiferToElim <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
         final = originalExpression;
@@ -3000,7 +3000,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       }
     }
   } else {
-    int qen = 1;
+    Integer qen = 1;
     if(numOfQuantiferToElim <= 0) {
       Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
       final = originalExpression;
