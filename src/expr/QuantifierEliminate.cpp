@@ -526,7 +526,6 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
               else
               {
                 Debug("expr-qetest")<<"not match with bv"<<child_inner<<" "<<bv<<std::endl;
-                return false;
               }
             }
             else if(isVarWithCoefficientsQE(child_inner))
@@ -539,7 +538,6 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
               else
               {
                 Debug("expr-qetest")<<"not match with bv"<<child_inner[1]<<" "<<bv<<std::endl;
-                return false;
               }
             }
             else {}
