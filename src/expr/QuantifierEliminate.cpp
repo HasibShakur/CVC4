@@ -2735,7 +2735,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
       std::vector < Node > bv = computeMultipleBoundVariables(temp[0]);
       boundVar.push_back(bv);
       args.push_back(temp[1]);
-      return computeProjections(temp[1]);
+      return computeProjections(temp[1].negate());
     } else if(temp.getKind() == kind::AND) {
       std::vector<Node> miniscopedNode;
       Node result;
