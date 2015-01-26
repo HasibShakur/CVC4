@@ -2365,7 +2365,7 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
             Node var = childE_inner[0][0];
             var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
             var = Rewriter::rewrite(var);
-            TNode toReplace = child_inner[0];
+            TNode toReplace = childE_inner[0];
             TNode sub = var;
             temp = temp.substitute(toReplace,sub);
           }
