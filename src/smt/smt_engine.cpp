@@ -3354,7 +3354,7 @@ std::string SmtEngine::eliminateQuantifier(Expr ex, int numOfQuantifiersToElimin
   Debug("expr-qetest")<<"Number of Quantifiers to Eliminate "<<numOfQuantifiersToEliminate<<"\n";
   Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
   Node rewrittenNode = Rewriter::rewrite(ex);
-  Node finalNode = QuantifierEliminate::qeEngine(rewrittenNode);
+  Node finalNode = QuantifierEliminate::qeEngine(rewrittenNode,numOfQuantifiersToEliminate);
   Debug("expr-qetest")<<"Final Node "<<finalNode<<"\n";
   return "success";
 

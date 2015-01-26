@@ -15,6 +15,8 @@ private:
   static std::vector<std::vector<Node> > boundVar;
   static std::vector<Node> args;
   static Integer lcmValue;
+  static Integer numOfQuantiferToElim;
+  static Node originalExpression;
   /*static std::vector<Node> variables;
    static std::vector<Node> coefficients;*/
   static std::vector<Container> container;
@@ -74,7 +76,7 @@ private:
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
-  static Node qeEngine(Node n);
+  static Node qeEngine(Node n, int numOfQuantifiers);
 
 
 };
