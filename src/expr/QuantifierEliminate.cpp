@@ -2360,7 +2360,7 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
             TNode toReplace = childE_inner[0];
             temp = temp.substitute(toReplace,bExpr);
           }
-          else if(isVarWithCoefficientsQE(child_inner[0]))
+          else if(isVarWithCoefficientsQE(childE_inner[0]))
           {
             Node var = childE_inner[0][0];
             var = NodeManager::currentNM()->mkNode(kind::MULT,var,bExpr);
