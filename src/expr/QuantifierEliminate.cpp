@@ -3073,7 +3073,7 @@ Node QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
   numOfQuantiferToElim = numOfQuantifiers;
-  QuantifierEliminate qe = new QuantifierEliminate();
+  QuantifierEliminate qe;
   qe.setOriginalExpression(n);
   Debug("expr-qetest")<<"Before qe original "<<qe.getOriginalExpression()<<std::endl;
   Node temp = n;
