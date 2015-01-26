@@ -2587,6 +2587,12 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     if(var.getNumChildren() > 0) {
       var = var[0];
     }
+    if(args == mkBoolNode(true) || args == mkBoolNode(false)) {
+      while(!bv.empty()) {
+        bv.pop_back();
+      }
+      break;
+    }
     args = args.negate();
     Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
     args = doRewriting(args, var);
@@ -2645,8 +2651,6 @@ Node QuantifierEliminate::computeProjections(Node n) {
           result = performCaseAnalysis(child[1], bv_child);
           miniscopedNode.push_back(result);
         } else {
-          //case to handle in case of no miniscoping
-          // do nothing
         }
       }
       if(miniscopedNode.size() > 0) {
@@ -2663,12 +2667,21 @@ Node QuantifierEliminate::computeProjections(Node n) {
           while(!args.empty()) {
             args.pop_back();
           }
-          args.push_back(result);
+          if(result == mkBoolNode(true) || result == mkBoolNode(false)) {
+            while(!bv.empty()) {
+              bv.pop_back();
+            }
+            args.push_back(result);
+            break;
+          } else {
+            args.push_back(result);
+          }
         }
         Node r = args.back();
-        Debug("expr-qetest")<<"r.negate "<<r.negate()<<std::endl;
         final = r.negate();
-        args.pop_back();
+        while(!args.empty()) {
+          args.pop_back();
+        }
       } else {
         while(!boundVar.empty()) {
           temp1 = args.back();
@@ -2679,12 +2692,21 @@ Node QuantifierEliminate::computeProjections(Node n) {
           while(!args.empty()) {
             args.pop_back();
           }
-          args.push_back(result);
+          if(result == mkBoolNode(true) || result == mkBoolNode(false)) {
+            while(!bv.empty()) {
+              bv.pop_back();
+            }
+            args.push_back(result);
+            break;
+          } else {
+            args.push_back(result);
+          }
         }
         Node r = args.back();
-        Debug("expr-qetest")<<"r.negate "<<r.negate()<<std::endl;
         final = r.negate();
-        args.pop_back();
+        while(!args.empty()) {
+          args.pop_back();
+        }
       }
     } else {
       if(boundVar.size() > 0) {
@@ -2698,12 +2720,21 @@ Node QuantifierEliminate::computeProjections(Node n) {
           while(!args.empty()) {
             args.pop_back();
           }
-          args.push_back(result3);
+          if(result3 == mkBoolNode(true) || result3 == mkBoolNode(false)) {
+            while(!bv.empty()) {
+              bv.pop_back();
+            }
+            args.push_back(result3);
+            break;
+          } else {
+            args.push_back(result3);
+          }
         }
         Node r = args.back();
-        Debug("expr-qetest")<<"r "<<r.negate()<<std::endl;
         final = r.negate();
-        args.pop_back();
+        while(!args.empty()) {
+          args.pop_back();
+        }
       } else {
         final = n;
       }
@@ -2743,12 +2774,21 @@ Node QuantifierEliminate::computeProjections(Node n) {
         while(!args.empty()) {
           args.pop_back();
         }
-        args.push_back(result1);
+        if(result1 == mkBoolNode(true) || result1 == mkBoolNode(false)) {
+          while(!bv.empty()) {
+            bv.pop_back();
+          }
+          args.push_back(result1);
+          break;
+        } else {
+          args.push_back(result1);
+        }
       }
       Node r = args.back();
-      Debug("expr-qetest")<<"r "<<r<<std::endl;
       final = r;
-      args.pop_back();
+      while(!args.empty()) {
+        args.pop_back();
+      }
     } else {
       while(!boundVar.empty()) {
         temp1 = args.back();
@@ -2759,14 +2799,22 @@ Node QuantifierEliminate::computeProjections(Node n) {
         while(!args.empty()) {
           args.pop_back();
         }
-        args.push_back(result1);
+        if(result1 == mkBoolNode(true) || result1 == mkBoolNode(false)) {
+          while(!bv.empty()) {
+            bv.pop_back();
+          }
+          args.push_back(result1);
+          break;
+        } else {
+          args.push_back(result1);
+        }
       }
       Node r = args.back();
-      Debug("expr-qetest")<<"r "<<r<<std::endl;
       final = r;
-      args.pop_back();
+      while(!args.empty()) {
+        args.pop_back();
+      }
     }
-
   } else {
     if(boundVar.size() > 0) {
       Node result2;
@@ -2779,16 +2827,25 @@ Node QuantifierEliminate::computeProjections(Node n) {
         while(!args.empty()) {
           args.pop_back();
         }
-        args.push_back(result2);
+        if(result2 == mkBoolNode(true) || result2 == mkBoolNode(false)) {
+          while(!bv.empty()) {
+            bv.pop_back();
+          }
+          args.push_back(result2);
+          break;
+        } else {
+          args.push_back(result2);
+        }
       }
       Node r = args.back();
       Debug("expr-qetest")<<"r "<<r<<std::endl;
       final = r;
-      args.pop_back();
+      while(!args.empty()) {
+        args.pop_back();
+      }
     } else {
       final = n;
     }
-
   }
   final = Rewriter::rewrite(final);
   Debug("expr-qetest")<<"final "<<final<<std::endl;
