@@ -757,455 +757,501 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
  }
  }*/
 Node QuantifierEliminate::replaceGTQE(Node n, Node bv) {
-  Node left = n[0];
-  Node right = n[1];
   Node returnNode;
-  if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
-    if(isVarQE(left) || isVarWithCoefficientsQE(left)) {
-      returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
-      return returnNode;
-    } else {
-      Node shiftedNodes = getShiftedExpression(left, bv);
-      left = separateBoundVarExpression(left, bv);
-      if(!shiftedNodes.isNull()) {
-        right = NodeManager::currentNM()->mkNode(kind::PLUS, right,
-                                                 shiftedNodes);
+  if(n.hasBoundVar() && containsSameBoundVar(n, bv)) {
+    Node left = n[0];
+    Node right = n[1];
+    if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
+      if(isVarQE(left) || isVarWithCoefficientsQE(left)) {
+        returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
+        return returnNode;
+      } else {
+        Node shiftedNodes = getShiftedExpression(left, bv);
+        left = separateBoundVarExpression(left, bv);
+        if(!shiftedNodes.isNull()) {
+          right = NodeManager::currentNM()->mkNode(kind::PLUS, right,
+                                                   shiftedNodes);
+        }
+        returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
+        return returnNode;
       }
-      returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
-      return returnNode;
+    } else {
+      if(isVarQE(right) || isVarWithCoefficientsQE(right)) {
+        returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
+        return returnNode;
+      } else {
+        Node shiftedNodes = getShiftedExpression(right, bv);
+        right = separateBoundVarExpression(right, bv);
+        if(!shiftedNodes.isNull()) {
+          left = NodeManager::currentNM()->mkNode(kind::PLUS, left,
+                                                  shiftedNodes);
+        }
+        returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
+        return returnNode;
+      }
     }
   } else {
-    if(isVarQE(right) || isVarWithCoefficientsQE(right)) {
-      returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
-      return returnNode;
-    } else {
-      Node shiftedNodes = getShiftedExpression(right, bv);
-      right = separateBoundVarExpression(right, bv);
-      if(!shiftedNodes.isNull()) {
-        left = NodeManager::currentNM()->mkNode(kind::PLUS, left, shiftedNodes);
-      }
-      returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
-      return returnNode;
-    }
+    Node left = n[0];
+    Node right = n[1];
+    returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
+    return returnNode;
   }
 }
 Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
-  Node left = n[0];
-  Node right = n[1];
-  Node tempLeft;
-  Node tempRight;
   Node returnNode;
-  if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
-    tempLeft = left;
-    tempRight = right;
-    if(tempLeft.getKind() == kind::PLUS || tempLeft.getKind() == kind::MINUS) {
-      Node shiftedFromLeft = getShiftedExpression(tempLeft, bv);
-      tempLeft = separateBoundVarExpression(tempLeft, bv);
-      if(tempRight.getKind() == kind::PLUS
-          || tempRight.getKind() == kind::MINUS) {
+  if(n.hasBoundVar() && containsSameBoundVar(n, bv)) {
+    Node left = n[0];
+    Node right = n[1];
+    Node tempLeft;
+    Node tempRight;
+    if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
+      tempLeft = left;
+      tempRight = right;
+      if(tempLeft.getKind() == kind::PLUS
+          || tempLeft.getKind() == kind::MINUS) {
+        Node shiftedFromLeft = getShiftedExpression(tempLeft, bv);
+        tempLeft = separateBoundVarExpression(tempLeft, bv);
+        if(tempRight.getKind() == kind::PLUS
+            || tempRight.getKind() == kind::MINUS) {
 
-        bool flag = false;
-        for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
-            tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
-          Node childR = *rightBegin;
-          if(isConstQE(childR)) {
-            Integer x = getIntegerFromNode(childR);
+          bool flag = false;
+          for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
+              tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
+            Node childR = *rightBegin;
+            if(isConstQE(childR)) {
+              Integer x = getIntegerFromNode(childR);
+              x = x - 1;
+              TNode tn1 = childR;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempRight = tempRight.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
+          }
+          if(!flag) {
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, shiftedFromLeft,
+                  fromIntegerToNodeQE(-1));
+            } else {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, fromIntegerToNodeQE(-1));
+            }
+          } else {
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,
+                                                           tempRight,
+                                                           shiftedFromLeft);
+            }
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                        tempLeft);
+        } else {
+          if(isConstQE(tempRight)) {
+            Integer x = getIntegerFromNode(tempRight);
             x = x - 1;
-            TNode tn1 = childR;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempRight = tempRight.substitute(tn1, tn2);
-            flag = true;
-            break;
-          }
-        }
-        if(!flag) {
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempRight, shiftedFromLeft,
-                fromIntegerToNodeQE(-1));
+            tempRight = fromIntegerToNodeQE(x);
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,
+                                                           tempRight,
+                                                           shiftedFromLeft);
+            }
           } else {
-            tempRight = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempRight, fromIntegerToNodeQE(-1));
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, shiftedFromLeft,
+                  fromIntegerToNodeQE(-1));
+            } else {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, fromIntegerToNodeQE(-1));
+            }
           }
-        } else {
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                         shiftedFromLeft);
-          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                        tempLeft);
         }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-                                                      tempLeft);
       } else {
-        if(isConstQE(tempRight)) {
-          Integer x = getIntegerFromNode(tempRight);
-          x = x - 1;
-          tempRight = fromIntegerToNodeQE(x);
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                         shiftedFromLeft);
+        if(tempRight.getKind() == kind::PLUS
+            || tempRight.getKind() == kind::MINUS) {
+          bool flag = false;
+          for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
+              tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
+            Node childR = *rightBegin;
+            if(isConstQE(childR)) {
+              Integer x = getIntegerFromNode(childR);
+              x = x - 1;
+              TNode tn1 = childR;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempRight = tempRight.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
           }
-        } else {
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempRight, shiftedFromLeft,
-                fromIntegerToNodeQE(-1));
-          } else {
+          if(!flag) {
             tempRight = NodeManager::currentNM()->mkNode(
                 kind::PLUS, tempRight, fromIntegerToNodeQE(-1));
           }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                        tempLeft);
+        } else {
+          if(isConstQE(tempRight)) {
+            Integer x = getIntegerFromNode(tempRight);
+            x = x - 1;
+            tempRight = fromIntegerToNodeQE(x);
+          } else {
+
+            tempRight = NodeManager::currentNM()->mkNode(
+                kind::PLUS, tempRight, fromIntegerToNodeQE(-1));
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                        tempLeft);
         }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-                                                      tempLeft);
       }
     } else {
+      tempLeft = left;
+      tempRight = right;
       if(tempRight.getKind() == kind::PLUS
           || tempRight.getKind() == kind::MINUS) {
-        bool flag = false;
-        for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
-            tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
-          Node childR = *rightBegin;
-          if(isConstQE(childR)) {
-            Integer x = getIntegerFromNode(childR);
-            x = x - 1;
-            TNode tn1 = childR;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempRight = tempRight.substitute(tn1, tn2);
-            flag = true;
-            break;
-          }
-        }
-        if(!flag) {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                       fromIntegerToNodeQE(-1));
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-                                                      tempLeft);
-      } else {
-        if(isConstQE(tempRight)) {
-          Integer x = getIntegerFromNode(tempRight);
-          x = x - 1;
-          tempRight = fromIntegerToNodeQE(x);
-        } else {
+        Node shiftedFromRight = getShiftedExpression(tempRight, bv);
+        tempRight = separateBoundVarExpression(tempRight, bv);
+        if(tempLeft.getKind() == kind::PLUS
+            || tempLeft.getKind() == kind::MINUS) {
 
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                       fromIntegerToNodeQE(-1));
+          bool flag = false;
+          for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
+              tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
+            Node childL = *leftBegin;
+            if(isConstQE(childL)) {
+              Integer x = getIntegerFromNode(childL);
+              x = x + 1;
+              TNode tn1 = childL;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempLeft = tempLeft.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
+          }
+          if(!flag) {
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, shiftedFromRight,
+                  fromIntegerToNodeQE(1));
+            } else {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, fromIntegerToNodeQE(1));
+            }
+          } else {
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+                                                          shiftedFromRight);
+            }
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                        tempLeft);
+        } else {
+          if(isConstQE(tempLeft)) {
+            Integer x = getIntegerFromNode(tempLeft);
+            x = x + 1;
+            tempRight = fromIntegerToNodeQE(x);
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+                                                          shiftedFromRight);
+            }
+          } else {
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, shiftedFromRight,
+                  fromIntegerToNodeQE(1));
+            } else {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, fromIntegerToNodeQE(1));
+            }
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                        tempLeft);
         }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-                                                      tempLeft);
+
+      } else {
+        if(tempLeft.getKind() == kind::PLUS
+            || tempLeft.getKind() == kind::MINUS) {
+          bool flag = false;
+          for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
+              tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
+            Node childL = *leftBegin;
+            if(isConstQE(childL)) {
+              Integer x = getIntegerFromNode(childL);
+              x = x + 1;
+              TNode tn1 = childL;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempLeft = tempLeft.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
+          }
+          if(!flag) {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+                                                        fromIntegerToNodeQE(1));
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                        tempLeft);
+        } else {
+          if(isConstQE(tempLeft)) {
+            Integer x = getIntegerFromNode(tempLeft);
+            x = x - 1;
+            tempRight = fromIntegerToNodeQE(x);
+          } else {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+                                                        fromIntegerToNodeQE(1));
+          }
+
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                        tempLeft);
+        }
       }
     }
   } else {
-    tempLeft = left;
-    tempRight = right;
-    if(tempRight.getKind() == kind::PLUS
-        || tempRight.getKind() == kind::MINUS) {
-      Node shiftedFromRight = getShiftedExpression(tempRight, bv);
-      tempRight = separateBoundVarExpression(tempRight, bv);
-      if(tempLeft.getKind() == kind::PLUS
-          || tempLeft.getKind() == kind::MINUS) {
-
-        bool flag = false;
-        for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
-            tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
-          Node childL = *leftBegin;
-          if(isConstQE(childL)) {
-            Integer x = getIntegerFromNode(childL);
-            x = x + 1;
-            TNode tn1 = childL;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempLeft = tempLeft.substitute(tn1, tn2);
-            flag = true;
-            break;
-          }
-        }
-        if(!flag) {
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                        shiftedFromRight,
-                                                        fromIntegerToNodeQE(1));
-          } else {
-            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                        fromIntegerToNodeQE(1));
-          }
-        } else {
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                        shiftedFromRight);
-          }
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-                                                      tempLeft);
-      } else {
-        if(isConstQE(tempLeft)) {
-          Integer x = getIntegerFromNode(tempLeft);
-          x = x + 1;
-          tempRight = fromIntegerToNodeQE(x);
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                        shiftedFromRight);
-          }
-        } else {
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                        shiftedFromRight,
-                                                        fromIntegerToNodeQE(1));
-          } else {
-            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                        fromIntegerToNodeQE(1));
-          }
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-                                                      tempLeft);
-      }
-
+    Node left = n[0];
+    Node right = n[1];
+    if(isConstQE(right)) {
+      Integer x = getIntegerFromNode(right);
+      x = x - 1;
+      right = fromIntegerToNodeQE(x);
     } else {
-      if(tempLeft.getKind() == kind::PLUS
-          || tempLeft.getKind() == kind::MINUS) {
-        bool flag = false;
-        for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
-            tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
-          Node childL = *leftBegin;
-          if(isConstQE(childL)) {
-            Integer x = getIntegerFromNode(childL);
-            x = x + 1;
-            TNode tn1 = childL;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempLeft = tempLeft.substitute(tn1, tn2);
-            flag = true;
-            break;
-          }
-        }
-        if(!flag) {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                      fromIntegerToNodeQE(1));
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-                                                      tempLeft);
-      } else {
-        if(isConstQE(tempLeft)) {
-          Integer x = getIntegerFromNode(tempLeft);
-          x = x - 1;
-          tempRight = fromIntegerToNodeQE(x);
-        } else {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                      fromIntegerToNodeQE(1));
-        }
-
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-                                                      tempLeft);
-      }
+      right = NodeManager::currentNM()->mkNode(kind::PLUS, right,
+                                               fromIntegerToNodeQE(-1));
+      right = Rewriter::rewrite(right);
     }
+    returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
   }
+  Debug("expr-qetest")<<"returnNode after replace GEQ"<<returnNode<<std::endl;
   return returnNode;
 }
 Node QuantifierEliminate::replaceLEQQE(Node n, Node bv) {
-  Node left = n[0];
-  Node right = n[1];
-  Node tempLeft;
-  Node tempRight;
   Node returnNode;
-  if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
-    tempLeft = left;
-    tempRight = right;
-    if(tempLeft.getKind() == kind::PLUS || tempLeft.getKind() == kind::MINUS) {
-      Node shiftedFromLeft = getShiftedExpression(tempLeft, bv);
-      tempLeft = separateBoundVarExpression(tempLeft, bv);
-      if(tempRight.getKind() == kind::PLUS
-          || tempRight.getKind() == kind::MINUS) {
-        bool flag = false;
-        for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
-            tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
-          Node childR = *rightBegin;
-          if(isConstQE(childR)) {
-            Integer x = getIntegerFromNode(childR);
-            x = x + 1;
-            TNode tn1 = childR;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempRight = tempRight.substitute(tn1, tn2);
-            flag = true;
-            break;
+  if(n.hasBoundVar() && containsSameBoundVar(n, bv)) {
+    Node left = n[0];
+    Node right = n[1];
+    Node tempLeft;
+    Node tempRight;
+    if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
+      tempLeft = left;
+      tempRight = right;
+      if(tempLeft.getKind() == kind::PLUS
+          || tempLeft.getKind() == kind::MINUS) {
+        Node shiftedFromLeft = getShiftedExpression(tempLeft, bv);
+        tempLeft = separateBoundVarExpression(tempLeft, bv);
+        if(tempRight.getKind() == kind::PLUS
+            || tempRight.getKind() == kind::MINUS) {
+          bool flag = false;
+          for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
+              tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
+            Node childR = *rightBegin;
+            if(isConstQE(childR)) {
+              Integer x = getIntegerFromNode(childR);
+              x = x + 1;
+              TNode tn1 = childR;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempRight = tempRight.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
           }
-        }
-        if(!flag) {
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempRight, shiftedFromLeft, fromIntegerToNodeQE(1));
+          if(!flag) {
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, shiftedFromLeft,
+                  fromIntegerToNodeQE(1));
+            } else {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, fromIntegerToNodeQE(1));
+            }
           } else {
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,
+                                                           tempRight,
+                                                           shiftedFromLeft);
+            }
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
+        } else {
+          if(isConstQE(tempRight)) {
+            Integer x = getIntegerFromNode(tempRight);
+            x = x + 1;
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, shiftedFromLeft, fromIntegerToNodeQE(x));
+            } else {
+              tempRight = fromIntegerToNodeQE(x);
+            }
+
+          } else {
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, shiftedFromLeft,
+                  fromIntegerToNodeQE(1));
+            } else {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, fromIntegerToNodeQE(1));
+            }
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
+        }
+
+      } else {
+        tempLeft = left;
+        tempRight = right;
+        if(tempRight.getKind() == kind::PLUS
+            || tempRight.getKind() == kind::MINUS) {
+          bool flag = false;
+          for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
+              tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
+            Node childR = *rightBegin;
+            if(isConstQE(childR)) {
+              Integer x = getIntegerFromNode(childR);
+              x = x + 1;
+              TNode tn1 = childR;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempRight = tempRight.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
+          }
+          if(!flag) {
             tempRight = NodeManager::currentNM()->mkNode(
                 kind::PLUS, tempRight, fromIntegerToNodeQE(1));
           }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
         } else {
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                         shiftedFromLeft);
-          }
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
-      } else {
-        if(isConstQE(tempRight)) {
-          Integer x = getIntegerFromNode(tempRight);
-          x = x + 1;
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(
-                kind::PLUS, shiftedFromLeft, fromIntegerToNodeQE(x));
-          } else {
+          if(isConstQE(tempRight)) {
+            Integer x = getIntegerFromNode(tempRight);
+            x = x + 1;
             tempRight = fromIntegerToNodeQE(x);
           }
 
-        } else {
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempRight, shiftedFromLeft, fromIntegerToNodeQE(1));
-          } else {
+          else {
             tempRight = NodeManager::currentNM()->mkNode(
                 kind::PLUS, tempRight, fromIntegerToNodeQE(1));
           }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
         }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
       }
-
     } else {
       tempLeft = left;
       tempRight = right;
       if(tempRight.getKind() == kind::PLUS
           || tempRight.getKind() == kind::MINUS) {
-        bool flag = false;
-        for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
-            tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
-          Node childR = *rightBegin;
-          if(isConstQE(childR)) {
-            Integer x = getIntegerFromNode(childR);
-            x = x + 1;
-            TNode tn1 = childR;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempRight = tempRight.substitute(tn1, tn2);
-            flag = true;
-            break;
+        Node shiftedFromRight = getShiftedExpression(tempRight, bv);
+        tempRight = separateBoundVarExpression(tempRight, bv);
+        if(tempLeft.getKind() == kind::PLUS
+            || tempLeft.getKind() == kind::MINUS) {
+          bool flag = false;
+          for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
+              tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
+            Node childL = *leftBegin;
+            if(isConstQE(childL)) {
+              Integer x = getIntegerFromNode(childL);
+              x = x - 1;
+              TNode tn1 = childL;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempLeft = tempLeft.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
+          }
+          if(!flag) {
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, shiftedFromRight,
+                  fromIntegerToNodeQE(-1));
+            } else {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, fromIntegerToNodeQE(-1));
+            }
+          } else {
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+                                                          shiftedFromRight);
+            }
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
+        } else {
+          if(isConstQE(tempLeft)) {
+            Integer x = getIntegerFromNode(tempLeft);
+            x = x - 1;
+            tempLeft = fromIntegerToNodeQE(x);
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+                                                          shiftedFromRight);
+            }
+          } else {
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, shiftedFromRight,
+                  fromIntegerToNodeQE(-1));
+            } else {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, fromIntegerToNodeQE(-1));
+            }
           }
         }
-        if(!flag) {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                       fromIntegerToNodeQE(1));
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
       } else {
-        if(isConstQE(tempRight)) {
-          Integer x = getIntegerFromNode(tempRight);
-          x = x + 1;
-          tempRight = fromIntegerToNodeQE(x);
-        }
+        tempLeft = left;
+        tempRight = right;
+        if(tempLeft.getKind() == kind::PLUS
+            || tempLeft.getKind() == kind::MINUS) {
+          bool flag = false;
+          for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
+              tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
+            Node childL = *leftBegin;
+            if(isConstQE(childL)) {
+              Integer x = getIntegerFromNode(childL);
+              x = x - 1;
+              TNode tn1 = childL;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempLeft = tempLeft.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
+          }
+          if(!flag) {
+            tempLeft = NodeManager::currentNM()->mkNode(
+                kind::PLUS, tempRight, fromIntegerToNodeQE(-1));
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
+        } else {
+          if(isConstQE(tempLeft)) {
+            Integer x = getIntegerFromNode(tempLeft);
+            x = x - 1;
+            tempLeft = fromIntegerToNodeQE(x);
+          }
 
-        else {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                       fromIntegerToNodeQE(1));
+          else {
+            tempLeft = NodeManager::currentNM()->mkNode(
+                kind::PLUS, tempLeft, fromIntegerToNodeQE(-1));
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
         }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
       }
     }
   } else {
-    tempLeft = left;
-    tempRight = right;
-    if(tempRight.getKind() == kind::PLUS
-        || tempRight.getKind() == kind::MINUS) {
-      Node shiftedFromRight = getShiftedExpression(tempRight, bv);
-      tempRight = separateBoundVarExpression(tempRight, bv);
-      if(tempLeft.getKind() == kind::PLUS
-          || tempLeft.getKind() == kind::MINUS) {
-        bool flag = false;
-        for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
-            tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
-          Node childL = *leftBegin;
-          if(isConstQE(childL)) {
-            Integer x = getIntegerFromNode(childL);
-            x = x - 1;
-            TNode tn1 = childL;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempLeft = tempLeft.substitute(tn1, tn2);
-            flag = true;
-            break;
-          }
-        }
-        if(!flag) {
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempLeft, shiftedFromRight,
-                fromIntegerToNodeQE(-1));
-          } else {
-            tempLeft = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempLeft, fromIntegerToNodeQE(-1));
-          }
-        } else {
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                        shiftedFromRight);
-          }
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
-      } else {
-        if(isConstQE(tempLeft)) {
-          Integer x = getIntegerFromNode(tempLeft);
-          x = x - 1;
-          tempLeft = fromIntegerToNodeQE(x);
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                        shiftedFromRight);
-          }
-        } else {
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempLeft, shiftedFromRight,
-                fromIntegerToNodeQE(-1));
-          } else {
-            tempLeft = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempLeft, fromIntegerToNodeQE(-1));
-          }
-        }
-      }
+    Node left = n[0];
+    Node right = n[1];
+    if(isConstQE(right)) {
+      Integer x = getIntegerFromNode(right);
+      x = x + 1;
+      right = fromIntegerToNodeQE(x);
     } else {
-      tempLeft = left;
-      tempRight = right;
-      if(tempLeft.getKind() == kind::PLUS
-          || tempLeft.getKind() == kind::MINUS) {
-        bool flag = false;
-        for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
-            tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
-          Node childL = *leftBegin;
-          if(isConstQE(childL)) {
-            Integer x = getIntegerFromNode(childL);
-            x = x - 1;
-            TNode tn1 = childL;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempLeft = tempLeft.substitute(tn1, tn2);
-            flag = true;
-            break;
-          }
-        }
-        if(!flag) {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                      fromIntegerToNodeQE(-1));
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
-      } else {
-        if(isConstQE(tempLeft)) {
-          Integer x = getIntegerFromNode(tempLeft);
-          x = x - 1;
-          tempLeft = fromIntegerToNodeQE(x);
-        }
-
-        else {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                      fromIntegerToNodeQE(-1));
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
-      }
+      right = NodeManager::currentNM()->mkNode(kind::PLUS, right,
+                                               fromIntegerToNodeQE(1));
+      right = Rewriter::rewrite(right);
     }
+    returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
   }
   return returnNode;
 }
@@ -1264,387 +1310,427 @@ Node QuantifierEliminate::separateBoundVarExpression(Node n, Node bv) {
   return toReturn;
 }
 Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
-  Debug("expr-qetest")<<"Before replacement "<<n<<std::endl;
-  Node left = n[0];
-  Node right = n[1];
-  Node finalLeft;
-  Node finalRight;
-  Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
-  if(left.hasBoundVar() && containsSameBoundVar(left,bv)) {
-    Debug("expr-qetest")<<"left side has boundVariable "<<bv<<std::endl;
-    if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
-      Node tempLeft = left;
-      Node tempRight = right;
-      bool flag = false;
-      Node shiftFromLeft;
-      if(isVarQE(left) || isVarWithCoefficientsQE(left))
-      {
-        tempLeft = left;
-      }
-      else
-      {
-        shiftFromLeft = getShiftedExpression(tempLeft,bv);
-        tempLeft = separateBoundVarExpression(tempLeft,bv);
-        Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
-      }
-      for(Node::iterator j = tempRight.begin(), j_end = tempRight.end();
-      j != j_end; ++j) {
-        Node child = *j;
-        if(isConstQE(child)) {
-          Integer x = getIntegerFromNode(child);
-          x = x + 1;
-          Node change = fromIntegerToNodeQE(x);
-          TNode tn1 = child;
-          TNode tn2 = change;
-          tempRight = tempRight.substitute(tn1, tn2);
-          flag = true;
-          break;
-        } else {
-        }
-      }
-      if(!flag) {
-        if(!shiftFromLeft.isNull())
+  if(n.hasBoundVar() && containsSameBoundVar(n, bv)) {
+    Debug("expr-qetest")<<"Before replacement "<<n<<std::endl;
+    Node left = n[0];
+    Node right = n[1];
+    Node finalLeft;
+    Node finalRight;
+    Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
+    if(left.hasBoundVar() && containsSameBoundVar(left,bv)) {
+      Debug("expr-qetest")<<"left side has boundVariable "<<bv<<std::endl;
+      if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
+        Node tempLeft = left;
+        Node tempRight = right;
+        bool flag = false;
+        Node shiftFromLeft;
+        if(isVarQE(left) || isVarWithCoefficientsQE(left))
         {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-          fromIntegerToNodeQE(1),shiftFromLeft);
+          tempLeft = left;
         }
         else
         {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-          fromIntegerToNodeQE(1));
+          shiftFromLeft = getShiftedExpression(tempLeft,bv);
+          tempLeft = separateBoundVarExpression(tempLeft,bv);
+          Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
         }
+        for(Node::iterator j = tempRight.begin(), j_end = tempRight.end();
+        j != j_end; ++j) {
+          Node child = *j;
+          if(isConstQE(child)) {
+            Integer x = getIntegerFromNode(child);
+            x = x + 1;
+            Node change = fromIntegerToNodeQE(x);
+            TNode tn1 = child;
+            TNode tn2 = change;
+            tempRight = tempRight.substitute(tn1, tn2);
+            flag = true;
+            break;
+          } else {
+          }
+        }
+        if(!flag) {
+          if(!shiftFromLeft.isNull())
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+            fromIntegerToNodeQE(1),shiftFromLeft);
+          }
+          else
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+            fromIntegerToNodeQE(1));
+          }
 
-      }
-      else
-      {
-        if(!shiftFromLeft.isNull())
-        {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
-        }
-      }
-      finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-      tempRight);
-      tempRight = right;
-      bool flag1 = false;
-      for(Node::iterator j = tempRight.begin(), j_end = tempRight.end();
-      j != j_end; ++j) {
-        Node child = *j;
-        if(isConstQE(child)) {
-          Integer x = getIntegerFromNode(child);
-          x = x - 1;
-          Node change = fromIntegerToNodeQE(x);
-          TNode tn1 = child;
-          TNode tn2 = change;
-          tempRight = tempRight.substitute(tn1, tn2);
-          flag1 = true;
-          break;
-        }
-        else
-        {}
-      }
-      if(!flag1) {
-        if(!shiftFromLeft.isNull())
-        {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-          fromIntegerToNodeQE(-1),shiftFromLeft);
         }
         else
         {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-          fromIntegerToNodeQE(-1));
+          if(!shiftFromLeft.isNull())
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
+          }
         }
-
-      }
-      else
-      {
-        if(!shiftFromLeft.isNull())
-        {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
-        }
-      }
-
-      finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-      tempLeft);
-      Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
-      finalRight);
-      Debug("expr-qetest")<<"After replacement returnNode "<<returnNode<<std::endl;
-      return returnNode;
-    } else {
-      Node tempLeft = left;
-      Node tempRight = right;
-      Node shiftFromLeft;
-      if(isVarQE(left) || isVarWithCoefficientsQE(left))
-      {
-        tempLeft = left;
-      }
-      else
-      {
-        shiftFromLeft = getShiftedExpression(tempLeft,bv);
-        tempLeft = separateBoundVarExpression(tempLeft,bv);
-        Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
-      }
-      if(isConstQE(tempRight)) {
-        Integer x = getIntegerFromNode(tempRight);
-        x = x + 1;
-        TNode tn1 = tempRight;
-        TNode tn2 = fromIntegerToNodeQE(x);
-        tempRight = tempRight.substitute(tn1, tn2);
-        if(!shiftFromLeft.isNull())
-        {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
-        }
-      } else {
-        if(!shiftFromLeft.isNull())
-        {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-          fromIntegerToNodeQE(1),shiftFromLeft);
-        }
-        else
-        {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-          fromIntegerToNodeQE(1));
-        }
-      }
-      finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-      tempRight);
-      tempRight = right;
-      if(isConstQE(right)) {
-        Integer x = getIntegerFromNode(tempRight);
-        x = x - 1;
-        TNode tn1 = tempRight;
-        TNode tn2 = fromIntegerToNodeQE(x);
-        tempRight = tempRight.substitute(tn1, tn2);
-        if(!shiftFromLeft.isNull())
-        {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
-        }
-      } else {
-        if(!shiftFromLeft.isNull())
-        {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-          fromIntegerToNodeQE(-1),shiftFromLeft);
-        }
-        else
-        {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-          fromIntegerToNodeQE(-1));
-        }
-
-      }
-      finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-      tempLeft);
-      Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
-      finalRight);
-      return returnNode;
-    }
-  } else {
-    Debug("expr-qetest")<<"right side has boundVariable "<<bv<<std::endl;
-    if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
-      Node tempLeft = left;
-      Node tempRight = right;
-      bool flag = false;
-      Node shiftFromRight;
-      if(isVarQE(right) || isVarWithCoefficientsQE(right))
-      {
+        finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+        tempRight);
         tempRight = right;
-      }
-      else
-      {
-        shiftFromRight = getShiftedExpression(tempRight,bv);
-        tempRight = separateBoundVarExpression(tempRight,bv);
-        Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
-      }
-      for(Node::iterator j = tempLeft.begin(), j_end = tempLeft.end();
-      j != j_end;
-      ++j)
-      {
-        Node childJ = *j;
-        if(isConstQE(childJ))
+        bool flag1 = false;
+        for(Node::iterator j = tempRight.begin(), j_end = tempRight.end();
+        j != j_end; ++j) {
+          Node child = *j;
+          if(isConstQE(child)) {
+            Integer x = getIntegerFromNode(child);
+            x = x - 1;
+            Node change = fromIntegerToNodeQE(x);
+            TNode tn1 = child;
+            TNode tn2 = change;
+            tempRight = tempRight.substitute(tn1, tn2);
+            flag1 = true;
+            break;
+          }
+          else
+          {}
+        }
+        if(!flag1) {
+          if(!shiftFromLeft.isNull())
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+            fromIntegerToNodeQE(-1),shiftFromLeft);
+          }
+          else
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+            fromIntegerToNodeQE(-1));
+          }
+
+        }
+        else
         {
-          Integer x = getIntegerFromNode(childJ);
+          if(!shiftFromLeft.isNull())
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
+          }
+        }
+
+        finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+        tempLeft);
+        Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
+        finalRight);
+        Debug("expr-qetest")<<"After replacement returnNode "<<returnNode<<std::endl;
+        return returnNode;
+      } else {
+        Node tempLeft = left;
+        Node tempRight = right;
+        Node shiftFromLeft;
+        if(isVarQE(left) || isVarWithCoefficientsQE(left))
+        {
+          tempLeft = left;
+        }
+        else
+        {
+          shiftFromLeft = getShiftedExpression(tempLeft,bv);
+          tempLeft = separateBoundVarExpression(tempLeft,bv);
+          Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
+        }
+        if(isConstQE(tempRight)) {
+          Integer x = getIntegerFromNode(tempRight);
+          x = x + 1;
+          TNode tn1 = tempRight;
+          TNode tn2 = fromIntegerToNodeQE(x);
+          tempRight = tempRight.substitute(tn1, tn2);
+          if(!shiftFromLeft.isNull())
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
+          }
+        } else {
+          if(!shiftFromLeft.isNull())
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+            fromIntegerToNodeQE(1),shiftFromLeft);
+          }
+          else
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+            fromIntegerToNodeQE(1));
+          }
+        }
+        finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+        tempRight);
+        tempRight = right;
+        if(isConstQE(right)) {
+          Integer x = getIntegerFromNode(tempRight);
+          x = x - 1;
+          TNode tn1 = tempRight;
+          TNode tn2 = fromIntegerToNodeQE(x);
+          tempRight = tempRight.substitute(tn1, tn2);
+          if(!shiftFromLeft.isNull())
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,shiftFromLeft);
+          }
+        } else {
+          if(!shiftFromLeft.isNull())
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+            fromIntegerToNodeQE(-1),shiftFromLeft);
+          }
+          else
+          {
+            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+            fromIntegerToNodeQE(-1));
+          }
+
+        }
+        finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+        tempLeft);
+        Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
+        finalRight);
+        return returnNode;
+      }
+    } else {
+      Debug("expr-qetest")<<"right side has boundVariable "<<bv<<std::endl;
+      if(right.getKind() == kind::PLUS || right.getKind() == kind::MINUS) {
+        Node tempLeft = left;
+        Node tempRight = right;
+        bool flag = false;
+        Node shiftFromRight;
+        if(isVarQE(right) || isVarWithCoefficientsQE(right))
+        {
+          tempRight = right;
+        }
+        else
+        {
+          shiftFromRight = getShiftedExpression(tempRight,bv);
+          tempRight = separateBoundVarExpression(tempRight,bv);
+          Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
+        }
+        for(Node::iterator j = tempLeft.begin(), j_end = tempLeft.end();
+        j != j_end;
+        ++j)
+        {
+          Node childJ = *j;
+          if(isConstQE(childJ))
+          {
+            Integer x = getIntegerFromNode(childJ);
+            x = x - 1;
+            Node change = fromIntegerToNodeQE(x);
+            TNode tn1 = childJ;
+            TNode tn2 = change;
+            tempLeft = tempLeft.substitute(tn1,tn2);
+            flag = true;
+            break;
+          }
+          else
+          {}
+        }
+        if(!flag)
+        {
+          if(!shiftFromRight.isNull())
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(-1),shiftFromRight);
+          }
+          else
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(-1));
+          }
+        }
+        else
+        {
+          if(!shiftFromRight.isNull())
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,shiftFromRight);
+          }
+        }
+        finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+        tempRight);
+        Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
+        tempLeft = left;
+        bool flag1 = false;
+        for(Node::iterator j = tempLeft.begin(), j_end = tempLeft.end();
+        j != j_end; ++j) {
+          Node child = *j;
+          if(isConstQE(child)) {
+            Integer x = getIntegerFromNode(child);
+            x = x + 1;
+            Node change = fromIntegerToNodeQE(x);
+            TNode tn1 = child;
+            TNode tn2 = change;
+            tempLeft = tempLeft.substitute(tn1, tn2);
+            flag1 = true;
+            break;
+          }
+          else
+          {}
+        }
+        if(!flag1) {
+          if(!shiftFromRight.isNull())
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+            fromIntegerToNodeQE(1),shiftFromRight);
+          }
+          else
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+            fromIntegerToNodeQE(1));
+          }
+        }
+        else
+        {
+          if(!shiftFromRight.isNull())
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+            shiftFromRight);
+          }
+        }
+        finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+        tempLeft);
+        Debug("expr-qetest")<<"finalRight "<<finalRight<<std::endl;
+        Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
+        finalRight);
+        Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
+        return returnNode;
+      } else {
+        Node tempLeft = left;
+        Node tempRight = right;
+        Node shiftFromRight;
+        if(isVarQE(right) || isVarWithCoefficientsQE(right))
+        {
+          tempRight = right;
+        }
+        else
+        {
+          shiftFromRight = getShiftedExpression(tempRight,bv);
+          tempRight = separateBoundVarExpression(tempRight,bv);
+          Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
+        }
+        if(isConstQE(tempLeft))
+        {
+          Integer x = getIntegerFromNode(tempLeft);
           x = x - 1;
           Node change = fromIntegerToNodeQE(x);
-          TNode tn1 = childJ;
-          TNode tn2 = change;
-          tempLeft = tempLeft.substitute(tn1,tn2);
-          flag = true;
-          break;
-        }
-        else
-        {}
-      }
-      if(!flag)
-      {
-        if(!shiftFromRight.isNull())
-        {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(-1),shiftFromRight);
-        }
-        else
-        {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(-1));
-        }
-      }
-      else
-      {
-        if(!shiftFromRight.isNull())
-        {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,shiftFromRight);
-        }
-      }
-      finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-      tempRight);
-      Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
-      tempLeft = left;
-      bool flag1 = false;
-      for(Node::iterator j = tempLeft.begin(), j_end = tempLeft.end();
-      j != j_end; ++j) {
-        Node child = *j;
-        if(isConstQE(child)) {
-          Integer x = getIntegerFromNode(child);
-          x = x + 1;
-          Node change = fromIntegerToNodeQE(x);
-          TNode tn1 = child;
+          TNode tn1 = tempLeft;
           TNode tn2 = change;
           tempLeft = tempLeft.substitute(tn1, tn2);
-          flag1 = true;
-          break;
-        }
-        else
-        {}
-      }
-      if(!flag1) {
-        if(!shiftFromRight.isNull())
-        {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-          fromIntegerToNodeQE(1),shiftFromRight);
+          if(!shiftFromRight.isNull())
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,shiftFromRight);
+          }
         }
         else
         {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-          fromIntegerToNodeQE(1));
+          if(!shiftFromRight.isNull())
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(-1),shiftFromRight);
+          }
+          else
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(-1));
+          }
         }
-      }
-      else
-      {
-        if(!shiftFromRight.isNull())
+        finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+        tempRight);
+        Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
+        tempLeft = left;
+        if(isConstQE(tempLeft))
         {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-          shiftFromRight);
-        }
-      }
-      finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-      tempLeft);
-      Debug("expr-qetest")<<"finalRight "<<finalRight<<std::endl;
-      Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
-      finalRight);
-      Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
-      return returnNode;
-    } else {
-      Node tempLeft = left;
-      Node tempRight = right;
-      Node shiftFromRight;
-      if(isVarQE(right) || isVarWithCoefficientsQE(right))
-      {
-        tempRight = right;
-      }
-      else
-      {
-        shiftFromRight = getShiftedExpression(tempRight,bv);
-        tempRight = separateBoundVarExpression(tempRight,bv);
-        Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
-      }
-      if(isConstQE(tempLeft))
-      {
-        Integer x = getIntegerFromNode(tempLeft);
-        x = x - 1;
-        Node change = fromIntegerToNodeQE(x);
-        TNode tn1 = tempLeft;
-        TNode tn2 = change;
-        tempLeft = tempLeft.substitute(tn1, tn2);
-        if(!shiftFromRight.isNull())
-        {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,shiftFromRight);
-        }
-      }
-      else
-      {
-        if(!shiftFromRight.isNull())
-        {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(-1),shiftFromRight);
+          Integer x = getIntegerFromNode(tempLeft);
+          x = x + 1;
+          Node change = fromIntegerToNodeQE(x);
+          TNode tn1 = tempLeft;
+          TNode tn2 = change;
+          tempLeft = tempLeft.substitute(tn1, tn2);
+          if(!shiftFromRight.isNull())
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,shiftFromRight);
+          }
         }
         else
         {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(-1));
+          if(!shiftFromRight.isNull())
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(1),shiftFromRight);
+          }
+          else
+          {
+            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(1));
+          }
         }
+        finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+        tempLeft);
+        Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
+        finalRight);
+        Debug("expr-qetest")<<"after replacement "<<returnNode<<std::endl;
+        return returnNode;
       }
-      finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-      tempRight);
-      Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
-      tempLeft = left;
-      if(isConstQE(tempLeft))
-      {
-        Integer x = getIntegerFromNode(tempLeft);
-        x = x + 1;
-        Node change = fromIntegerToNodeQE(x);
-        TNode tn1 = tempLeft;
-        TNode tn2 = change;
-        tempLeft = tempLeft.substitute(tn1, tn2);
-        if(!shiftFromRight.isNull())
-        {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,shiftFromRight);
-        }
-      }
-      else
-      {
-        if(!shiftFromRight.isNull())
-        {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(1),shiftFromRight);
-        }
-        else
-        {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS,tempLeft,fromIntegerToNodeQE(1));
-        }
-      }
-      finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-      tempLeft);
-      Node returnNode = NodeManager::currentNM()->mkNode(kind::AND, finalLeft,
-      finalRight);
-      Debug("expr-qetest")<<"after replacement "<<returnNode<<std::endl;
-      return returnNode;
+
     }
-
   }
-
+  else
+  {
+    Node left = n[0];
+    Node right = n[1];
+    Node tempLeft = left;
+    Node tempRight = right;
+    Node returnNode;
+    if(isConstQE(tempRight))
+    {
+      Integer x = getIntegerFromNode(tempRight) + 1;
+      tempRight = fromIntegerToNodeQE(x);
+    }
+    else
+    {
+      tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,tempRight,fromIntegerToNodeQE(1));
+      tempRight = Rewriter::rewrite(tempRight);
+    }
+    Node finalLeft = NodeManager::currentNM()->mkNode(kind::LT,tempLeft,tempRight);
+    tempRight = right;
+    if(isConstQE(tempLeft))
+    {
+      Integer x = getIntegerFromNode(tempLeft)+1;
+      tempLeft = fromIntegerToNodeQE(x);
+    }
+    else
+    {
+      tempLeft = NodeManager::currentNM()->mkNode(kind::LT,tempLeft,fromIntegerToNodeQE(1));
+      tempLeft = Rewriter::rewrite(tempLeft);
+    }
+    Node finalRight = NodeManager::currentNM()->mkNode(kind::LT,tempRight,tempLeft);
+    returnNode = NodeManager::currentNM()->mkNode(kind::AND,finalLeft,finalRight);
+    return returnNode;
+  }
 }
 Node QuantifierEliminate::replaceLTQE(Node n, Node bv) {
-  Node left = n[0];
-  Node right = n[1];
-  Node shiftExpr;
-  Node returnNode;
-  if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
-    if(isVarQE(left) || isVarWithCoefficientsQE(left)) {
-      returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
-    } else {
-      shiftExpr = getShiftedExpression(left, bv);
-      left = separateBoundVarExpression(left, bv);
-      if(!shiftExpr.isNull()) {
-        right = NodeManager::currentNM()->mkNode(kind::PLUS, right, shiftExpr);
+  if(n.hasBoundVar() && containsSameBoundVar(n, bv)) {
+    Node left = n[0];
+    Node right = n[1];
+    Node shiftExpr;
+    Node returnNode;
+    if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
+      if(isVarQE(left) || isVarWithCoefficientsQE(left)) {
+        returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
+      } else {
+        shiftExpr = getShiftedExpression(left, bv);
+        left = separateBoundVarExpression(left, bv);
+        if(!shiftExpr.isNull()) {
+          right = NodeManager::currentNM()->mkNode(kind::PLUS, right,
+                                                   shiftExpr);
+        }
+        returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
       }
-      returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
+    } else {
+      if(isVarQE(right) || isVarWithCoefficientsQE(right)) {
+        returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
+      } else {
+        shiftExpr = getShiftedExpression(right, bv);
+        right = separateBoundVarExpression(right, bv);
+        if(!shiftExpr.isNull()) {
+          left = NodeManager::currentNM()->mkNode(kind::PLUS, left, shiftExpr);
+        }
+        returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
+      }
     }
+    return returnNode;
+
   } else {
-    if(isVarQE(right) || isVarWithCoefficientsQE(right)) {
-      returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
-    } else {
-      shiftExpr = getShiftedExpression(right, bv);
-      right = separateBoundVarExpression(right, bv);
-      if(!shiftExpr.isNull()) {
-        left = NodeManager::currentNM()->mkNode(kind::PLUS, left, shiftExpr);
-      }
-      returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
-    }
+    return n;
   }
-  return returnNode;
 }
 Node QuantifierEliminate::replaceNegateLTQE(Node n, Node bv) {
   n = replaceGEQQE(n[0], bv);
@@ -1655,285 +1741,323 @@ Node QuantifierEliminate::replaceNegateLEQQE(Node n, Node bv) {
   return n;
 }
 Node QuantifierEliminate::replaceNegateGTQE(Node n, Node bv) {
-  Node left = n[0][0];
-  Node right = n[0][1];
-  Node tempLeft;
-  Node tempRight;
-  Node returnNode;
-  if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
-    tempLeft = left;
-    tempRight = right;
-    if(tempLeft.getKind() == kind::PLUS || tempLeft.getKind() == kind::MINUS) {
-      Node shiftedFromLeft = getShiftedExpression(tempLeft, bv);
-      tempLeft = separateBoundVarExpression(tempLeft, bv);
-      if(tempRight.getKind() == kind::PLUS
-          || tempRight.getKind() == kind::MINUS) {
-        bool flag = false;
-        for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
-            tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
-          Node childR = *rightBegin;
-          if(isConstQE(childR)) {
-            Integer x = getIntegerFromNode(childR);
-            x = x + 1;
-            TNode tn1 = childR;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempRight = tempRight.substitute(tn1, tn2);
-            flag = true;
-            break;
+  if(n[0].hasBoundVar() && containsSameBoundVar(n[0], bv)) {
+    Node left = n[0][0];
+    Node right = n[0][1];
+    Node tempLeft;
+    Node tempRight;
+    Node returnNode;
+    if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
+      tempLeft = left;
+      tempRight = right;
+      if(tempLeft.getKind() == kind::PLUS
+          || tempLeft.getKind() == kind::MINUS) {
+        Node shiftedFromLeft = getShiftedExpression(tempLeft, bv);
+        tempLeft = separateBoundVarExpression(tempLeft, bv);
+        if(tempRight.getKind() == kind::PLUS
+            || tempRight.getKind() == kind::MINUS) {
+          bool flag = false;
+          for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
+              tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
+            Node childR = *rightBegin;
+            if(isConstQE(childR)) {
+              Integer x = getIntegerFromNode(childR);
+              x = x + 1;
+              TNode tn1 = childR;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempRight = tempRight.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
           }
-        }
-        if(!flag) {
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempRight, shiftedFromLeft, fromIntegerToNodeQE(1));
+          if(!flag) {
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, shiftedFromLeft,
+                  fromIntegerToNodeQE(1));
+            } else {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, fromIntegerToNodeQE(1));
+            }
           } else {
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(kind::PLUS,
+                                                           tempRight,
+                                                           shiftedFromLeft);
+            }
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
+        } else {
+          if(isConstQE(tempRight)) {
+            Integer x = getIntegerFromNode(tempRight);
+            x = x + 1;
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, shiftedFromLeft, fromIntegerToNodeQE(x));
+            } else {
+              tempRight = fromIntegerToNodeQE(x);
+            }
+
+          } else {
+            if(!shiftedFromLeft.isNull()) {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, shiftedFromLeft,
+                  fromIntegerToNodeQE(1));
+            } else {
+              tempRight = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempRight, fromIntegerToNodeQE(1));
+            }
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
+        }
+
+      } else {
+        tempLeft = left;
+        tempRight = right;
+        if(tempRight.getKind() == kind::PLUS
+            || tempRight.getKind() == kind::MINUS) {
+          bool flag = false;
+          for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
+              tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
+            Node childR = *rightBegin;
+            if(isConstQE(childR)) {
+              Integer x = getIntegerFromNode(childR);
+              x = x + 1;
+              TNode tn1 = childR;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempRight = tempRight.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
+          }
+          if(!flag) {
             tempRight = NodeManager::currentNM()->mkNode(
                 kind::PLUS, tempRight, fromIntegerToNodeQE(1));
           }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
         } else {
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                         shiftedFromLeft);
-          }
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
-      } else {
-        if(isConstQE(tempRight)) {
-          Integer x = getIntegerFromNode(tempRight);
-          x = x + 1;
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(
-                kind::PLUS, shiftedFromLeft, fromIntegerToNodeQE(x));
-          } else {
+          if(isConstQE(tempRight)) {
+            Integer x = getIntegerFromNode(tempRight);
+            x = x + 1;
             tempRight = fromIntegerToNodeQE(x);
           }
 
-        } else {
-          if(!shiftedFromLeft.isNull()) {
-            tempRight = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempRight, shiftedFromLeft, fromIntegerToNodeQE(1));
-          } else {
+          else {
             tempRight = NodeManager::currentNM()->mkNode(
                 kind::PLUS, tempRight, fromIntegerToNodeQE(1));
           }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
         }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
       }
-
     } else {
       tempLeft = left;
       tempRight = right;
       if(tempRight.getKind() == kind::PLUS
           || tempRight.getKind() == kind::MINUS) {
-        bool flag = false;
-        for(Node::iterator rightBegin = tempRight.begin(), rightEnd =
-            tempRight.end(); rightBegin != rightEnd; ++rightBegin) {
-          Node childR = *rightBegin;
-          if(isConstQE(childR)) {
-            Integer x = getIntegerFromNode(childR);
-            x = x + 1;
-            TNode tn1 = childR;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempRight = tempRight.substitute(tn1, tn2);
-            flag = true;
-            break;
+        Node shiftedFromRight = getShiftedExpression(tempRight, bv);
+        tempRight = separateBoundVarExpression(tempRight, bv);
+        if(tempLeft.getKind() == kind::PLUS
+            || tempLeft.getKind() == kind::MINUS) {
+          bool flag = false;
+          for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
+              tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
+            Node childL = *leftBegin;
+            if(isConstQE(childL)) {
+              Integer x = getIntegerFromNode(childL);
+              x = x - 1;
+              TNode tn1 = childL;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempLeft = tempLeft.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
+          }
+          if(!flag) {
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, shiftedFromRight,
+                  fromIntegerToNodeQE(-1));
+            } else {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, fromIntegerToNodeQE(-1));
+            }
+          } else {
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+                                                          shiftedFromRight);
+            }
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
+        } else {
+          if(isConstQE(tempLeft)) {
+            Integer x = getIntegerFromNode(tempLeft);
+            x = x - 1;
+            tempLeft = fromIntegerToNodeQE(x);
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+                                                          shiftedFromRight);
+            }
+          } else {
+            if(!shiftedFromRight.isNull()) {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, shiftedFromRight,
+                  fromIntegerToNodeQE(-1));
+            } else {
+              tempLeft = NodeManager::currentNM()->mkNode(
+                  kind::PLUS, tempLeft, fromIntegerToNodeQE(-1));
+            }
           }
         }
-        if(!flag) {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                       fromIntegerToNodeQE(1));
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
       } else {
-        if(isConstQE(tempRight)) {
-          Integer x = getIntegerFromNode(tempRight);
-          x = x + 1;
-          tempRight = fromIntegerToNodeQE(x);
-        }
+        tempLeft = left;
+        tempRight = right;
+        if(tempLeft.getKind() == kind::PLUS
+            || tempLeft.getKind() == kind::MINUS) {
+          bool flag = false;
+          for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
+              tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
+            Node childL = *leftBegin;
+            if(isConstQE(childL)) {
+              Integer x = getIntegerFromNode(childL);
+              x = x - 1;
+              TNode tn1 = childL;
+              TNode tn2 = fromIntegerToNodeQE(x);
+              tempLeft = tempLeft.substitute(tn1, tn2);
+              flag = true;
+              break;
+            }
+          }
+          if(!flag) {
+            tempLeft = NodeManager::currentNM()->mkNode(
+                kind::PLUS, tempRight, fromIntegerToNodeQE(-1));
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
+        } else {
+          if(isConstQE(tempLeft)) {
+            Integer x = getIntegerFromNode(tempLeft);
+            x = x - 1;
+            tempLeft = fromIntegerToNodeQE(x);
+          }
 
-        else {
-          tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                       fromIntegerToNodeQE(1));
+          else {
+            tempLeft = NodeManager::currentNM()->mkNode(
+                kind::PLUS, tempLeft, fromIntegerToNodeQE(-1));
+          }
+          returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                        tempRight);
         }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
       }
+
     }
+    Debug("expr-qetest")<<"after replacing negateLT "<<returnNode<<std::endl;
+    return returnNode;
+
   } else {
-    tempLeft = left;
-    tempRight = right;
-    if(tempRight.getKind() == kind::PLUS
-        || tempRight.getKind() == kind::MINUS) {
-      Node shiftedFromRight = getShiftedExpression(tempRight, bv);
-      tempRight = separateBoundVarExpression(tempRight, bv);
-      if(tempLeft.getKind() == kind::PLUS
-          || tempLeft.getKind() == kind::MINUS) {
-        bool flag = false;
-        for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
-            tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
-          Node childL = *leftBegin;
-          if(isConstQE(childL)) {
-            Integer x = getIntegerFromNode(childL);
-            x = x - 1;
-            TNode tn1 = childL;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempLeft = tempLeft.substitute(tn1, tn2);
-            flag = true;
-            break;
-          }
-        }
-        if(!flag) {
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempLeft, shiftedFromRight,
-                fromIntegerToNodeQE(-1));
-          } else {
-            tempLeft = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempLeft, fromIntegerToNodeQE(-1));
-          }
-        } else {
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                        shiftedFromRight);
-          }
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
-      } else {
-        if(isConstQE(tempLeft)) {
-          Integer x = getIntegerFromNode(tempLeft);
-          x = x - 1;
-          tempLeft = fromIntegerToNodeQE(x);
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                        shiftedFromRight);
-          }
-        } else {
-          if(!shiftedFromRight.isNull()) {
-            tempLeft = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempLeft, shiftedFromRight,
-                fromIntegerToNodeQE(-1));
-          } else {
-            tempLeft = NodeManager::currentNM()->mkNode(
-                kind::PLUS, tempLeft, fromIntegerToNodeQE(-1));
-          }
-        }
-      }
+    Node left = n[0][0];
+    Node right = n[0][1];
+    if(isConstQE(right)) {
+      Integer x = getIntegerFromNode(right) + 1;
+      right = fromIntegerToNodeQE(x);
     } else {
-      tempLeft = left;
-      tempRight = right;
-      if(tempLeft.getKind() == kind::PLUS
-          || tempLeft.getKind() == kind::MINUS) {
-        bool flag = false;
-        for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
-            tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
-          Node childL = *leftBegin;
-          if(isConstQE(childL)) {
-            Integer x = getIntegerFromNode(childL);
-            x = x - 1;
-            TNode tn1 = childL;
-            TNode tn2 = fromIntegerToNodeQE(x);
-            tempLeft = tempLeft.substitute(tn1, tn2);
-            flag = true;
-            break;
-          }
-        }
-        if(!flag) {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                      fromIntegerToNodeQE(-1));
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
-      } else {
-        if(isConstQE(tempLeft)) {
-          Integer x = getIntegerFromNode(tempLeft);
-          x = x - 1;
-          tempLeft = fromIntegerToNodeQE(x);
-        }
-
-        else {
-          tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                      fromIntegerToNodeQE(-1));
-        }
-        returnNode = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
-                                                      tempRight);
-      }
+      right = NodeManager::currentNM()->mkNode(kind::PLUS, right,
+                                               fromIntegerToNodeQE(1));
+      right = Rewriter::rewrite(right);
     }
-
+    Node returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
+    return returnNode;
   }
-  Debug("expr-qetest")<<"ReturnNode "<<returnNode<<std::endl;
-  return returnNode;
 }
 Node QuantifierEliminate::replaceNegateGEQQE(Node n, Node bv) {
   n = replaceLTQE(n[0], bv);
   return n;
 }
 Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
-  Node left = n[0][0];
-  Node right = n[0][1];
-  Node finalLeft;
-  Node finalRight;
-  if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
-    Node tempLeft = left;
-    Node tempRight = right;
-    Node shiftFromLeft;
-    if(isVarQE(left) || isVarWithCoefficientsQE(left)) {
-      tempLeft = left;
-    } else {
-      shiftFromLeft = getShiftedExpression(tempLeft, bv);
-      tempLeft = separateBoundVarExpression(tempLeft, bv);
-      Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
-    }
-    if(!shiftFromLeft.isNull()) {
-      tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                   shiftFromLeft);
-    }
-    finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft, tempRight);
-    tempRight = right;
-    if(!shiftFromLeft.isNull()) {
-      tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
-                                                   shiftFromLeft);
-    }
-    finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-                                                  tempLeft);
-    Node returnNode = NodeManager::currentNM()->mkNode(kind::OR, finalLeft,
-                                                       finalRight);
-    Debug("expr-qetest")<<"After replacement returnNode "<<returnNode<<std::endl;
-    return returnNode;
-  } else {
-    //right has boundvar bv
-    Node tempLeft = left;
-    Node tempRight = right;
-    Node shiftFromRight;
-    if(isVarQE(right) || isVarWithCoefficientsQE(right)) {
+  if(n[0].hasBoundVar() && containsSameBoundVar(n[0], bv)) {
+    Node left = n[0][0];
+    Node right = n[0][1];
+    Node finalLeft;
+    Node finalRight;
+    if(left.hasBoundVar() && containsSameBoundVar(left, bv)) {
+      Node tempLeft = left;
+      Node tempRight = right;
+      Node shiftFromLeft;
+      if(isVarQE(left) || isVarWithCoefficientsQE(left)) {
+        tempLeft = left;
+      } else {
+        shiftFromLeft = getShiftedExpression(tempLeft, bv);
+        tempLeft = separateBoundVarExpression(tempLeft, bv);
+        Debug("expr-qetest")<<"tempLeft "<<tempLeft<<std::endl;
+      }
+      if(!shiftFromLeft.isNull()) {
+        tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+                                                     shiftFromLeft);
+      }
+      finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                   tempRight);
       tempRight = right;
+      if(!shiftFromLeft.isNull()) {
+        tempRight = NodeManager::currentNM()->mkNode(kind::PLUS, tempRight,
+                                                     shiftFromLeft);
+      }
+      finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                    tempLeft);
+      Node returnNode = NodeManager::currentNM()->mkNode(kind::OR, finalLeft,
+                                                         finalRight);
+      Debug("expr-qetest")<<"After replacement returnNode "<<returnNode<<std::endl;
+      return returnNode;
     } else {
-      shiftFromRight = getShiftedExpression(tempRight, bv);
-      tempRight = separateBoundVarExpression(tempRight, bv);
-      Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
+      //right has boundvar bv
+      Node tempLeft = left;
+      Node tempRight = right;
+      Node shiftFromRight;
+      if(isVarQE(right) || isVarWithCoefficientsQE(right)) {
+        tempRight = right;
+      } else {
+        shiftFromRight = getShiftedExpression(tempRight, bv);
+        tempRight = separateBoundVarExpression(tempRight, bv);
+        Debug("expr-qetest")<<"tempRight "<<tempRight<<std::endl;
+      }
+      if(!shiftFromRight.isNull()) {
+        tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+                                                    shiftFromRight);
+      }
+      finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                   tempRight);
+      Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
+      tempLeft = left;
+      if(!shiftFromRight.isNull()) {
+        tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
+                                                    shiftFromRight);
+      }
+      finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                    tempLeft);
+      Debug("expr-qetest")<<"finalRight "<<finalRight<<std::endl;
+      Node returnNode = NodeManager::currentNM()->mkNode(kind::OR, finalLeft,
+                                                         finalRight);
+      Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
+      return returnNode;
     }
-    if(!shiftFromRight.isNull()) {
-      tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                  shiftFromRight);
-    }
-    finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft, tempRight);
-    Debug("expr-qetest")<<"finalLeft "<<finalLeft<<std::endl;
-    tempLeft = left;
-    if(!shiftFromRight.isNull()) {
-      tempLeft = NodeManager::currentNM()->mkNode(kind::PLUS, tempLeft,
-                                                  shiftFromRight);
-    }
-    finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
-                                                  tempLeft);
-    Debug("expr-qetest")<<"finalRight "<<finalRight<<std::endl;
-    Node returnNode = NodeManager::currentNM()->mkNode(kind::OR, finalLeft,
-                                                       finalRight);
-    Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
+  } else {
+    Node left = n[0];
+    Node right = n[1];
+    Node tempLeft = left;
+    Node tempRight = right;
+    Node returnNode;
+    Node finalLeft = NodeManager::currentNM()->mkNode(kind::LT, tempLeft,
+                                                      tempRight);
+    Node finalRight = NodeManager::currentNM()->mkNode(kind::LT, tempRight,
+                                                       tempLeft);
+    returnNode = NodeManager::currentNM()->mkNode(kind::OR, finalLeft,
+                                                  finalRight);
     return returnNode;
   }
+
 }
 Node QuantifierEliminate::replaceRelationOperatorQE(Node n, Node bv) {
   Node replaceNode;
@@ -2504,7 +2628,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     Debug("expr-qetest")<<"right "<<right<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final.negate();
-  //  args = convertToNNFQE(args);
+    //  args = convertToNNFQE(args);
     args = Rewriter::rewrite(args);
     bv.pop_back();
   }
