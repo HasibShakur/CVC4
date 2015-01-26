@@ -2090,8 +2090,12 @@ Node QuantifierEliminate::replaceNegateEQUALQE(Node n, Node bv) {
 }
 Node QuantifierEliminate::replaceRelationOperatorQE(Node n, Node bv) {
   Node replaceNode;
+  Debug("expr-qetest")<<"Node "<<n<<std::endl;
+  Debug("expr-qetest")<<"Node kind "<<n.getKind()<<std::endl;
   if(n.getKind() == kind::NOT) {
     Node temp = n[0];
+    Debug("expr-qetest")<<"Node "<<temp<<std::endl;
+    Debug("expr-qetest")<<"Node kind "<<temp.getKind()<<std::endl;
     if(temp.getKind() == kind::LT) {
       replaceNode = replaceNegateLTQE(n, bv);
     } else if(temp.getKind() == kind::LEQ) {
