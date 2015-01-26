@@ -2668,8 +2668,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
             args.pop_back();
           }
           if(result == mkBoolNode(true) || result == mkBoolNode(false)) {
-            while(!bv.empty()) {
-              bv.pop_back();
+            while(!boundVar.empty()) {
+              boundVar.pop_back();
             }
             args.push_back(result);
             break;
@@ -2693,8 +2693,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
             args.pop_back();
           }
           if(result == mkBoolNode(true) || result == mkBoolNode(false)) {
-            while(!bv.empty()) {
-              bv.pop_back();
+            while(!boundVar.empty()) {
+              boundVar.pop_back();
             }
             args.push_back(result);
             break;
@@ -2721,8 +2721,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
             args.pop_back();
           }
           if(result3 == mkBoolNode(true) || result3 == mkBoolNode(false)) {
-            while(!bv.empty()) {
-              bv.pop_back();
+            while(!boundVar.empty()) {
+              boundVar.pop_back();
             }
             args.push_back(result3);
             break;
@@ -2775,8 +2775,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
           args.pop_back();
         }
         if(result1 == mkBoolNode(true) || result1 == mkBoolNode(false)) {
-          while(!bv.empty()) {
-            bv.pop_back();
+          while(!boundVar.empty()) {
+            boundVar.pop_back();
           }
           args.push_back(result1);
           break;
@@ -2800,8 +2800,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
           args.pop_back();
         }
         if(result1 == mkBoolNode(true) || result1 == mkBoolNode(false)) {
-          while(!bv.empty()) {
-            bv.pop_back();
+          while(!boundVar.empty()) {
+            boundVar.pop_back();
           }
           args.push_back(result1);
           break;
@@ -2828,8 +2828,8 @@ Node QuantifierEliminate::computeProjections(Node n) {
           args.pop_back();
         }
         if(result2 == mkBoolNode(true) || result2 == mkBoolNode(false)) {
-          while(!bv.empty()) {
-            bv.pop_back();
+          while(!boundVar.empty()) {
+            boundVar.pop_back();
           }
           args.push_back(result2);
           break;
