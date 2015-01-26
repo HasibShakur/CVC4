@@ -2632,6 +2632,7 @@ Node QuantifierEliminate::computeProjections(Node n) {
   Node final;
   Node temp;
   Debug("expr-qetest")<<"Initial Node "<<n<<std::endl;
+  Debug("expr-qetest")<<"Initial Node kind "<<n.getKind()<<std::endl;
   if(n.getKind() == kind::NOT) {
     temp = n[0];
     if(temp.getKind() == kind::FORALL) {
