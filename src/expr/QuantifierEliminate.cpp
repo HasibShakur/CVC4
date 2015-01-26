@@ -2854,13 +2854,15 @@ Node QuantifierEliminate::computeProjections(Node n) {
 }
 Node QuantifierEliminate::qeEngine(Node n)
 {
+  Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
+  Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
   Node final;
   final = computeProjections(n);
   if(n.getKind() == kind::NOT)
   {
     final = final.negate();
   }
-  Debug("expr-qetest")<<"Final expression "<<final<<std::endl;
+  Debug("expr-qetest")<<"After qe "<<final<<std::endl;
   return final;
 }
 
