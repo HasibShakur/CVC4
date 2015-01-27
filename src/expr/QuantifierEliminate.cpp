@@ -609,7 +609,6 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv,QuantifierEliminate q)
     }
   }
   Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
-  q.setLcmValue(lcmResult);
   return lcmResult;
 }
 
@@ -623,7 +622,8 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,QuantifierEliminate q) {
     n = t;
   }
   Integer lcmResult = getLcmResult(n, bv,q);
-  Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
+  q.setLcmValue(lcmResult);
+  Debug("expr-qetest")<<"lcm "<<q.getLcmValue()<<std::endl;
   std::vector<Container> tempContainer = q.getContainer();
   for(int i = 0; i < (int) tempContainer.size(); i++) {
     if(tempContainer[i].getVariable() == bv) {
