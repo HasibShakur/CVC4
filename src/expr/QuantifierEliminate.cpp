@@ -3108,13 +3108,9 @@ Node QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
   std::vector<std::vector<Node> > b;
   std::vector<Node> a;
-  std::vector<ExpressionContainer> ec;
-  std::vector<Container> c;
   QuantifierEliminate qe;
   qe.setOriginalExpression(n);
   qe.setNumberOfQuantElim(numOfQuantifiers);
-  qe.setExpContainer(ec);
-  qe.setContainer(c);
   Debug("expr-qetest")<<"Before qe original "<<qe.getOriginalExpression()<<std::endl;
   Node temp = n;
   Node final;
