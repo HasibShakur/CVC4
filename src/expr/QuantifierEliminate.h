@@ -12,74 +12,91 @@ class Container;
 class ExpressionContainer;
 class CVC4_PUBLIC QuantifierEliminate {
 private:
-  static std::vector<std::vector<Node> > boundVar;
-  static std::vector<Node> args;
-  static Integer lcmValue;
-  static Integer numOfQuantiferToElim;
+  //variables
+
+  std::vector<std::vector<Node> > boundVar;
+  std::vector<Node> args;
+  Integer lcmValue;
+  Integer numOfQuantiferToElim;
   Node originalExpression;
-  /*static std::vector<Node> variables;
-   static std::vector<Node> coefficients;*/
-  static std::vector<Container> container;
+  std::vector<Container> container;
   std::vector<ExpressionContainer> expressionContainer;
-//  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
+
+  //static methods
+
   static Node convertToNNFQE(Node body);
-  static Node doRewriting(Node n, Node bv);
-  static Node eliminateImpliesQE(Node body);
-  static Node parseEquation(Node n, Node bv);
-  static Node computeLeftProjection(Node n, Node bv);
-//  static bool evaluateBoolean(Node n);
-  static Node computeRightProjection(Node n, Node bv);
-//  static Node preProcessingForRightProjection(Node n);
-//  static Node preProcessing2ForRightProjection(Node n);
-//  static Node evaluateForRightProjection(Node n, Node replacement);
-//  static Node computeOperationQE(Node n, bool isNested);
-  static Node performCaseAnalysis(Node n, std::vector<Node> bv);
   static std::vector<Node> computeMultipleBoundVariables(Node n);
-//  static void setQENestedQuantifiers( Node n, Node q );
-//  static void setQENestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
-//  static void setAttributesQE( Node in, Node n );
-  //static Node replaceForall(Node body);
   static bool isLiteralQE(Node body);
   static bool isConstQE(Node n);
   static bool isVarQE(Node n);
   static bool isVarWithCoefficientsQE(Node n);
   static bool isEquationQE(Node n);
   static bool isRelationalOperatorTypeQE(Kind k);
-  static Node rewriteForSameCoefficients(Node n, Node boundVar);
-  static void parseCoefficientQE(Node n);
-  static Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
   static Integer getIntegerFromNode(Node n);
-  static Integer lcmQE(Integer a, Integer b);
   static Node fromIntegerToNodeQE(Integer n);
   static bool containsSameBoundVar(Node n, Node bv);
-  static Node rewriteRelationOperatorQE(Node n,Node bv);
-  static Node replaceRelationOperatorQE(Node n,Node bv);
-  static Node replaceGTQE(Node n,Node bv);
-  static Node replaceGEQQE(Node n,Node bv);
-  static Node replaceLEQQE(Node n,Node bv);
-  static Node replaceEQUALQE(Node n,Node bv);
-  static Node replaceLTQE(Node n,Node bv);
-  static Node replaceNegateLTQE(Node n,Node bv);
-  static Node replaceNegateLEQQE(Node n,Node bv);
-  static Node replaceNegateGTQE(Node n,Node bv);
-  static Node replaceNegateGEQQE(Node n,Node bv);
-  static Node replaceNegateEQUALQE(Node n,Node bv);
-  static Integer getLcmResult(Node t,Node bv);
-  static Node getShiftedExpression(Node n,Node bv);
-  static Node separateBoundVarExpression(Node n, Node bv);
-  static Node getExpressionWithDivisibility(Node n, Node bv);
-  static Node getMinimalExprForRightProjection(Node n,Node bv);
-  static Node replaceBoundVarRightProjection(Node n,TNode bExpr, Node bv);
-  static Node computeXValueForLeftProjection(Node n);
-  static Node replaceXForLeftProjection(Node n,Node original,Integer rep);
-  static Node computeProjections(Node n,QuantifierEliminate q);
+  static Integer lcmQE(Integer a, Integer b);
+
+  //non static methods
+
+  Node doRewriting(Node n, Node bv, QuantifierEliminate q);
+  static Node eliminateImpliesQE(Node body);
+  Node parseEquation(Node n, Node bv, QuantifierEliminate q);
+  Node computeLeftProjection(Node n, Node bv, QuantifierEliminate q);
+  Node computeRightProjection(Node n, Node bv, QuantifierEliminate q);
+  Node performCaseAnalysis(Node n, std::vector<Node> bv, QuantifierEliminate q);
+  Node rewriteForSameCoefficients(Node n, Node boundVar, QuantifierEliminate q);
+  void parseCoefficientQE(Node n, QuantifierEliminate q);
+  Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
+  Node rewriteRelationOperatorQE(Node n, Node bv, QuantifierEliminate q);
+  Node replaceRelationOperatorQE(Node n, Node bv);
+  Node replaceGTQE(Node n, Node bv);
+  Node replaceGEQQE(Node n, Node bv);
+  Node replaceLEQQE(Node n, Node bv);
+  Node replaceEQUALQE(Node n, Node bv);
+  Node replaceLTQE(Node n, Node bv);
+  Node replaceNegateLTQE(Node n, Node bv);
+  Node replaceNegateLEQQE(Node n, Node bv);
+  Node replaceNegateGTQE(Node n, Node bv);
+  Node replaceNegateGEQQE(Node n, Node bv);
+  Node replaceNegateEQUALQE(Node n, Node bv);
+  Integer getLcmResult(Node t, Node bv, QuantifierEliminate q);
+  Node getShiftedExpression(Node n, Node bv);
+  Node separateBoundVarExpression(Node n, Node bv);
+  Node getExpressionWithDivisibility(Node n, Node bv, QuantifierEliminate q);
+  Node getMinimalExprForRightProjection(Node n, Node bv);
+  Node replaceBoundVarRightProjection(Node n, TNode bExpr, Node bv);
+  Node computeXValueForLeftProjection(Node n, QuantifierEliminate q);
+  Node replaceXForLeftProjection(Node n, Node original, Integer rep);
+  Node computeProjections(Node n, QuantifierEliminate q);
   void setOriginalExpression(Node n);
   Node getOriginalExpression();
+  void setNumberOfQuantElim(int x);
+  Integer getNumberOfQuantElim();
+  void setLcmValue(Integer x);
+  Integer getLcmValue();
+  void setContainer(std::vector<Container> c);
+  std::vector<Container> getContainer();
+  void setExpContainer(std::vector<ExpressionContainer> ec);
+  std::vector<ExpressionContainer> getExpContainer();
+  std::vector<std::vector<Node>> getBoundVar();
+  std::vector<Node> getArgs();
+  void setBoundVar(std::vector<std::vector<Node>> b);
+  void setArgs(std::vector<Node> a);
+//  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
+  //  static bool evaluateBoolean(Node n);
+//  static Node preProcessingForRightProjection(Node n);
+//  static Node preProcessing2ForRightProjection(Node n);
+//  static Node evaluateForRightProjection(Node n, Node replacement);
+//  static Node computeOperationQE(Node n, bool isNested);
+//  static void setQENestedQuantifiers( Node n, Node q );
+//  static void setQENestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
+//  static void setAttributesQE( Node in, Node n );
+  //static Node replaceForall(Node body);
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
   static Node qeEngine(Node n, int numOfQuantifiers);
-
 
 };
 

@@ -29,95 +29,8 @@ using namespace CVC4::theory::arith;
 //};
 //typedef expr::Attribute<QENestedQuantAttributeId, Node> QuantAttrib;
 
-std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
-std::vector<Node> QuantifierEliminate::args;
-std::vector<Container> QuantifierEliminate::container;
-//std::vector<ExpressionContainer> QuantifierEliminate::expressionContainer;
-Integer QuantifierEliminate::lcmValue;
-Integer QuantifierEliminate::numOfQuantiferToElim;
-
-bool QuantifierEliminate::isLiteralQE(Node n) {
-  switch(n.getKind()) {
-  case kind::NOT:
-    return isLiteralQE(n[0]);
-    break;
-  case kind::OR:
-  case kind::AND:
-  case kind::IMPLIES:
-  case kind::XOR:
-  case kind::ITE:
-  case kind::IFF:
-    return false;
-    break;
-  default:
-    break;
-  }
-  return true;
-}
-bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
-  switch(k) {
-  case kind::LT:
-  case kind::GT:
-  case kind::LEQ:
-  case kind::GEQ:
-  case kind::EQUAL:
-    return true;
-  default:
-    return false;
-  }
-}
-bool QuantifierEliminate::isConstQE(Node n) {
-  if(n.isConst())
-    return true;
-  else
-    return false;
-}
-bool QuantifierEliminate::isVarQE(Node n) {
-  if(n.isVar() && n.getType().isInteger() && !isVarWithCoefficientsQE(n)
-      && !isEquationQE(n))
-    return true;
-  else
-    return false;
-}
-bool QuantifierEliminate::isVarWithCoefficientsQE(Node n) {
-  if(n.getKind() == kind::MULT && isConstQE(n[0]) && isVarQE(n[1])) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-bool QuantifierEliminate::isEquationQE(Node n) {
-  if((isRelationalOperatorTypeQE(n.getKind())) || (n.getKind() == kind::PLUS)
-      || (n.getKind() == kind::MINUS))
-    return true;
-  else
-    return false;
-}
-
-Node QuantifierEliminate::eliminateImpliesQE(Node body) {
-  if(isLiteralQE(body)) {
-    return body;
-  } else {
-    bool childrenChanged = false;
-    std::vector<Node> children;
-    for(unsigned i = 0; i < body.getNumChildren(); i++) {
-      Node c = eliminateImpliesQE(body[i]);
-      if(i == 0 && (body.getKind() == kind::IMPLIES)) {
-        c = c.negate();
-      }
-      children.push_back(c);
-      childrenChanged = childrenChanged || c != body[i];
-    }
-    if(body.getKind() == kind::IMPLIES) {
-      return NodeManager::currentNM()->mkNode(OR, children);
-    } else if(childrenChanged) {
-      return NodeManager::currentNM()->mkNode(body.getKind(), children);
-    } else {
-      return body;
-    }
-  }
-}
+//std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
+//std::vector<Node> QuantifierEliminate::args;
 
 //Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
 //                                            bool pol) {
@@ -169,48 +82,6 @@ Node QuantifierEliminate::eliminateImpliesQE(Node body) {
 //    }
 //  }
 //}
-
-Node QuantifierEliminate::convertToNNFQE(Node body) {
-
-  if(body.getKind() == kind::NOT) {
-    if(body[0].getKind() == kind::NOT) {
-      //  Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][0].getKind() << "\n";
-      return convertToNNFQE(body[0][0]);
-    } else if(isLiteralQE(body[0])) {
-      //  Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getKind() << "\n";
-      return body;
-    } else {
-      std::vector<CVC4::Node> children;
-      Kind k = body[0].getKind();
-      if(body[0].getKind() == kind::OR || body[0].getKind() == kind::AND) {
-        for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
-          children.push_back(convertToNNFQE(body[0][i].notNode()));
-        }
-        k = body[0].getKind() == kind::AND ? kind::OR : kind::AND;
-      } else {
-        Notice() << "Unhandled Quantifiers NNF: " << body << std::endl;
-        return body;
-      }
-      return NodeManager::currentNM()->mkNode(k, children);
-    }
-  } else if(isLiteralQE(body)) {
-    return body;
-  } else {
-    std::vector<CVC4::Node> children;
-    bool childrenChanged = false;
-    for(int i = 0; i < (int) body.getNumChildren(); i++) {
-      Node nc = convertToNNFQE(body[i]);
-      children.push_back(nc);
-      childrenChanged = childrenChanged || nc != body[i];
-    }
-    if(childrenChanged) {
-      return NodeManager::currentNM()->mkNode(body.getKind(), children);
-    } else {
-      return body;
-    }
-  }
-}
-
 /* Node QuantifierEliminate::preProcessing2ForRightProjection(Node n) {
  Rational negOne(-1);
  Node test = mkRationalNode(negOne);
@@ -392,6 +263,150 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
  return toCompute;
  }
  */
+/*Node QuantifierEliminate::substitutioForQE(Node original,Node toReplace,Node replacement)
+ {
+ std::vector<Node> nodes;
+ Kind k = original.getKind();
+ for(Node::iterator a = original.begin(),a_end = original.end();
+ a != a_end;
+ ++a)
+ {
+ Node b = *a;
+ nodes.push_back(b);
+ }
+ Node reconstructed = NodeManager::currentNM()->mkNode(k,nodes);
+ if(reconstructed != original)
+ {
+ Debug("expr-qetest") <<"Not same "<<original<<" "<<reconstructed<<std::endl;
+ }
+ }*/
+
+bool QuantifierEliminate::isLiteralQE(Node n) {
+  switch(n.getKind()) {
+  case kind::NOT:
+    return isLiteralQE(n[0]);
+    break;
+  case kind::OR:
+  case kind::AND:
+  case kind::IMPLIES:
+  case kind::XOR:
+  case kind::ITE:
+  case kind::IFF:
+    return false;
+    break;
+  default:
+    break;
+  }
+  return true;
+}
+bool QuantifierEliminate::isRelationalOperatorTypeQE(Kind k) {
+  switch(k) {
+  case kind::LT:
+  case kind::GT:
+  case kind::LEQ:
+  case kind::GEQ:
+  case kind::EQUAL:
+    return true;
+  default:
+    return false;
+  }
+}
+bool QuantifierEliminate::isConstQE(Node n) {
+  if(n.isConst())
+    return true;
+  else
+    return false;
+}
+bool QuantifierEliminate::isVarQE(Node n) {
+  if(n.isVar() && n.getType().isInteger() && !isVarWithCoefficientsQE(n)
+      && !isEquationQE(n))
+    return true;
+  else
+    return false;
+}
+bool QuantifierEliminate::isVarWithCoefficientsQE(Node n) {
+  if(n.getKind() == kind::MULT && isConstQE(n[0]) && isVarQE(n[1])) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+bool QuantifierEliminate::isEquationQE(Node n) {
+  if((isRelationalOperatorTypeQE(n.getKind())) || (n.getKind() == kind::PLUS)
+      || (n.getKind() == kind::MINUS))
+    return true;
+  else
+    return false;
+}
+
+Node QuantifierEliminate::eliminateImpliesQE(Node body) {
+  if(isLiteralQE(body)) {
+    return body;
+  } else {
+    bool childrenChanged = false;
+    std::vector<Node> children;
+    for(unsigned i = 0; i < body.getNumChildren(); i++) {
+      Node c = eliminateImpliesQE(body[i]);
+      if(i == 0 && (body.getKind() == kind::IMPLIES)) {
+        c = c.negate();
+      }
+      children.push_back(c);
+      childrenChanged = childrenChanged || c != body[i];
+    }
+    if(body.getKind() == kind::IMPLIES) {
+      return NodeManager::currentNM()->mkNode(OR, children);
+    } else if(childrenChanged) {
+      return NodeManager::currentNM()->mkNode(body.getKind(), children);
+    } else {
+      return body;
+    }
+  }
+}
+
+
+
+Node QuantifierEliminate::convertToNNFQE(Node body) {
+
+  if(body.getKind() == kind::NOT) {
+    if(body[0].getKind() == kind::NOT) {
+      //  Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][0].getKind() << "\n";
+      return convertToNNFQE(body[0][0]);
+    } else if(isLiteralQE(body[0])) {
+      //  Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getKind() << "\n";
+      return body;
+    } else {
+      std::vector<CVC4::Node> children;
+      Kind k = body[0].getKind();
+      if(body[0].getKind() == kind::OR || body[0].getKind() == kind::AND) {
+        for(int i = 0; i < (int) body[0].getNumChildren(); i++) {
+          children.push_back(convertToNNFQE(body[0][i].notNode()));
+        }
+        k = body[0].getKind() == kind::AND ? kind::OR : kind::AND;
+      } else {
+        Notice() << "Unhandled Quantifiers NNF: " << body << std::endl;
+        return body;
+      }
+      return NodeManager::currentNM()->mkNode(k, children);
+    }
+  } else if(isLiteralQE(body)) {
+    return body;
+  } else {
+    std::vector<CVC4::Node> children;
+    bool childrenChanged = false;
+    for(int i = 0; i < (int) body.getNumChildren(); i++) {
+      Node nc = convertToNNFQE(body[i]);
+      children.push_back(nc);
+      childrenChanged = childrenChanged || nc != body[i];
+    }
+    if(childrenChanged) {
+      return NodeManager::currentNM()->mkNode(body.getKind(), children);
+    } else {
+      return body;
+    }
+  }
+}
+
 Integer QuantifierEliminate::getIntegerFromNode(Node n) {
   Constant c = Constant::mkConstant(n);
   Rational r = c.getValue();
@@ -403,7 +418,11 @@ Node QuantifierEliminate::fromIntegerToNodeQE(Integer n) {
   Constant c = Constant::mkConstant(r);
   return c.getNode();
 }
-void QuantifierEliminate::parseCoefficientQE(Node n) {
+std::vector<Container> QuantifierEliminate::getContainer(QuantifierEliminate q)
+{
+  return q.container;
+}
+void QuantifierEliminate::parseCoefficientQE(Node n,QuantifierEliminate q) {
   Node temp;
   if(n.getKind() == kind::NOT) {
     temp = n[0];
@@ -413,32 +432,32 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
   if(isConstQE(temp)) {
     Integer n = getIntegerFromNode(temp);
     Container c(temp, n);
-    container.push_back(c);
+    q.getContainer().push_back(c);
   } else if(isVarQE(temp)) {
     Constant one = Constant::mkOne();
     Integer n = getIntegerFromNode(one.getNode());
     Container c(temp, n);
-    container.push_back(c);
+    q.getContainer().push_back(c);
   } else if(isVarWithCoefficientsQE(temp)) {
     Integer n = getIntegerFromNode(temp[0]);
     Container c(temp[1], n);
-    container.push_back(c);
+    q.getContainer().push_back(c);
   } else {
     for(Node::iterator i = temp.begin(), end = temp.end(); i != end; ++i) {
       Node child = *i;
       if(isVarWithCoefficientsQE(child)) {
         Integer n = getIntegerFromNode(child[0]);
         Container c(child[1], n);
-        container.push_back(c);
+        q.getContainer().push_back(c);
       } else if(isConstQE(child)) {
         Integer n = getIntegerFromNode(child);
         Container c(child, n);
-        container.push_back(c);
+        q.getContainer().push_back(c);
       } else if(isVarQE(child)) {
         Constant one = Constant::mkOne();
         Integer n = getIntegerFromNode(one.getNode());
         Container c(child, n);
-        container.push_back(c);
+        q.getContainer().push_back(c);
       } else {
         for(Node::iterator j = child.begin(), end = child.end(); j != end;
             ++j) {
@@ -446,16 +465,16 @@ void QuantifierEliminate::parseCoefficientQE(Node n) {
           if(isConstQE(inner)) {
             Integer n = getIntegerFromNode(inner);
             Container c(inner, n);
-            container.push_back(c);
+            q.getContainer().push_back(c);
           } else if(isVarQE(inner)) {
             Constant one = Constant::mkOne();
             Integer n = getIntegerFromNode(one.getNode());
             Container c(inner, n);
-            container.push_back(c);
+            q.getContainer().push_back(c);
           } else {
             Integer n = getIntegerFromNode(inner[0]);
             Container c(inner[1], n);
-            container.push_back(c);
+            q.getContainer().push_back(c);
           }
         }
       }
@@ -522,29 +541,30 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
   }
 
 }
-Integer QuantifierEliminate::getLcmResult(Node t, Node bv) {
+Integer QuantifierEliminate::getLcmResult(Node t, Node bv,QuantifierEliminate q) {
   std::vector<Integer> boundVarCoeff;
   for(Node::kinded_iterator i = t.begin(t.getKind()), i_end = t.end(
       t.getKind()); i != i_end; ++i) {
     Node child = *i;
-    parseCoefficientQE(child);
+    parseCoefficientQE(child,q);
   }
-  for(int i = 0; i < (int) container.size(); i++) {
-    Debug("expr-qetest")<<"Variable "<<container[i].getVariable()<<" Coefficient "<<container[i].getCoefficient()<<std::endl;
+  std::vector<Container> tempContainer = q.getContainer();
+  for(int i = 0; i < (int) tempContainer.size(); i++) {
+    Debug("expr-qetest")<<"Variable "<<tempContainer[i].getVariable()<<" Coefficient "<<tempContainer[i].getCoefficient()<<std::endl;
   }
   Integer coeff = 1;
-  for(int i = 0; i < (int) container.size(); i++) {
-    if(container[i].getVariable() == bv) {
-      boundVarCoeff.push_back(container[i].getCoefficient());
+  for(int i = 0; i < (int) tempContainer.size(); i++) {
+    if(tempContainer[i].getVariable() == bv) {
+      boundVarCoeff.push_back(tempContainer[i].getCoefficient());
     }
   }
-  Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
-  lcmValue = lcmResult;
-  return lcmResult;
+  Integer lcmResult = q.calculateLCMofCoeff(boundVarCoeff);
+  q.setLcmValue(lcmResult);
+  return q.getLcmValue();
 }
 
-Node QuantifierEliminate::parseEquation(Node t, Node bv) {
-  std::vector<ExpressionContainer> expressionContainer;
+Node QuantifierEliminate::parseEquation(Node t, Node bv,QuantifierEliminate q) {
+  std::vector<ExpressionContainer> temExpContainer = q.getExpContainer();
   Integer coeff = 1;
   Node n;
   if(t.getKind() == kind::NOT) {
@@ -552,18 +572,19 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
   } else {
     n = t;
   }
-  Integer lcmResult = getLcmResult(n, bv);
+  Integer lcmResult = q.getLcmResult(n, bv,q);
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
-  for(int i = 0; i < (int) container.size(); i++) {
-    if(container[i].getVariable() == bv) {
-      coeff = container[i].getCoefficient();
+  std::vector<Container> tempContainer = q.getContainer();
+  for(int i = 0; i < (int) tempContainer.size(); i++) {
+    if(tempContainer[i].getVariable() == bv) {
+      coeff = tempContainer[i].getCoefficient();
     }
   }
   Debug("expr-qetest")<<"Coeff "<<coeff<<std::endl;
   Integer multiple = lcmResult.euclidianDivideQuotient(coeff.abs());
   Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
-  while(!container.empty()) {
-    container.pop_back();
+  while(!q.getContainer().empty()) {
+    q.getContainer().pop_back();
   }
   if(lcmResult == 1 || multiple == 1) {
     Debug("expr-qetest")<<"After lcm operation expression "<<t<<std::endl;
@@ -670,7 +691,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
         if(!singleExp)
         {
           ExpressionContainer e(child,multiplier);
-          expressionContainer.push_back(e);
+          temExpContainer.push_back(e);
         }
       }
       else
@@ -679,17 +700,17 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
     if(singleExp)
     {
       ExpressionContainer e(n,multiplier);
-      expressionContainer.push_back(e);
+      temExpContainer.push_back(e);
     }
-    for(int i= 0;i<(int)expressionContainer.size();i++)
+    for(int i= 0;i<(int)temExpContainer.size();i++)
     {
-      Debug("expr-qetest")<<"Expression "<<expressionContainer[i].getExpression()<<" multiplier "<<expressionContainer[i].getMultiplier()<<std::endl;
+      Debug("expr-qetest")<<"Expression "<<temExpContainer[i].getExpression()<<" multiplier "<<temExpContainer[i].getMultiplier()<<std::endl;
     }
     std::vector<Node> finalExpr;
-    for(int i=0;i<(int)expressionContainer.size();i++)
+    for(int i=0;i<(int)temExpContainer.size();i++)
     {
-      Node child = expressionContainer[i].getExpression();
-      Integer multiple = expressionContainer[i].getMultiplier();
+      Node child = temExpContainer[i].getExpression();
+      Integer multiple = temExpContainer[i].getMultiplier();
       std::vector<Node> child_expr;
       Node tempChild;
       if(child.getKind() == kind::NOT)
@@ -789,23 +810,6 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv) {
     }
   }
 }
-/*Node QuantifierEliminate::substitutioForQE(Node original,Node toReplace,Node replacement)
- {
- std::vector<Node> nodes;
- Kind k = original.getKind();
- for(Node::iterator a = original.begin(),a_end = original.end();
- a != a_end;
- ++a)
- {
- Node b = *a;
- nodes.push_back(b);
- }
- Node reconstructed = NodeManager::currentNM()->mkNode(k,nodes);
- if(reconstructed != original)
- {
- Debug("expr-qetest") <<"Not same "<<original<<" "<<reconstructed<<std::endl;
- }
- }*/
 Node QuantifierEliminate::replaceGTQE(Node n, Node bv) {
   Node returnNode;
   if(n.hasBoundVar() && containsSameBoundVar(n, bv)) {
@@ -2065,7 +2069,7 @@ Node QuantifierEliminate::replaceRelationOperatorQE(Node n, Node bv) {
   }
   return replaceNode;
 }
-Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
+Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,QuantifierEliminate q) {
   std::vector<Node> replaceNode;
   Debug("expr-qetest")<<"Node n "<<n<<std::endl;
   Debug("expr-qetest")<<"bound var "<<bv<<std::endl;
@@ -2073,7 +2077,7 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node c = *i;
       Debug("expr-qetest")<<"Node c "<<c<<std::endl;
-      Node temp = replaceRelationOperatorQE(c, bv);
+      Node temp = q.replaceRelationOperatorQE(c, bv);
       Debug("expr-qetest")<<"Node temp "<<temp<<std::endl;
       replaceNode.push_back(temp);
     }
@@ -2082,21 +2086,21 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv) {
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   } else {
-    Node returnNode = replaceRelationOperatorQE(n, bv);
+    Node returnNode = q.replaceRelationOperatorQE(n, bv);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   }
 }
-Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv) {
-  n = parseEquation(n, bv);
-  n = rewriteRelationOperatorQE(n, bv);
+Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv,QuantifierEliminate q) {
+  n = q.parseEquation(n, bv,q);
+  n = q.rewriteRelationOperatorQE(n, bv,q);
   return n;
 }
 
-Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv) {
-  if(lcmValue > 1) {
+Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,QuantifierEliminate q) {
+  if(q.getLcmValue() > 1) {
     Node modulus = NodeManager::currentNM()->mkNode(
-        kind::INTS_MODULUS, bv, fromIntegerToNodeQE(lcmValue));
+        kind::INTS_MODULUS, bv, fromIntegerToNodeQE(q.getLcmValue()));
     Node modulusExpr = NodeManager::currentNM()->mkNode(kind::EQUAL,
                                                         fromIntegerToNodeQE(0),
                                                         modulus);
@@ -2108,16 +2112,16 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv) {
   }
 }
 
-Node QuantifierEliminate::doRewriting(Node n, Node bv) {
+Node QuantifierEliminate::doRewriting(Node n, Node bv,QuantifierEliminate q) {
   Node t;
   t = eliminateImpliesQE(n);
   t = convertToNNFQE(t);
-  t = rewriteForSameCoefficients(t, bv);
-  t = getExpressionWithDivisibility(t, bv);
+  t = q.rewriteForSameCoefficients(t, bv,q);
+  t = q.getExpressionWithDivisibility(t, bv,q);
   return t;
 }
 
-Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
+Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,QuantifierEliminate q) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   std::vector<bool> leftProjectionNode;
   std::vector<Node> divisibilityNodes;
@@ -2558,13 +2562,13 @@ Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
   original = original.substitute(tn1, tn2);
   return original;
 }
-Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
+Node QuantifierEliminate::computeXValueForLeftProjection(Node n,QuantifierEliminate q) {
   std::vector<Node> leftProjections;
   Node t = n;
   if(t.getKind() == kind::AND || t.getKind() == kind::OR
       || t.getKind() == kind::EQUAL) {
     Integer j = 1;
-    while(j <= lcmValue) {
+    while(j <= q.getLcmValue()) {
       if(t.getKind() == kind::AND || t.getKind() == kind::OR) {
         std::vector<Node> innerLefts;
         for(Node::iterator leftP = t.begin(), leftEnd = t.end();
@@ -2572,19 +2576,19 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
           Node childLP = *leftP;
           if(childLP.getKind() == kind::EQUAL) {
             if(childLP[0].getKind() == kind::INTS_MODULUS) {
-              childLP = replaceXForLeftProjection(childLP[0][0], childLP, j);
+              childLP = q.replaceXForLeftProjection(childLP[0][0], childLP, j);
               childLP = Rewriter::rewrite(childLP);
               Integer x = getIntegerFromNode(childLP[0][0]);
-              if(x.euclidianDivideRemainder(lcmValue) == 1) {
+              if(x.euclidianDivideRemainder(q.getLcmValue()) == 1) {
                 innerLefts.push_back(mkBoolNode(false));
               } else {
                 innerLefts.push_back(mkBoolNode(true));
               }
             } else {
-              childLP = replaceXForLeftProjection(childLP[1][0], childLP, j);
+              childLP = q.replaceXForLeftProjection(childLP[1][0], childLP, j);
               childLP = Rewriter::rewrite(childLP);
               Integer x = getIntegerFromNode(childLP[1][0]);
-              if(x.euclidianDivideRemainder(lcmValue) == 1) {
+              if(x.euclidianDivideRemainder(q.getLcmValue()) == 1) {
                 innerLefts.push_back(mkBoolNode(false));
               } else {
                 innerLefts.push_back(mkBoolNode(true));
@@ -2599,19 +2603,19 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
       } else {
         t = n;
         if(t[0].getKind() == kind::INTS_MODULUS) {
-          t = replaceXForLeftProjection(t[0][0], t, j);
+          t = q.replaceXForLeftProjection(t[0][0], t, j);
           t = Rewriter::rewrite(t);
           Integer y = getIntegerFromNode(t[0][0]);
-          if(y.euclidianDivideRemainder(lcmValue) == 1) {
+          if(y.euclidianDivideRemainder(q.getLcmValue()) == 1) {
             leftProjections.push_back(mkBoolNode(false));
           } else {
             leftProjections.push_back(mkBoolNode(true));
           }
         } else {
-          t = replaceXForLeftProjection(t[1][0], t, j);
+          t = q.replaceXForLeftProjection(t[1][0], t, j);
           t = Rewriter::rewrite(t);
           Integer y = getIntegerFromNode(t[1][0]);
-          if(y.euclidianDivideRemainder(lcmValue) == 1) {
+          if(y.euclidianDivideRemainder(q.getLcmValue()) == 1) {
             leftProjections.push_back(mkBoolNode(false));
           } else {
             leftProjections.push_back(mkBoolNode(true));
@@ -2629,7 +2633,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n) {
   }
 }
 
-Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
+Node QuantifierEliminate::computeRightProjection(Node n, Node bv,QuantifierEliminate q) {
   Node test = getMinimalExprForRightProjection(n, bv);
   test = Rewriter::rewrite(test);
   Debug("expr-qetest")<<"Minimal Expression "<<test<<std::endl;
@@ -2645,7 +2649,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
     Node bExpr;
 
     std::vector<Node> rightProjections;
-    while(j <= lcmValue) {
+    while(j <= q.getLcmValue()) {
       if(isConstQE(test)) {
         Integer y = getIntegerFromNode(test) + j;
         bExpr = fromIntegerToNodeQE(y);
@@ -2654,7 +2658,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
                                                  fromIntegerToNodeQE(j));
       }
       b = bExpr;
-      rp = replaceBoundVarRightProjection(n, b, bv);
+      rp = q.replaceBoundVarRightProjection(n, b, bv);
       rightProjections.push_back(rp);
       j = j + 1;
     }
@@ -2672,8 +2676,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv) {
   }
 
 }
-Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
-// Node rewrittenNode = doRewriting(n, bv);
+Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,QuantifierEliminate q) {
   Node var;
   Node left;
   Node right;
@@ -2693,12 +2696,12 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv) {
     }
     args = args.negate();
     Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
-    args = doRewriting(args, var);
+    args = q.doRewriting(args, var,q);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
-    temp = computeLeftProjection(args, var);
-    left = computeXValueForLeftProjection(temp);
+    temp = q.computeLeftProjection(args, var,q);
+    left = q.computeXValueForLeftProjection(temp,q);
     Debug("expr-qetest")<<"left "<<left<<std::endl;
-    right = computeRightProjection(args, var);
+    right = q.computeRightProjection(args, var,q);
     Debug("expr-qetest")<<"right "<<right<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final.negate();
@@ -2735,10 +2738,9 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
     temp = n[0];
     if(temp.getKind() == kind::FORALL) {
       std::vector < Node > bv = computeMultipleBoundVariables(temp[0]);
-      boundVar.push_back(bv);
-      args.push_back(temp[1]);
+      q.getBoundVar().push_back(bv);
+      q.getArgs().push_back(temp[1]);
       return computeProjections(temp[1],q);
-     // return computeProjections(temp[1].negate());
     } else if(temp.getKind() == kind::AND) {
       std::vector<Node> miniscopedNode;
       Node result;
@@ -2748,7 +2750,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
         Node child = *i;
         if(child.getKind() == kind::FORALL) {
           bv_child = computeMultipleBoundVariables(child);
-          result = performCaseAnalysis(child[1], bv_child);
+          result = q.performCaseAnalysis(child[1], bv_child,q);
           miniscopedNode.push_back(result);
         } else {
         }
@@ -2757,140 +2759,140 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
         Node newNode = NodeManager::currentNM()->mkNode(kind::AND,
                                                         miniscopedNode);
         Debug("expr-qetest")<<"newNode "<<newNode<<std::endl;
-        args.push_back(newNode.negate());
+        q.getArgs().push_back(newNode);
         Integer qen = 1;
-        if(numOfQuantiferToElim <= 0) {
+        if(q.getNumberOfQuantElim() <= 0) {
           Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
           final = q.getOriginalExpression();
-          while(!args.empty()) {
-            args.pop_back();
+          while(!q.getArgs().empty()) {
+            q.getArgs().pop_back();
           }
-          while(!boundVar.empty())
+          while(!q.getBoundVar().empty())
           {
-            boundVar.pop_back();
+            q.getBoundVar().pop_back();
           }
 //          Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
 //          return final;
         }
         else
         {
-          while(!boundVar.empty() && (qen <= numOfQuantiferToElim)) {
-            temp1 = args.back();
+          while(!q.getBoundVar().empty() && (qen <= q.getNumberOfQuantElim())) {
+            temp1 = q.getArgs().back();
             Debug("expr-qetest")<<"args "<<temp1<<std::endl;
-            temp2 = boundVar.back();
-            result = performCaseAnalysis(temp1, temp2);
-            boundVar.pop_back();
-            while(!args.empty()) {
-              args.pop_back();
+            temp2 = q.getBoundVar().back();
+            result = q.performCaseAnalysis(temp1, temp2,q);
+            q.getBoundVar().pop_back();
+            while(!q.getArgs().empty()) {
+              q.getArgs().pop_back();
             }
             if(result == mkBoolNode(true) || result == mkBoolNode(false)) {
-              while(!boundVar.empty()) {
-                boundVar.pop_back();
+              while(!q.getBoundVar().empty()) {
+                q.getBoundVar().pop_back();
               }
-              args.push_back(result);
+              q.getArgs().push_back(result);
               qen = qen+1;
               break;
             } else {
-              args.push_back(result);
+              q.getArgs().push_back(result);
               qen = qen+1;
             }
           }
-          Node r = args.back();
+          Node r = q.getArgs().back();
           final = r.negate();
-          while(!args.empty()) {
-            args.pop_back();
+          while(!q.getArgs().empty()) {
+            q.getArgs().pop_back();
           }
         }
       } else {
         Integer qen = 1;
-        if(numOfQuantiferToElim <= 0) {
+        if(q.getNumberOfQuantElim() <= 0) {
           Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
           final = q.getOriginalExpression();
-          while(!args.empty()) {
-            args.pop_back();
+          while(!q.getArgs().empty()) {
+            q.getArgs().pop_back();
           }
-          while(!boundVar.empty())
+          while(!q.getBoundVar().empty())
           {
-            boundVar.pop_back();
+            q.getBoundVar().pop_back();
           }
 //          Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
 //          return final;
         }
         else
         {
-          while(!boundVar.empty() && (qen <= numOfQuantiferToElim)) {
-            temp1 = args.back();
+          while(!q.getBoundVar().empty() && (qen <= q.getNumberOfQuantElim())) {
+            temp1 = q.getArgs().back();
             Debug("expr-qetest")<<"args "<<temp1<<std::endl;
-            temp2 = boundVar.back();
-            result = performCaseAnalysis(temp1, temp2);
-            boundVar.pop_back();
-            while(!args.empty()) {
-              args.pop_back();
+            temp2 = q.getBoundVar().back();
+            result = q.performCaseAnalysis(temp1, temp2,q);
+            q.getBoundVar().pop_back();
+            while(!q.getArgs().empty()) {
+              q.getArgs().pop_back();
             }
             if(result == mkBoolNode(true) || result == mkBoolNode(false)) {
-              while(!boundVar.empty()) {
-                boundVar.pop_back();
+              while(!q.getBoundVar().empty()) {
+                q.getBoundVar().pop_back();
               }
-              args.push_back(result);
+              q.getArgs().push_back(result);
               qen = qen+1;
               break;
             } else {
-              args.push_back(result);
+              q.getArgs().push_back(result);
               qen = qen+1;
             }
           }
-          Node r = args.back();
+          Node r = q.getArgs().back();
           final = r.negate();
-          while(!args.empty()) {
-            args.pop_back();
+          while(!q.getArgs().empty()) {
+            q.getArgs().pop_back();
           }
         }
 
       }
     } else {
       Integer qen = 1;
-      if(numOfQuantiferToElim <= 0) {
+      if(q.getNumberOfQuantElim() <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
         final = q.getOriginalExpression();
-        while(!args.empty()) {
-          args.pop_back();
+        while(!q.getArgs().empty()) {
+          q.getArgs().pop_back();
         }
-        while(!boundVar.empty())
+        while(!q.getBoundVar().empty())
         {
-          boundVar.pop_back();
+          q.getBoundVar().pop_back();
         }
 //        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
 //        return final;
       }
       else
       {
-        if(boundVar.size() > 0 && (qen <= numOfQuantiferToElim)) {
+        if(q.getBoundVar().size() > 0 && (qen <= q.getNumberOfQuantElim())) {
           Node result3;
-          while(!boundVar.empty()) {
-            temp1 = args.back();
+          while(!q.getBoundVar().empty()) {
+            temp1 = q.getArgs().back();
             Debug("expr-qetest")<<"args "<<temp1<<std::endl;
-            temp2 = boundVar.back();
-            result3 = performCaseAnalysis(temp1, temp2);
-            boundVar.pop_back();
-            while(!args.empty()) {
-              args.pop_back();
+            temp2 = q.getBoundVar().back();
+            result3 = q.performCaseAnalysis(temp1, temp2,q);
+            q.getBoundVar().pop_back();
+            while(!q.getArgs().empty()) {
+              q.getArgs().pop_back();
             }
             if(result3 == mkBoolNode(true) || result3 == mkBoolNode(false)) {
-              while(!boundVar.empty()) {
-                boundVar.pop_back();
+              while(!q.getBoundVar().empty()) {
+                q.getBoundVar().pop_back();
               }
-              args.push_back(result3);
+              q.getArgs().push_back(result3);
               qen = qen +1;
               break;
             } else {
-              args.push_back(result3);
+              q.getArgs().push_back(result3);
               qen = qen +1;
             }
           }
-          Node r = args.back();
+          Node r = q.getArgs().back();
           final = r.negate();
-          while(!args.empty()) {
-            args.pop_back();
+          while(!q.getArgs().empty()) {
+            q.getArgs().pop_back();
           }
         } else {
           final = n;
@@ -2900,8 +2902,8 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
     }
   } else if(n.getKind() == kind::FORALL) {
     std::vector < Node > bv = computeMultipleBoundVariables(n[0]);
-    args.push_back(n[1]);
-    boundVar.push_back(bv);
+    q.getArgs().push_back(n[1]);
+    q.getBoundVar().push_back(bv);
     if(n[1].getKind() == kind::NOT) {
      return computeProjections(n[1][0],q);
     } else {
@@ -2915,7 +2917,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
       Node child1 = *j;
       if(child1.getKind() == kind::FORALL) {
         bv_child1 = computeMultipleBoundVariables(child1);
-        result1 = performCaseAnalysis(child1[1], bv_child1);
+        result1 = q.performCaseAnalysis(child1[1], bv_child1,q);
         miniscopedNode1.push_back(result1);
       } else {
       }
@@ -2924,135 +2926,136 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
       Node newNode1 = NodeManager::currentNM()->mkNode(kind::AND,
       miniscopedNode1);
       Debug("expr-qetest")<<"newNode1 "<<newNode1<<std::endl;
-      args.push_back(newNode1);
+      q.getArgs().push_back(newNode1);
       Integer qen = 1;
-      if(numOfQuantiferToElim <= 0) {
+      if(q.getNumberOfQuantElim() <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
         final = q.getOriginalExpression();
-        while(!args.empty()) {
-          args.pop_back();
+        while(!q.getArgs().empty()) {
+          q.getArgs().pop_back();
         }
-        while(!boundVar.empty())
+        while(!q.getBoundVar().empty())
         {
-          boundVar.pop_back();
+          q.getBoundVar().pop_back();
         }
 //        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
 //        return final;
       }
       else
       {
-        while(!boundVar.empty() && (qen <= numOfQuantiferToElim)) {
-          temp1 = args.back();
-          temp2 = boundVar.back();
-          result1 = performCaseAnalysis(temp1, temp2);
-          boundVar.pop_back();
-          while(!args.empty()) {
-            args.pop_back();
+        while(!q.getBoundVar().empty() && (qen <= q.getNumberOfQuantElim())) {
+          temp1 = q.getArgs().back();
+          Debug("expr-qetest")<<"args"<<temp1<<std::endl;
+          temp2 = q.getBoundVar().back();
+          result1 = q.performCaseAnalysis(temp1, temp2,q);
+          q.getBoundVar().pop_back();
+          while(!q.getArgs().empty()) {
+            q.getArgs().pop_back();
           }
           if(result1 == mkBoolNode(true) || result1 == mkBoolNode(false)) {
-            while(!boundVar.empty()) {
-              boundVar.pop_back();
+            while(!q.getBoundVar().empty()) {
+              q.getBoundVar().pop_back();
             }
-            args.push_back(result1);
+            q.getArgs().push_back(result1);
             qen = qen + 1;
             break;
           } else {
-            args.push_back(result1);
+            q.getArgs().push_back(result1);
             qen = qen + 1;
           }
         }
-        Node r = args.back();
+        Node r = q.getArgs().back();
         final = r;
-        while(!args.empty()) {
-          args.pop_back();
+        while(!q.getArgs().empty()) {
+          q.getArgs().pop_back();
         }
       }
 
     } else {
       Integer qen = 1;
-      if(numOfQuantiferToElim <= 0) {
+      if(q.getNumberOfQuantElim() <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
         final = q.getOriginalExpression();
-        while(!args.empty()) {
-          args.pop_back();
+        while(!q.getArgs().empty()) {
+          q.getArgs().pop_back();
         }
-        while(!boundVar.empty())
+        while(!q.getBoundVar().empty())
         {
-          boundVar.pop_back();
+          q.getBoundVar().pop_back();
         }
 //        Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
 //        return final;
       }
-      while(!boundVar.empty() && (qen <= numOfQuantiferToElim)) {
-        temp1 = args.back();
+      while(!q.getBoundVar().empty() && (qen <= q.getNumberOfQuantElim())) {
+        temp1 = q.getArgs().back();
         Debug("expr-qetest")<<"args"<<temp1<<std::endl;
-        temp2 = boundVar.back();
-        result1 = performCaseAnalysis(temp1, temp2);
-        boundVar.pop_back();
-        while(!args.empty()) {
-          args.pop_back();
+        temp2 = q.getBoundVar().back();
+        result1 = q.performCaseAnalysis(temp1, temp2,q);
+        q.getBoundVar().pop_back();
+        while(!q.getArgs().empty()) {
+          q.getArgs().pop_back();
         }
         if(result1 == mkBoolNode(true) || result1 == mkBoolNode(false)) {
-          while(!boundVar.empty()) {
-            boundVar.pop_back();
+          while(!q.getBoundVar().empty()) {
+            q.getBoundVar().pop_back();
           }
-          args.push_back(result1);
+          q.getArgs().push_back(result1);
           qen = qen + 1;
           break;
         } else {
-          args.push_back(result1);
+          q.getArgs().push_back(result1);
           qen = qen + 1;
         }
       }
-      Node r = args.back();
+      Node r = q.getArgs().back();
       final = r;
-      while(!args.empty()) {
-        args.pop_back();
+      while(!q.getArgs().empty()) {
+        q.getArgs().pop_back();
       }
     }
   } else {
     Integer qen = 1;
-    if(numOfQuantiferToElim <= 0) {
+    if(q.getNumberOfQuantElim() <= 0) {
       Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
       final = q.getOriginalExpression();
-      while(!args.empty()) {
-        args.pop_back();
+      while(!q.getArgs().empty()) {
+        q.getArgs().pop_back();
       }
-      while(!boundVar.empty())
+      while(!q.getBoundVar().empty())
       {
-        boundVar.pop_back();
+        q.getBoundVar().pop_back();
       }
 //      Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
 //      return final;
     }
-    if(boundVar.size() > 0 && (qen <= numOfQuantiferToElim)) {
+    if(q.getBoundVar().size() > 0 && (qen <= q.getNumberOfQuantElim())) {
       Node result2;
-      while(!boundVar.empty()) {
-        temp1 = args.back();
+      while(!q.getBoundVar().empty()) {
+        temp1 = q.getArgs().back();
         Debug("expr-qetest")<<"args "<<temp1<<std::endl;
-        temp2 = boundVar.back();
-        result2 = performCaseAnalysis(temp1, temp2);
-        boundVar.pop_back();
-        while(!args.empty()) {
-          args.pop_back();
+        temp2 = q.getBoundVar().back();
+        result2 = q.performCaseAnalysis(temp1, temp2,q);
+        q.getBoundVar().pop_back();
+        while(!q.getArgs().empty()) {
+          q.getArgs().pop_back();
         }
         if(result2 == mkBoolNode(true) || result2 == mkBoolNode(false)) {
-          while(!boundVar.empty()) {
-            boundVar.pop_back();
+          while(!q.getBoundVar().empty()) {
+            q.getBoundVar().pop_back();
           }
-          args.push_back(result2);
+          q.getArgs().push_back(result2);
           qen = qen + 1;
           break;
         } else {
-          args.push_back(result2);
+          q.getArgs().push_back(result2);
           qen = qen + 1;
         }
       }
-      Node r = args.back();
+      Node r = q.getArgs().back();
       Debug("expr-qetest")<<"r "<<r<<std::endl;
       final = r;
-      while(!args.empty()) {
-        args.pop_back();
+      while(!q.getArgs().empty()) {
+        q.getArgs().pop_back();
       }
     } else {
       final = n;
@@ -3070,12 +3073,60 @@ Node QuantifierEliminate::getOriginalExpression()
 {
   return this->originalExpression;
 }
+void QuantifierEliminate::setNumberOfQuantElim(int x)
+{
+  this->numOfQuantiferToElim = x;
+}
+Integer QuantifierEliminate::getNumberOfQuantElim()
+{
+  return this->numOfQuantiferToElim;
+}
+void QuantifierEliminate::setExpContainer(std::vector<ExpressionContainer> ec)
+{
+  this->expressionContainer = ec;
+}
+std::vector<ExpressionContainer> QuantifierEliminate::getExpContainer()
+{
+  return this->expressionContainer;
+}
+std::vector<std::vector<Node>> QuantifierEliminate::getBoundVar()
+{
+  return this->boundVar;
+}
+std::vector<Node> QuantifierEliminate::getArgs()
+{
+  return this->args;
+}
+void QuantifierEliminate::setBoundVar(std::vector<std::vector<Node>> b)
+{
+  this->boundVar = b;
+}
+void QuantifierEliminate::setArgs(std::vector<Node> a)
+{
+  this->args = a;
+}
+void QuantifierEliminate::setContainer(std::vector<Container> c)
+{
+  this->container =c;
+}
+std::vector<QuantifierEliminate> QuantifierEliminate::getContainer()
+{
+  return this->container;
+}
 Node QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
-  numOfQuantiferToElim = numOfQuantifiers;
+  std::vector<std::vector<Node> > b;
+  std::vector<Node> a;
+  std::vector<ExpressionContainer> ec;
+  std::vector<Container> c;
   QuantifierEliminate qe;
   qe.setOriginalExpression(n);
+  qe.setNumberOfQuantElim(numOfQuantifiers);
+  qe.setArgs(a);
+  qe.setBoundVar(b);
+  qe.setExpContainer(ec);
+  qe.setContainer(c);
   Debug("expr-qetest")<<"Before qe original "<<qe.getOriginalExpression()<<std::endl;
   Node temp = n;
   Node final;
