@@ -31,7 +31,7 @@ using namespace CVC4::theory::arith;
 
 std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
-std::vector<Node> QuantifierEliminate::container;
+std::vector<Container> QuantifierEliminate::container;
 Integer QuantifierEliminate::lcmValue;
 
 //Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
