@@ -12,10 +12,12 @@ class Container;
 class ExpressionContainer;
 class CVC4_PUBLIC QuantifierEliminate {
 private:
-  //variables
+  //static variables
 
-  std::vector<std::vector<Node> > boundVar;
-  std::vector<Node> args;
+  static std::vector<std::vector<Node> > boundVar;
+  static std::vector<Node> args;
+
+  //non static variables
   Integer lcmValue;
   Integer numOfQuantiferToElim;
   Node originalExpression;
@@ -80,11 +82,8 @@ private:
   std::vector<Container> getContainer();
   void setExpContainer(std::vector<ExpressionContainer> ec);
   std::vector<ExpressionContainer> getExpContainer();
-  std::vector<std::vector<Node> > getBoundVar();
-  std::vector<Node> getArgs();
-  void setBoundVar(std::vector<std::vector<Node> > b);
-  void setArgs(std::vector<Node> a);
-//  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
+
+  //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
   //  static bool evaluateBoolean(Node n);
 //  static Node preProcessingForRightProjection(Node n);
 //  static Node preProcessing2ForRightProjection(Node n);
