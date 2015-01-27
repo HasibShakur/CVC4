@@ -41,7 +41,7 @@ private:
   static Node getShiftedExpression(Node n, Node bv);
   static Node separateBoundVarExpression(Node n, Node bv);
   static Node performCaseAnalysis(Node n, std::vector<Node> bv, QuantifierEliminate q);
-  Node computeProjections(Node n, QuantifierEliminate q);
+  static Node computeProjections(Node n, QuantifierEliminate q);
 
   //non static methods
 
