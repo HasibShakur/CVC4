@@ -38,8 +38,10 @@ private:
   static Node fromIntegerToNodeQE(Integer n);
   static bool containsSameBoundVar(Node n, Node bv);
   static Integer lcmQE(Integer a, Integer b);
-  Node getShiftedExpression(Node n, Node bv);
-  Node separateBoundVarExpression(Node n, Node bv);
+  static Node getShiftedExpression(Node n, Node bv);
+  static Node separateBoundVarExpression(Node n, Node bv);
+  static Node performCaseAnalysis(Node n, std::vector<Node> bv, QuantifierEliminate q);
+  Node computeProjections(Node n, QuantifierEliminate q);
 
   //non static methods
 
@@ -48,7 +50,7 @@ private:
   Node parseEquation(Node n, Node bv, QuantifierEliminate q);
   Node computeLeftProjection(Node n, Node bv, QuantifierEliminate q);
   Node computeRightProjection(Node n, Node bv, QuantifierEliminate q);
-  Node performCaseAnalysis(Node n, std::vector<Node> bv, QuantifierEliminate q);
+
   Node rewriteForSameCoefficients(Node n, Node boundVar, QuantifierEliminate q);
   void parseCoefficientQE(Node n, QuantifierEliminate q);
   Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
@@ -71,7 +73,7 @@ private:
   Node replaceBoundVarRightProjection(Node n, TNode bExpr, Node bv);
   Node computeXValueForLeftProjection(Node n, QuantifierEliminate q);
   Node replaceXForLeftProjection(Node n, Node original, Integer rep);
-  Node computeProjections(Node n, QuantifierEliminate q);
+
   void setOriginalExpression(Node n);
   Node getOriginalExpression();
   void setNumberOfQuantElim(int x);

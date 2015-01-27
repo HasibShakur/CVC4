@@ -2748,7 +2748,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
         Node child = *i;
         if(child.getKind() == kind::FORALL) {
           bv_child = computeMultipleBoundVariables(child);
-          result = q.performCaseAnalysis(child[1], bv_child,q);
+          result = performCaseAnalysis(child[1], bv_child,q);
           miniscopedNode.push_back(result);
         } else {
         }
@@ -2778,7 +2778,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
             temp1 = args.back();
             Debug("expr-qetest")<<"args "<<temp1<<std::endl;
             temp2 = boundVar.back();
-            result = q.performCaseAnalysis(temp1, temp2,q);
+            result = performCaseAnalysis(temp1, temp2,q);
             boundVar.pop_back();
             while(!args.empty()) {
               args.pop_back();
@@ -2822,7 +2822,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
             temp1 = args.back();
             Debug("expr-qetest")<<"args "<<temp1<<std::endl;
             temp2 = boundVar.back();
-            result = q.performCaseAnalysis(temp1, temp2,q);
+            result = performCaseAnalysis(temp1, temp2,q);
             boundVar.pop_back();
             while(!args.empty()) {
               args.pop_back();
@@ -2870,7 +2870,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
             temp1 = args.back();
             Debug("expr-qetest")<<"args "<<temp1<<std::endl;
             temp2 = boundVar.back();
-            result3 = q.performCaseAnalysis(temp1, temp2,q);
+            result3 = performCaseAnalysis(temp1, temp2,q);
             boundVar.pop_back();
             while(!args.empty()) {
               args.pop_back();
@@ -2915,7 +2915,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
       Node child1 = *j;
       if(child1.getKind() == kind::FORALL) {
         bv_child1 = computeMultipleBoundVariables(child1);
-        result1 = q.performCaseAnalysis(child1[1], bv_child1,q);
+        result1 = performCaseAnalysis(child1[1], bv_child1,q);
         miniscopedNode1.push_back(result1);
       } else {
       }
@@ -2945,7 +2945,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
           temp1 = args.back();
           Debug("expr-qetest")<<"args"<<temp1<<std::endl;
           temp2 = boundVar.back();
-          result1 = q.performCaseAnalysis(temp1, temp2,q);
+          result1 = performCaseAnalysis(temp1, temp2,q);
           boundVar.pop_back();
           while(!args.empty()) {
             args.pop_back();
@@ -2988,7 +2988,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
         temp1 = args.back();
         Debug("expr-qetest")<<"args"<<temp1<<std::endl;
         temp2 = boundVar.back();
-        result1 = q.performCaseAnalysis(temp1, temp2,q);
+        result1 = performCaseAnalysis(temp1, temp2,q);
         boundVar.pop_back();
         while(!args.empty()) {
           args.pop_back();
@@ -3032,7 +3032,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
         temp1 = args.back();
         Debug("expr-qetest")<<"args "<<temp1<<std::endl;
         temp2 = boundVar.back();
-        result2 = q.performCaseAnalysis(temp1, temp2,q);
+        result2 = performCaseAnalysis(temp1, temp2,q);
         boundVar.pop_back();
         while(!args.empty()) {
           args.pop_back();
@@ -3106,15 +3106,13 @@ std::vector<Container> QuantifierEliminate::getContainer()
 Node QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
-  std::vector<std::vector<Node> > b;
-  std::vector<Node> a;
   QuantifierEliminate qe;
   qe.setOriginalExpression(n);
   qe.setNumberOfQuantElim(numOfQuantifiers);
   Debug("expr-qetest")<<"Before qe original "<<qe.getOriginalExpression()<<std::endl;
   Node temp = n;
   Node final;
-  final = qe.computeProjections(temp,qe);
+  final = computeProjections(temp,qe);
   Debug("expr-qetest")<<"After qe "<<final<<std::endl;
   return final;
 }
