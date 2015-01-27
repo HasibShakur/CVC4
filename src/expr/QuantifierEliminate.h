@@ -18,6 +18,7 @@ private:
   static std::vector<Node> args;
   static Integer lcmValue;
   static std::vector<Container> container;
+  static bool negationDone;
 
   //non static variables
   Integer numOfQuantiferToElim;

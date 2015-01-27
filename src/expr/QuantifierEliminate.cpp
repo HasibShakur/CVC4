@@ -33,6 +33,7 @@ std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
 std::vector<Container> QuantifierEliminate::container;
 Integer QuantifierEliminate::lcmValue;
+bool QuantifierEliminate::negationDone;
 
 //Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
 //                                            bool pol) {
@@ -2739,6 +2740,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
   Debug("expr-qetest")<<"Initial Node "<<n<<std::endl;
   Debug("expr-qetest")<<"Initial Node kind "<<n.getKind()<<std::endl;
   if(n.getKind() == kind::NOT) {
+    negationDone = true;
     temp = n[0];
     if(temp.getKind() == kind::FORALL) {
       std::vector < Node > bv = computeMultipleBoundVariables(temp[0]);
@@ -3057,7 +3059,14 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
       }
       Node r = args.back();
       Debug("expr-qetest")<<"r "<<r<<std::endl;
-      final = r;
+      if(negationDone)
+      {
+        final = r.negate();
+      }
+      else
+      {
+        final = r;
+      }
       while(!args.empty()) {
         args.pop_back();
       }
