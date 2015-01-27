@@ -17,11 +17,12 @@ private:
   static std::vector<std::vector<Node> > boundVar;
   static std::vector<Node> args;
   static Integer lcmValue;
+  static std::vector<Container> container;
 
   //non static variables
   Integer numOfQuantiferToElim;
   Node originalExpression;
-  std::vector<Container> container;
+
   std::vector<ExpressionContainer> expressionContainer;
 
   //static methods
@@ -76,9 +77,7 @@ private:
   Node getOriginalExpression();
   void setNumberOfQuantElim(int x);
   Integer getNumberOfQuantElim();
-  std::vector<Container> getContainer(QuantifierEliminate q);
   std::vector<ExpressionContainer> getExpContainer(QuantifierEliminate q);
-  void setContainer(std::vector<Container> c,QuantifierEliminate q);
 
   //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
   //  static bool evaluateBoolean(Node n);
