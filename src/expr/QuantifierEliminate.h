@@ -76,10 +76,9 @@ private:
   Node getOriginalExpression();
   void setNumberOfQuantElim(int x);
   Integer getNumberOfQuantElim();
-  void setContainer(std::vector<Container> c);
-  std::vector<Container> getContainer();
-  void setExpContainer(std::vector<ExpressionContainer> ec);
-  std::vector<ExpressionContainer> getExpContainer();
+  std::vector<Container> getContainer(QuantifierEliminate q);
+  std::vector<ExpressionContainer> getExpContainer(QuantifierEliminate q);
+  void setContainer(std::vector<Container> c,QuantifierEliminate q);
 
   //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
   //  static bool evaluateBoolean(Node n);

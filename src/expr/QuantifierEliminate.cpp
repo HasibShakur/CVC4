@@ -472,7 +472,7 @@ Node QuantifierEliminate::separateBoundVarExpression(Node n, Node bv) {
 }
 
 void QuantifierEliminate::parseCoefficientQE(Node n,QuantifierEliminate q) {
-  std::vector<Container> con = q.getContainer();
+  std::vector<Container> con;
   Node temp;
   if(n.getKind() == kind::NOT) {
     temp = n[0];
@@ -531,7 +531,7 @@ void QuantifierEliminate::parseCoefficientQE(Node n,QuantifierEliminate q) {
 
     }
   }
-  q.setContainer(con);
+  q.setContainer(con,q);
 
 }
 Integer QuantifierEliminate::lcmQE(Integer a, Integer b) {
@@ -599,7 +599,7 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv,QuantifierEliminate q)
     Node child = *i;
     parseCoefficientQE(child,q);
   }
-  std::vector<Container> tempContainer = q.getContainer();
+  std::vector<Container> tempContainer = q.getContainer(q);
   for(int i = 0; i < (int) tempContainer.size(); i++) {
     Debug("expr-qetest")<<"Variable "<<tempContainer[i].getVariable()<<" Coefficient "<<tempContainer[i].getCoefficient()<<std::endl;
   }
@@ -614,7 +614,7 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv,QuantifierEliminate q)
 }
 
 Node QuantifierEliminate::parseEquation(Node t, Node bv,QuantifierEliminate q) {
-  std::vector<ExpressionContainer> temExpContainer = q.getExpContainer();
+  std::vector<ExpressionContainer> temExpContainer = q.getExpContainer(q);
   Integer coeff = 1;
   Node n;
   if(t.getKind() == kind::NOT) {
@@ -625,7 +625,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,QuantifierEliminate q) {
   Integer lcmResult = getLcmResult(n, bv,q);
   lcmValue = lcmResult;
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
-  std::vector<Container> tempContainer = q.getContainer();
+  std::vector<Container> tempContainer = q.getContainer(q);
   for(int i = 0; i < (int) tempContainer.size(); i++) {
     if(tempContainer[i].getVariable() == bv) {
       coeff = tempContainer[i].getCoefficient();
@@ -634,8 +634,8 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,QuantifierEliminate q) {
   Debug("expr-qetest")<<"Coeff "<<coeff<<std::endl;
   Integer multiple = lcmResult.euclidianDivideQuotient(coeff.abs());
   Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
-  while(!q.getContainer().empty()) {
-    q.getContainer().pop_back();
+  while(!q.getContainer(q).empty()) {
+    q.getContainer(q).pop_back();
   }
   if(lcmResult == 1 || multiple == 1) {
     Debug("expr-qetest")<<"After lcm operation expression "<<t<<std::endl;
@@ -3087,22 +3087,19 @@ Integer QuantifierEliminate::getNumberOfQuantElim()
 {
   return this->numOfQuantiferToElim;
 }
-void QuantifierEliminate::setExpContainer(std::vector<ExpressionContainer> ec)
+std::vector<ExpressionContainer> QuantifierEliminate::getExpContainer(QuantifierEliminate q)
 {
-  this->expressionContainer = ec;
+  return q.expressionContainer;
 }
-std::vector<ExpressionContainer> QuantifierEliminate::getExpContainer()
+std::vector<Container> QuantifierEliminate::getContainer(QuantifierEliminate q)
 {
-  return this->expressionContainer;
+  return q.container;
 }
-void QuantifierEliminate::setContainer(std::vector<Container> c)
+void QuantifierEliminate::setContainer(std::vector<Container> c,QuantifierEliminate q)
 {
-  this->container =c;
+  q.container =c;
 }
-std::vector<Container> QuantifierEliminate::getContainer()
-{
-  return this->container;
-}
+
 Node QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
