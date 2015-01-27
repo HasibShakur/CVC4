@@ -609,6 +609,7 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv,QuantifierEliminate q)
     }
   }
   Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
+  Debug("expr-qetest")<<"lcmResult in getLcmResult "<<lcmResult<<std::endl;
   return lcmResult;
 }
 
@@ -624,6 +625,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,QuantifierEliminate q) {
   Integer lcmResult = getLcmResult(n, bv,q);
   lcmValue = lcmResult;
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
+  Debug("expr-qetest")<<"container size "<<container.size()<<std::endl;
   std::vector<Container> tempContainer = container;
   for(int i = 0; i < (int) tempContainer.size(); i++) {
     if(tempContainer[i].getVariable() == bv) {
@@ -2755,7 +2757,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
           ++i) {
         Node child = *i;
         if(child.getKind() == kind::FORALL) {
-          bv_child = computeMultipleBoundVariables(child);
+          bv_child = computeMultipleBoundVariables(child[0]);
           result = performCaseAnalysis(child[1], bv_child,q);
           miniscopedNode.push_back(result);
         } else {
@@ -2922,7 +2924,8 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
     for(Node::iterator j = n.begin(), j_end = n.end(); j != j_end; ++j) {
       Node child1 = *j;
       if(child1.getKind() == kind::FORALL) {
-        bv_child1 = computeMultipleBoundVariables(child1);
+        bv_child1 = computeMultipleBoundVariables(child1[0]);
+        Debug("expr-qetest")<<"Bound var in miniscoping "<<bv_child1.size()<<std::endl;
         result1 = performCaseAnalysis(child1[1], bv_child1,q);
         miniscopedNode1.push_back(result1);
       } else {
