@@ -418,10 +418,58 @@ Node QuantifierEliminate::fromIntegerToNodeQE(Integer n) {
   Constant c = Constant::mkConstant(r);
   return c.getNode();
 }
-std::vector<Container> QuantifierEliminate::getContainer(QuantifierEliminate q)
-{
-  return q.container;
+
+Node QuantifierEliminate::getShiftedExpression(Node n, Node bv) {
+  std::vector<Node> shiftedNodes;
+  Node shift;
+  for(Node::iterator l = n.begin(), l_end = n.end(); l != l_end; ++l) {
+    Node childL = *l;
+    if(childL.hasBoundVar() && containsSameBoundVar(childL, bv)) {
+    } else {
+      if(isVarQE(childL)) {
+        Node convertChildL = NodeManager::currentNM()->mkNode(
+            kind::MULT, fromIntegerToNodeQE(-1), childL);
+        shiftedNodes.push_back(convertChildL);
+      } else if(isVarWithCoefficientsQE(childL)) {
+        Integer neg = getIntegerFromNode(childL[0]) * -1;
+        TNode tn1 = childL[0];
+        TNode tn2 = fromIntegerToNodeQE(neg);
+        childL = childL.substitute(tn1, tn2);
+        shiftedNodes.push_back(childL);
+      } else {
+        Integer neg = getIntegerFromNode(childL) * -1;
+        Node convertChildL = fromIntegerToNodeQE(neg);
+        shiftedNodes.push_back(convertChildL);
+      }
+    }
+  }
+  if(shiftedNodes.size() > 1) {
+    shift = NodeManager::currentNM()->mkNode(kind::PLUS, shiftedNodes);
+    return shift;
+  } else {
+    shift = shiftedNodes.back();
+    shiftedNodes.pop_back();
+    return shift;
+  }
 }
+Node QuantifierEliminate::separateBoundVarExpression(Node n, Node bv) {
+  Node toReturn;
+  for(Node::iterator inner = n.begin(), inner_end = n.end(); inner != inner_end;
+      ++inner) {
+    Node innerChild = *inner;
+    if(isConstQE(innerChild)) {
+    } else {
+      if(innerChild.hasBoundVar() && containsSameBoundVar(innerChild, bv)) {
+        toReturn = innerChild;
+        break;
+      } else {
+      }
+    }
+
+  }
+  return toReturn;
+}
+
 void QuantifierEliminate::parseCoefficientQE(Node n,QuantifierEliminate q) {
   Node temp;
   if(n.getKind() == kind::NOT) {
@@ -1307,56 +1355,6 @@ Node QuantifierEliminate::replaceLEQQE(Node n, Node bv) {
     returnNode = NodeManager::currentNM()->mkNode(kind::LT, left, right);
   }
   return returnNode;
-}
-Node QuantifierEliminate::getShiftedExpression(Node n, Node bv) {
-  std::vector<Node> shiftedNodes;
-  Node shift;
-  for(Node::iterator l = n.begin(), l_end = n.end(); l != l_end; ++l) {
-    Node childL = *l;
-    if(childL.hasBoundVar() && containsSameBoundVar(childL, bv)) {
-    } else {
-      if(isVarQE(childL)) {
-        Node convertChildL = NodeManager::currentNM()->mkNode(
-            kind::MULT, fromIntegerToNodeQE(-1), childL);
-        shiftedNodes.push_back(convertChildL);
-      } else if(isVarWithCoefficientsQE(childL)) {
-        Integer neg = getIntegerFromNode(childL[0]) * -1;
-        TNode tn1 = childL[0];
-        TNode tn2 = fromIntegerToNodeQE(neg);
-        childL = childL.substitute(tn1, tn2);
-        shiftedNodes.push_back(childL);
-      } else {
-        Integer neg = getIntegerFromNode(childL) * -1;
-        Node convertChildL = fromIntegerToNodeQE(neg);
-        shiftedNodes.push_back(convertChildL);
-      }
-    }
-  }
-  if(shiftedNodes.size() > 1) {
-    shift = NodeManager::currentNM()->mkNode(kind::PLUS, shiftedNodes);
-    return shift;
-  } else {
-    shift = shiftedNodes.back();
-    shiftedNodes.pop_back();
-    return shift;
-  }
-}
-Node QuantifierEliminate::separateBoundVarExpression(Node n, Node bv) {
-  Node toReturn;
-  for(Node::iterator inner = n.begin(), inner_end = n.end(); inner != inner_end;
-      ++inner) {
-    Node innerChild = *inner;
-    if(isConstQE(innerChild)) {
-    } else {
-      if(innerChild.hasBoundVar() && containsSameBoundVar(innerChild, bv)) {
-        toReturn = innerChild;
-        break;
-      } else {
-      }
-    }
-
-  }
-  return toReturn;
 }
 Node QuantifierEliminate::replaceEQUALQE(Node n, Node bv) {
   if(n.hasBoundVar() && containsSameBoundVar(n, bv)) {
@@ -3109,7 +3107,7 @@ void QuantifierEliminate::setContainer(std::vector<Container> c)
 {
   this->container =c;
 }
-std::vector<QuantifierEliminate> QuantifierEliminate::getContainer()
+std::vector<Container> QuantifierEliminate::getContainer()
 {
   return this->container;
 }
@@ -3130,7 +3128,7 @@ Node QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe original "<<qe.getOriginalExpression()<<std::endl;
   Node temp = n;
   Node final;
-  final = computeProjections(temp,qe);
+  final = qe.computeProjections(temp,qe);
   Debug("expr-qetest")<<"After qe "<<final<<std::endl;
   return final;
 }

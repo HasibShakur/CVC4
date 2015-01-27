@@ -36,6 +36,8 @@ private:
   static Node fromIntegerToNodeQE(Integer n);
   static bool containsSameBoundVar(Node n, Node bv);
   static Integer lcmQE(Integer a, Integer b);
+  Node getShiftedExpression(Node n, Node bv);
+  Node separateBoundVarExpression(Node n, Node bv);
 
   //non static methods
 
@@ -61,8 +63,7 @@ private:
   Node replaceNegateGEQQE(Node n, Node bv);
   Node replaceNegateEQUALQE(Node n, Node bv);
   Integer getLcmResult(Node t, Node bv, QuantifierEliminate q);
-  Node getShiftedExpression(Node n, Node bv);
-  Node separateBoundVarExpression(Node n, Node bv);
+
   Node getExpressionWithDivisibility(Node n, Node bv, QuantifierEliminate q);
   Node getMinimalExprForRightProjection(Node n, Node bv);
   Node replaceBoundVarRightProjection(Node n, TNode bExpr, Node bv);
