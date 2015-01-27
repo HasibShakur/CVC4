@@ -48,10 +48,10 @@ private:
   static Node computeRightProjection(Node n, Node bv, QuantifierEliminate q);
   static Node doRewriting(Node n, Node bv, QuantifierEliminate q);
   static Node eliminateImpliesQE(Node body);
+  static Node getMinimalExprForRightProjection(Node n, Node bv);
+
+
   //non static methods
-
-
-
 
   Node rewriteForSameCoefficients(Node n, Node boundVar, QuantifierEliminate q);
   void parseCoefficientQE(Node n, QuantifierEliminate q);
@@ -69,13 +69,9 @@ private:
   Node replaceNegateGEQQE(Node n, Node bv);
   Node replaceNegateEQUALQE(Node n, Node bv);
   Integer getLcmResult(Node t, Node bv, QuantifierEliminate q);
-
   Node getExpressionWithDivisibility(Node n, Node bv, QuantifierEliminate q);
-  Node getMinimalExprForRightProjection(Node n, Node bv);
   Node replaceBoundVarRightProjection(Node n, TNode bExpr, Node bv);
-
   Node replaceXForLeftProjection(Node n, Node original, Integer rep);
-
   void setOriginalExpression(Node n);
   Node getOriginalExpression();
   void setNumberOfQuantElim(int x);
