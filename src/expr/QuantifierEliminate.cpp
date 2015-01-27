@@ -2581,8 +2581,11 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
 Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
                                                     Integer rep) {
   TNode tn1 = n;
+  Debug("expr-qetest")<<"TNode tn1 "<<tn1<<std::endl;
   TNode tn2 = fromIntegerToNodeQE(rep);
+  Debug("expr-qetest")<<"TNode tn2 "<<tn2<<std::endl;
   original = original.substitute(tn1, tn2);
+  Debug("expr-qetest")<<"Node original after substitution "<<original<<std::endl;
   return original;
 }
 Node QuantifierEliminate::computeXValueForLeftProjection(Node n,
