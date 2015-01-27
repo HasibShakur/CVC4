@@ -2582,7 +2582,7 @@ Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
                                                     Integer rep) {
   TNode tn1 = n;
   Debug("expr-qetest")<<"TNode tn1 "<<tn1<<std::endl;
-  Node f = fromIntegerToNodeQE(rep)
+  Node f = fromIntegerToNodeQE(rep);
   TNode tn2 = f;
   Debug("expr-qetest")<<"TNode tn2 "<<tn2<<std::endl;
   original = original.substitute(tn1, tn2);
