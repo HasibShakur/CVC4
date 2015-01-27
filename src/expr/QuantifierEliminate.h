@@ -16,9 +16,9 @@ private:
 
   static std::vector<std::vector<Node> > boundVar;
   static std::vector<Node> args;
+  static Integer lcmValue;
 
   //non static variables
-  Integer lcmValue;
   Integer numOfQuantiferToElim;
   Node originalExpression;
   std::vector<Container> container;
@@ -76,8 +76,6 @@ private:
   Node getOriginalExpression();
   void setNumberOfQuantElim(int x);
   Integer getNumberOfQuantElim();
-  void setLcmValue(Integer x);
-  Integer getLcmValue();
   void setContainer(std::vector<Container> c);
   std::vector<Container> getContainer();
   void setExpContainer(std::vector<ExpressionContainer> ec);

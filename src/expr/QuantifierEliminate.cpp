@@ -31,6 +31,7 @@ using namespace CVC4::theory::arith;
 
 std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
+Integer QuantifierEliminate::lcmValue;
 
 //Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
 //                                            bool pol) {
@@ -622,8 +623,8 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,QuantifierEliminate q) {
     n = t;
   }
   Integer lcmResult = getLcmResult(n, bv,q);
-  q.setLcmValue(lcmResult);
-  Debug("expr-qetest")<<"lcm "<<q.getLcmValue()<<std::endl;
+  lcmValue = lcmResult;
+  Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
   std::vector<Container> tempContainer = q.getContainer();
   for(int i = 0; i < (int) tempContainer.size(); i++) {
     if(tempContainer[i].getVariable() == bv) {
@@ -2098,7 +2099,7 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv,QuantifierE
 }
 
 Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,QuantifierEliminate q) {
-  Integer lcmVal = q.getLcmValue();
+  Integer lcmVal = lcmValue;
   Debug("expr-qetest")<<"lcmValue in getDivisibility Expression "<<lcmVal<<std::endl;
   if(lcmVal > 1) {
     Node modulus = NodeManager::currentNM()->mkNode(
@@ -2701,7 +2702,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,Quant
     Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
     args = doRewriting(args, var,q);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
-    Integer lcmCalc = q.getLcmValue();
+    Integer lcmCalc = lcmValue;
     Debug("expr-qetest")<<"Lcm after rewriting complete "<<lcmCalc<<std::endl;
     temp = computeLeftProjection(args, var,lcmCalc);
     left = computeXValueForLeftProjection(temp,lcmCalc);
@@ -3085,14 +3086,6 @@ void QuantifierEliminate::setNumberOfQuantElim(int x)
 Integer QuantifierEliminate::getNumberOfQuantElim()
 {
   return this->numOfQuantiferToElim;
-}
-void QuantifierEliminate::setLcmValue(Integer x)
-{
-  this->lcmValue = x;
-}
-Integer QuantifierEliminate::getLcmValue()
-{
-  return this->lcmValue;
 }
 void QuantifierEliminate::setExpContainer(std::vector<ExpressionContainer> ec)
 {
