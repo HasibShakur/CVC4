@@ -2140,6 +2140,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,Integer lcmCalc)
         for(Node::iterator j = child.begin(), j_end = child.end(); j != j_end;
         ++j) {
           Node child_inner = *j;
+          Debug("expr-qetest")<<"child_inner in lp "<<child_inner<<std::endl;
           if(child_inner.getKind() == kind::EQUAL) {
             divisibilityNodes.push_back(child_inner);
           } else if(child.getKind() == kind::AND) {
