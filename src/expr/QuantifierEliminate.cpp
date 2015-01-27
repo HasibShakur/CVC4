@@ -3079,6 +3079,14 @@ Integer QuantifierEliminate::getNumberOfQuantElim()
 {
   return this->numOfQuantiferToElim;
 }
+void QuantifierEliminate::setLcmValue(Integer x)
+{
+  this->lcmValue = x;
+}
+Integer QuantifierEliminate::getLcmValue()
+{
+  return this->lcmValue;
+}
 void QuantifierEliminate::setExpContainer(std::vector<ExpressionContainer> ec)
 {
   this->expressionContainer = ec;
