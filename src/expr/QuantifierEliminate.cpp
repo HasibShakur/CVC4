@@ -610,7 +610,7 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv,QuantifierEliminate q)
   }
   Integer lcmResult = calculateLCMofCoeff(boundVarCoeff);
   q.setLcmValue(lcmResult);
-  return q.getLcmValue();
+  return lcmResult;
 }
 
 Node QuantifierEliminate::parseEquation(Node t, Node bv,QuantifierEliminate q) {
@@ -2646,10 +2646,11 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv,QuantifierElimi
   } else {
     Integer j = 1;
     TNode b;
+    Integer lcm = q.getLcmValue();
+    Debug("expr-qetest")<<"lcm in rp "<<lcm<<std::endl;
     Node bExpr;
-
     std::vector<Node> rightProjections;
-    while(j <= q.getLcmValue()) {
+    while(j <= lcm) {
       if(isConstQE(test)) {
         Integer y = getIntegerFromNode(test) + j;
         bExpr = fromIntegerToNodeQE(y);
