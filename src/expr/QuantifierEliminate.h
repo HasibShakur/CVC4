@@ -42,14 +42,16 @@ private:
   static Node separateBoundVarExpression(Node n, Node bv);
   static Node performCaseAnalysis(Node n, std::vector<Node> bv, QuantifierEliminate q);
   static Node computeProjections(Node n, QuantifierEliminate q);
+  static Node computeXValueForLeftProjection(Node n, QuantifierEliminate q);
+  static Node parseEquation(Node n, Node bv, QuantifierEliminate q);
+  static Node computeLeftProjection(Node n, Node bv, QuantifierEliminate q);
+  static Node computeRightProjection(Node n, Node bv, QuantifierEliminate q);
 
   //non static methods
 
   Node doRewriting(Node n, Node bv, QuantifierEliminate q);
   static Node eliminateImpliesQE(Node body);
-  Node parseEquation(Node n, Node bv, QuantifierEliminate q);
-  Node computeLeftProjection(Node n, Node bv, QuantifierEliminate q);
-  Node computeRightProjection(Node n, Node bv, QuantifierEliminate q);
+
 
   Node rewriteForSameCoefficients(Node n, Node boundVar, QuantifierEliminate q);
   void parseCoefficientQE(Node n, QuantifierEliminate q);
@@ -71,7 +73,7 @@ private:
   Node getExpressionWithDivisibility(Node n, Node bv, QuantifierEliminate q);
   Node getMinimalExprForRightProjection(Node n, Node bv);
   Node replaceBoundVarRightProjection(Node n, TNode bExpr, Node bv);
-  Node computeXValueForLeftProjection(Node n, QuantifierEliminate q);
+
   Node replaceXForLeftProjection(Node n, Node original, Integer rep);
 
   void setOriginalExpression(Node n);
