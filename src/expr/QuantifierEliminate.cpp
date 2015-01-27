@@ -367,8 +367,6 @@ Node QuantifierEliminate::eliminateImpliesQE(Node body) {
   }
 }
 
-
-
 Node QuantifierEliminate::convertToNNFQE(Node body) {
 
   if(body.getKind() == kind::NOT) {
@@ -473,7 +471,7 @@ Node QuantifierEliminate::separateBoundVarExpression(Node n, Node bv) {
   return toReturn;
 }
 
-void QuantifierEliminate::parseCoefficientQE(Node n,QuantifierEliminate q) {
+void QuantifierEliminate::parseCoefficientQE(Node n, QuantifierEliminate q) {
   Node temp;
   if(n.getKind() == kind::NOT) {
     temp = n[0];
@@ -591,12 +589,13 @@ bool QuantifierEliminate::containsSameBoundVar(Node n, Node bv) {
   }
 
 }
-Integer QuantifierEliminate::getLcmResult(Node t, Node bv,QuantifierEliminate q) {
+Integer QuantifierEliminate::getLcmResult(Node t, Node bv,
+                                          QuantifierEliminate q) {
   std::vector<Integer> boundVarCoeff;
   for(Node::kinded_iterator i = t.begin(t.getKind()), i_end = t.end(
       t.getKind()); i != i_end; ++i) {
     Node child = *i;
-    parseCoefficientQE(child,q);
+    parseCoefficientQE(child, q);
   }
   std::vector<Container> tempContainer = container;
   for(int i = 0; i < (int) tempContainer.size(); i++) {
@@ -613,7 +612,8 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv,QuantifierEliminate q)
   return lcmResult;
 }
 
-Node QuantifierEliminate::parseEquation(Node t, Node bv,QuantifierEliminate q) {
+Node QuantifierEliminate::parseEquation(Node t, Node bv,
+                                        QuantifierEliminate q) {
   std::vector<ExpressionContainer> temExpContainer = q.getExpContainer(q);
   Integer coeff = 1;
   Node n;
@@ -622,7 +622,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,QuantifierEliminate q) {
   } else {
     n = t;
   }
-  Integer lcmResult = getLcmResult(n, bv,q);
+  Integer lcmResult = getLcmResult(n, bv, q);
   lcmValue = lcmResult;
   Debug("expr-qetest")<<"lcm "<<lcmResult<<std::endl;
   Debug("expr-qetest")<<"container size "<<container.size()<<std::endl;
@@ -2071,7 +2071,8 @@ Node QuantifierEliminate::replaceRelationOperatorQE(Node n, Node bv) {
   }
   return replaceNode;
 }
-Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,QuantifierEliminate q) {
+Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,
+                                                    QuantifierEliminate q) {
   std::vector<Node> replaceNode;
   Debug("expr-qetest")<<"Node n "<<n<<std::endl;
   Debug("expr-qetest")<<"bound var "<<bv<<std::endl;
@@ -2093,13 +2094,15 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,QuantifierEl
     return returnNode;
   }
 }
-Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv,QuantifierEliminate q) {
-  n = parseEquation(n, bv,q);
-  n = rewriteRelationOperatorQE(n, bv,q);
+Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv,
+                                                     QuantifierEliminate q) {
+  n = parseEquation(n, bv, q);
+  n = rewriteRelationOperatorQE(n, bv, q);
   return n;
 }
 
-Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,QuantifierEliminate q) {
+Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,
+                                                        QuantifierEliminate q) {
   Integer lcmVal = lcmValue;
   Debug("expr-qetest")<<"lcmValue in getDivisibility Expression "<<lcmVal<<std::endl;
   if(lcmVal > 1) {
@@ -2116,16 +2119,17 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,Quantifi
   }
 }
 
-Node QuantifierEliminate::doRewriting(Node n, Node bv,QuantifierEliminate q) {
+Node QuantifierEliminate::doRewriting(Node n, Node bv, QuantifierEliminate q) {
   Node t;
   t = eliminateImpliesQE(n);
   t = convertToNNFQE(t);
-  t = rewriteForSameCoefficients(t, bv,q);
-  t = getExpressionWithDivisibility(t, bv,q);
+  t = rewriteForSameCoefficients(t, bv, q);
+  t = getExpressionWithDivisibility(t, bv, q);
   return t;
 }
 
-Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,Integer lcmCalc) {
+Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
+                                                Integer lcmCalc) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   std::vector<bool> leftProjectionNode;
   std::vector<Node> divisibilityNodes;
@@ -2134,6 +2138,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,Integer lcmCalc)
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node child = *i;
       if(child.getKind() == kind::EQUAL) {
+        Debug("expr-qetest")<<"divisibility child in lp "<<child_inner<<std::endl;
         divisibilityNodes.push_back(child);
       } else if(child.getKind() == kind::AND || child.getKind() == kind::OR) {
         bool temp1 = true;
@@ -2141,6 +2146,8 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,Integer lcmCalc)
         ++j) {
           Node child_inner = *j;
           Debug("expr-qetest")<<"child_inner in lp "<<child_inner<<std::endl;
+          Debug("expr-qetest")<<"child_inner[0] in lp "<<child_inner[0]<<std::endl;
+          Debug("expr-qetest")<<"child_inner[1] in lp "<<child_inner[1]<<std::endl;
           if(child_inner.getKind() == kind::EQUAL) {
             divisibilityNodes.push_back(child_inner);
           } else if(child.getKind() == kind::AND) {
@@ -2193,7 +2200,9 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,Integer lcmCalc)
       divisibilityNodes.pop_back();
     } else {
     }
+    Debug("expr-qetest")<<"Before rewriting lp "<<returnNode<<std::endl;
     returnNode = Rewriter::rewrite(returnNode);
+    Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
     return returnNode;
   } else {
     if(n.getKind() == kind::NOT) {
@@ -2213,7 +2222,9 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,Integer lcmCalc)
           divisibilityNodes.pop_back();
         } else {
         }
+        Debug("expr-qetest")<<"Before rewriting lp "<<returnNode<<std::endl;
         returnNode = Rewriter::rewrite(returnNode);
+        Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
         return returnNode;
       } else {
         returnNode = mkBoolNode(true);
@@ -2231,7 +2242,9 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,Integer lcmCalc)
           divisibilityNodes.pop_back();
         } else {
         }
+        Debug("expr-qetest")<<"Before rewriting lp "<<returnNode<<std::endl;
         returnNode = Rewriter::rewrite(returnNode);
+        Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
         return returnNode;
       }
     } else {
@@ -2249,7 +2262,9 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,Integer lcmCalc)
           divisibilityNodes.pop_back();
         } else {
         }
+        Debug("expr-qetest")<<"Before rewriting lp "<<returnNode<<std::endl;
         returnNode = Rewriter::rewrite(returnNode);
+        Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
         return returnNode;
       } else {
         returnNode = mkBoolNode(false);
@@ -2265,7 +2280,9 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,Integer lcmCalc)
           divisibilityNodes.pop_back();
         } else {
         }
+        Debug("expr-qetest")<<"Before rewriting lp "<<returnNode<<std::endl;
         returnNode = Rewriter::rewrite(returnNode);
+        Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
         return returnNode;
       }
     }
@@ -2567,7 +2584,8 @@ Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
   original = original.substitute(tn1, tn2);
   return original;
 }
-Node QuantifierEliminate::computeXValueForLeftProjection(Node n,Integer lcmCalc) {
+Node QuantifierEliminate::computeXValueForLeftProjection(Node n,
+                                                         Integer lcmCalc) {
   std::vector<Node> leftProjections;
   Node t = n;
   if(t.getKind() == kind::AND || t.getKind() == kind::OR
@@ -2638,7 +2656,8 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n,Integer lcmCalc)
   }
 }
 
-Node QuantifierEliminate::computeRightProjection(Node n, Node bv,Integer lcmCalc) {
+Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
+                                                 Integer lcmCalc) {
   Node test = getMinimalExprForRightProjection(n, bv);
   test = Rewriter::rewrite(test);
   Debug("expr-qetest")<<"Minimal Expression "<<test<<std::endl;
@@ -2651,7 +2670,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv,Integer lcmCalc
   } else {
     Integer j = 1;
     TNode b;
-    Integer lcm = lcmCalc ;
+    Integer lcm = lcmCalc;
     Debug("expr-qetest")<<"lcm in rp "<<lcm<<std::endl;
     Node bExpr;
     std::vector<Node> rightProjections;
@@ -2682,7 +2701,8 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv,Integer lcmCalc
   }
 
 }
-Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,QuantifierEliminate q) {
+Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
+                                              QuantifierEliminate q) {
   Node var;
   Node left;
   Node right;
@@ -2702,14 +2722,14 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,Quant
     }
     args = args.negate();
     Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
-    args = doRewriting(args, var,q);
+    args = doRewriting(args, var, q);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
     Integer lcmCalc = lcmValue;
     Debug("expr-qetest")<<"Lcm after rewriting complete "<<lcmCalc<<std::endl;
-    temp = computeLeftProjection(args, var,lcmCalc);
-    left = computeXValueForLeftProjection(temp,lcmCalc);
+    temp = computeLeftProjection(args, var, lcmCalc);
+    left = computeXValueForLeftProjection(temp, lcmCalc);
     Debug("expr-qetest")<<"left "<<left<<std::endl;
-    right = computeRightProjection(args, var,lcmCalc);
+    right = computeRightProjection(args, var, lcmCalc);
     Debug("expr-qetest")<<"right "<<right<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final.negate();
@@ -2734,7 +2754,7 @@ std::vector<Node> QuantifierEliminate::computeMultipleBoundVariables(Node n) {
   }
   return multipleBoundVars;
 }
-Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
+Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
   Node temp1;
   std::vector<Node> temp2;
   Node temp3;
@@ -2749,7 +2769,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
       std::vector < Node > bv = computeMultipleBoundVariables(temp[0]);
       boundVar.push_back(bv);
       args.push_back(temp[1]);
-      return computeProjections(temp[1],q);
+      return computeProjections(temp[1], q);
     } else if(temp.getKind() == kind::AND) {
       std::vector<Node> miniscopedNode;
       Node result;
@@ -2759,7 +2779,7 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
         Node child = *i;
         if(child.getKind() == kind::FORALL) {
           bv_child = computeMultipleBoundVariables(child[0]);
-          result = performCaseAnalysis(child[1], bv_child,q);
+          result = performCaseAnalysis(child[1], bv_child, q);
           miniscopedNode.push_back(result);
         } else {
         }
@@ -2914,9 +2934,9 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
     args.push_back(n[1]);
     boundVar.push_back(bv);
     if(n[1].getKind() == kind::NOT) {
-     return computeProjections(n[1][0],q);
+      return computeProjections(n[1][0],q);
     } else {
-     return computeProjections(n[1],q);
+      return computeProjections(n[1],q);
     }
   } else if(n.getKind() == kind::AND) {
     std::vector<Node> miniscopedNode1;
@@ -3082,24 +3102,20 @@ Node QuantifierEliminate::computeProjections(Node n,QuantifierEliminate q) {
   Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
   return final;
 }
-void QuantifierEliminate::setOriginalExpression(Node n)
-{
+void QuantifierEliminate::setOriginalExpression(Node n) {
   this->originalExpression = n;
 }
-Node QuantifierEliminate::getOriginalExpression()
-{
+Node QuantifierEliminate::getOriginalExpression() {
   return this->originalExpression;
 }
-void QuantifierEliminate::setNumberOfQuantElim(int x)
-{
+void QuantifierEliminate::setNumberOfQuantElim(int x) {
   this->numOfQuantiferToElim = x;
 }
-Integer QuantifierEliminate::getNumberOfQuantElim()
-{
+Integer QuantifierEliminate::getNumberOfQuantElim() {
   return this->numOfQuantiferToElim;
 }
-std::vector<ExpressionContainer> QuantifierEliminate::getExpContainer(QuantifierEliminate q)
-{
+std::vector<ExpressionContainer> QuantifierEliminate::getExpContainer(
+    QuantifierEliminate q) {
   return q.expressionContainer;
 }
 
