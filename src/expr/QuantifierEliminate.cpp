@@ -2694,12 +2694,12 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,Quant
     }
     args = args.negate();
     Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
-    args = q.doRewriting(args, var,q);
+    args = doRewriting(args, var,q);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
-    temp = q.computeLeftProjection(args, var,q);
-    left = q.computeXValueForLeftProjection(temp,q);
+    temp = computeLeftProjection(args, var,q);
+    left = computeXValueForLeftProjection(temp,q);
     Debug("expr-qetest")<<"left "<<left<<std::endl;
-    right = q.computeRightProjection(args, var,q);
+    right = computeRightProjection(args, var,q);
     Debug("expr-qetest")<<"right "<<right<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final.negate();
