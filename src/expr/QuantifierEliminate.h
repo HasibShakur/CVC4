@@ -40,7 +40,8 @@ private:
   static Integer lcmQE(Integer a, Integer b);
   static Node getShiftedExpression(Node n, Node bv);
   static Node separateBoundVarExpression(Node n, Node bv);
-  static Node performCaseAnalysis(Node n, std::vector<Node> bv, QuantifierEliminate q);
+  static Node performCaseAnalysis(Node n, std::vector<Node> bv,
+                                  QuantifierEliminate q);
   static Node computeProjections(Node n, QuantifierEliminate q);
   static Node computeXValueForLeftProjection(Node n, QuantifierEliminate q);
   static Node parseEquation(Node n, Node bv, QuantifierEliminate q);
@@ -49,29 +50,28 @@ private:
   static Node doRewriting(Node n, Node bv, QuantifierEliminate q);
   static Node eliminateImpliesQE(Node body);
   static Node getMinimalExprForRightProjection(Node n, Node bv);
-
+  static Node rewriteForSameCoefficients(Node n, Node boundVar, QuantifierEliminate q);
+  static void parseCoefficientQE(Node n, QuantifierEliminate q);
+  static Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
+  static Node rewriteRelationOperatorQE(Node n, Node bv, QuantifierEliminate q);
+  static Node replaceRelationOperatorQE(Node n, Node bv);
+  static Node replaceGTQE(Node n, Node bv);
+  static Node replaceGEQQE(Node n, Node bv);
+  static Node replaceLEQQE(Node n, Node bv);
+  static Node replaceEQUALQE(Node n, Node bv);
+  static Node replaceLTQE(Node n, Node bv);
+  static Node replaceNegateLTQE(Node n, Node bv);
+  static Node replaceNegateLEQQE(Node n, Node bv);
+  static Node replaceNegateGTQE(Node n, Node bv);
+  static Node replaceNegateGEQQE(Node n, Node bv);
+  static Node replaceNegateEQUALQE(Node n, Node bv);
+  static Integer getLcmResult(Node t, Node bv, QuantifierEliminate q);
+  static Node getExpressionWithDivisibility(Node n, Node bv, QuantifierEliminate q);
+  static Node replaceBoundVarRightProjection(Node n, TNode bExpr, Node bv);
+  static Node replaceXForLeftProjection(Node n, Node original, Integer rep);
 
   //non static methods
 
-  Node rewriteForSameCoefficients(Node n, Node boundVar, QuantifierEliminate q);
-  void parseCoefficientQE(Node n, QuantifierEliminate q);
-  Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
-  Node rewriteRelationOperatorQE(Node n, Node bv, QuantifierEliminate q);
-  Node replaceRelationOperatorQE(Node n, Node bv);
-  Node replaceGTQE(Node n, Node bv);
-  Node replaceGEQQE(Node n, Node bv);
-  Node replaceLEQQE(Node n, Node bv);
-  Node replaceEQUALQE(Node n, Node bv);
-  Node replaceLTQE(Node n, Node bv);
-  Node replaceNegateLTQE(Node n, Node bv);
-  Node replaceNegateLEQQE(Node n, Node bv);
-  Node replaceNegateGTQE(Node n, Node bv);
-  Node replaceNegateGEQQE(Node n, Node bv);
-  Node replaceNegateEQUALQE(Node n, Node bv);
-  Integer getLcmResult(Node t, Node bv, QuantifierEliminate q);
-  Node getExpressionWithDivisibility(Node n, Node bv, QuantifierEliminate q);
-  Node replaceBoundVarRightProjection(Node n, TNode bExpr, Node bv);
-  Node replaceXForLeftProjection(Node n, Node original, Integer rep);
   void setOriginalExpression(Node n);
   Node getOriginalExpression();
   void setNumberOfQuantElim(int x);
