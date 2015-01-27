@@ -79,9 +79,9 @@ private:
   std::vector<Container> getContainer();
   void setExpContainer(std::vector<ExpressionContainer> ec);
   std::vector<ExpressionContainer> getExpContainer();
-  std::vector<std::vector<Node>> getBoundVar();
+  std::vector<std::vector<Node> > getBoundVar();
   std::vector<Node> getArgs();
-  void setBoundVar(std::vector<std::vector<Node>> b);
+  void setBoundVar(std::vector<std::vector<Node> > b);
   void setArgs(std::vector<Node> a);
 //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
   //  static bool evaluateBoolean(Node n);

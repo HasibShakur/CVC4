@@ -3089,7 +3089,7 @@ std::vector<ExpressionContainer> QuantifierEliminate::getExpContainer()
 {
   return this->expressionContainer;
 }
-std::vector<std::vector<Node>> QuantifierEliminate::getBoundVar()
+std::vector<std::vector<Node> > QuantifierEliminate::getBoundVar()
 {
   return this->boundVar;
 }
@@ -3097,7 +3097,7 @@ std::vector<Node> QuantifierEliminate::getArgs()
 {
   return this->args;
 }
-void QuantifierEliminate::setBoundVar(std::vector<std::vector<Node>> b)
+void QuantifierEliminate::setBoundVar(std::vector<std::vector<Node> > b)
 {
   this->boundVar = b;
 }
