@@ -46,11 +46,11 @@ private:
   static Node parseEquation(Node n, Node bv, QuantifierEliminate q);
   static Node computeLeftProjection(Node n, Node bv, QuantifierEliminate q);
   static Node computeRightProjection(Node n, Node bv, QuantifierEliminate q);
-
+  static Node doRewriting(Node n, Node bv, QuantifierEliminate q);
+  static Node eliminateImpliesQE(Node body);
   //non static methods
 
-  Node doRewriting(Node n, Node bv, QuantifierEliminate q);
-  static Node eliminateImpliesQE(Node body);
+
 
 
   Node rewriteForSameCoefficients(Node n, Node boundVar, QuantifierEliminate q);
