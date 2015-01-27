@@ -43,10 +43,10 @@ private:
   static Node performCaseAnalysis(Node n, std::vector<Node> bv,
                                   QuantifierEliminate q);
   static Node computeProjections(Node n, QuantifierEliminate q);
-  static Node computeXValueForLeftProjection(Node n, QuantifierEliminate q);
+  static Node computeXValueForLeftProjection(Node n, Integer lcmCalc);
   static Node parseEquation(Node n, Node bv, QuantifierEliminate q);
-  static Node computeLeftProjection(Node n, Node bv, QuantifierEliminate q);
-  static Node computeRightProjection(Node n, Node bv, QuantifierEliminate q);
+  static Node computeLeftProjection(Node n, Node bv, Integer lcmCalc);
+  static Node computeRightProjection(Node n, Node bv, Integer lcmCalc);
   static Node doRewriting(Node n, Node bv, QuantifierEliminate q);
   static Node eliminateImpliesQE(Node body);
   static Node getMinimalExprForRightProjection(Node n, Node bv);

@@ -2098,9 +2098,11 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv,QuantifierE
 }
 
 Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,QuantifierEliminate q) {
-  if(q.getLcmValue() > 1) {
+  Integer lcmVal = q.getLcmValue();
+  Debug("expr-qetest")<<"lcmValue in getDivisibility Expression "<<lcmVal<<std::endl;
+  if(lcmVal > 1) {
     Node modulus = NodeManager::currentNM()->mkNode(
-        kind::INTS_MODULUS, bv, fromIntegerToNodeQE(q.getLcmValue()));
+        kind::INTS_MODULUS, bv, fromIntegerToNodeQE(lcmVal));
     Node modulusExpr = NodeManager::currentNM()->mkNode(kind::EQUAL,
                                                         fromIntegerToNodeQE(0),
                                                         modulus);
@@ -2121,7 +2123,7 @@ Node QuantifierEliminate::doRewriting(Node n, Node bv,QuantifierEliminate q) {
   return t;
 }
 
-Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,QuantifierEliminate q) {
+Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,Integer lcmCalc) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   std::vector<bool> leftProjectionNode;
   std::vector<Node> divisibilityNodes;
@@ -2562,13 +2564,13 @@ Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
   original = original.substitute(tn1, tn2);
   return original;
 }
-Node QuantifierEliminate::computeXValueForLeftProjection(Node n,QuantifierEliminate q) {
+Node QuantifierEliminate::computeXValueForLeftProjection(Node n,Integer lcmCalc) {
   std::vector<Node> leftProjections;
   Node t = n;
   if(t.getKind() == kind::AND || t.getKind() == kind::OR
       || t.getKind() == kind::EQUAL) {
     Integer j = 1;
-    while(j <= q.getLcmValue()) {
+    while(j <= lcmCalc) {
       if(t.getKind() == kind::AND || t.getKind() == kind::OR) {
         std::vector<Node> innerLefts;
         for(Node::iterator leftP = t.begin(), leftEnd = t.end();
@@ -2579,7 +2581,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n,QuantifierElimin
               childLP = replaceXForLeftProjection(childLP[0][0], childLP, j);
               childLP = Rewriter::rewrite(childLP);
               Integer x = getIntegerFromNode(childLP[0][0]);
-              if(x.euclidianDivideRemainder(q.getLcmValue()) == 1) {
+              if(x.euclidianDivideRemainder(lcmCalc) == 1) {
                 innerLefts.push_back(mkBoolNode(false));
               } else {
                 innerLefts.push_back(mkBoolNode(true));
@@ -2588,7 +2590,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n,QuantifierElimin
               childLP = replaceXForLeftProjection(childLP[1][0], childLP, j);
               childLP = Rewriter::rewrite(childLP);
               Integer x = getIntegerFromNode(childLP[1][0]);
-              if(x.euclidianDivideRemainder(q.getLcmValue()) == 1) {
+              if(x.euclidianDivideRemainder(lcmCalc) == 1) {
                 innerLefts.push_back(mkBoolNode(false));
               } else {
                 innerLefts.push_back(mkBoolNode(true));
@@ -2606,7 +2608,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n,QuantifierElimin
           t = replaceXForLeftProjection(t[0][0], t, j);
           t = Rewriter::rewrite(t);
           Integer y = getIntegerFromNode(t[0][0]);
-          if(y.euclidianDivideRemainder(q.getLcmValue()) == 1) {
+          if(y.euclidianDivideRemainder(lcmCalc) == 1) {
             leftProjections.push_back(mkBoolNode(false));
           } else {
             leftProjections.push_back(mkBoolNode(true));
@@ -2615,7 +2617,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n,QuantifierElimin
           t = replaceXForLeftProjection(t[1][0], t, j);
           t = Rewriter::rewrite(t);
           Integer y = getIntegerFromNode(t[1][0]);
-          if(y.euclidianDivideRemainder(q.getLcmValue()) == 1) {
+          if(y.euclidianDivideRemainder(lcmCalc) == 1) {
             leftProjections.push_back(mkBoolNode(false));
           } else {
             leftProjections.push_back(mkBoolNode(true));
@@ -2633,7 +2635,7 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n,QuantifierElimin
   }
 }
 
-Node QuantifierEliminate::computeRightProjection(Node n, Node bv,QuantifierEliminate q) {
+Node QuantifierEliminate::computeRightProjection(Node n, Node bv,Integer lcmCalc) {
   Node test = getMinimalExprForRightProjection(n, bv);
   test = Rewriter::rewrite(test);
   Debug("expr-qetest")<<"Minimal Expression "<<test<<std::endl;
@@ -2646,7 +2648,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv,QuantifierElimi
   } else {
     Integer j = 1;
     TNode b;
-    Integer lcm = q.getLcmValue();
+    Integer lcm = lcmCalc ;
     Debug("expr-qetest")<<"lcm in rp "<<lcm<<std::endl;
     Node bExpr;
     std::vector<Node> rightProjections;
@@ -2699,10 +2701,12 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,Quant
     Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
     args = doRewriting(args, var,q);
     Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
-    temp = computeLeftProjection(args, var,q);
-    left = computeXValueForLeftProjection(temp,q);
+    Integer lcmCalc = q.getLcmValue();
+    Debug("expr-qetest")<<"Lcm after rewriting complete "<<lcmCalc<<std::endl;
+    temp = computeLeftProjection(args, var,lcmCalc);
+    left = computeXValueForLeftProjection(temp,lcmCalc);
     Debug("expr-qetest")<<"left "<<left<<std::endl;
-    right = computeRightProjection(args, var,q);
+    right = computeRightProjection(args, var,lcmCalc);
     Debug("expr-qetest")<<"right "<<right<<std::endl;
     final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
     args = final.negate();
