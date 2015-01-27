@@ -2138,7 +2138,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
       Node child = *i;
       if(child.getKind() == kind::EQUAL) {
-        Debug("expr-qetest")<<"divisibility child in lp "<<child_inner<<std::endl;
+        Debug("expr-qetest")<<"divisibility child in lp "<<child<<std::endl;
         divisibilityNodes.push_back(child);
       } else if(child.getKind() == kind::AND || child.getKind() == kind::OR) {
         bool temp1 = true;
@@ -2149,6 +2149,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
           Debug("expr-qetest")<<"child_inner[0] in lp "<<child_inner[0]<<std::endl;
           Debug("expr-qetest")<<"child_inner[1] in lp "<<child_inner[1]<<std::endl;
           if(child_inner.getKind() == kind::EQUAL) {
+            Debug("expr-qetest")<<"divisibility child_inner in lp "<<child<<std::endl;
             divisibilityNodes.push_back(child_inner);
           } else if(child.getKind() == kind::AND) {
             if(child_inner[0].hasBoundVar()
