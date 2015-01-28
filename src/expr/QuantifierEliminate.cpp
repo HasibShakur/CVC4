@@ -2714,7 +2714,9 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
   Node temp;
   Node final;
   Node args = n;
-  while(bv.size() > 0) {
+  Integer qen = 1;
+  Integer numOfQuantElim = q.getNumberOfQuantElim();
+  while(bv.size() > 0 && qen <= numOfQuantElim) {
     var = bv.back();
     if(var.getNumChildren() > 0) {
       var = var[0];
@@ -2742,6 +2744,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
     args = Rewriter::rewrite(args);
     Debug("expr-qetest")<<"args after pca "<<args<<std::endl;
     bv.pop_back();
+    qen = qen+1;
   }
   Debug("expr-qetest")<<"args "<<args<<std::endl;
   return args;
