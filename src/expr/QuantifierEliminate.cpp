@@ -2716,35 +2716,49 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
   Node args = n;
   Integer qen = 1;
   Integer numOfQuantElim = q.getNumberOfQuantElim();
-  while(bv.size() > 0 && qen <= numOfQuantElim) {
-    var = bv.back();
-    if(var.getNumChildren() > 0) {
-      var = var[0];
-    }
-    if(args == mkBoolNode(true) || args == mkBoolNode(false)) {
-      while(!bv.empty()) {
-        bv.pop_back();
+  while(bv.size() > 0) {
+    if(qen >= numOfQuantElim) {
+      Debug("expr-qetest")<<"Argument "<<a<<std::endl;
+      if(args == mkBoolNode(true) || args == mkBoolNode(false)) {
+      } else {
+        Node v = NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, bv);
+        Debug("expr-qetest")<<"v "<<v<<std::endl;
+        std::vector<Node> children;
+        children.push_back(v);
+        children.push_back(args);
+        args = NodeManager::currentNM()->mkNode(kind::FORALL, children);
       }
       break;
+    } else {
+      var = bv.back();
+      if(var.getNumChildren() > 0) {
+        var = var[0];
+      }
+      if(args == mkBoolNode(true) || args == mkBoolNode(false)) {
+        while(!bv.empty()) {
+          bv.pop_back();
+        }
+        break;
+      }
+      args = args.negate();
+      Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
+      args = doRewriting(args, var, q);
+      Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
+      Integer lcmCalc = lcmValue;
+      Debug("expr-qetest")<<"Lcm after rewriting complete "<<lcmCalc<<std::endl;
+      temp = computeLeftProjection(args, var, lcmCalc);
+      left = computeXValueForLeftProjection(temp, lcmCalc);
+      Debug("expr-qetest")<<"left "<<left<<std::endl;
+      right = computeRightProjection(args, var, lcmCalc);
+      Debug("expr-qetest")<<"right "<<right<<std::endl;
+      final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
+      args = final.negate();
+      args = Rewriter::rewrite(args);
+      Debug("expr-qetest")<<"args after pca "<<args<<std::endl;
+      bv.pop_back();
+      qen = qen + 1;
     }
-    args = args.negate();
-    Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
-    args = doRewriting(args, var, q);
-    Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
-    Integer lcmCalc = lcmValue;
-    Debug("expr-qetest")<<"Lcm after rewriting complete "<<lcmCalc<<std::endl;
-    temp = computeLeftProjection(args, var, lcmCalc);
-    left = computeXValueForLeftProjection(temp, lcmCalc);
-    Debug("expr-qetest")<<"left "<<left<<std::endl;
-    right = computeRightProjection(args, var, lcmCalc);
-    Debug("expr-qetest")<<"right "<<right<<std::endl;
-    final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
-    args = final.negate();
-    //  args = convertToNNFQE(args);
-    args = Rewriter::rewrite(args);
-    Debug("expr-qetest")<<"args after pca "<<args<<std::endl;
-    bv.pop_back();
-    qen = qen + 1;
+
   }
   Debug("expr-qetest")<<"args "<<args<<std::endl;
   return args;
