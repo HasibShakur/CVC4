@@ -3076,17 +3076,24 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
           Node a = args.back();
           Debug("expr-qetest")<<"Argument "<<a<<std::endl;
           std::vector<Node> b= boundVar.back();
-          Node var = NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST,b);
-          Debug("expr-qetest")<<"var "<<var<<std::endl;
-          std::vector<Node> children;
-          children.push_back(var);
-          children.push_back(a);
-          result2 = NodeManager::currentNM()->mkNode(kind::FORALL,children);
+          if(a == mkBoolNode(true) || a == mkBoolNode(false))
+          {
+            result2 = a;
+          }
+          else
+          {
+            Node var = NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST,b);
+            Debug("expr-qetest")<<"var "<<var<<std::endl;
+            std::vector<Node> children;
+            children.push_back(var);
+            children.push_back(a);
+            result2 = NodeManager::currentNM()->mkNode(kind::FORALL,children);
+          }
           while(!args.empty())
           {
             args.pop_back();
           }
-          while(!boundVar.empty)
+          while(!boundVar.empty())
           {
             boundVar.pop_back();
           }
