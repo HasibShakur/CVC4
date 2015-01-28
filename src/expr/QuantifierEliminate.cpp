@@ -2827,29 +2827,71 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
         }
         else
         {
-          while(!boundVar.empty() && (qen <= q.getNumberOfQuantElim())) {
-            temp1 = args.back();
-            Debug("expr-qetest")<<"args "<<temp1<<std::endl;
-            temp2 = boundVar.back();
-            result = performCaseAnalysis(temp1, temp2,q);
-            boundVar.pop_back();
-            while(!args.empty()) {
-              args.pop_back();
-            }
-            if(result == mkBoolNode(true) || result == mkBoolNode(false)) {
-              while(!boundVar.empty()) {
+          bool bvc = false;
+          while(!boundVar.empty()) {
+            if(qen > q.getNumberOfQuantElim())
+            {
+              bvc = true;
+              Node a = args.back();
+              Debug("expr-qetest")<<"Argument "<<a<<std::endl;
+              std::vector<Node> b= boundVar.back();
+              if(a == mkBoolNode(true) || a == mkBoolNode(false))
+              {
+                result = a;
+              }
+              else
+              {
+                Node var = NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST,b);
+                Debug("expr-qetest")<<"var "<<var<<std::endl;
+                std::vector<Node> children;
+                children.push_back(var);
+                children.push_back(a);
+                result = NodeManager::currentNM()->mkNode(kind::FORALL,children);
+              }
+              while(!args.empty())
+              {
+                args.pop_back();
+              }
+              while(!boundVar.empty())
+              {
                 boundVar.pop_back();
               }
-              args.push_back(result);
-              qen = qen+1;
               break;
-            } else {
-              args.push_back(result);
-              qen = qen+1;
+            }
+            else
+            {
+              temp1 = args.back();
+              Debug("expr-qetest")<<"args "<<temp1<<std::endl;
+              temp2 = boundVar.back();
+              result = performCaseAnalysis(temp1, temp2,q);
+              boundVar.pop_back();
+              while(!args.empty()) {
+                args.pop_back();
+              }
+              if(result == mkBoolNode(true) || result == mkBoolNode(false)) {
+                while(!boundVar.empty()) {
+                  boundVar.pop_back();
+                }
+                args.push_back(result);
+                qen = qen+1;
+                break;
+              } else {
+                args.push_back(result);
+                qen = qen+1;
+
+              }
             }
           }
-          Node r = args.back();
-          final = r.negate();
+          if(bvc)
+          {
+            final = result;
+          }
+          else
+          {
+            result = args.back();
+            final = result;
+          }
+          final = final.negate();
           while(!args.empty()) {
             args.pop_back();
           }
@@ -2871,34 +2913,75 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
         }
         else
         {
-          while(!boundVar.empty() && (qen <= q.getNumberOfQuantElim())) {
-            temp1 = args.back();
-            Debug("expr-qetest")<<"args "<<temp1<<std::endl;
-            temp2 = boundVar.back();
-            result = performCaseAnalysis(temp1, temp2,q);
-            boundVar.pop_back();
-            while(!args.empty()) {
-              args.pop_back();
-            }
-            if(result == mkBoolNode(true) || result == mkBoolNode(false)) {
-              while(!boundVar.empty()) {
+          bool bvc = false;
+          while(!boundVar.empty()) {
+            if(qen > q.getNumberOfQuantElim())
+            {
+              bvc = true;
+              Node a = args.back();
+              Debug("expr-qetest")<<"Argument "<<a<<std::endl;
+              std::vector<Node> b= boundVar.back();
+              if(a == mkBoolNode(true) || a == mkBoolNode(false))
+              {
+                result = a;
+              }
+              else
+              {
+                Node var = NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST,b);
+                Debug("expr-qetest")<<"var "<<var<<std::endl;
+                std::vector<Node> children;
+                children.push_back(var);
+                children.push_back(a);
+                result = NodeManager::currentNM()->mkNode(kind::FORALL,children);
+              }
+              while(!args.empty())
+              {
+                args.pop_back();
+              }
+              while(!boundVar.empty())
+              {
                 boundVar.pop_back();
               }
-              args.push_back(result);
-              qen = qen+1;
               break;
-            } else {
-              args.push_back(result);
-              qen = qen+1;
+
+            }
+            else
+            {
+              temp1 = args.back();
+              Debug("expr-qetest")<<"args "<<temp1<<std::endl;
+              temp2 = boundVar.back();
+              result = performCaseAnalysis(temp1, temp2,q);
+              boundVar.pop_back();
+              while(!args.empty()) {
+                args.pop_back();
+              }
+              if(result == mkBoolNode(true) || result == mkBoolNode(false)) {
+                while(!boundVar.empty()) {
+                  boundVar.pop_back();
+                }
+                args.push_back(result);
+                qen = qen+1;
+                break;
+              } else {
+                args.push_back(result);
+                qen = qen+1;
+              }
             }
           }
-          Node r = args.back();
-          final = r.negate();
+          if(bvc)
+          {
+            final = result;
+          }
+          else
+          {
+            result = args.back();
+            final = result;
+          }
+          final = final.negate();
           while(!args.empty()) {
             args.pop_back();
           }
         }
-
       }
     } else {
       Integer qen = 1;
@@ -2917,31 +3000,73 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
       }
       else
       {
-        if(boundVar.size() > 0 && (qen <= q.getNumberOfQuantElim())) {
+        if(boundVar.size() > 0) {
           Node result3;
+          bool bvc = false;
           while(!boundVar.empty()) {
-            temp1 = args.back();
-            Debug("expr-qetest")<<"args "<<temp1<<std::endl;
-            temp2 = boundVar.back();
-            result3 = performCaseAnalysis(temp1, temp2,q);
-            boundVar.pop_back();
-            while(!args.empty()) {
-              args.pop_back();
-            }
-            if(result3 == mkBoolNode(true) || result3 == mkBoolNode(false)) {
-              while(!boundVar.empty()) {
+            if(qen > q.getNumberOfQuantElim())
+            {
+              bvc = true;
+              Node a = args.back();
+              Debug("expr-qetest")<<"Argument "<<a<<std::endl;
+              std::vector<Node> b= boundVar.back();
+              if(a == mkBoolNode(true) || a == mkBoolNode(false))
+              {
+                result3 = a;
+              }
+              else
+              {
+                Node var = NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST,b);
+                Debug("expr-qetest")<<"var "<<var<<std::endl;
+                std::vector<Node> children;
+                children.push_back(var);
+                children.push_back(a);
+                result3 = NodeManager::currentNM()->mkNode(kind::FORALL,children);
+              }
+              while(!args.empty())
+              {
+                args.pop_back();
+              }
+              while(!boundVar.empty())
+              {
                 boundVar.pop_back();
               }
-              args.push_back(result3);
-              qen = qen +1;
               break;
-            } else {
-              args.push_back(result3);
-              qen = qen +1;
+
+            }
+            else
+            {
+              temp1 = args.back();
+              Debug("expr-qetest")<<"args "<<temp1<<std::endl;
+              temp2 = boundVar.back();
+              result3 = performCaseAnalysis(temp1, temp2,q);
+              boundVar.pop_back();
+              while(!args.empty()) {
+                args.pop_back();
+              }
+              if(result3 == mkBoolNode(true) || result3 == mkBoolNode(false)) {
+                while(!boundVar.empty()) {
+                  boundVar.pop_back();
+                }
+                args.push_back(result3);
+                qen = qen +1;
+                break;
+              } else {
+                args.push_back(result3);
+                qen = qen +1;
+              }
             }
           }
-          Node r = args.back();
-          final = r.negate();
+          if(bvc)
+          {
+            final = result3;
+          }
+          else
+          {
+            result3 = args.back();
+            final = result3;
+          }
+          final = final.negate();
           while(!args.empty()) {
             args.pop_back();
           }
@@ -2995,34 +3120,74 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
       }
       else
       {
-        while(!boundVar.empty() && (qen <= q.getNumberOfQuantElim())) {
-          temp1 = args.back();
-          Debug("expr-qetest")<<"args"<<temp1<<std::endl;
-          temp2 = boundVar.back();
-          result1 = performCaseAnalysis(temp1, temp2,q);
-          boundVar.pop_back();
-          while(!args.empty()) {
-            args.pop_back();
-          }
-          if(result1 == mkBoolNode(true) || result1 == mkBoolNode(false)) {
-            while(!boundVar.empty()) {
+        bool bvc = false;
+        while(!boundVar.empty()) {
+          if(qen > q.getNumberOfQuantElim())
+          {
+            bvc = false;
+            Node a = args.back();
+            Debug("expr-qetest")<<"Argument "<<a<<std::endl;
+            std::vector<Node> b= boundVar.back();
+            if(a == mkBoolNode(true) || a == mkBoolNode(false))
+            {
+              result1 = a;
+            }
+            else
+            {
+              Node var = NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST,b);
+              Debug("expr-qetest")<<"var "<<var<<std::endl;
+              std::vector<Node> children;
+              children.push_back(var);
+              children.push_back(a);
+              result1 = NodeManager::currentNM()->mkNode(kind::FORALL,children);
+            }
+            while(!args.empty())
+            {
+              args.pop_back();
+            }
+            while(!boundVar.empty())
+            {
               boundVar.pop_back();
             }
-            args.push_back(result1);
-            qen = qen + 1;
             break;
-          } else {
-            args.push_back(result1);
-            qen = qen + 1;
+          }
+          else
+          {
+            temp1 = args.back();
+            Debug("expr-qetest")<<"args"<<temp1<<std::endl;
+            temp2 = boundVar.back();
+            result1 = performCaseAnalysis(temp1, temp2,q);
+            boundVar.pop_back();
+            while(!args.empty()) {
+              args.pop_back();
+            }
+            if(result1 == mkBoolNode(true) || result1 == mkBoolNode(false)) {
+              while(!boundVar.empty()) {
+                boundVar.pop_back();
+              }
+              args.push_back(result1);
+              qen = qen + 1;
+              break;
+            } else {
+              args.push_back(result1);
+              qen = qen + 1;
+            }
           }
         }
-        Node r = args.back();
-        final = r;
+        if(bvc)
+        {
+          final = result1;
+        }
+        else
+        {
+          result1 = args.back();
+          final = result1;
+        }
+        Debug("expr-qetest")<<"result1 "<<result1<<std::endl;
         while(!args.empty()) {
           args.pop_back();
         }
       }
-
     } else {
       Integer qen = 1;
       if(q.getNumberOfQuantElim() <= 0) {
@@ -3038,32 +3203,78 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
         Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
         return final;
       }
-      while(!boundVar.empty() && (qen <= q.getNumberOfQuantElim())) {
-        temp1 = args.back();
-        Debug("expr-qetest")<<"args"<<temp1<<std::endl;
-        temp2 = boundVar.back();
-        result1 = performCaseAnalysis(temp1, temp2,q);
-        boundVar.pop_back();
+      else
+      {
+        bool bvc = false;
+        while(!boundVar.empty()) {
+          if(qen > q.getNumberOfQuantElim())
+          {
+            bvc = false;
+            Node a = args.back();
+            Debug("expr-qetest")<<"Argument "<<a<<std::endl;
+            std::vector<Node> b= boundVar.back();
+            if(a == mkBoolNode(true) || a == mkBoolNode(false))
+            {
+              result1 = a;
+            }
+            else
+            {
+              Node var = NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST,b);
+              Debug("expr-qetest")<<"var "<<var<<std::endl;
+              std::vector<Node> children;
+              children.push_back(var);
+              children.push_back(a);
+              result1 = NodeManager::currentNM()->mkNode(kind::FORALL,children);
+            }
+            while(!args.empty())
+            {
+              args.pop_back();
+            }
+            while(!boundVar.empty())
+            {
+              boundVar.pop_back();
+            }
+            break;
+          }
+          else
+          {
+            temp1 = args.back();
+            Debug("expr-qetest")<<"args"<<temp1<<std::endl;
+            temp2 = boundVar.back();
+            result1 = performCaseAnalysis(temp1, temp2,q);
+            boundVar.pop_back();
+            while(!args.empty()) {
+              args.pop_back();
+            }
+            if(result1 == mkBoolNode(true) || result1 == mkBoolNode(false)) {
+              while(!boundVar.empty()) {
+                boundVar.pop_back();
+              }
+              args.push_back(result1);
+              qen = qen + 1;
+              break;
+            } else {
+              args.push_back(result1);
+              qen = qen + 1;
+            }
+          }
+
+        }
+        if(bvc)
+        {
+          final = result1;
+        }
+        else
+        {
+          result1 = args.back();
+          final = result1;
+        }
         while(!args.empty()) {
           args.pop_back();
         }
-        if(result1 == mkBoolNode(true) || result1 == mkBoolNode(false)) {
-          while(!boundVar.empty()) {
-            boundVar.pop_back();
-          }
-          args.push_back(result1);
-          qen = qen + 1;
-          break;
-        } else {
-          args.push_back(result1);
-          qen = qen + 1;
-        }
+        Debug("expr-qetest")<<"result1 "<<result1<<std::endl;
       }
-      Node r = args.back();
-      final = r;
-      while(!args.empty()) {
-        args.pop_back();
-      }
+
     }
   } else {
     Integer qen = 0;
@@ -3084,7 +3295,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
       Node result2;
       bool bvc = false;
       while(!boundVar.empty()) {
-        if(qen >= q.getNumberOfQuantElim())
+        if(qen > q.getNumberOfQuantElim())
         {
           bvc = true;
           Node a = args.back();
