@@ -2718,7 +2718,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
   Integer numOfQuantElim = q.getNumberOfQuantElim();
   while(bv.size() > 0) {
     if(qen >= numOfQuantElim) {
-      Debug("expr-qetest")<<"Argument "<<a<<std::endl;
+      Debug("expr-qetest")<<"Argument "<<args<<std::endl;
       if(args == mkBoolNode(true) || args == mkBoolNode(false)) {
       } else {
         Node v = NodeManager::currentNM()->mkNode(kind::BOUND_VAR_LIST, bv);
