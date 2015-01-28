@@ -3052,7 +3052,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
       }
     }
   } else {
-    Integer qen = 1;
+    Integer qen = 0;
     if(q.getNumberOfQuantElim() <= 0) {
       Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
       final = q.getOriginalExpression();
@@ -3070,7 +3070,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
       Node result2;
       bool bvc = false;
       while(!boundVar.empty()) {
-        if(qen <= q.getNumberOfQuantElim())
+        if(qen >= q.getNumberOfQuantElim())
         {
           bvc = true;
           Node a = args.back();
@@ -3082,6 +3082,14 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
           children.push_back(var);
           children.push_back(a);
           result2 = NodeManager::currentNM()->mkNode(kind::FORALL,children);
+          while(!args.empty())
+          {
+            args.pop_back();
+          }
+          while(!boundVar.empty)
+          {
+            boundVar.pop_back();
+          }
           break;
         }
         else
