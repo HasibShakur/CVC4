@@ -3073,7 +3073,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
             result3 = args.back();
             final = result3;
           }
-          if(negationDone && (negateCount.euclidianDivideRemainder(2) == 1))
+          if(negationDone && (negateCount.euclidianDivideRemainder(2) == 0))
           {
             final = final.negate();
           }
