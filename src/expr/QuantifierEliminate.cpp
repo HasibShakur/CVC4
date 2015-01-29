@@ -2717,6 +2717,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
   Integer qen = 1;
   Integer numOfQuantElim = q.getNumberOfQuantElim();
   while(bv.size() > 0) {
+    Debug("expr-qetest")<<"qen in pca "<<qen<<std::endl;
     if(qen > numOfQuantElim) {
       Debug("expr-qetest")<<"Argument "<<args<<std::endl;
       if(args == mkBoolNode(true) || args == mkBoolNode(false)) {
@@ -2829,6 +2830,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
         {
           bool bvc = false;
           while(!boundVar.empty()) {
+            Debug("expr-qetest")<<"qen in cp "<<qen<<std::endl;
             if(qen > q.getNumberOfQuantElim())
             {
               bvc = true;
@@ -2915,6 +2917,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
         {
           bool bvc = false;
           while(!boundVar.empty()) {
+            Debug("expr-qetest")<<"qen in cp "<<qen<<std::endl;
             if(qen > q.getNumberOfQuantElim())
             {
               bvc = true;
@@ -3004,6 +3007,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
           Node result3;
           bool bvc = false;
           while(!boundVar.empty()) {
+            Debug("expr-qetest")<<"qen in cp "<<qen<<std::endl;
             if(qen > q.getNumberOfQuantElim())
             {
               bvc = true;
@@ -3122,6 +3126,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
       {
         bool bvc = false;
         while(!boundVar.empty()) {
+          Debug("expr-qetest")<<"qen in cp "<<qen<<std::endl;
           if(qen > q.getNumberOfQuantElim())
           {
             bvc = false;
@@ -3207,6 +3212,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
       {
         bool bvc = false;
         while(!boundVar.empty()) {
+          Debug("expr-qetest")<<"qen in cp "<<qen<<std::endl;
           if(qen > q.getNumberOfQuantElim())
           {
             bvc = false;
@@ -3295,6 +3301,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
       Node result2;
       bool bvc = false;
       while(!boundVar.empty()) {
+        Debug("expr-qetest")<<"qen in cp "<<qen<<std::endl;
         if(qen > q.getNumberOfQuantElim())
         {
           bvc = true;
