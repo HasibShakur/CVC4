@@ -221,7 +221,7 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() 
   Node n = smtEngine->eliminateQuantifier(d_expr,numOfQuantifiers);
   std::string ss = n.toString();
   out << ss << std::endl;
-  d_commandStatus = CommandSuccess::instance();
+ // d_commandStatus = CommandSuccess::instance();
   printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
 }
 
