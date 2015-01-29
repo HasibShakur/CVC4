@@ -2376,6 +2376,7 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
   ++e_begin)
   {
     Node childE = *e_begin;
+    Debug("expr-qetest")<<"childE in replacement rp "<<childE<<std::endl;
     if(childE.getKind() == kind::AND || childE.getKind() == kind::OR)
     {
       for(Node::iterator eInner_begin = childE.begin(), eInner_end = childE.end();
@@ -2689,6 +2690,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
                                                  fromIntegerToNodeQE(j));
       }
       b = bExpr;
+      Debug("expr-qetest")<<"before replacement b "<<b<<std::endl;
       rp = replaceBoundVarRightProjection(n, b, bv);
       rightProjections.push_back(rp);
       j = j + 1;
