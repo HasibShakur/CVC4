@@ -19,6 +19,7 @@ private:
   static Integer lcmValue;
   static std::vector<Container> container;
   static bool negationDone;
+  static Integer negateCount;
 
   //non static variables
   Integer numOfQuantiferToElim;

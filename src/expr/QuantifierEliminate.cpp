@@ -34,6 +34,7 @@ std::vector<Node> QuantifierEliminate::args;
 std::vector<Container> QuantifierEliminate::container;
 Integer QuantifierEliminate::lcmValue;
 bool QuantifierEliminate::negationDone;
+Integer QuantifierEliminate::negateCount;
 
 //Node QuantifierEliminate::convertToPrenexQE(Node body, std::vector<Node>& args,
 //                                            bool pol) {
@@ -2787,6 +2788,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
   Debug("expr-qetest")<<"Initial Node kind "<<n.getKind()<<std::endl;
   if(n.getKind() == kind::NOT) {
     negationDone = true;
+    negateCount += 1;
     temp = n[0];
     if(temp.getKind() == kind::FORALL) {
       std::vector < Node > bv = computeMultipleBoundVariables(temp[0]);
@@ -3364,7 +3366,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
         result2 = args.back();
       }
       Debug("expr-qetest")<<"result2 "<<result2<<std::endl;
-      if(negationDone)
+      if(negationDone && (negateCount.euclidianDivideRemainder(2) == 1))
       {
         final = result2.negate();
       }
