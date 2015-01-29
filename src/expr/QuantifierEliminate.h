@@ -72,6 +72,7 @@ private:
   static Node getExpressionWithDivisibility(Node n, Node bv, QuantifierEliminate q);
   static Node replaceBoundVarRightProjection(Node n, TNode bExpr, Node bv);
   static Node replaceXForLeftProjection(Node n, Node original, Integer rep);
+  static Node normalizeNegative(Node n,Node bv,QuantifierEliminate q);
 
   //non static methods
 

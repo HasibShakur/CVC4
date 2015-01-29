@@ -2171,6 +2171,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
         leftProjectionNode.push_back(temp1);
       } else {
         if(child[0].hasBoundVar() && containsSameBoundVar(child[0], bv)) {
+
           leftProjectionNode.push_back(true);
         } else {
           leftProjectionNode.push_back(false);
@@ -2711,6 +2712,14 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
   }
 
 }
+Node QuantifierEliminate::normalizeNegative(Node n, Node bv,QuantifierEliminate q)
+{
+  Node temp = Rewriter::rewrite(n);
+  Debug("expr-qetest")<<"After rewrite in normalizeNegative "<<temp<<std::endl;
+  temp = rewriteRelationOperatorQE(temp,bv,q);
+  Debug("expr-qetest")<<"After relational operator replacement in normalizeNegative "<<temp<<std::endl;
+  return temp;
+}
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
                                               QuantifierEliminate q) {
   Node var;
@@ -2750,6 +2759,8 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
       Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
       args = doRewriting(args, var, q);
       Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
+      args = normalizeNegative(args,var,q);
+      Debug("expr-qetest")<<"After normalize negative "<<args<<std::endl;
       Integer lcmCalc = lcmValue;
       Debug("expr-qetest")<<"Lcm after rewriting complete "<<lcmCalc<<std::endl;
       temp = computeLeftProjection(args, var, lcmCalc);
