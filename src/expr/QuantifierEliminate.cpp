@@ -2527,6 +2527,7 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
         else if(isVarWithCoefficientsQE(childE))
         {
           Node var;
+          Debug("expr-qetest")<<"Coefficient of childE "<<getIntegerFromNode(childE[0])<<std::endl;
           if(getIntegerFromNode(childE[0]) < 0)
           {
             var = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(-1),bExpr);
@@ -2536,6 +2537,7 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
           {
             var = bExpr;
           }
+          Debug("expr-qetest")<<"var to replace "<<var<<std::endl;
           TNode toReplace = childE;
           TNode sub = var;
           temp = temp.substitute(toReplace,sub);
