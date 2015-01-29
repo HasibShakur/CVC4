@@ -2989,6 +2989,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
         }
       }
     } else {
+      Debug("expr-qetest")<<"pca called from inside not "<<std::endl;
       negateCount = negateCount -1;
       Integer qen = 1;
       if(q.getNumberOfQuantElim() <= 0) {
@@ -3197,6 +3198,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
         }
       }
     } else {
+      Debug("expr-qetest")<<"pca called from outside not "<<std::endl;
       Integer qen = 1;
       if(q.getNumberOfQuantElim() <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
