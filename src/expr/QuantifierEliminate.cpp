@@ -3283,7 +3283,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
 
     }
   } else {
-    Integer qen = 0;
+    Integer qen = 1;
     if(q.getNumberOfQuantElim() <= 0) {
       Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
       final = q.getOriginalExpression();
