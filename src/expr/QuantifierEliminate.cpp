@@ -2990,7 +2990,6 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
       }
     } else {
       Debug("expr-qetest")<<"pca called from inside not "<<std::endl;
-      negateCount = negateCount -1;
       Integer qen = 1;
       if(q.getNumberOfQuantElim() <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
@@ -3074,7 +3073,10 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
             result3 = args.back();
             final = result3;
           }
-          final = final.negate();
+          if(negationDone && (negateCount.euclidianDivideRemainder(2) == 1))
+          {
+            final = final.negate();
+          }
           while(!args.empty()) {
             args.pop_back();
           }
