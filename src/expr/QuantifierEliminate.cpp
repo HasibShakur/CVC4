@@ -2818,10 +2818,10 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
         if(q.getNumberOfQuantElim() <= 0) {
           Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
           final = q.getOriginalExpression();
-          while(args.empty()) {
+          while(!args.empty()) {
             args.pop_back();
           }
-          while(boundVar.empty())
+          while(!boundVar.empty())
           {
             boundVar.pop_back();
           }
@@ -2989,6 +2989,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
         }
       }
     } else {
+      negateCount = negateCount -1;
       Integer qen = 1;
       if(q.getNumberOfQuantElim() <= 0) {
         Debug("expr-qetest")<<"No quantifier to eliminate "<<std::endl;
