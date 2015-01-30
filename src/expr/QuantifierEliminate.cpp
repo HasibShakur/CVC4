@@ -3441,7 +3441,6 @@ std::string QuantifierEliminate::getMessage()
 bool QuantifierEliminate::checkType(Node n) {
   Debug("expr-qetest")<<"Given Node "<<n<<std::endl;
   Node check;
-  TypeNode tn;
   bool b = true;
   if(n.getNumChildren() > 1)
   {
@@ -3455,8 +3454,7 @@ bool QuantifierEliminate::checkType(Node n) {
       {
         check = n[i];
       }
-      tn = check;
-      if(!tn.isInteger())
+      if(!(check.getType() == IntegerType))
       {
         b = false;
         break;
@@ -3520,7 +3518,6 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
       }
       else
       {
-        TypeNode tp;
         for(Node::iterator nBegin = t.begin(),nEnd = t.end();
         nBegin != nEnd;
         ++nBegin)
@@ -3528,8 +3525,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           Node c = *nBegin;
           if(isVarQE(c))
           {
-            tp =c;
-            if(!tp.isInteger())
+            if(!(c.getType() == IntegerType))
             {
               toReturn = mkBoolNode(false);
               return toReturn;
@@ -3537,8 +3533,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           }
           else if(isVarWithCoefficientsQE(c))
           {
-            tp = c[1];
-            if(!tp.isInteger())
+            if(!(c[1].getType() == IntegerType))
             {
               toReturn = mkBoolNode(false);
               return toReturn;
@@ -3596,7 +3591,6 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
   }
   else
   {
-    TypeNode tp1;
     if(n == mkBoolNode(true) || mkBoolNode(false))
     {
       return n;
@@ -3610,8 +3604,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
         Node c1 = *qBegin;
         if(isVarQE(c1))
         {
-          tp1 =c1;
-          if(!tp1.isInteger())
+          if(!(c1.getType() == IntegerType))
           {
             toReturn = mkBoolNode(false);
             return toReturn;
@@ -3619,8 +3612,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
         }
         else if(isVarWithCoefficientsQE(c1))
         {
-          tp1 = c1[1];
-          if(!tp1.isInteger())
+          if(!(c1.getType() == IntegerType))
           {
             toReturn = mkBoolNode(false);
             return toReturn;
