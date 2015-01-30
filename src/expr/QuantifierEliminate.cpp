@@ -3470,7 +3470,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
   Node t;
   bool check;
   Node toReturn;
-  if(n.getKind == kind::NOT)
+  if(n.getKind() == kind::NOT)
   {
     t = n[0];
     if(t.getKind() == kind::FORALL)
@@ -3596,7 +3596,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
   }
   else
   {
-    if(n == mkBoolNode(true) || mkBoolNode(false))
+    if(n == mkBoolNode(true) || n == mkBoolNode(false))
     {
       return n;
     }
