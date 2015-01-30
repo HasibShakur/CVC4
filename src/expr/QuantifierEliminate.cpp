@@ -3531,7 +3531,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             tp =c;
             if(!tp.isInteger())
             {
-              toReturn = false;
+              toReturn = mkBoolNode(false);
               return toReturn;
             }
           }
@@ -3540,7 +3540,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             tp = c[1];
             if(!tp.isInteger())
             {
-              toReturn = false;
+              toReturn = mkBoolNode(false);
               return toReturn;
             }
             else if(isConstQE(c))
@@ -3613,7 +3613,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           tp1 =c1;
           if(!tp1.isInteger())
           {
-            toReturn = false;
+            toReturn = mkBoolNode(false);
             return toReturn;
           }
         }
@@ -3622,7 +3622,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           tp1 = c1[1];
           if(!tp1.isInteger())
           {
-            toReturn = false;
+            toReturn = mkBoolNode(false);
             return toReturn;
           }
           else if(isConstQE(c1))
@@ -3657,7 +3657,16 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) 
     Node temp = n;
     temp = Rewriter::rewrite(temp);
     Node final;
-    if(boundVarTypeChecker(temp))
+    bool typeCheck;
+    if(boundVarTypeChecker(temp) == mkBoolNode(false))
+    {
+      typeCheck = false;
+    }
+    else
+    {
+      typeCheck = true;
+    }
+    if(typeCheck)
     {
       Debug("expr-qetest")<<"Type checker has found no problem "<<std::endl;
       Debug("expr-qetest")<<"Before qe expression "<<temp<<std::endl;
