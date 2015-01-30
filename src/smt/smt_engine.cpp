@@ -3353,8 +3353,17 @@ Node SmtEngine::eliminateQuantifier(Expr ex, int numOfQuantifiersToEliminate) {
   SmtScope smts(this);
   Debug("expr-qetest")<<"Number of Quantifiers to Eliminate "<<numOfQuantifiersToEliminate<<"\n";
   Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
-  Node rewrittenNode = Rewriter::rewrite(ex);
-  Node finalNode = QuantifierEliminate::qeEngine(rewrittenNode,numOfQuantifiersToEliminate);
+  Node operationNode = NodeManager::fromExpr(ex);
+  QuantifierEliminate q = QuantifierEliminate::qeEngine(operationNode,numOfQuantifiersToEliminate);
+  Node finalNode;
+  if(q.getMessage() == "success")
+  {
+	 finalNode = q.getEquivalentExpression();
+  }
+  else
+  {
+	finalNode = Node::null;
+  }
   Debug("expr-qetest")<<"Final Node "<<finalNode<<"\n";
   return finalNode;
 

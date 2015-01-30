@@ -24,6 +24,8 @@ private:
   //non static variables
   Integer numOfQuantiferToElim;
   Node originalExpression;
+  std::string successMessage;
+  Node equivalentExpression;
 
   std::vector<ExpressionContainer> expressionContainer;
 
@@ -53,7 +55,8 @@ private:
   static Node doRewriting(Node n, Node bv, QuantifierEliminate q);
   static Node eliminateImpliesQE(Node body);
   static Node getMinimalExprForRightProjection(Node n, Node bv);
-  static Node rewriteForSameCoefficients(Node n, Node boundVar, QuantifierEliminate q);
+  static Node rewriteForSameCoefficients(Node n, Node boundVar,
+                                         QuantifierEliminate q);
   static void parseCoefficientQE(Node n, QuantifierEliminate q);
   static Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
   static Node rewriteRelationOperatorQE(Node n, Node bv, QuantifierEliminate q);
@@ -69,18 +72,21 @@ private:
   static Node replaceNegateGEQQE(Node n, Node bv);
   static Node replaceNegateEQUALQE(Node n, Node bv);
   static Integer getLcmResult(Node t, Node bv, QuantifierEliminate q);
-  static Node getExpressionWithDivisibility(Node n, Node bv, QuantifierEliminate q);
+  static Node getExpressionWithDivisibility(Node n, Node bv,
+                                            QuantifierEliminate q);
   static Node replaceBoundVarRightProjection(Node n, TNode bExpr, Node bv);
   static Node replaceXForLeftProjection(Node n, Node original, Integer rep);
-  static Node normalizeNegative(Node n,Node bv,QuantifierEliminate q);
+  static Node normalizeNegative(Node n, Node bv, QuantifierEliminate q);
+  static Node boundVarTypeChecker(Node n);
+  static bool checkType(Node n);
 
   //non static methods
 
-  void setOriginalExpression(Node n);
-  Node getOriginalExpression();
-  void setNumberOfQuantElim(int x);
-  Integer getNumberOfQuantElim();
   std::vector<ExpressionContainer> getExpContainer(QuantifierEliminate q);
+  void setOriginalExpression(Node n);
+  void setNumberOfQuantElim(int x);
+  void setMessage(std::string s);
+  void setEquivalentExpression(Node n);
 
   //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
   //  static bool evaluateBoolean(Node n);
@@ -95,7 +101,16 @@ private:
 public:
 //  static Node preRewriteForPrenex(Node n);
 //  static Node postRewriteForPrenex(Node n);
-  static Node qeEngine(Node n, int numOfQuantifiers);
+
+  //static public functions
+  static QuantifierEliminate qeEngine(Node n, int numOfQuantifiers);
+
+  //non static public functions
+
+  Node getOriginalExpression();
+  Integer getNumberOfQuantElim();
+  std::string getMessage();
+  Node getEquivalentExpression();
 
 };
 

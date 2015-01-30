@@ -2712,11 +2712,11 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
   }
 
 }
-Node QuantifierEliminate::normalizeNegative(Node n, Node bv,QuantifierEliminate q)
-{
+Node QuantifierEliminate::normalizeNegative(Node n, Node bv,
+                                            QuantifierEliminate q) {
   Node temp = Rewriter::rewrite(n);
   Debug("expr-qetest")<<"After rewrite in normalizeNegative "<<temp<<std::endl;
-  temp = rewriteRelationOperatorQE(temp,bv,q);
+  temp = rewriteRelationOperatorQE(temp, bv, q);
   Debug("expr-qetest")<<"After relational operator replacement in normalizeNegative "<<temp<<std::endl;
   return temp;
 }
@@ -3421,18 +3421,260 @@ std::vector<ExpressionContainer> QuantifierEliminate::getExpContainer(
     QuantifierEliminate q) {
   return q.expressionContainer;
 }
+void QuantifierEliminate::setEquivalentExpression(Node n)
+{
+  this->equivalentExpression = n;
+}
+Node QuantifierEliminate::getEquivalentExpression()
+{
+  return this->equivalentExpression;
+}
+void QuantifierEliminate::setMessage(std::string s)
+{
+  this->successMessage = s;
+}
+std::string QuantifierEliminate::getMessage()
+{
+  return this->successMessage;
+}
 
-Node QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
+bool QuantifierEliminate::checkType(Node n) {
+  Debug("expr-qetest")<<"Given Node "<<n<<std::endl;
+  Node check;
+  TypeNode tn;
+  bool b = true;
+  if(n.getNumChildren() > 1)
+  {
+    for(int i=0;i<(int) n.getNumChildren();i++)
+    {
+      if(n[i].getNumChildren() > 0)
+      {
+        check = n[i][0];
+      }
+      else
+      {
+        check = n[i];
+      }
+      tn = check;
+      if(!tn.isInteger())
+      {
+        b = false;
+        break;
+      }
+    }
+  }
+  return b;
+}
+Node QuantifierEliminate::boundVarTypeChecker(Node n) {
+  Debug("expr-qetest")<<"Given Expression  "<<n<<std::endl;
+  Node t;
+  bool check;
+  Node toReturn;
+  if(n.getKind == kind::NOT)
+  {
+    t = n[0];
+    if(t.getKind() == kind::FORALL)
+    {
+      check = checkType(t[0]);
+      if(!check)
+      {
+        toReturn = mkBoolNode(false);
+        return toReturn;
+      }
+      else
+      {
+        return boundVarTypeChecker(t[1]);
+      }
+    }
+    else if(t.getKind() == kind::AND)
+    {
+      for(Node::iterator mBegin = t.begin(),mEnd = t.end();
+      mBegin != mEnd;
+      ++mBegin)
+      {
+        Node child = *mBegin;
+        if(child.getKind() == kind::FORALL)
+        {
+          check = checkType(child[0]);
+          if(!check)
+          {
+            toReturn = mkBoolNode(false);
+            return toReturn;
+          }
+          else
+          {
+            return boundVarTypeChecker(child[1]);
+          }
+        }
+        else
+        {
+          return boundVarTypeChecker(child);
+        }
+      }
+    }
+    else
+    {
+      if(t == mkBoolNode(true) || t == mkBoolNode(false))
+      {
+        return t;
+      }
+      else
+      {
+        TypeNode tp;
+        for(Node::iterator nBegin = t.begin(),nEnd = t.end();
+        nBegin != nEnd;
+        ++nBegin)
+        {
+          Node c = *nBegin;
+          if(isVarQE(c))
+          {
+            tp =c;
+            if(!tp.isInteger())
+            {
+              toReturn = false;
+              return toReturn;
+            }
+          }
+          else if(isVarWithCoefficientsQE(c))
+          {
+            tp = c[1];
+            if(!tp.isInteger())
+            {
+              toReturn = false;
+              return toReturn;
+            }
+            else if(isConstQE(c))
+            {}
+            else
+            {
+              return boundVarTypeChecker(c);
+            }
+          }
+        }
+      }
+
+    }
+  }
+  else if(n.getKind() == kind::FORALL)
+  {
+    check = checkType(n[0]);
+    if(!check)
+    {
+      toReturn = mkBoolNode(false);
+      return toReturn;
+    }
+    else
+    {
+      return boundVarTypeChecker(n[1]);
+    }
+  }
+  else if(n.getKind() == kind::AND)
+  {
+    for(Node::iterator pBegin = n.begin(),pEnd = n.end();
+    pBegin != pEnd;
+    ++pBegin)
+    {
+      Node child1 = *pBegin;
+      if(child1.getKind() == kind::FORALL)
+      {
+        check = checkType(child1[0]);
+        if(!check)
+        {
+          toReturn = mkBoolNode(false);
+          return toReturn;
+        }
+        else
+        {
+          return boundVarTypeChecker(child1[1]);
+        }
+      }
+      else
+      {
+        return boundVarTypeChecker(child1);
+      }
+    }
+  }
+  else
+  {
+    TypeNode tp1;
+    if(n == mkBoolNode(true) || mkBoolNode(false))
+    {
+      return n;
+    }
+    else
+    {
+      for(Node::iterator qBegin = n.begin(),qEnd = n.end();
+      qBegin != qEnd;
+      ++qBegin)
+      {
+        Node c1 = *qBegin;
+        if(isVarQE(c1))
+        {
+          tp1 =c1;
+          if(!tp1.isInteger())
+          {
+            toReturn = false;
+            return toReturn;
+          }
+        }
+        else if(isVarWithCoefficientsQE(c1))
+        {
+          tp1 = c1[1];
+          if(!tp1.isInteger())
+          {
+            toReturn = false;
+            return toReturn;
+          }
+          else if(isConstQE(c1))
+          {}
+          else
+          {
+            return boundVarTypeChecker(c1);
+          }
+        }
+      }
+    }
+
+  }
+  Debug("expr-qetest")<<"toReturn "<<toReturn<<std::endl;
+  return toReturn;
+}
+QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
   QuantifierEliminate qe;
   qe.setOriginalExpression(n);
   qe.setNumberOfQuantElim(numOfQuantifiers);
-  Debug("expr-qetest")<<"Before qe original "<<qe.getOriginalExpression()<<std::endl;
-  Node temp = n;
-  Node final;
-  final = computeProjections(temp,qe);
-  Debug("expr-qetest")<<"After qe "<<final<<std::endl;
-  return final;
+  if(numOfQuantifiers <= 0)
+  {
+    qe.setEquivalentExpression(n);
+    std::string s = "error! Number of quantifiers requested to be eliminated is "+ numOfQuantifiers;
+    qe.setMessage(s);
+    return qe;
+  }
+  else
+  {
+    Node temp = n;
+    temp = Rewriter::rewrite(temp);
+    Node final;
+    if(boundVarTypeChecker(temp))
+    {
+      Debug("expr-qetest")<<"Type checker has found no problem "<<std::endl;
+      Debug("expr-qetest")<<"Before qe expression "<<temp<<std::endl;
+      final = computeProjections(temp,qe);
+      Debug("expr-qetest")<<"After qe "<<final<<std::endl;
+      qe.setEquivalentExpression(final);
+      qe.setMessage("success");
+      return qe;
+    }
+    else
+    {
+      Debug("expr-qetest")<<"Type checker failure contains non integer type "<<std::endl;
+      qe.setMessage("Input expression contains non integer type ");
+      qe.equivalentExpression(n);
+      return qe;
+    }
+  }
+
 }
 
