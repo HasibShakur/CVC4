@@ -3680,7 +3680,6 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) 
     {
       Debug("expr-qetest")<<"Type checker failure contains non integer type "<<std::endl;
       qe.setMessage("Input expression contains non integer type ");
-      qe.equivalentExpression(n);
       return qe;
     }
   }
