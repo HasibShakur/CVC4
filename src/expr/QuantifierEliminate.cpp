@@ -3441,6 +3441,7 @@ std::string QuantifierEliminate::getMessage()
 bool QuantifierEliminate::checkType(Node n) {
   Debug("expr-qetest")<<"Given Node "<<n<<std::endl;
   Node check;
+  TypeNode t;
   bool b = true;
   if(n.getNumChildren() > 1)
   {
@@ -3454,7 +3455,8 @@ bool QuantifierEliminate::checkType(Node n) {
       {
         check = n[i];
       }
-      if(!(check.getType() == IntegerType))
+      t = check.getType();
+      if(!t.isInteger())
       {
         b = false;
         break;
@@ -3518,6 +3520,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
       }
       else
       {
+        TypeNode t1;
         for(Node::iterator nBegin = t.begin(),nEnd = t.end();
         nBegin != nEnd;
         ++nBegin)
@@ -3525,7 +3528,8 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           Node c = *nBegin;
           if(isVarQE(c))
           {
-            if(!(c.getType() == IntegerType))
+            t1 = c.getType();
+            if(!t1.isInteger())
             {
               toReturn = mkBoolNode(false);
               return toReturn;
@@ -3533,7 +3537,8 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           }
           else if(isVarWithCoefficientsQE(c))
           {
-            if(!(c[1].getType() == IntegerType))
+            t1 = c[1].getType();
+            if(!t1.isInteger())
             {
               toReturn = mkBoolNode(false);
               return toReturn;
@@ -3597,6 +3602,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
     }
     else
     {
+      TypeNode t2;
       for(Node::iterator qBegin = n.begin(),qEnd = n.end();
       qBegin != qEnd;
       ++qBegin)
@@ -3604,7 +3610,8 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
         Node c1 = *qBegin;
         if(isVarQE(c1))
         {
-          if(!(c1.getType() == IntegerType))
+          t2 = c1.getType();
+          if(!t2.isInteger())
           {
             toReturn = mkBoolNode(false);
             return toReturn;
@@ -3612,7 +3619,8 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
         }
         else if(isVarWithCoefficientsQE(c1))
         {
-          if(!(c1.getType() == IntegerType))
+          t2 = c1[1].getType();
+          if(!t2.isInteger())
           {
             toReturn = mkBoolNode(false);
             return toReturn;
