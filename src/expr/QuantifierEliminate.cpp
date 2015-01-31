@@ -3631,6 +3631,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
         {
           Debug("expr-qetest")<<"isVarWithCoefficientsQE  "<<c1<<std::endl;
           t2 = c1[1].getType();
+          Debug("expr-qetest")<<"typenode t2 "<<t2<<std::endl;
           if(!t2.isInteger())
           {
             toReturn = mkBoolNode(false);
