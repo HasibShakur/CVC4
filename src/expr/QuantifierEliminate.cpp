@@ -3483,6 +3483,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
       if(!check)
       {
         toReturn = mkBoolNode(false);
+        return toReturn;
       }
       else
       {
@@ -3502,7 +3503,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           if(!check)
           {
             toReturn = mkBoolNode(false);
-            break;
+            return toReturn;
           }
           else
           {
@@ -3536,7 +3537,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             if(!t1.isInteger())
             {
               toReturn = mkBoolNode(false);
-              break;
+              return toReturn;
             }
           }
           else if(isVarWithCoefficientsQE(c))
@@ -3547,7 +3548,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             if(!t1.isInteger())
             {
               toReturn = mkBoolNode(false);
-              break;
+              return toReturn;
             }
           }
           else if(isConstQE(c))
@@ -3568,6 +3569,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
     if(!check)
     {
       toReturn = mkBoolNode(false);
+      return toReturn;
     }
     else
     {
@@ -3588,7 +3590,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
         if(!check)
         {
           toReturn = mkBoolNode(false);
-          break;
+          return toReturn;
         }
         else
         {
@@ -3622,7 +3624,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           if(!t2.isInteger())
           {
             toReturn = mkBoolNode(false);
-            break;
+            return toReturn;
           }
         }
         else if(isVarWithCoefficientsQE(c1))
@@ -3632,7 +3634,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           if(!t2.isInteger())
           {
             toReturn = mkBoolNode(false);
-            break;
+            return toReturn;
           }
         }
         else if(isConstQE(c1))
