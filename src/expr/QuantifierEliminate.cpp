@@ -3484,7 +3484,6 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
       if(!check)
       {
         toReturn = mkBoolNode(false);
-        break;
       }
       else
       {
@@ -3568,7 +3567,6 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
     if(!check)
     {
       toReturn = mkBoolNode(false);
-      break;
     }
     else
     {
