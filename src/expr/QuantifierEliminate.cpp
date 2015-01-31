@@ -3473,7 +3473,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
   Debug("expr-qetest")<<"Given Expression  "<<n<<std::endl;
   Node t;
   bool check;
-  Node toReturn = mkBoolNode(true);
+  Node toReturn;
   if(n.getKind() == kind::NOT)
   {
     t = n[0];
@@ -3556,7 +3556,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           else
           {
             Debug("expr-qetest")<<"exp in not "<<c<<std::endl;
-            return boundVarTypeChecker(c);
+            boundVarTypeChecker(c);
           }
         }
       }
@@ -3643,7 +3643,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
         else
         {
           Debug("expr-qetest")<<"exp "<<c1<<std::endl;
-          return boundVarTypeChecker(c1);
+          boundVarTypeChecker(c1);
         }
       }
     }
