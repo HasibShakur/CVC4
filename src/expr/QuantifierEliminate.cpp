@@ -3484,7 +3484,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
       if(!check)
       {
         toReturn = mkBoolNode(false);
-        return toReturn;
+        break;
       }
       else
       {
@@ -3504,7 +3504,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           if(!check)
           {
             toReturn = mkBoolNode(false);
-            return toReturn;
+            break;
           }
           else
           {
@@ -3538,7 +3538,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             if(!t1.isInteger())
             {
               toReturn = mkBoolNode(false);
-              return toReturn;
+              break;
             }
           }
           else if(isVarWithCoefficientsQE(c))
@@ -3547,7 +3547,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             if(!t1.isInteger())
             {
               toReturn = mkBoolNode(false);
-              return toReturn;
+              break;
             }
           }
           else if(isConstQE(c))
@@ -3568,7 +3568,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
     if(!check)
     {
       toReturn = mkBoolNode(false);
-      return toReturn;
+      break;
     }
     else
     {
@@ -3589,7 +3589,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
         if(!check)
         {
           toReturn = mkBoolNode(false);
-          return toReturn;
+          break;
         }
         else
         {
@@ -3623,16 +3623,17 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           if(!t2.isInteger())
           {
             toReturn = mkBoolNode(false);
-            return toReturn;
+            break;
           }
         }
         else if(isVarWithCoefficientsQE(c1))
         {
+          Debug("expr-qetest")<<"isVarWithCoefficientsQE  "<<c1<<std::endl;
           t2 = c1[1].getType();
           if(!t2.isInteger())
           {
             toReturn = mkBoolNode(false);
-            return toReturn;
+            break;
           }
         }
         else if(isConstQE(c1))
@@ -3647,7 +3648,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
 
   }
   Debug("expr-qetest")<<"toReturn "<<toReturn<<std::endl;
- // return toReturn;
+  return toReturn;
 }
 QuantifierEliminate QuantifierEliminate::qeEngine(Node n,
                                                   int numOfQuantifiers) {
