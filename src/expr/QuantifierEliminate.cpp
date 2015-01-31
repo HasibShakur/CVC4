@@ -3555,7 +3555,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           else
           {
             Debug("expr-qetest")<<"exp in not "<<c<<std::endl;
-            return boundVarTypeChecker(c);
+            boundVarTypeChecker(c);
           }
         }
       }
@@ -3640,7 +3640,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
         else
         {
           Debug("expr-qetest")<<"exp "<<c1<<std::endl;
-          return boundVarTypeChecker(c1);
+          boundVarTypeChecker(c1);
         }
       }
     }
