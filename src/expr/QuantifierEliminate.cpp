@@ -3647,7 +3647,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
 
   }
   Debug("expr-qetest")<<"toReturn "<<toReturn<<std::endl;
-  return toReturn;
+ // return toReturn;
 }
 QuantifierEliminate QuantifierEliminate::qeEngine(Node n,
                                                   int numOfQuantifiers) {
