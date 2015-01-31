@@ -3463,13 +3463,22 @@ bool QuantifierEliminate::checkType(Node n) {
       }
     }
   }
+  else
+  {
+    t = n.getType();
+    if(!t.isInteger())
+    {
+      b = false;
+    }
+  }
+  Debug("expr-qetest")<<"checkType "<<b<<std::endl;
   return b;
 }
 Node QuantifierEliminate::boundVarTypeChecker(Node n) {
   Debug("expr-qetest")<<"Given Expression  "<<n<<std::endl;
   Node t;
   bool check;
-  Node toReturn;
+  Node toReturn = mkBoolNode(true);
   if(n.getKind() == kind::NOT)
   {
     t = n[0];
