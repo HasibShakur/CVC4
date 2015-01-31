@@ -322,8 +322,7 @@ bool QuantifierEliminate::isConstQE(Node n) {
     return false;
 }
 bool QuantifierEliminate::isVarQE(Node n) {
-  if(n.isVar() && n.getType().isInteger() && !isVarWithCoefficientsQE(n)
-      && !isEquationQE(n))
+  if(n.isVar() && !isVarWithCoefficientsQE(n) && !isEquationQE(n))
     return true;
   else
     return false;
