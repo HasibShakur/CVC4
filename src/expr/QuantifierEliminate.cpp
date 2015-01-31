@@ -3584,6 +3584,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
     ++pBegin)
     {
       Node child1 = *pBegin;
+      Debug("expr-qetest")<<"child1  "<<child1<<std::endl;
       if(child1.getKind() == kind::FORALL)
       {
         check = checkType(child1[0]);
@@ -3599,6 +3600,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
       }
       else
       {
+        Debug("expr-qetest")<<"exp  "<<child1<<std::endl;
         return boundVarTypeChecker(child1);
       }
     }
