@@ -3362,7 +3362,7 @@ Node SmtEngine::eliminateQuantifier(Expr ex, int numOfQuantifiersToEliminate) {
   }
   else
   {
-	finalNode = Node::null;
+	finalNode = q.getEquivalentExpression();
   }
   Debug("expr-qetest")<<"Final Node "<<finalNode<<"\n";
   return finalNode;
