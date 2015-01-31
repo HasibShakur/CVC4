@@ -3535,6 +3535,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
         ++nBegin)
         {
           Node c = *nBegin;
+          Debug("expr-qetest")<<"c in not  "<<c<<std::endl;
           if(isVarQE(c))
           {
             t1 = c.getType();
@@ -3556,6 +3557,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             {}
             else
             {
+              Debug("expr-qetest")<<"exp in not "<<c<<std::endl;
               return boundVarTypeChecker(c);
             }
           }
@@ -3584,7 +3586,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
     ++pBegin)
     {
       Node child1 = *pBegin;
-      Debug("expr-qetest")<<"child1  "<<child1<<std::endl;
+
       if(child1.getKind() == kind::FORALL)
       {
         check = checkType(child1[0]);
@@ -3619,6 +3621,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
       ++qBegin)
       {
         Node c1 = *qBegin;
+        Debug("expr-qetest")<<"c1  "<<c1<<std::endl;
         if(isVarQE(c1))
         {
           t2 = c1.getType();
@@ -3640,6 +3643,7 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           {}
           else
           {
+            Debug("expr-qetest")<<"c1 in not "<<c1<<std::endl;
             return boundVarTypeChecker(c1);
           }
         }
