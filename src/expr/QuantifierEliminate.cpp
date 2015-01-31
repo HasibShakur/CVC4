@@ -3421,20 +3421,16 @@ std::vector<ExpressionContainer> QuantifierEliminate::getExpContainer(
     QuantifierEliminate q) {
   return q.expressionContainer;
 }
-void QuantifierEliminate::setEquivalentExpression(Node n)
-{
+void QuantifierEliminate::setEquivalentExpression(Node n) {
   this->equivalentExpression = n;
 }
-Node QuantifierEliminate::getEquivalentExpression()
-{
+Node QuantifierEliminate::getEquivalentExpression() {
   return this->equivalentExpression;
 }
-void QuantifierEliminate::setMessage(std::string s)
-{
+void QuantifierEliminate::setMessage(std::string s) {
   this->successMessage = s;
 }
-std::string QuantifierEliminate::getMessage()
-{
+std::string QuantifierEliminate::getMessage() {
   return this->successMessage;
 }
 
@@ -3553,13 +3549,13 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
               toReturn = mkBoolNode(false);
               return toReturn;
             }
-            else if(isConstQE(c))
-            {}
-            else
-            {
-              Debug("expr-qetest")<<"exp in not "<<c<<std::endl;
-              return boundVarTypeChecker(c);
-            }
+          }
+          else if(isConstQE(c))
+          {}
+          else
+          {
+            Debug("expr-qetest")<<"exp in not "<<c<<std::endl;
+            return boundVarTypeChecker(c);
           }
         }
       }
@@ -3638,13 +3634,13 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             toReturn = mkBoolNode(false);
             return toReturn;
           }
-          else if(isConstQE(c1))
-          {}
-          else
-          {
-            Debug("expr-qetest")<<"exp "<<c1<<std::endl;
-            return boundVarTypeChecker(c1);
-          }
+        }
+        else if(isConstQE(c1))
+        {}
+        else
+        {
+          Debug("expr-qetest")<<"exp "<<c1<<std::endl;
+          return boundVarTypeChecker(c1);
         }
       }
     }
@@ -3653,7 +3649,8 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
   Debug("expr-qetest")<<"toReturn "<<toReturn<<std::endl;
   return toReturn;
 }
-QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers) {
+QuantifierEliminate QuantifierEliminate::qeEngine(Node n,
+                                                  int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
   Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
   QuantifierEliminate qe;
