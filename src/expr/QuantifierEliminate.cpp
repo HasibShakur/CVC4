@@ -3543,10 +3543,6 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
               toReturn = mkBoolNode(false);
               return toReturn;
             }
-            else
-            {
-              toReturn = mkBoolNode(true);
-            }
           }
           else if(isVarWithCoefficientsQE(c))
           {
@@ -3558,10 +3554,6 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
               toReturn = mkBoolNode(false);
               return toReturn;
             }
-            else
-            {
-              toReturn = mkBoolNode(true);
-            }
           }
           else if(isConstQE(c))
           {
@@ -3571,10 +3563,6 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             {
               toReturn = mkBoolNode(false);
               return toReturn;
-            }
-            else
-            {
-              toReturn = mkBoolNode(true);
             }
           }
           else
@@ -3650,10 +3638,6 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             toReturn = mkBoolNode(false);
             return toReturn;
           }
-          else
-          {
-            toReturn = mkBoolNode(true);
-          }
         }
         else if(isVarWithCoefficientsQE(c1))
         {
@@ -3665,10 +3649,6 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             toReturn = mkBoolNode(false);
             return toReturn;
           }
-          else
-          {
-            toReturn = mkBoolNode(true);
-          }
         }
         else if(isConstQE(c1))
         {
@@ -3678,10 +3658,6 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           {
             toReturn = mkBoolNode(false);
             return toReturn;
-          }
-          else
-          {
-            toReturn = mkBoolNode(true);
           }
         }
         else
@@ -3694,7 +3670,15 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
 
   }
   Debug("expr-qetest")<<"toReturn "<<toReturn<<std::endl;
-  return toReturn;
+  if(toReturn.isNull())
+  {
+    return mkBoolNode(true);
+  }
+  else
+  {
+    return toReturn;
+  }
+
 }
 
 Node QuantifierEliminate::prenexChecker(Node n)
