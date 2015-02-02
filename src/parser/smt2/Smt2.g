@@ -389,7 +389,7 @@ command returns [CVC4::Command* cmd = NULL]
 		std::string id = AntlrInput::tokenText($SIMPLE_SYMBOL);
 		if(id == null)
 		{
-		  id = "default"
+		  id = "default";
 		}
 	    cmd = new QESimplifyCommand(expr,n,id);
 	}
