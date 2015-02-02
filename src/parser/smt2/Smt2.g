@@ -387,7 +387,7 @@ command returns [CVC4::Command* cmd = NULL]
 	{
 		unsigned n = AntlrInput::tokenToUnsigned(k);
 		std::string id = AntlrInput::tokenText($SIMPLE_SYMBOL);
-		if(id == null)
+		if(id.length() == 0)
 		{
 		  id = "default";
 		}
