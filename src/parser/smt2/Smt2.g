@@ -383,6 +383,7 @@ command returns [CVC4::Command* cmd = NULL]
     QESIMPLIFY_TOK { PARSER_STATE->checkThatLogicIsSet(); }
 	term[expr, expr2]
 	k=INTEGER_LITERAL
+	SIMPLE_SYMBOL
 	{
 		unsigned n = AntlrInput::tokenToUnsigned(k);
 		std::string id = AntlrInput::tokenText($SIMPLE_SYMBOL)
