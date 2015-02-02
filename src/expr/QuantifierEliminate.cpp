@@ -3460,10 +3460,14 @@ bool QuantifierEliminate::checkType(Node n) {
   }
   else
   {
-    t = n.getType();
+    t = n[0].getType();
     if(!t.isInteger())
     {
       b = false;
+    }
+    else
+    {
+      b = true;
     }
   }
   Debug("expr-qetest")<<"checkType "<<b<<std::endl;
