@@ -3652,6 +3652,96 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
   Debug("expr-qetest")<<"toReturn "<<toReturn<<std::endl;
   return toReturn;
 }
+
+Node QuantifierEliminate::prenexChecker(Node n)
+{
+  Node toReturn;
+  if(n.getKind() == kind::NOT)
+  {
+    Node t = n[0];
+    if(t.getKind() == kind::FORALL)
+    {
+      return prenexChecker(t[1]);
+    }
+    else if(t.getKind() == kind::AND)
+    {
+      for(Node::iterator nBegin = n.begin(),nEnd = n.end();
+          nBegin != nEnd;
+          ++nBegin)
+      {
+        Node c1 = *nBegin;
+        if(c1.getKind() == kind::FORALL)
+        {
+          return prenexChecker(c1[1]);
+        }
+        else
+        {
+          return prenexChecker(c1);
+        }
+      }
+    }
+    else
+    {
+      for(Node::iterator qBegin = t.begin(),qEnd = t.end();
+          qBegin != qEnd;
+          ++qBegin)
+      {
+        Node child1 = *qBegin;
+        if((child1.getKind() == kind::NOT && child1[0].getKind() == kind::FORALL) || (child1.getKind() == kind::FORALL))
+        {
+          toReturn = mkBoolNode(false);
+          return toReturn;
+        }
+        else
+        {
+          toReturn = prenexChecker(child1);
+        }
+      }
+    }
+  }
+  else if(n.getKind() == kind::FORALL)
+  {
+    return prenexChecker(n[1]);
+  }
+  else if(n.getKind() == kind::AND)
+  {
+    for(Node::iterator mBegin = n.begin(),mEnd = n.end();
+        mBegin != mEnd;
+        ++mBegin)
+    {
+      Node c = *mBegin;
+      if(c.getKind() == kind::FORALL)
+      {
+        return prenexChecker(c[1]);
+      }
+      else
+      {
+        return prenexChecker(c);
+      }
+    }
+  }
+  else
+  {
+    for(Node::iterator pBegin = n.begin(),pEnd = n.end();
+        pBegin != pEnd;
+        ++pBegin)
+    {
+      Node child = *pBegin;
+      if((child.getKind() == kind::NOT && child[0].getKind() == kind::FORALL) || (child.getKind() == kind::FORALL))
+      {
+        toReturn = mkBoolNode(false);
+        return toReturn;
+      }
+      else
+      {
+        toReturn = prenexChecker(child);
+      }
+    }
+  }
+  Debug("expre-qetest")<<"toReturn from prenex checker "<<toReturn<<std::endl;
+  return toReturn;
+}
+
 QuantifierEliminate QuantifierEliminate::qeEngine(Node n,
                                                   int numOfQuantifiers) {
   Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
@@ -3671,7 +3761,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n,
     Node temp = n;
     temp = Rewriter::rewrite(temp);
     Node final;
-    bool typeCheck;
+    bool typeCheck,prenexCheck;
     if(boundVarTypeChecker(temp) == mkBoolNode(false))
     {
       typeCheck = false;
@@ -3680,9 +3770,18 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n,
     {
       typeCheck = true;
     }
-    if(typeCheck)
+    if(prenexChecker(temp) == mkBoolNode(false))
+    {
+      prenexCheck = false;
+    }
+    else
+    {
+      prenexCheck = true;
+    }
+    if(typeCheck && prenexCheck)
     {
       Debug("expr-qetest")<<"Type checker has found no problem "<<std::endl;
+      Debug("expr-qetest")<<"Prenex checker has found no problem "<<std::endl;
       Debug("expr-qetest")<<"Before qe expression "<<temp<<std::endl;
       final = computeProjections(temp,qe);
       Debug("expr-qetest")<<"After qe "<<final<<std::endl;
@@ -3690,10 +3789,16 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n,
       qe.setMessage("success");
       return qe;
     }
-    else
+    else if(!typeCheck)
     {
       Debug("expr-qetest")<<"Type checker failure contains non integer type "<<std::endl;
-      qe.setMessage("Input expression contains non integer type ");
+      qe.setMessage("(Input expression contains non integer type)");
+      return qe;
+    }
+    else
+    {
+      Debug("expr-qetest")<<"Expression not in prenex form "<<std::endl;
+      qe.setMessage("(Input expression not in prenex form)");
       return qe;
     }
   }

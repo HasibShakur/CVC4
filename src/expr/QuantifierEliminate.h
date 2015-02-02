@@ -79,6 +79,7 @@ private:
   static Node normalizeNegative(Node n, Node bv, QuantifierEliminate q);
   static Node boundVarTypeChecker(Node n);
   static bool checkType(Node n);
+  static Node prenexChecker(Node n);
 
   //non static methods
 
