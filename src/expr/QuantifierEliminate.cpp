@@ -3432,7 +3432,14 @@ void QuantifierEliminate::setMessage(std::string s) {
 std::string QuantifierEliminate::getMessage() {
   return this->successMessage;
 }
-
+void QuantifierEliminate::setOptionQE(std::string opt)
+{
+  this->option = opt;
+}
+std::string QuantifierEliminate::getOptionQE()
+{
+  return this->option;
+}
 bool QuantifierEliminate::checkType(Node n) {
   Debug("expr-qetest")<<"Given Node "<<n<<std::endl;
   Node check;

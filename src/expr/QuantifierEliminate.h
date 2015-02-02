@@ -26,6 +26,7 @@ private:
   Node originalExpression;
   std::string successMessage;
   Node equivalentExpression;
+  std::string option;
 
   std::vector<ExpressionContainer> expressionContainer;
 
@@ -88,6 +89,7 @@ private:
   void setNumberOfQuantElim(int x);
   void setMessage(std::string s);
   void setEquivalentExpression(Node n);
+  void setOptionQE(std::string opt);
 
   //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
   //  static bool evaluateBoolean(Node n);
@@ -112,6 +114,7 @@ public:
   Integer getNumberOfQuantElim();
   std::string getMessage();
   Node getEquivalentExpression();
+  std::string getOptionQE();
 
 };
 

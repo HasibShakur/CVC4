@@ -3354,6 +3354,7 @@ Node SmtEngine::eliminateQuantifier(Expr ex, int numOfQuantifiersToEliminate) {
   Debug("expr-qetest")<<"Number of Quantifiers to Eliminate "<<numOfQuantifiersToEliminate<<"\n";
   Debug("expr-qetest")<<"Before processing "<<ex<<"\n";
   Node operationNode = NodeManager::fromExpr(ex);
+  // add code for option
   QuantifierEliminate q = QuantifierEliminate::qeEngine(operationNode,numOfQuantifiersToEliminate);
   Node finalNode;
   if(q.getMessage() == "success")

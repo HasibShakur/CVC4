@@ -385,14 +385,12 @@ command returns [CVC4::Command* cmd = NULL]
 	k=INTEGER_LITERAL
 	{
 		unsigned n = AntlrInput::tokenToUnsigned(k);
-		if(n == 0)
+		std::string id = AntlrInput::tokenText($SIMPLE_SYMBOL)
+		if(id == null)
 		{
-			cmd = new QESimplifyCommand(expr);
+		  id = "default"
 		}
-		else
-		{
-			cmd = new QESimplifyCommand(expr,n);
-		}
+	    cmd = new QESimplifyCommand(expr,n,id);
 	}
   | /* check-sat */
     CHECKSAT_TOK { PARSER_STATE->checkThatLogicIsSet(); }

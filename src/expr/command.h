@@ -328,12 +328,14 @@ class CVC4_PUBLIC QESimplifyCommand : public Command {
 protected:
   CVC4::Expr d_expr;
   int numOfQuantifiers;
+  std::string option;
 public:
   QESimplifyCommand(const Expr& e) throw();
-  QESimplifyCommand(const Expr& e, int n) throw();
+  QESimplifyCommand(const Expr& e, int n,std::string option) throw();
   ~QESimplifyCommand() throw() {}
   CVC4::Expr getExpr() const throw();
   int getNumOfQuantifiersToEliminate() const throw();
+  std::string getOption() const throw();
   void invoke(SmtEngine* smtEngine) throw();
   void invoke(SmtEngine* smtEngine, std::ostream& out) throw();
   Command* exportTo(ExprManager* exprManager, ExprManagerMapCollection& variableMap);
