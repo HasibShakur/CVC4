@@ -3552,7 +3552,15 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
             }
           }
           else if(isConstQE(c))
-          {}
+          {
+            t1 = c.getType();
+            Debug("expr-qetest")<<"typenode t1 "<<t1<<std::endl;
+            if(!t1.isInteger())
+            {
+              toReturn = mkBoolNode(false);
+              return toReturn;
+            }
+          }
           else
           {
             Debug("expr-qetest")<<"exp in not "<<c<<std::endl;
@@ -3639,7 +3647,15 @@ Node QuantifierEliminate::boundVarTypeChecker(Node n) {
           }
         }
         else if(isConstQE(c1))
-        {}
+        {
+          t2 = c1.getType();
+          Debug("expr-qetest")<<"typenode t2 "<<t2<<std::endl;
+          if(!t2.isInteger())
+          {
+            toReturn = mkBoolNode(false);
+            return toReturn;
+          }
+        }
         else
         {
           Debug("expr-qetest")<<"exp "<<c1<<std::endl;
