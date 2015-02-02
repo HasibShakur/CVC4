@@ -77,7 +77,6 @@ private:
                                             QuantifierEliminate q);
   static Node replaceBoundVarRightProjection(Node n, TNode bExpr, Node bv);
   static Node replaceXForLeftProjection(Node n, Node original, Integer rep);
-  static Node normalizeNegative(Node n, Node bv, QuantifierEliminate q);
   static Node boundVarTypeChecker(Node n);
   static bool checkType(Node n);
   static Node prenexChecker(Node n);
