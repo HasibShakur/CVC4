@@ -439,7 +439,9 @@ public:
    * eliminateQuantifier function will eliminate quantifiers 
    * from an expression. For now, the return type is set to void.
    */
-  CVC4::QuantifierEliminate eliminateQuantifier(Expr ex, int numbOfQuantifiersToEliminate,std::string optionQE);
+  CVC4::QuantifierEliminate eliminateQuantifier(Expr ex, 
+												int numbOfQuantifiersToEliminate,
+												std::string optionQE);
   /** 
    * Add a formula to the current context: preprocess, do per-theory
    * setup, use processAssertionList(), asserting to T-solver for

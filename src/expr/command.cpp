@@ -217,8 +217,8 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
 }
 
 void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
- // ExprManager* em = smtEngine->getExprManager();
-  //NodeManager* nm = NodeManager::fromExprManager(em);
+  ExprManager* em = smtEngine->getExprManager();
+  NodeManager* nm = NodeManager::fromExprManager(em);
   smt::SmtScope scope(smtEngine);
   QuantifierEliminate qe;
   qe = smtEngine->eliminateQuantifier(d_expr,numOfQuantifiers,optionQE);
