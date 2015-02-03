@@ -3745,6 +3745,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
   if(qe.getOptionQE() == "strong" || qe.getOptionQE() == "weak")
   {
     std::string m = "(strong or weak version of qe not yet implemented )";
+    Debug("expr-qetest")<<m<<std::endl;
     qe.setMessage(m);
     return qe;
   }
@@ -3753,6 +3754,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
     if(numOfQuantifiers <= 0)
     {
       std::string s = "(error! Number of quantifiers requested to be eliminated is "+ numOfQuantifiers+" )";
+      Debug("expr-qetest")<<s<<std::endl;
       qe.setMessage(s);
       return qe;
     }
