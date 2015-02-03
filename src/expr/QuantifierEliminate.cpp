@@ -3753,7 +3753,9 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
   {
     if(numOfQuantifiers <= 0)
     {
-      std::string s = "(error! Number of quantifiers requested to be eliminated is "+ numOfQuantifiers+" )";
+      std::stringstream sstm;
+      sstm << "(error! Number of quantifiers requested to be eliminated is " << numOfQuantifiers <<" )";
+      std::string s = sstm.str();
       Debug("expr-qetest")<<s<<std::endl;
       qe.setMessage(s);
       return qe;
