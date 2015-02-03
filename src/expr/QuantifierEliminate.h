@@ -105,7 +105,7 @@ public:
 //  static Node postRewriteForPrenex(Node n);
 
   //static public functions
-  static QuantifierEliminate qeEngine(Node n, int numOfQuantifiers);
+  static QuantifierEliminate qeEngine(Node n, int numOfQuantifiers, std::string optionQE);
 
   //non static public functions
 

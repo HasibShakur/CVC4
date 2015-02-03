@@ -196,10 +196,10 @@ std::string EchoCommand::getCommandName() const throw() {
 
 // Edited by Md Hasib Bin Shakur, June 11, 2014
 QESimplifyCommand::QESimplifyCommand(const Expr& e, int n,std::string opt) throw() :
-  d_expr(e),numOfQuantifiers(n),option(opt) {
+  d_expr(e),numOfQuantifiers(n),optionQE(opt) {
 }
 QESimplifyCommand::QESimplifyCommand(const Expr& e) throw() :
-  d_expr(e),numOfQuantifiers(0),option("default") {
+  d_expr(e),numOfQuantifiers(0),optionQE("default") {
 }
 
 CVC4::Expr QESimplifyCommand::getExpr() const throw() {
@@ -209,7 +209,7 @@ int QESimplifyCommand::getNumOfQuantifiersToEliminate() const throw() {
   return numOfQuantifiers;
 }
 std::string QESimplifyCommand::getOption() const throw() {
-  return option;
+  return optionQE;
 }
 void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
   /* we don't have an output stream here, nothing to do */
@@ -220,9 +220,20 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() 
   ExprManager* em = smtEngine->getExprManager();
   NodeManager* nm = NodeManager::fromExprManager(em);
   smt::SmtScope scope(smtEngine);
-  Node n = smtEngine->eliminateQuantifier(d_expr,numOfQuantifiers);
-  std::string ss = n.toString();
-  out << ss << std::endl;
+  QuantifierEliminate qe;
+  qe = smtEngine->eliminateQuantifier(d_expr,numOfQuantifiers,optionQE);
+  std::string expr;
+  if(qe.getMessage() == "success")
+  {
+    std::string temp = "success "+"\n";
+    expr = qe.getEquivalentExpression().toString();
+    expr = temp + expr;
+  }
+  else
+  {
+    expr = qe.getMessage();
+  }
+  out << expr << std::endl;
   d_commandStatus = CommandSuccess::instance();
   printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
 }

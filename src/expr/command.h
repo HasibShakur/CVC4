@@ -328,7 +328,7 @@ class CVC4_PUBLIC QESimplifyCommand : public Command {
 protected:
   CVC4::Expr d_expr;
   int numOfQuantifiers;
-  std::string option;
+  std::string optionQE;
 public:
   QESimplifyCommand(const Expr& e) throw();
   QESimplifyCommand(const Expr& e, int n,std::string option) throw();
