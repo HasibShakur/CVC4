@@ -36,6 +36,7 @@
 #include "util/hash.h"
 #include "util/statistics.h"
 #include "theory/logic_info.h"
+#include "expr/QuantifierEliminate.h"
 
 // In terms of abstraction, this is below (and provides services to)
 // ValidityChecker and above (and requires the services of)
@@ -60,7 +61,7 @@ class ProofManager;
 class Model;
 class LogicRequest;
 class StatisticsRegistry;
-//class QuantifierEliminate;
+class QuantifierEliminate;
 
 namespace context {
   class Context;
