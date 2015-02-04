@@ -2091,7 +2091,6 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,
       if(c.getKind() == kind::AND || c.getKind() == kind::OR)
       {
         toReturn = rewriteRelationOperatorQE(c,bv,q);
-        replaceNode.push_back(toReturn);
       }
       else
       {
