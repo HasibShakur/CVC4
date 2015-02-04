@@ -2380,7 +2380,24 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv) {
 
   if(bExpression.size()>0)
   {
-    Node returnNode = bExpression.back();
+    Node returnNode;
+    std::vector<Integer> constElm;
+    for(int i=0;i<(int)bExpression.size();i++)
+    {
+      if(isConstQE(bExpression[i]))
+      {
+        constElm.push_back();
+      }
+    }
+    if(constElm.size() > 0)
+    {
+      std::sort(constElm.begin(),constElm.end());
+      returnNode = fromIntegerToNodeQE(constElm[0]);
+    }
+    else
+    {
+      returnNode = bExpression.back();
+    }
     return returnNode;
   }
   else
