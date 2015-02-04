@@ -35,7 +35,7 @@
 #include "util/sexpr.h"
 #include "util/datatype.h"
 #include "util/proof.h"
-#include "expr/QuantifierEliminate.h"
+//#include "expr/QuantifierEliminate.h"
 
 namespace CVC4 {
 
@@ -43,7 +43,7 @@ class SmtEngine;
 class Command;
 class CommandStatus;
 class Model;
-class QuantifierEliminate;
+//class QuantifierEliminate;
 
 std::ostream& operator<<(std::ostream&, const Command&) throw() CVC4_PUBLIC;
 std::ostream& operator<<(std::ostream&, const Command*) throw() CVC4_PUBLIC;
