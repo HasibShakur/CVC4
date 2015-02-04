@@ -2097,7 +2097,9 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv,
                                                      QuantifierEliminate q) {
   n = parseEquation(n, bv, q);
+  Debug("expr-qetest")<<"Parse equation result "<<n<<std::endl;
   n = rewriteRelationOperatorQE(n, bv, q);
+  Debug("expr-qetest")<<"rewrite relational operator result "<<n<<std::endl;
   return n;
 }
 
@@ -2122,9 +2124,13 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,
 Node QuantifierEliminate::doRewriting(Node n, Node bv, QuantifierEliminate q) {
   Node t;
   t = eliminateImpliesQE(n);
+  Debug("expr-qetest")<<"eliminate implies qe result "<<t<<std::endl;
   t = convertToNNFQE(t);
+  Debug("expr-qetest")<<"convert to nnf qe result "<<t<<std::endl;
   t = rewriteForSameCoefficients(t, bv, q);
+  Debug("expr-qetest")<<"rewrite for same coefficients result "<<t<<std::endl;
   t = getExpressionWithDivisibility(t, bv, q);
+  Debug("expr-qetest")<<"expression with divisibility result "<<t<<std::endl;
   return t;
 }
 
