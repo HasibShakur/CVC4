@@ -508,24 +508,25 @@ void QuantifierEliminate::parseCoefficientQE(Node n, QuantifierEliminate q) {
         Container c(child, n);
         container.push_back(c);
       } else {
-        for(Node::iterator j = child.begin(), end = child.end(); j != end;
-            ++j) {
-          Node inner = *j;
-          if(isConstQE(inner)) {
-            Integer n = getIntegerFromNode(inner);
-            Container c(inner, n);
-            container.push_back(c);
-          } else if(isVarQE(inner)) {
-            Constant one = Constant::mkOne();
-            Integer n = getIntegerFromNode(one.getNode());
-            Container c(inner, n);
-            container.push_back(c);
-          } else {
-            Integer n = getIntegerFromNode(inner[0]);
-            Container c(inner[1], n);
-            container.push_back(c);
-          }
-        }
+//        for(Node::iterator j = child.begin(), end = child.end(); j != end;
+//            ++j) {
+//          Node inner = *j;
+//          if(isConstQE(inner)) {
+//            Integer n = getIntegerFromNode(inner);
+//            Container c(inner, n);
+//            container.push_back(c);
+//          } else if(isVarQE(inner)) {
+//            Constant one = Constant::mkOne();
+//            Integer n = getIntegerFromNode(one.getNode());
+//            Container c(inner, n);
+//            container.push_back(c);
+//          } else {
+//            Integer n = getIntegerFromNode(inner[0]);
+//            Container c(inner[1], n);
+//            container.push_back(c);
+//          }
+//        }
+        parseCoefficientQE(child,q);
       }
 
     }
@@ -595,6 +596,7 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv,
   for(Node::kinded_iterator i = t.begin(t.getKind()), i_end = t.end(
       t.getKind()); i != i_end; ++i) {
     Node child = *i;
+    Debug("expr-qetest")<<"In get Lcm Result child "<<child<<std::endl;
     parseCoefficientQE(child, q);
   }
   std::vector<Container> tempContainer = container;
