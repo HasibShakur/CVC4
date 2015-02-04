@@ -2073,24 +2073,40 @@ Node QuantifierEliminate::replaceRelationOperatorQE(Node n, Node bv) {
   }
   return replaceNode;
 }
+
 Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,
                                                     QuantifierEliminate q) {
+  Node toReturn;
   std::vector<Node> replaceNode;
   Debug("expr-qetest")<<"Node n "<<n<<std::endl;
   Debug("expr-qetest")<<"bound var "<<bv<<std::endl;
-  if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
-    for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
+  if(n.getKind() == kind::AND ||n.getKind() == kind::OR)
+  {
+    for(Node::iterator i = n.begin(),iEnd = n.end();
+        i != iEnd;
+        ++i)
+    {
       Node c = *i;
       Debug("expr-qetest")<<"Node c "<<c<<std::endl;
-      Node temp = replaceRelationOperatorQE(c, bv);
-      Debug("expr-qetest")<<"Node temp "<<temp<<std::endl;
+      if(c.getKind() == kind::AND || c.getKind() == kind::OR)
+      {
+        toReturn = rewriteRelationOperatorQE(c,bv,q);
+        replaceNode.push_back(toReturn);
+      }
+      else
+      {
+        Node temp = replaceRelationOperatorQE(c,bv);
+        Debug("expr-qetest")<<"Node temp "<<temp<<std::endl;
+      }
       replaceNode.push_back(temp);
     }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
-                                                       replaceNode);
+                                                           replaceNode);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
-  } else {
+  }
+  else
+  {
     Node returnNode = replaceRelationOperatorQE(n, bv);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
