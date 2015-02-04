@@ -2713,6 +2713,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
       } else {
         bExpr = NodeManager::currentNM()->mkNode(kind::PLUS, test,
                                                  fromIntegerToNodeQE(j));
+        bExpr = Rewriter::rewrite(bExpr);
       }
       b = bExpr;
       Debug("expr-qetest")<<"before replacement b "<<b<<std::endl;
