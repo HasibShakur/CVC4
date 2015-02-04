@@ -43,7 +43,7 @@ class SmtEngine;
 class Command;
 class CommandStatus;
 class Model;
-class QuantifierEliminate;
+//class QuantifierEliminate;
 
 std::ostream& operator<<(std::ostream&, const Command&) throw() CVC4_PUBLIC;
 std::ostream& operator<<(std::ostream&, const Command*) throw() CVC4_PUBLIC;
