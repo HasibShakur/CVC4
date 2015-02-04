@@ -72,10 +72,6 @@ namespace prop {
   class PropEngine;
 }/* CVC4::prop namespace */
 
-//namespace qe {
-//  class QuantifierEliminate;
-//}/* CVC4::qe namespace */
-
 namespace smt {
   /**
    * Representation of a defined function.  We keep these around in

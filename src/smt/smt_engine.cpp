@@ -95,7 +95,6 @@ using namespace CVC4::smt;
 using namespace CVC4::prop;
 using namespace CVC4::context;
 using namespace CVC4::theory;
-//using namespace CVC4::qe;
 
 namespace CVC4 {
 
