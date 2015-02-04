@@ -61,7 +61,7 @@ class ProofManager;
 class Model;
 class LogicRequest;
 class StatisticsRegistry;
-class QuantifierEliminate;
+//class QuantifierEliminate;
 
 namespace context {
   class Context;
