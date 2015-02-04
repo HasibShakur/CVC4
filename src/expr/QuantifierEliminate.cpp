@@ -2095,10 +2095,10 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,
       }
       else
       {
-        Node temp = replaceRelationOperatorQE(c,bv);
-        Debug("expr-qetest")<<"Node temp "<<temp<<std::endl;
+        toReturn = replaceRelationOperatorQE(c,bv);
+        Debug("expr-qetest")<<"Node temp "<<toReturn<<std::endl;
       }
-      replaceNode.push_back(temp);
+      replaceNode.push_back(toReturn);
     }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
                                                            replaceNode);
