@@ -35,7 +35,7 @@
 #include "util/sexpr.h"
 #include "util/datatype.h"
 #include "util/proof.h"
-#include "expr/QuantifierEliminate.h"
+//#include "expr/QuantifierEliminate.h"
 
 namespace CVC4 {
 
