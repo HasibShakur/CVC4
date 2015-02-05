@@ -233,7 +233,7 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() 
   {
     std::string temp = qe.getMessage();
     expr = qe.getEquivalentExpression().toString();
-    expr = temp + expr;
+    expr = temp +" " + expr;
   }
   out << expr << std::endl;
   d_commandStatus = CommandSuccess::instance();

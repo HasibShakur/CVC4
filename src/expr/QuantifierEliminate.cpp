@@ -3844,12 +3844,14 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         {
           Debug("expr-qetest")<<"Type checker failure contains non integer type "<<std::endl;
           qe.setMessage("(Input expression contains non integer type)");
+          qe.setEquivalentExpression(qe.getOriginalExpression());
           return qe;
         }
         else
         {
           Debug("expr-qetest")<<"Expression not in prenex form "<<std::endl;
           qe.setMessage("(Input expression not in prenex form)");
+          qe.setEquivalentExpression(qe.getOriginalExpression());
           return qe;
         }
       }
