@@ -526,7 +526,7 @@ void QuantifierEliminate::parseCoefficientQE(Node n, QuantifierEliminate q) {
 //            container.push_back(c);
 //          }
 //        }
-        parseCoefficientQE(child,q);
+        parseCoefficientQE(child, q);
       }
 
     }
@@ -2080,32 +2080,23 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,
   std::vector<Node> replaceNode;
   Debug("expr-qetest")<<"Node n "<<n<<std::endl;
   Debug("expr-qetest")<<"bound var "<<bv<<std::endl;
-  if(n.getKind() == kind::AND ||n.getKind() == kind::OR)
-  {
-    for(Node::iterator i = n.begin(),iEnd = n.end();
-        i != iEnd;
-        ++i)
-    {
+  if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
+    for(Node::iterator i = n.begin(), iEnd = n.end(); i != iEnd; ++i) {
       Node c = *i;
       Debug("expr-qetest")<<"Node c "<<c<<std::endl;
-      if(c.getKind() == kind::AND || c.getKind() == kind::OR)
-      {
-        toReturn = rewriteRelationOperatorQE(c,bv,q);
-      }
-      else
-      {
-        toReturn = replaceRelationOperatorQE(c,bv);
+      if(c.getKind() == kind::AND || c.getKind() == kind::OR) {
+        toReturn = rewriteRelationOperatorQE(c, bv, q);
+      } else {
+        toReturn = replaceRelationOperatorQE(c, bv);
         Debug("expr-qetest")<<"Node temp "<<toReturn<<std::endl;
       }
       replaceNode.push_back(toReturn);
     }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
-                                                           replaceNode);
+                                                       replaceNode);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
-  }
-  else
-  {
+  } else {
     Node returnNode = replaceRelationOperatorQE(n, bv);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
@@ -3788,6 +3779,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
     std::string m = "(strong or weak version of qe not yet implemented )";
     Debug("expr-qetest")<<m<<std::endl;
     qe.setMessage(m);
+    qe.setEquivalentExpression(qe.getOriginalExpression());
     return qe;
   }
   else
@@ -3799,6 +3791,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
       std::string s = sstm.str();
       Debug("expr-qetest")<<s<<std::endl;
       qe.setMessage(s);
+      qe.setEquivalentExpression(qe.getOriginalExpression());
       return qe;
     }
     else
@@ -3807,23 +3800,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
       temp = Rewriter::rewrite(temp);
       Node final;
       bool typeCheck,prenexCheck;
-      if(boundVarTypeChecker(temp) == mkBoolNode(false))
-      {
-        typeCheck = false;
-      }
-      else
-      {
-        typeCheck = true;
-      }
-      if(prenexChecker(temp) == mkBoolNode(false))
-      {
-        prenexCheck = false;
-      }
-      else
-      {
-        prenexCheck = true;
-      }
-      if(typeCheck && prenexCheck)
+      if(temp == mkBoolNode(true) || temp == mkBoolNode(false))
       {
         Debug("expr-qetest")<<"Type checker has found no problem "<<std::endl;
         Debug("expr-qetest")<<"Prenex checker has found no problem "<<std::endl;
@@ -3834,18 +3811,49 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         qe.setMessage("success");
         return qe;
       }
-      else if(!typeCheck)
-      {
-        Debug("expr-qetest")<<"Type checker failure contains non integer type "<<std::endl;
-        qe.setMessage("(Input expression contains non integer type)");
-        return qe;
-      }
       else
       {
-        Debug("expr-qetest")<<"Expression not in prenex form "<<std::endl;
-        qe.setMessage("(Input expression not in prenex form)");
-        return qe;
+        if(boundVarTypeChecker(temp) == mkBoolNode(false))
+        {
+          typeCheck = false;
+        }
+        else
+        {
+          typeCheck = true;
+        }
+        if(prenexChecker(temp) == mkBoolNode(false))
+        {
+          prenexCheck = false;
+        }
+        else
+        {
+          prenexCheck = true;
+        }
+        if(typeCheck && prenexCheck)
+        {
+          Debug("expr-qetest")<<"Type checker has found no problem "<<std::endl;
+          Debug("expr-qetest")<<"Prenex checker has found no problem "<<std::endl;
+          Debug("expr-qetest")<<"Before qe expression "<<temp<<std::endl;
+          final = computeProjections(temp,qe);
+          Debug("expr-qetest")<<"After qe "<<final<<std::endl;
+          qe.setEquivalentExpression(final);
+          qe.setMessage("success");
+          return qe;
+        }
+        else if(!typeCheck)
+        {
+          Debug("expr-qetest")<<"Type checker failure contains non integer type "<<std::endl;
+          qe.setMessage("(Input expression contains non integer type)");
+          return qe;
+        }
+        else
+        {
+          Debug("expr-qetest")<<"Expression not in prenex form "<<std::endl;
+          qe.setMessage("(Input expression not in prenex form)");
+          return qe;
+        }
       }
+
     }
   }
 
