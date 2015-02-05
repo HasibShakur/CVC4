@@ -2386,7 +2386,7 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv) {
     {
       if(isConstQE(bExpression[i]))
       {
-        constElm.push_back(bExpression[i]);
+        constElm.push_back(getIntegerFromNode(bExpression[i]));
       }
     }
     if(constElm.size() > 0)
