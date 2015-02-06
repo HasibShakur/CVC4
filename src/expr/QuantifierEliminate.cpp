@@ -2715,12 +2715,12 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
     }
   }
   if(rightProjections.size() > 1) {
-          result = NodeManager::currentNM()->mkNode(kind::OR, rightProjections);
-          Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
-        } else {
-          result = rightProjections.back();
-          Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
-        }
+    result = NodeManager::currentNM()->mkNode(kind::OR, rightProjections);
+    Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
+  } else {
+    result = rightProjections.back();
+    Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
+  }
   return result;
 }
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
