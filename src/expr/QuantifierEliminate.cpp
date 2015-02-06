@@ -2304,7 +2304,8 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
     }
   }
 }
-Node QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv) {
+std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(
+    Node n, Node bv) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
   std::vector<Node> bExpression;
@@ -2371,30 +2372,12 @@ Node QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv) {
 
   if(bExpression.size()>0)
   {
-    Node returnNode;
-    std::vector<Integer> constElm;
-    for(int i=0;i<(int)bExpression.size();i++)
-    {
-      if(isConstQE(bExpression[i]))
-      {
-        constElm.push_back(getIntegerFromNode(bExpression[i]));
-      }
-    }
-    if(constElm.size() > 0)
-    {
-      std::sort(constElm.begin(),constElm.end());
-      returnNode = fromIntegerToNodeQE(constElm[0]);
-    }
-    else
-    {
-      returnNode = bExpression.back();
-    }
-    return returnNode;
+    return bExpression;
   }
   else
   {
-    Node returnNode = mkBoolNode(false);
-    return returnNode;
+    bExpression.push_back(mkBoolNode(false));
+    return bExpression;
   }
 }
 
@@ -2698,50 +2681,47 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n,
 
 Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
                                                  Integer lcmCalc) {
-  Node test = getMinimalExprForRightProjection(n, bv);
-  test = Rewriter::rewrite(test);
-  Debug("expr-qetest")<<"Minimal Expression "<<test<<std::endl;
+  std::vector < Node > test = getMinimalExprForRightProjection(n, bv);
   Node result;
   Node rp;
-  if(test == mkBoolNode(false)) {
-    result = test;
-    Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
-    return result;
-  } else {
-    Integer j = 1;
-    TNode b;
-    Integer lcm = lcmCalc;
-    Debug("expr-qetest")<<"lcm in rp "<<lcm<<std::endl;
-    Node bExpr;
-    std::vector<Node> rightProjections;
-    while(j <= lcm) {
-      if(isConstQE(test)) {
-        Integer y = getIntegerFromNode(test) + j;
-        bExpr = fromIntegerToNodeQE(y);
-      } else {
-        bExpr = NodeManager::currentNM()->mkNode(kind::PLUS, test,
-                                                 fromIntegerToNodeQE(j));
-        bExpr = Rewriter::rewrite(bExpr);
-      }
-      b = bExpr;
-      Debug("expr-qetest")<<"before replacement b "<<b<<std::endl;
-      rp = replaceBoundVarRightProjection(n, b, bv);
-      rightProjections.push_back(rp);
-      j = j + 1;
-    }
-    if(rightProjections.size() > 1) {
-      result = NodeManager::currentNM()->mkNode(kind::OR, rightProjections);
-      //  result = Rewriter::rewrite(result);
+  std::vector<Node> rightProjections;
+  for(int i = 0; i < (int) test.size(); i++) {
+    if(test[i] == mkBoolNode(false)) {
+      result = test[i];
       Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
-      return result;
+      break;
     } else {
-      result = rightProjections.back();
-      //   result = Rewriter::rewrite(result);
-      Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
-      return result;
+      Integer j = 1;
+      TNode b;
+      Integer lcm = lcmCalc;
+      Debug("expr-qetest")<<"lcm in rp "<<lcm<<std::endl;
+      Node bExpr;
+
+      while(j <= lcm) {
+        if(isConstQE(test[i])) {
+          Integer y = getIntegerFromNode(test[i]) + j;
+          bExpr = fromIntegerToNodeQE(y);
+        } else {
+          bExpr = NodeManager::currentNM()->mkNode(kind::PLUS, test[i],
+                                                   fromIntegerToNodeQE(j));
+          bExpr = Rewriter::rewrite(bExpr);
+        }
+        b = bExpr;
+        Debug("expr-qetest")<<"before replacement b "<<b<<std::endl;
+        rp = replaceBoundVarRightProjection(n, b, bv);
+        rightProjections.push_back(rp);
+        j = j + 1;
+      }
     }
   }
-
+  if(rightProjections.size() > 1) {
+          result = NodeManager::currentNM()->mkNode(kind::OR, rightProjections);
+          Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
+        } else {
+          result = rightProjections.back();
+          Debug("expr-qetest")<<"Result After Replacement "<<result<<std::endl;
+        }
+  return result;
 }
 Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
                                               QuantifierEliminate q) {
