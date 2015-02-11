@@ -3784,8 +3784,6 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
       {
         Debug("expr-qetest")<<"Type checker has found no problem "<<std::endl;
         Debug("expr-qetest")<<"Prenex checker has found no problem "<<std::endl;
-        Debug("expr-qetest")<<"Before computeProjections expression "<<temp<<std::endl;
-        Debug("expr-qetest")<<"Before computeProjections kind "<<temp.getKind()<<std::endl;
         final = computeProjections(temp,qe);
         Debug("expr-qetest")<<"After qe "<<final<<std::endl;
         qe.setEquivalentExpression(final);
@@ -3814,7 +3812,8 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         {
           Debug("expr-qetest")<<"Type checker has found no problem "<<std::endl;
           Debug("expr-qetest")<<"Prenex checker has found no problem "<<std::endl;
-          Debug("expr-qetest")<<"Before qe expression "<<temp<<std::endl;
+          Debug("expr-qetest")<<"Before computeProjections expression "<<temp<<std::endl;
+          Debug("expr-qetest")<<"Before computeProjections kind "<<temp.getKind()<<std::endl;
           final = computeProjections(temp,qe);
           Debug("expr-qetest")<<"After qe "<<final<<std::endl;
           qe.setEquivalentExpression(final);
