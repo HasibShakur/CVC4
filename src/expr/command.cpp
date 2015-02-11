@@ -228,7 +228,7 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() 
   }
   else
   {
-    d_commandStatus = CommandFailure("Failure");
+    d_commandStatus = new CommandFailure("Failure");
   }
   printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
 }
