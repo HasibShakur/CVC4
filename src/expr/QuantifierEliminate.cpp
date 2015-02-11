@@ -3748,8 +3748,8 @@ Node QuantifierEliminate::prenexChecker(Node n) {
 
 QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
                                                   std::string optionQE) {
-  Debug("expr-qetest")<<"Before qe  "<<n<<std::endl;
-  Debug("expr-qetest")<<"Before qe kind "<<n.getKind()<<std::endl;
+  Debug("expr-qetest")<<"Before qeEngine  "<<n<<std::endl;
+  Debug("expr-qetest")<<"Before qeEnine kind "<<n.getKind()<<std::endl;
   QuantifierEliminate qe;
   qe.setOriginalExpression(n);
   qe.setNumberOfQuantElim(numOfQuantifiers);
@@ -3784,7 +3784,8 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
       {
         Debug("expr-qetest")<<"Type checker has found no problem "<<std::endl;
         Debug("expr-qetest")<<"Prenex checker has found no problem "<<std::endl;
-        Debug("expr-qetest")<<"Before qe expression "<<temp<<std::endl;
+        Debug("expr-qetest")<<"Before computeProjections expression "<<temp<<std::endl;
+        Debug("expr-qetest")<<"Before computeProjections kind "<<temp.getKind()<<std::endl;
         final = computeProjections(temp,qe);
         Debug("expr-qetest")<<"After qe "<<final<<std::endl;
         qe.setEquivalentExpression(final);

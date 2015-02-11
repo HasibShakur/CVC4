@@ -216,7 +216,7 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine) throw() {
   d_commandStatus = CommandSuccess::instance();
 }
 
-void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() {
+void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw(LogicException) {
 //  ExprManager* em = smtEngine->getExprManager();
 //  NodeManager* nm = NodeManager::fromExprManager(em);
   smt::SmtScope scope(smtEngine);
@@ -225,18 +225,18 @@ void QESimplifyCommand::invoke(SmtEngine* smtEngine, std::ostream& out) throw() 
   std::string expr;
   if(qe.getMessage() == "success")
   {
-    std::string temp = "success ";
     expr = qe.getEquivalentExpression().toString();
-    expr = temp + expr;
+    out << expr << std::endl;
+    d_commandStatus = CommandSuccess::instance();
   }
   else
   {
-    std::string temp = qe.getMessage();
-    expr = qe.getEquivalentExpression().toString();
-    expr = temp +" " + expr;
+    const char* msg = qe.getMessage();
+    throw LogicException(msg);
+    d_commandStatus = CommandFailure::instance();
   }
-  out << expr << std::endl;
-  d_commandStatus = CommandSuccess::instance();
+
+
   printResult(out, smtEngine->getOption("command-verbosity:" + getCommandName()).getIntegerValue().toUnsignedInt());
 }
 

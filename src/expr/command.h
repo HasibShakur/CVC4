@@ -332,13 +332,13 @@ protected:
   std::string optionQE;
 public:
   QESimplifyCommand(const Expr& e) throw();
-  QESimplifyCommand(const Expr& e, int n,std::string option) throw();
+  QESimplifyCommand(const Expr& e, int n,std::string option) throw ();
   ~QESimplifyCommand() throw() {}
   CVC4::Expr getExpr() const throw();
   int getNumOfQuantifiersToEliminate() const throw();
   std::string getOption() const throw();
   void invoke(SmtEngine* smtEngine) throw();
-  void invoke(SmtEngine* smtEngine, std::ostream& out) throw();
+  void invoke(SmtEngine* smtEngine, std::ostream& out) throw(LogicException);
   Command* exportTo(ExprManager* exprManager, ExprManagerMapCollection& variableMap);
   Command* clone() const;
   std::string getCommandName() const throw();
