@@ -80,6 +80,7 @@ private:
   static Node boundVarTypeChecker(Node n);
   static bool checkType(Node n);
   static Node prenexChecker(Node n);
+  static Node getCoefficientsOfExpression(Node n,Node bv);
 
   //non static methods
 

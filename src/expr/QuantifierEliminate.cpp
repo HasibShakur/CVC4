@@ -343,6 +343,47 @@ bool QuantifierEliminate::isEquationQE(Node n) {
     return false;
 }
 
+Node QuantifierEliminate::getCoefficientsOfExpression(Node n,Node bv)
+{
+  Node coeff;
+  if(n.hasBoundVar() && containsSameBoundVar(n,bv) && isVarQE(n))
+  {
+    coeff = fromIntegerToNodeQE(1);
+  }
+  else if(n.hasBoundVar() && containsSameBoundVar(n,bv) && isVarWithCoefficientsQE(n))
+  {
+    coeff = n[0];
+  }
+  else
+  {
+    for(Node::iterator i = n.begin(),iEnd = n.end();
+        i != iEnd;
+        ++i)
+    {
+      Node c1 = *i;
+      if(c1.hasBoundVar() && containsSameBoundVar(c1,bv))
+      {
+        if(isVarQE(c1))
+        {
+          coeff = fromIntegerToNodeQE(1);
+        }
+        else if(isVarWithCoefficientsQE(c1))
+        {
+          coeff = c1[0];
+        }
+        else
+        {
+          coeff = getCoefficientsOfExpression(c1,bv);
+        }
+
+      }
+      else
+      {}
+    }
+  }
+  Debug("expr-qetest")<<"coefficient "<<coeff<<std::endl;
+
+}
 Node QuantifierEliminate::eliminateImpliesQE(Node body) {
   if(isLiteralQE(body)) {
     return body;
@@ -2087,8 +2128,16 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,
       if(c.getKind() == kind::AND || c.getKind() == kind::OR) {
         toReturn = rewriteRelationOperatorQE(c, bv, q);
       } else {
-        toReturn = replaceRelationOperatorQE(c, bv);
-        Debug("expr-qetest")<<"Node temp "<<toReturn<<std::endl;
+        if((c.getKind() == kind::EQUAL && c[0].getKind() == kind::INTS_MODULUS) ||
+            (c.getKind() == kind::EQUAL && c[1].getKind() == kind::INTS_MODULUS))
+        {
+          toReturn = c;
+        }
+        else
+        {
+          toReturn = replaceRelationOperatorQE(c, bv);
+          Debug("expr-qetest")<<"Node temp "<<toReturn<<std::endl;
+        }
       }
       replaceNode.push_back(toReturn);
     }
@@ -2168,26 +2217,73 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
           } else if(child.getKind() == kind::AND) {
             if(child_inner[0].hasBoundVar()
             && containsSameBoundVar(child_inner[0], bv)) {
-              temp1 = temp1 & true;
+              Node coefficient = getCoefficientsOfExpression(child_inner[0],bv);
+              if(getIntegerFromNode(coefficient) > 0)
+              {
+                temp1 = temp1 & true;
+              }
+              else
+              {
+                temp1 = temp1 & false;
+              }
             } else {
-              temp1 = temp1 & false;
+              Node coefficient = getCoefficientsOfExpression(child_inner[1],bv);
+              if(getIntegerFromNode(coefficient) > 0)
+              {
+                temp1 = temp1 & false;
+              }
+              else
+              {
+                temp1 = temp1 & true;
+              }
             }
           } else {
             if(child_inner[0].hasBoundVar()
             && containsSameBoundVar(child_inner[0], bv)) {
-              temp1 = temp1 | true;
+              Node coefficient = getCoefficientsOfExpression(child_inner[0],bv);
+              if(getIntegerFromNode(coefficient) > 0)
+              {
+                temp1 = temp1 | true;
+              }
+              else
+              {
+                temp1 = temp1 | false;
+              }
             } else {
-              temp1 = temp1 | false;
+              Node coefficient = getCoefficientsOfExpression(child_inner[1],bv);
+              if(getIntegerFromNode(coefficient) > 0)
+              {
+                temp1 = temp1 | false;
+              }
+              else
+              {
+                temp1 = temp1 | true;
+              }
             }
           }
         }
         leftProjectionNode.push_back(temp1);
       } else {
         if(child[0].hasBoundVar() && containsSameBoundVar(child[0], bv)) {
-
-          leftProjectionNode.push_back(true);
+          Node coefficient = getCoefficientsOfExpression(child[0],bv);
+          if(getIntegerFromNode(coefficient) > 0)
+          {
+            leftProjectionNode.push_back(true);
+          }
+          else
+          {
+            leftProjectionNode.push_back(false);
+          }
         } else {
-          leftProjectionNode.push_back(false);
+          Node coefficient = getCoefficientsOfExpression(child[1],bv);
+          if(getIntegerFromNode(coefficient) > 0)
+          {
+            leftProjectionNode.push_back(false);
+          }
+          else
+          {
+            leftProjectionNode.push_back(true);
+          }
         }
       }
 
