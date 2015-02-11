@@ -338,7 +338,7 @@ public:
   int getNumOfQuantifiersToEliminate() const throw();
   std::string getOption() const throw();
   void invoke(SmtEngine* smtEngine) throw();
-  void invoke(SmtEngine* smtEngine, std::ostream& out) throw(LogicException);
+  void invoke(SmtEngine* smtEngine, std::ostream& out) throw();
   Command* exportTo(ExprManager* exprManager, ExprManagerMapCollection& variableMap);
   Command* clone() const;
   std::string getCommandName() const throw();
