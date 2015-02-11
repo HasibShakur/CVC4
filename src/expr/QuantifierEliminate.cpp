@@ -382,7 +382,7 @@ Node QuantifierEliminate::getCoefficientsOfExpression(Node n,Node bv)
     }
   }
   Debug("expr-qetest")<<"coefficient "<<coeff<<std::endl;
-
+  return coeff;
 }
 Node QuantifierEliminate::eliminateImpliesQE(Node body) {
   if(isLiteralQE(body)) {
@@ -2132,6 +2132,7 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,
             (c.getKind() == kind::EQUAL && c[1].getKind() == kind::INTS_MODULUS))
         {
           toReturn = c;
+          Debug("expr-qetest")<<"No rewriting on divisibility node "<<toReturn<<std::endl;
         }
         else
         {
