@@ -2257,10 +2257,14 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
             }
           }
         }
-        Node unchangedExp = NodeManager::currentNM()->mkNode(child.getKind(),unchangedNodes);
-        Debug("expr-qetest")<<"Unchanged Expression "<<unchangedExp<<std::endl;
+        if(!unchangedNodes.empty())
+        {
+          Node unchangedExp = NodeManager::currentNM()->mkNode(child.getKind(),unchangedNodes);
+          Debug("expr-qetest")<<"Unchanged Expression "<<unchangedExp<<std::endl;
+          lpExpressions.push_back(unchangedExp);
+        }
         lpExpressions.push_back(mkBoolNode(temp1));
-        lpExpressions.push_back(unchangedExp);
+
         // leftProjectionNode.push_back(temp1);
       } else {
         if(child[0].hasBoundVar() && containsSameBoundVar(child[0], bv)) {
@@ -2268,24 +2272,20 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
           if(getIntegerFromNode(coefficient) > 0)
           {
             lpExpressions.push_back(mkBoolNode(true));
-            //leftProjectionNode.push_back(true);
           }
           else
           {
             lpExpressions.push_back(mkBoolNode(false));
-            //leftProjectionNode.push_back(false);
           }
         } else if(child[1].hasBoundVar() && containsSameBoundVar(child[1], bv)) {
           Node coefficient = getCoefficientsOfExpression(child[1],bv);
           if(getIntegerFromNode(coefficient) > 0)
           {
             lpExpressions.push_back(mkBoolNode(false));
-            //leftProjectionNode.push_back(false);
           }
           else
           {
             lpExpressions.push_back(mkBoolNode(true));
-            //leftProjectionNode.push_back(true);
           }
         }
         else
@@ -2296,9 +2296,6 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
     }
     Node lp = NodeManager::currentNM()->mkNode(n.getKind(),lpExpressions);
     Debug("expr-qetest")<<"lp "<<lp<<std::endl;
-    while(!lpExpressions.empty()) {
-      lpExpressions.pop_back();
-    }
     returnNode = lp;
     if(divisibilityNodes.size() > 1) {
       Node divisibilities = NodeManager::currentNM()->mkNode(kind::AND,
@@ -2317,8 +2314,13 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
     Debug("expr-qetest")<<"After rewriting left projection "<<returnNode<<std::endl;
     return returnNode;
   } else {
-    if(n.getKind() == kind::NOT) {
+    /*if(n.getKind() == kind::NOT) {
       if(n[0][0].hasBoundVar() && containsSameBoundVar(n[0][0], bv)) {
+        Node coeff = getCoefficientsOfExpression(n[0][0],bv);
+        if(getIntegerFromNode(coeff) >0)
+        {
+          returnNode = mkBoolNode(false)
+        }
         returnNode = mkBoolNode(false);
         if(divisibilityNodes.size() > 1) {
           Node divisibilities = NodeManager::currentNM()->mkNode(
@@ -2359,10 +2361,19 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
         Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
         return returnNode;
       }
-    } else {
+    } else {*/
       Node boolValue;
+      Node coeff;
       if(n[0].hasBoundVar() && containsSameBoundVar(n[0], bv)) {
-        boolValue = mkBoolNode(true);
+        coeff = getCoefficientsOfExpression(n[0],bv);
+        if(getIntegerFromNode(coeff) > 0)
+        {
+          boolValue = mkBoolNode(true);
+        }
+        else
+        {
+          boolValue = mkBoolNode(false);
+        }
         if(divisibilityNodes.size() > 1) {
           Node divisibilities = NodeManager::currentNM()->mkNode(
           kind::AND, divisibilityNodes);
@@ -2380,7 +2391,15 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
         Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
         // return returnNode;
       } else if(n[1].hasBoundVar() && containsSameBoundVar(n[1],bv)) {
-        boolValue = mkBoolNode(false);
+        coeff = getCoefficientsOfExpression(n[1],bv);
+        if(getIntegerFromNode(coeff) > 0)
+        {
+          boolValue = mkBoolNode(false);
+        }
+        else
+        {
+          boolValue = mkBoolNode(true);
+        }
         if(divisibilityNodes.size() > 1) {
           Node divisibilities = NodeManager::currentNM()->mkNode(
           kind::AND, divisibilityNodes);
@@ -2396,7 +2415,6 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
         Debug("expr-qetest")<<"Before rewriting lp "<<returnNode<<std::endl;
         returnNode = Rewriter::rewrite(returnNode);
         Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
-        // return returnNode;
       }
       else
       {
