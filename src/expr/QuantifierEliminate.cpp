@@ -2240,7 +2240,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
               {
                 temp1 = temp1 | false;
               }
-            } else if (child_inner[0].hasBoundVar() && containsSameBoundVar(child_inner[1],bv)) {
+            } else if (child_inner[1].hasBoundVar() && containsSameBoundVar(child_inner[1],bv)) {
               Node coefficient = getCoefficientsOfExpression(child_inner[1],bv);
               if(getIntegerFromNode(coefficient) > 0)
               {
