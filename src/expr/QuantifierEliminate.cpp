@@ -2181,7 +2181,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
                                                 Integer lcmCalc) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   std::vector<Node> lpExpressions;
-  std::vector<bool> leftProjectionNode;
+  std::vector<Node> unchangedNodes;
   std::vector<Node> divisibilityNodes;
   Node returnNode;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
