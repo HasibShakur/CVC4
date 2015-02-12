@@ -2434,10 +2434,11 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
         returnNode = Rewriter::rewrite(returnNode);
         Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
       }
+      return returnNode;
     }
-    return returnNode;
+
   }
-}
+
 std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(
     Node n, Node bv) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
