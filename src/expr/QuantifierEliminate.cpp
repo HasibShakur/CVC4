@@ -343,42 +343,27 @@ bool QuantifierEliminate::isEquationQE(Node n) {
     return false;
 }
 
-Node QuantifierEliminate::getCoefficientsOfExpression(Node n,Node bv)
-{
+Node QuantifierEliminate::getCoefficientsOfExpression(Node n, Node bv) {
   Node coeff;
-  if(n.hasBoundVar() && containsSameBoundVar(n,bv) && isVarQE(n))
-  {
+  if(n.hasBoundVar() && containsSameBoundVar(n, bv) && isVarQE(n)) {
     coeff = fromIntegerToNodeQE(1);
-  }
-  else if(n.hasBoundVar() && containsSameBoundVar(n,bv) && isVarWithCoefficientsQE(n))
-  {
+  } else if(n.hasBoundVar() && containsSameBoundVar(n, bv)
+      && isVarWithCoefficientsQE(n)) {
     coeff = n[0];
-  }
-  else
-  {
-    for(Node::iterator i = n.begin(),iEnd = n.end();
-        i != iEnd;
-        ++i)
-    {
+  } else {
+    for(Node::iterator i = n.begin(), iEnd = n.end(); i != iEnd; ++i) {
       Node c1 = *i;
-      if(c1.hasBoundVar() && containsSameBoundVar(c1,bv))
-      {
-        if(isVarQE(c1))
-        {
+      if(c1.hasBoundVar() && containsSameBoundVar(c1, bv)) {
+        if(isVarQE(c1)) {
           coeff = fromIntegerToNodeQE(1);
-        }
-        else if(isVarWithCoefficientsQE(c1))
-        {
+        } else if(isVarWithCoefficientsQE(c1)) {
           coeff = c1[0];
-        }
-        else
-        {
-          coeff = getCoefficientsOfExpression(c1,bv);
+        } else {
+          coeff = getCoefficientsOfExpression(c1, bv);
         }
 
+      } else {
       }
-      else
-      {}
     }
   }
   Debug("expr-qetest")<<"coefficient "<<coeff<<std::endl;
@@ -2128,9 +2113,9 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,
       if(c.getKind() == kind::AND || c.getKind() == kind::OR) {
         toReturn = rewriteRelationOperatorQE(c, bv, q);
       } else {
-        if((c.getKind() == kind::EQUAL && c[0].getKind() == kind::INTS_MODULUS) ||
-            (c.getKind() == kind::EQUAL && c[1].getKind() == kind::INTS_MODULUS))
-        {
+        if((c.getKind() == kind::EQUAL && c[0].getKind() == kind::INTS_MODULUS)
+            || (c.getKind() == kind::EQUAL
+                && c[1].getKind() == kind::INTS_MODULUS)) {
           toReturn = c;
           Debug("expr-qetest")<<"No rewriting on divisibility node "<<toReturn<<std::endl;
         }
@@ -2195,12 +2180,15 @@ Node QuantifierEliminate::doRewriting(Node n, Node bv, QuantifierEliminate q) {
 Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
                                                 Integer lcmCalc) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
+  std::vector<Node> lpExpressions;
   std::vector<bool> leftProjectionNode;
   std::vector<Node> divisibilityNodes;
   Node returnNode;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
+      std::vecot<Node> unchangedNodes;
       Node child = *i;
+      Debug("expr-qetest")<<"child in lp "<<child<<std::endl;
       if(child.getKind() == kind::EQUAL) {
         Debug("expr-qetest")<<"divisibility child in lp "<<child<<std::endl;
         divisibilityNodes.push_back(child);
@@ -2210,8 +2198,6 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
         ++j) {
           Node child_inner = *j;
           Debug("expr-qetest")<<"child_inner in lp "<<child_inner<<std::endl;
-          Debug("expr-qetest")<<"child_inner[0] in lp "<<child_inner[0]<<std::endl;
-          Debug("expr-qetest")<<"child_inner[1] in lp "<<child_inner[1]<<std::endl;
           if(child_inner.getKind() == kind::EQUAL) {
             Debug("expr-qetest")<<"divisibility child_inner in lp "<<child<<std::endl;
             divisibilityNodes.push_back(child_inner);
@@ -2227,7 +2213,8 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
               {
                 temp1 = temp1 & false;
               }
-            } else {
+            } else if(child_inner[1].hasBoundVar()
+            && containsSameBoundVar(child_inner[1], bv)) {
               Node coefficient = getCoefficientsOfExpression(child_inner[1],bv);
               if(getIntegerFromNode(coefficient) > 0)
               {
@@ -2237,6 +2224,10 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
               {
                 temp1 = temp1 & true;
               }
+            }
+            else
+            {
+              unchangedNodes.push_back(child_inner);
             }
           } else {
             if(child_inner[0].hasBoundVar()
@@ -2250,7 +2241,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
               {
                 temp1 = temp1 | false;
               }
-            } else {
+            } else if (child_inner[0].hasBoundVar() && containsSameBoundVar(child_inner[1],bv)) {
               Node coefficient = getCoefficientsOfExpression(child_inner[1],bv);
               if(getIntegerFromNode(coefficient) > 0)
               {
@@ -2261,46 +2252,55 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
                 temp1 = temp1 | true;
               }
             }
+            else
+            {
+              unchangedNodes.push_back(child_inner);
+            }
           }
         }
-        leftProjectionNode.push_back(temp1);
+        Node unchangedExp = NodeManager::currentNM()->mkNode(child.getKind(),unchangedNodes);
+        Debug("expr-qetest")<<"Unchanged Expression "<<unchangedExp<<std::endl;
+        lpExpressions.push_back(mkBoolNode(temp1));
+        lpExpressions.push_back(unchangedExp);
+        // leftProjectionNode.push_back(temp1);
       } else {
         if(child[0].hasBoundVar() && containsSameBoundVar(child[0], bv)) {
           Node coefficient = getCoefficientsOfExpression(child[0],bv);
           if(getIntegerFromNode(coefficient) > 0)
           {
-            leftProjectionNode.push_back(true);
+            lpExpressions.push_back(mkBoolNode(true));
+            //leftProjectionNode.push_back(true);
           }
           else
           {
-            leftProjectionNode.push_back(false);
+            lpExpressions.push_back(mkBoolNode(false));
+            //leftProjectionNode.push_back(false);
           }
-        } else {
+        } else if(child[1].hasBoundVar() && containsSameBoundVar(child[1], bv)) {
           Node coefficient = getCoefficientsOfExpression(child[1],bv);
           if(getIntegerFromNode(coefficient) > 0)
           {
-            leftProjectionNode.push_back(false);
+            lpExpressions.push_back(mkBoolNode(false));
+            //leftProjectionNode.push_back(false);
           }
           else
           {
-            leftProjectionNode.push_back(true);
+            lpExpressions.push_back(mkBoolNode(true));
+            //leftProjectionNode.push_back(true);
           }
         }
-      }
-
-    }
-    bool temp = true;
-    for(int i = 0; i < (int) leftProjectionNode.size(); i++) {
-      if(n.getKind() == kind::AND) {
-        temp = temp & leftProjectionNode[i];
-      } else {
-        temp = temp | leftProjectionNode[i];
+        else
+        {
+          lpExpressions.push_back(child);
+        }
       }
     }
-    while(!leftProjectionNode.empty()) {
-      leftProjectionNode.pop_back();
+    Node lp = NodeManager::currentNM()->mkNode(n.getKind(),lpExpressions);
+    Debug("expr-qetest")<<"lp "<<lp<<std::endl;
+    while(!lpExpressions.empty()) {
+      lpExpressions.pop_back();
     }
-    returnNode = mkBoolNode(temp);
+    returnNode = lp;
     if(divisibilityNodes.size() > 1) {
       Node divisibilities = NodeManager::currentNM()->mkNode(kind::AND,
       divisibilityNodes);
@@ -2313,9 +2313,9 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
       divisibilityNodes.pop_back();
     } else {
     }
-    Debug("expr-qetest")<<"Before rewriting lp "<<returnNode<<std::endl;
+    Debug("expr-qetest")<<"Before rewriting left projection "<<returnNode<<std::endl;
     returnNode = Rewriter::rewrite(returnNode);
-    Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
+    Debug("expr-qetest")<<"After rewriting left projection "<<returnNode<<std::endl;
     return returnNode;
   } else {
     if(n.getKind() == kind::NOT) {
@@ -2361,16 +2361,17 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
         return returnNode;
       }
     } else {
+      Node boolValue;
       if(n[0].hasBoundVar() && containsSameBoundVar(n[0], bv)) {
-        returnNode = mkBoolNode(true);
+        boolValue = mkBoolNode(true);
         if(divisibilityNodes.size() > 1) {
           Node divisibilities = NodeManager::currentNM()->mkNode(
           kind::AND, divisibilityNodes);
-          returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
+          returnNode = NodeManager::currentNM()->mkNode(kind::AND, boolValue,
           divisibilities);
         } else if(divisibilityNodes.size() == 1) {
           Node divisibilities = divisibilityNodes.back();
-          returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
+          returnNode = NodeManager::currentNM()->mkNode(kind::AND, boolValue,
           divisibilities);
           divisibilityNodes.pop_back();
         } else {
@@ -2378,17 +2379,17 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
         Debug("expr-qetest")<<"Before rewriting lp "<<returnNode<<std::endl;
         returnNode = Rewriter::rewrite(returnNode);
         Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
-        return returnNode;
-      } else {
-        returnNode = mkBoolNode(false);
+        // return returnNode;
+      } else if(n[1].hasBoundVar() && containsSameBoundVar(n[1],bv)) {
+        boolValue = mkBoolNode(false);
         if(divisibilityNodes.size() > 1) {
           Node divisibilities = NodeManager::currentNM()->mkNode(
           kind::AND, divisibilityNodes);
-          returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
+          returnNode = NodeManager::currentNM()->mkNode(kind::AND, boolValue,
           divisibilities);
         } else if(divisibilityNodes.size() == 1) {
           Node divisibilities = divisibilityNodes.back();
-          returnNode = NodeManager::currentNM()->mkNode(kind::AND, returnNode,
+          returnNode = NodeManager::currentNM()->mkNode(kind::AND, boolValue,
           divisibilities);
           divisibilityNodes.pop_back();
         } else {
@@ -2396,9 +2397,28 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
         Debug("expr-qetest")<<"Before rewriting lp "<<returnNode<<std::endl;
         returnNode = Rewriter::rewrite(returnNode);
         Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
-        return returnNode;
+        // return returnNode;
+      }
+      else
+      {
+        if(divisibilityNodes.size() > 1) {
+          Node divisibilities = NodeManager::currentNM()->mkNode(
+          kind::AND, divisibilityNodes);
+          returnNode = NodeManager::currentNM()->mkNode(kind::AND, n,
+          divisibilities);
+        } else if(divisibilityNodes.size() == 1) {
+          Node divisibilities = divisibilityNodes.back();
+          returnNode = NodeManager::currentNM()->mkNode(kind::AND, n,
+          divisibilities);
+          divisibilityNodes.pop_back();
+        } else {
+        }
+        Debug("expr-qetest")<<"Before rewriting lp "<<returnNode<<std::endl;
+        returnNode = Rewriter::rewrite(returnNode);
+        Debug("expr-qetest")<<"After rewriting lp "<<returnNode<<std::endl;
       }
     }
+    return returnNode;
   }
 }
 std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(
