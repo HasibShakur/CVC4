@@ -2181,12 +2181,11 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv,
                                                 Integer lcmCalc) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   std::vector<Node> lpExpressions;
-  std::vector<Node> unchangedNodes;
   std::vector<Node> divisibilityNodes;
   Node returnNode;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
     for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
-      std::vecot<Node> unchangedNodes;
+      std::vector<Node> unchangedNodes;
       Node child = *i;
       Debug("expr-qetest")<<"child in lp "<<child<<std::endl;
       if(child.getKind() == kind::EQUAL) {
