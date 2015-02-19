@@ -2261,7 +2261,7 @@ std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(Node n, 
        Node c = *i;
        Debug("expr-qetest")<<"Node c "<<c<<std::endl;
        if(c.getKind() == kind::AND || c.getKind() == kind::OR) {
-         toReturn = getMinimalExprForRightProjection(c,bv);
+         getMinimalExprForRightProjection(c,bv);
        } else {
          if((c.getKind() == kind::EQUAL && c[0].getKind() == kind::INTS_MODULUS)
              || (c.getKind() == kind::EQUAL
