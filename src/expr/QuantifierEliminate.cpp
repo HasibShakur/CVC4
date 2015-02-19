@@ -1340,7 +1340,6 @@ Node QuantifierEliminate::replaceLEQQE(Node n, Node bv) {
           for(Node::iterator leftBegin = tempLeft.begin(), leftEnd =
               tempLeft.end(); leftBegin != leftEnd; ++leftBegin) {
             Node childL = *leftBegin;
-            o
             if(isConstQE(childL)) {
               Integer x = getIntegerFromNode(childL);
               x = x - 1;
