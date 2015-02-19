@@ -2306,83 +2306,48 @@ std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(Node n, 
        return bExpression;
      }
    }
-
-  /*if(n.getKind() == kind::AND || n.getKind() == kind::OR)
-  {
-    for(Node::iterator r_begin = n.begin(), r_end = n.end();
-    r_begin != r_end;
-    ++r_begin)
-    {
-      Node childRP = *r_begin;
-      if(childRP.getKind() == kind::AND || childRP.getKind() == kind::OR)
-      {
-        for(Node::iterator inner_begin = childRP.begin(), inner_end = childRP.end();
-        inner_begin != inner_end;
-        ++inner_begin)
-        {
-          Node childRP_inner = *inner_begin;
-          if(childRP_inner[1].hasBoundVar() && containsSameBoundVar(childRP_inner[1],bv))
-          {
-            Debug("expr-qetest")<<"b Expression "<<childRP_inner[0]<<std::endl;
-            bExpression.push_back(childRP_inner[0]);
-          }
-        }
-      }
-      else if(childRP.getKind() == kind::EQUAL) {}
-      else
-      {
-        if(childRP[1].hasBoundVar() && containsSameBoundVar(childRP[1],bv))
-        {
-          Debug("expr-qetest")<<"b Expression "<<childRP[0]<<std::endl;
-          bExpression.push_back(childRP[0]);
-        }
-      }
-
-    }
-  }
-  else
-  {
-    if(n.getKind() == kind::NOT)
-    {
-      if(n[0][1].hasBoundVar() && containsSameBoundVar(n[0][1],bv))
-      {
-        Debug("expr-qetest")<<"b Expression "<<n[0][0]<<std::endl;
-        bExpression.push_back(n[0][0]);
-      }
-      else
-      {
-        Debug("expr-qetest")<<"No bExpression "<<std::endl;
-      }
-    }
-    else
-    {
-      if(n[1].hasBoundVar() && containsSameBoundVar(n[1],bv))
-      {
-        Debug("expr-qetest")<<"b Expression "<<n[0]<<std::endl;
-        bExpression.push_back(n[0]);
-      }
-      else
-      {
-        Debug("expr-qetest")<<"No bExpression "<<std::endl;
-      }
-    }
-  }
-
-  if(bExpression.size()>0)
-  {
-    return bExpression;
-  }
-  else
-  {
-    bExpression.push_back(mkBoolNode(false));
-    return bExpression;
-  }*/
 }
 
 Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
                                                          Node bv) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   Node temp = n;
+ /* Node toReturn;
+  std::vector<Node> replaceNode;
+    Debug("expr-qetest")<<"Expression in replace for right projection "<<n<<std::endl;
+    Debug("expr-qetest")<<"bound var "<<bv<<std::endl;
+    if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
+      for(Node::iterator i = n.begin(), iEnd = n.end(); i != iEnd; ++i) {
+        Node c = *i;
+        Debug("expr-qetest")<<"Node c "<<c<<std::endl;
+        if(c.getKind() == kind::AND || c.getKind() == kind::OR) {
+          toReturn = replaceBoundVarRightProjection(c, bExpr,bv);
+        } else {
+          if((c.getKind() == kind::EQUAL && c[0].getKind() == kind::INTS_MODULUS)
+              || (c.getKind() == kind::EQUAL
+                  && c[1].getKind() == kind::INTS_MODULUS)) {
+            toReturn = c;
+           // Debug("expr-qetest")<<"No left infinity on divisibility node "<<toReturn<<std::endl;
+          }
+          else
+          {
+            toReturn = replaceWithLeftInfinity(c,bv);
+            Debug("expr-qetest")<<"left inifinity "<<toReturn<<std::endl;
+          }
+        }
+        replaceNode.push_back(toReturn);
+      }
+      Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
+                                                         replaceNode);
+      returnNode = Rewriter::rewrite(returnNode);
+      Debug("expr-qetest")<<"return from left projection "<<returnNode<<std::endl;
+      return returnNode;
+    } else {
+      Node returnNode = replaceWithLeftInfinity(n, bv);
+      Debug("expr-qetest")<<"return from left projection "<<returnNode<<std::endl;
+      return returnNode;
+    }*/
+
   for(Node::iterator e_begin = n.begin(), e_end = n.end();
   e_begin != e_end;
   ++e_begin)
