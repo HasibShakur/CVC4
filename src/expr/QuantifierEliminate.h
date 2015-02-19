@@ -51,7 +51,7 @@ private:
   static Node computeProjections(Node n, QuantifierEliminate q);
   static Node computeXValueForLeftProjection(Node n, Integer lcmCalc);
   static Node parseEquation(Node n, Node bv, QuantifierEliminate q);
-  static Node computeLeftProjection(Node n, Node bv, Integer lcmCalc);
+  static Node computeLeftProjection(Node n, Node bv);
   static Node computeRightProjection(Node n, Node bv, Integer lcmCalc);
   static Node doRewriting(Node n, Node bv, QuantifierEliminate q);
   static Node eliminateImpliesQE(Node body);
@@ -81,6 +81,7 @@ private:
   static bool checkType(Node n);
   static Node prenexChecker(Node n);
   static Node getCoefficientsOfExpression(Node n,Node bv);
+  static Node replaceWithLeftInfinity(Node n,Node boundVar);
 
   //non static methods
 
