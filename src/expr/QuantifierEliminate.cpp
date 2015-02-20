@@ -2275,7 +2275,7 @@ std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(Node n, 
            {
              toReturn = c[0];
              Debug("expr-qetest")<<"Node temp "<<toReturn<<std::endl;
-             bExpression.push_back(temp);
+             bExpression.push_back(toReturn);
            }
 
          }
