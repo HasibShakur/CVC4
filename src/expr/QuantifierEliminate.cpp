@@ -2271,11 +2271,11 @@ std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(Node n, 
          }
          else
          {
-           toReturn = replaceWithLeftInfinity(c,bv);
            if(c[1].hasBoundVar() && containsSameBoundVar(c[1],bv))
            {
+             toReturn = c[0];
              Debug("expr-qetest")<<"Node temp "<<toReturn<<std::endl;
-             bExpression.push_back(c[0]);
+             bExpression.push_back(temp);
            }
 
          }
