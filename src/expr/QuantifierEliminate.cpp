@@ -2734,7 +2734,6 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
       args = doRewriting(args, var, q);
       Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
       Integer lcmCalc = lcmValue;
-      Debug("expr-qetest")<<"Lcm after rewriting complete "<<lcmCalc<<std::endl;
       temp = computeLeftProjection(args, var);
       left = computeXValueForLeftProjection(temp, lcmCalc);
       Debug("expr-qetest")<<"left "<<left<<std::endl;
@@ -2742,6 +2741,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
       Debug("expr-qetest")<<"right "<<right<<std::endl;
       final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
       args = final.negate();
+      Debug("expr-qetest")<<"final "<<args<<std::endl;
       args = Rewriter::rewrite(args);
       Debug("expr-qetest")<<"args after pca "<<args<<std::endl;
       bv.pop_back();
