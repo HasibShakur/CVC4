@@ -2251,17 +2251,16 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
 
 }
 
-std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv) {
+std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv,std::vecorr<Node> bExpression) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
-  std::vector<Node> bExpression;
   Node toReturn;
   if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
      for(Node::iterator i = n.begin(), iEnd = n.end(); i != iEnd; ++i) {
        Node c = *i;
        Debug("expr-qetest")<<"Node c "<<c<<std::endl;
        if(c.getKind() == kind::AND || c.getKind() == kind::OR) {
-         bExpression = getMinimalExprForRightProjection(c,bv);
+         bExpression = getMinimalExprForRightProjection(c,bv,bExpression);
        } else {
          if((c.getKind() == kind::EQUAL && c[0].getKind() == kind::INTS_MODULUS)
              || (c.getKind() == kind::EQUAL
@@ -2644,7 +2643,8 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n,
 
 Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
                                                  Integer lcmCalc) {
-  std::vector < Node > test = getMinimalExprForRightProjection(n, bv);
+  std::vecorr<Node> bExpressions;
+  std::vector < Node > test = getMinimalExprForRightProjection(n, bv,bExpressions);
   for(int i=0;i<test.size();i++)
   {
     Debug("expr-qetest")<<"b terms "<<test[i]<<std::endl;
