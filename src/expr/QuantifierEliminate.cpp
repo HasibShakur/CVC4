@@ -2251,7 +2251,7 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
 
 }
 
-std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv,std::vecorr<Node> bExpression) {
+std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv,std::vector<Node> bExpression) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
   Node toReturn;
@@ -2643,9 +2643,9 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n,
 
 Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
                                                  Integer lcmCalc) {
-  std::vecorr<Node> bExpressions;
+  std::vector<Node> bExpressions;
   std::vector < Node > test = getMinimalExprForRightProjection(n, bv,bExpressions);
-  for(int i=0;i<test.size();i++)
+  for(int i=0;i<(int)test.size();i++)
   {
     Debug("expr-qetest")<<"b terms "<<test[i]<<std::endl;
   }
