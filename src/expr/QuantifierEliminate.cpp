@@ -2645,6 +2645,10 @@ Node QuantifierEliminate::computeXValueForLeftProjection(Node n,
 Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
                                                  Integer lcmCalc) {
   std::vector < Node > test = getMinimalExprForRightProjection(n, bv);
+  for(int i=0;i<test.size();i++)
+  {
+    Debug("expr-qetest")<<"b terms "<<test[i]<<std::endl;
+  }
   Node result;
   Node rp;
   std::vector<Node> rightProjections;
