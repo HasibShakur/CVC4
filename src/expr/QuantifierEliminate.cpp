@@ -2759,9 +2759,10 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
       {
         final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
       }
-      args = final.negate();
-      args = convertToNNFQE(args);
       args = Rewriter::rewrite(final);
+      args = args.negate();
+      args = convertToNNFQE(args);
+      args = Rewriter::rewrite(args);
       Debug("expr-qetest")<<"args after pca "<<args<<std::endl;
       bv.pop_back();
       qen = qen + 1;
