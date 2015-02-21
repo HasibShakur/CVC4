@@ -2740,6 +2740,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
       right = computeRightProjection(args, var, lcmCalc);
       Debug("expr-qetest")<<"right "<<right<<std::endl;
       final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
+      args = Rewriter::rewrite(final);
       args = final.negate();
       Debug("expr-qetest")<<"args after pca "<<args<<std::endl;
       bv.pop_back();
@@ -2747,7 +2748,6 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
     }
 
   }
-  args = Rewriter::rewrite(args);
   Debug("expr-qetest")<<"args "<<args<<std::endl;
   return args;
 }
