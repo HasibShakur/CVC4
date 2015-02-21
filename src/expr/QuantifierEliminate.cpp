@@ -2741,14 +2741,13 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
       Debug("expr-qetest")<<"right "<<right<<std::endl;
       final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
       args = final.negate();
-      Debug("expr-qetest")<<"final "<<args<<std::endl;
-      args = Rewriter::rewrite(args);
       Debug("expr-qetest")<<"args after pca "<<args<<std::endl;
       bv.pop_back();
       qen = qen + 1;
     }
 
   }
+  args = Rewriter::rewrite(args);
   Debug("expr-qetest")<<"args "<<args<<std::endl;
   return args;
 }
