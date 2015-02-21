@@ -2730,6 +2730,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
         break;
       }
       args = args.negate();
+      args = convertToNNFQE(args);
       Debug("expr-qetest")<<"args before pca "<<args<<std::endl;
       args = doRewriting(args, var, q);
       Debug("expr-qetest")<<"After rewriting "<<args<<std::endl;
@@ -2759,6 +2760,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
         final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
       }
       args = final.negate();
+      args = convertToNNFQE(args);
       args = Rewriter::rewrite(final);
       Debug("expr-qetest")<<"args after pca "<<args<<std::endl;
       bv.pop_back();
