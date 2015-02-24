@@ -3429,7 +3429,7 @@ Node QuantifierEliminate::computeProjections(Node n, QuantifierEliminate q) {
       final = n;
     }
   }
-  // final = Rewriter::rewrite(final);
+  final = Rewriter::rewrite(final);
   Debug("expr-qetest")<<"return from projection "<<final<<std::endl;
   return final;
 }
