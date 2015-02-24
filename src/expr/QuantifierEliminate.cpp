@@ -2238,6 +2238,10 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
       }
       replaceNode.push_back(toReturn);
     }
+    for(int i=0;i<(int)replaceNode.size();i++)
+    {
+      Debug("expr-qetest")<<"replaceNode "<<i<<" "<<replaceNode[i]<<std::endl;
+    }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
                                                        replaceNode);
     returnNode = Rewriter::rewrite(returnNode);
@@ -2250,7 +2254,88 @@ Node QuantifierEliminate::computeLeftProjection(Node n, Node bv) {
   }
 
 }
-
+Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
+                                                    Integer rep) {
+  TNode tn1 = n;
+  Debug("expr-qetest")<<"TNode tn1 "<<tn1<<std::endl;
+  Node f = fromIntegerToNodeQE(rep);
+  TNode tn2 = f;
+  Debug("expr-qetest")<<"TNode tn2 "<<tn2<<std::endl;
+  original = original.substitute(tn1, tn2);
+  Debug("expr-qetest")<<"Node original after substitution "<<original<<std::endl;
+  return original;
+}
+Node QuantifierEliminate::computeXValueForLeftProjection(Node n,
+                                                         Integer lcmCalc) {
+  std::vector<Node> leftProjections;
+  Node t = n;
+  if(t.getKind() == kind::AND || t.getKind() == kind::OR
+      || t.getKind() == kind::EQUAL) {
+    Integer j = 1;
+    while(j <= lcmCalc) {
+      if(t.getKind() == kind::AND || t.getKind() == kind::OR) {
+        std::vector<Node> innerLefts;
+        for(Node::iterator leftP = t.begin(), leftEnd = t.end();
+            leftP != leftEnd; ++leftP) {
+          Node childLP = *leftP;
+          if(childLP.getKind() == kind::EQUAL) {
+            if(childLP[0].getKind() == kind::INTS_MODULUS) {
+              childLP = replaceXForLeftProjection(childLP[0][0], childLP, j);
+              childLP = Rewriter::rewrite(childLP);
+              Integer x = getIntegerFromNode(childLP[0][0]);
+              if(x.euclidianDivideRemainder(lcmCalc) == 1) {
+                innerLefts.push_back(mkBoolNode(false));
+              } else {
+                innerLefts.push_back(mkBoolNode(true));
+              }
+            } else {
+              childLP = replaceXForLeftProjection(childLP[1][0], childLP, j);
+              childLP = Rewriter::rewrite(childLP);
+              Integer x = getIntegerFromNode(childLP[1][0]);
+              if(x.euclidianDivideRemainder(lcmCalc) == 1) {
+                innerLefts.push_back(mkBoolNode(false));
+              } else {
+                innerLefts.push_back(mkBoolNode(true));
+              }
+            }
+          } else {
+          }
+        }
+        Node lp = NodeManager::currentNM()->mkNode(t.getKind(), innerLefts);
+        lp = Rewriter::rewrite(lp);
+        leftProjections.push_back(lp);
+      } else {
+        t = n;
+        if(t[0].getKind() == kind::INTS_MODULUS) {
+          t = replaceXForLeftProjection(t[0][0], t, j);
+          t = Rewriter::rewrite(t);
+          Integer y = getIntegerFromNode(t[0][0]);
+          if(y.euclidianDivideRemainder(lcmCalc) == 1) {
+            leftProjections.push_back(mkBoolNode(false));
+          } else {
+            leftProjections.push_back(mkBoolNode(true));
+          }
+        } else {
+          t = replaceXForLeftProjection(t[1][0], t, j);
+          t = Rewriter::rewrite(t);
+          Integer y = getIntegerFromNode(t[1][0]);
+          if(y.euclidianDivideRemainder(lcmCalc) == 1) {
+            leftProjections.push_back(mkBoolNode(false));
+          } else {
+            leftProjections.push_back(mkBoolNode(true));
+          }
+        }
+      }
+      j = j + 1;
+    }
+    t = NodeManager::currentNM()->mkNode(kind::OR, leftProjections);
+    t = Rewriter::rewrite(t);
+    Debug("expr-qetest")<<"Final LeftProjection "<<t<<std::endl;
+    return t;
+  } else {
+    return t;
+  }
+}
 std::vector<Node> QuantifierEliminate::getMinimalExprForRightProjection(Node n, Node bv,std::vector<Node> bExpression) {
   Debug("expr-qetest")<<"Given Expression "<<n<<std::endl;
   Debug("expr-qetest")<<"Bound Variable "<<bv<<std::endl;
@@ -2558,89 +2643,6 @@ Node QuantifierEliminate::replaceBoundVarRightProjection(Node n, TNode bExpr,
   }
   return temp;
 }
-Node QuantifierEliminate::replaceXForLeftProjection(Node n, Node original,
-                                                    Integer rep) {
-  TNode tn1 = n;
-  Debug("expr-qetest")<<"TNode tn1 "<<tn1<<std::endl;
-  Node f = fromIntegerToNodeQE(rep);
-  TNode tn2 = f;
-  Debug("expr-qetest")<<"TNode tn2 "<<tn2<<std::endl;
-  original = original.substitute(tn1, tn2);
-  Debug("expr-qetest")<<"Node original after substitution "<<original<<std::endl;
-  return original;
-}
-Node QuantifierEliminate::computeXValueForLeftProjection(Node n,
-                                                         Integer lcmCalc) {
-  std::vector<Node> leftProjections;
-  Node t = n;
-  if(t.getKind() == kind::AND || t.getKind() == kind::OR
-      || t.getKind() == kind::EQUAL) {
-    Integer j = 1;
-    while(j <= lcmCalc) {
-      if(t.getKind() == kind::AND || t.getKind() == kind::OR) {
-        std::vector<Node> innerLefts;
-        for(Node::iterator leftP = t.begin(), leftEnd = t.end();
-            leftP != leftEnd; ++leftP) {
-          Node childLP = *leftP;
-          if(childLP.getKind() == kind::EQUAL) {
-            if(childLP[0].getKind() == kind::INTS_MODULUS) {
-              childLP = replaceXForLeftProjection(childLP[0][0], childLP, j);
-              childLP = Rewriter::rewrite(childLP);
-              Integer x = getIntegerFromNode(childLP[0][0]);
-              if(x.euclidianDivideRemainder(lcmCalc) == 1) {
-                innerLefts.push_back(mkBoolNode(false));
-              } else {
-                innerLefts.push_back(mkBoolNode(true));
-              }
-            } else {
-              childLP = replaceXForLeftProjection(childLP[1][0], childLP, j);
-              childLP = Rewriter::rewrite(childLP);
-              Integer x = getIntegerFromNode(childLP[1][0]);
-              if(x.euclidianDivideRemainder(lcmCalc) == 1) {
-                innerLefts.push_back(mkBoolNode(false));
-              } else {
-                innerLefts.push_back(mkBoolNode(true));
-              }
-            }
-          } else {
-          }
-        }
-        Node lp = NodeManager::currentNM()->mkNode(t.getKind(), innerLefts);
-        lp = Rewriter::rewrite(lp);
-        leftProjections.push_back(lp);
-      } else {
-        t = n;
-        if(t[0].getKind() == kind::INTS_MODULUS) {
-          t = replaceXForLeftProjection(t[0][0], t, j);
-          t = Rewriter::rewrite(t);
-          Integer y = getIntegerFromNode(t[0][0]);
-          if(y.euclidianDivideRemainder(lcmCalc) == 1) {
-            leftProjections.push_back(mkBoolNode(false));
-          } else {
-            leftProjections.push_back(mkBoolNode(true));
-          }
-        } else {
-          t = replaceXForLeftProjection(t[1][0], t, j);
-          t = Rewriter::rewrite(t);
-          Integer y = getIntegerFromNode(t[1][0]);
-          if(y.euclidianDivideRemainder(lcmCalc) == 1) {
-            leftProjections.push_back(mkBoolNode(false));
-          } else {
-            leftProjections.push_back(mkBoolNode(true));
-          }
-        }
-      }
-      j = j + 1;
-    }
-    t = NodeManager::currentNM()->mkNode(kind::OR, leftProjections);
-    t = Rewriter::rewrite(t);
-    Debug("expr-qetest")<<"Final LeftProjection "<<t<<std::endl;
-    return t;
-  } else {
-    return t;
-  }
-}
-
 Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
                                                  Integer lcmCalc) {
   std::vector<Node> bExpressions;
@@ -2676,6 +2678,7 @@ Node QuantifierEliminate::computeRightProjection(Node n, Node bv,
         b = bExpr;
         Debug("expr-qetest")<<"before replacement b "<<b<<std::endl;
         rp = replaceBoundVarRightProjection(n, b, bv);
+        Debug("expr-qetest")<<"after single b replacement rp "<<rp<<std::endl;
         rightProjections.push_back(rp);
         j = j + 1;
       }
