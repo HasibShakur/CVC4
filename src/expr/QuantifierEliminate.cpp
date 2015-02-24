@@ -2740,8 +2740,10 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
       Integer lcmCalc = lcmValue;
       temp = computeLeftProjection(args, var);
       left = computeXValueForLeftProjection(temp, lcmCalc);
+      left = Rewriter::rewrite(left);
       Debug("expr-qetest")<<"left "<<left<<std::endl;
       right = computeRightProjection(args, var, lcmCalc);
+      right = Rewriter::rewrite(right);
       Debug("expr-qetest")<<"right "<<right<<std::endl;
       if(left == mkBoolNode(false))
       {
@@ -2763,6 +2765,7 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
         final = NodeManager::currentNM()->mkNode(kind::OR, left, right);
       }
       args = Rewriter::rewrite(final);
+      Debug("expr-qetest")<<"args before second negation "<<args<<std::endl;
       args = args.negate();
       args = convertToNNFQE(args);
       args = Rewriter::rewrite(args);
@@ -2770,7 +2773,6 @@ Node QuantifierEliminate::performCaseAnalysis(Node n, std::vector<Node> bv,
       bv.pop_back();
       qen = qen + 1;
     }
-
   }
   Debug("expr-qetest")<<"args "<<args<<std::endl;
   return args;
