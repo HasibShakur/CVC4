@@ -640,6 +640,105 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv,
   return lcmResult;
 }
 
+Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
+  Node toReturn;
+  std::vector<Node> multipliedExpression;
+  Debug("expr-qetest")<<"Node n "<<n<<std::endl;
+  Debug("expr-qetest")<<"bound var "<<bv<<std::endl;
+  if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
+    for(Node::iterator i = n.begin(), iEnd = n.end(); i != iEnd; ++i) {
+      Node c = *i;
+      Debug("expr-qetest")<<"Node c "<<c<<std::endl;
+      if(c.getKind() == kind::AND || c.getKind() == kind::OR) {
+        toReturn = multiplyEquationWithLcm(c, bv);
+      } else {
+        Node t;
+        if(c.getKind() == kind::NOT) {
+          t = c[0];
+        } else {
+          t = c;
+        }
+        Integer coeff = 0;
+        if(t[0].hasBoundVar() && containsSameBoundVar(t[0], bv)) {
+          coeff = getCoefficientsOfExpression(t[0], bv);
+          Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
+          if(multiple == 1) {
+            toReturn = c;
+          } else {
+            toReturn = NodeManager::currentNM()->mkNode(
+                kind::MULT, fromIntegerToNodeQE(multiple), t);
+            toReturn = Rewriter::rewrite(toReturn);
+            Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
+          }
+        }
+        else if(t[1].hasBoundVar() && containsSameBoundVar(t[1],bv))
+        {
+          coeff = getCoefficientsOfExpression(t[1],bv);
+          Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
+          if(multiple == 1)
+          {
+            toReturn = c;
+          }
+          else
+          {
+            toReturn = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple),t);
+            toReturn = Rewriter::rewrite(toReturn);
+            Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
+          }
+        }
+        else
+        {
+          toReturn = c;
+        }
+        multipliedExpression.push_back(toReturn);
+      }
+    }
+    Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
+                                                       multipliedExpression);
+    Debug("expr-qetest")<<"returnNode in multiply expression "<<returnNode<<std::endl;
+    return returnNode;
+  } else {
+    Node t;
+    Node toReturn;
+    if(n.getKind() == kind::NOT) {
+      t = n[0];
+    } else {
+      t = n;
+    }
+    Integer coeff = 0;
+    if(t[0].hasBoundVar() && containsSameBoundVar(t[0], bv)) {
+      coeff = getCoefficientsOfExpression(t[0], bv);
+      Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
+      if(multiple == 1) {
+        toReturn = n;
+      } else {
+        toReturn = NodeManager::currentNM()->mkNode(
+            kind::MULT, fromIntegerToNodeQE(multiple), n);
+        toReturn = Rewriter::rewrite(toReturn);
+        Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
+      }
+    }
+    else if(t[1].hasBoundVar() && containsSameBoundVar(t[1], bv))
+    {
+      coeff = getCoefficientsOfExpression(t[1], bv);
+            Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
+            if(multiple == 1) {
+              toReturn = n;
+            } else {
+              toReturn = NodeManager::currentNM()->mkNode(
+                  kind::MULT, fromIntegerToNodeQE(multiple), n);
+              toReturn = Rewriter::rewrite(toReturn);
+              Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
+            }
+    }
+    else
+    {
+      toReturn = n;
+    }
+    Debug("expr-qetest")<<"returnNode in multiply expression "<<toReturn<<std::endl;
+    return toReturn;
+  }
+}
 Node QuantifierEliminate::parseEquation(Node t, Node bv,
                                         QuantifierEliminate q) {
   std::vector<ExpressionContainer> temExpContainer = q.getExpContainer(q);
@@ -672,7 +771,9 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,
   }
   else
   {
-    Node n;
+    Node returnNode = multiplyEquationWithLcm(t,bv);
+    Debug("expr-qetest")<<"After multiplication operation expression "<<returnNode<<std::endl;
+    /*Node n;
     if(t.getKind() == kind::NOT)
     {
       n = t[0];
@@ -1154,9 +1255,10 @@ Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
                                                fromIntegerToNodeQE(-1));
       right = Rewriter::rewrite(right);
     }
-    returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);
+    returnNode = NodeManager::currentNM()->mkNode(kind::LT, right, left);*/
+    return returnNode;
   }
-  return returnNode;
+
 }
 Node QuantifierEliminate::replaceLEQQE(Node n, Node bv) {
   Node returnNode;

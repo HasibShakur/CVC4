@@ -59,6 +59,7 @@ private:
   static Node rewriteForSameCoefficients(Node n, Node boundVar,
                                          QuantifierEliminate q);
   static void parseCoefficientQE(Node n, QuantifierEliminate q);
+  static Node multiplyEquationWithLcm(Node n,Node bv);
   static Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
   static Node rewriteRelationOperatorQE(Node n, Node bv, QuantifierEliminate q);
   static Node replaceRelationOperatorQE(Node n, Node bv);
