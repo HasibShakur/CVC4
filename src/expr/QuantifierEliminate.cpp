@@ -651,7 +651,8 @@ Node QuantifierEliminate::multiplyIndividualExpression(Node n, Node bv,
     if(isConstQE(child))
     {
       TNode tn1 = child;
-      TNode tn2 = fromIntegerToNodeQE(getIntegerFromNode(child)*multiple);
+      Node temp = fromIntegerToNodeQE(getIntegerFromNode(child)*multiple);
+      TNode tn2 = temp;
       n = n.substitute(tn1,tn2);
     }
     else if(isVarQE(child))
@@ -659,7 +660,8 @@ Node QuantifierEliminate::multiplyIndividualExpression(Node n, Node bv,
       TNode tn1;
       TNode tn2;
       tn1 = child;
-      tn2 = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple),child);
+      Node temp = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple),child);
+      tn2 = temp;
       n = n.substitute(tn1,tn2);
     }
     else if(isVarWithCoefficientsQE(child))
@@ -667,7 +669,8 @@ Node QuantifierEliminate::multiplyIndividualExpression(Node n, Node bv,
       TNode tn1;
       TNode tn2;
       tn1 = child;
-      tn2 = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple*getIntegerFromNode(child[0])),child[1]);
+      Node temp = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple*getIntegerFromNode(child[0])),child[1]);
+      tn2 = temp;
       n = n.substitute(tn1,tn2);
     }
     else
