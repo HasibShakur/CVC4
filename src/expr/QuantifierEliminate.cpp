@@ -660,7 +660,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         }
         Integer coeff = 0;
         if(t[0].hasBoundVar() && containsSameBoundVar(t[0], bv)) {
-          coeff = getCoefficientsOfExpression(t[0], bv);
+          coeff = getIntegerFromNode(getCoefficientsOfExpression(t[0], bv));
           Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
           if(multiple == 1) {
             toReturn = c;
@@ -673,7 +673,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         }
         else if(t[1].hasBoundVar() && containsSameBoundVar(t[1],bv))
         {
-          coeff = getCoefficientsOfExpression(t[1],bv);
+          coeff = getIntegerFromNode(getCoefficientsOfExpression(t[1],bv));
           Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
           if(multiple == 1)
           {
@@ -707,7 +707,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
     }
     Integer coeff = 0;
     if(t[0].hasBoundVar() && containsSameBoundVar(t[0], bv)) {
-      coeff = getCoefficientsOfExpression(t[0], bv);
+      coeff = getIntegerFromNode(getCoefficientsOfExpression(t[0], bv));
       Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
       if(multiple == 1) {
         toReturn = n;
@@ -720,7 +720,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
     }
     else if(t[1].hasBoundVar() && containsSameBoundVar(t[1], bv))
     {
-      coeff = getCoefficientsOfExpression(t[1], bv);
+      coeff = getIntegerFromNode(getCoefficientsOfExpression(t[1], bv));
             Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
             if(multiple == 1) {
               toReturn = n;
