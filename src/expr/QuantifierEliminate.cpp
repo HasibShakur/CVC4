@@ -699,20 +699,20 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,
       {
         tempChild = child;
       }
-      if(child.hasBoundVar())
+      if(tempChild.hasBoundVar())
       {
-        if(isConstQE(child))
+        if(isConstQE(tempChild))
         {}
-        else if(isVarQE(child))
+        else if(isVarQE(tempChild))
         {
           singleExp = true;
           multiplier = (multiplier*lcmResult).abs();
           Debug("expr-qetest") <<"multiplier "<<multiplier<<std::endl;
         }
-        else if(isVarWithCoefficientsQE(child))
+        else if(isVarWithCoefficientsQE(tempChild))
         {
           singleExp = true;
-          Integer x = getIntegerFromNode(child[0]).abs();
+          Integer x = getIntegerFromNode(tempChild[0]).abs();
           multiplier = lcmResult.euclidianDivideQuotient(x);
           Debug("expr-qetest") <<"multiplier "<<multiplier<<std::endl;
         }
@@ -770,7 +770,7 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,
         }
         if(!singleExp)
         {
-          ExpressionContainer e(child,multiplier);
+          ExpressionContainer e(tempChild,multiplier);
           temExpContainer.push_back(e);
         }
       }
