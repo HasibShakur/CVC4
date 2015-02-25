@@ -675,7 +675,7 @@ Node QuantifierEliminate::multiplyIndividualExpression(Node n, Node bv,
     }
     else
     {
-      n = multiplyIndividualExpression(child,bv,multiple);
+      child = multiplyIndividualExpression(child,bv,multiple);
     }
   }
   Debug("expr-qetest")<<"Expression after multiplication "<<n<<std::endl;
@@ -711,7 +711,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
             if(c.getKind() == kind::NOT) {
               toReturn = toReturn.negate();
             }
-            toReturn = Rewriter::rewrite(toReturn);
+           // toReturn = Rewriter::rewrite(toReturn);
             Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
           }
         }
@@ -730,7 +730,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
             {
               toReturn = toReturn.negate();
             }
-            toReturn = Rewriter::rewrite(toReturn);
+          //  toReturn = Rewriter::rewrite(toReturn);
             Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
           }
         }
@@ -764,7 +764,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         if(n.getKind() == kind::NOT) {
           toReturn = toReturn.negate();
         }
-        toReturn = Rewriter::rewrite(toReturn);
+       // toReturn = Rewriter::rewrite(toReturn);
         Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
       }
     }
@@ -780,7 +780,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         {
           toReturn = toReturn.negate();
         }
-        toReturn = Rewriter::rewrite(toReturn);
+      //  toReturn = Rewriter::rewrite(toReturn);
         Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
       }
     }
