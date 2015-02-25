@@ -60,7 +60,7 @@ private:
                                          QuantifierEliminate q);
   static void parseCoefficientQE(Node n, QuantifierEliminate q);
   static Node multiplyEquationWithLcm(Node n,Node bv);
-  static Node multiplyIndividualExpression(Node n,Node bv,Integer multiple)
+  static Node multiplyIndividualExpression(Node n,Node bv,Integer multiple);
   static Integer calculateLCMofCoeff(std::vector<Integer> coeffs);
   static Node rewriteRelationOperatorQE(Node n, Node bv, QuantifierEliminate q);
   static Node replaceRelationOperatorQE(Node n, Node bv);
