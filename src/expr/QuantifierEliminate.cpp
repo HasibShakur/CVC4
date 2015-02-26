@@ -704,6 +704,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         if(t[0].hasBoundVar() && containsSameBoundVar(t[0], bv)) {
           coeff = getIntegerFromNode(getCoefficientsOfExpression(t[0], bv));
           Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
+          Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
           if(multiple == 1) {
             toReturn = c;
           } else {
@@ -711,7 +712,6 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
             if(c.getKind() == kind::NOT) {
               toReturn = toReturn.negate();
             }
-           // toReturn = Rewriter::rewrite(toReturn);
             Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
           }
         }
@@ -719,6 +719,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         {
           coeff = getIntegerFromNode(getCoefficientsOfExpression(t[1],bv));
           Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
+          Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
           if(multiple == 1)
           {
             toReturn = c;
@@ -730,7 +731,6 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
             {
               toReturn = toReturn.negate();
             }
-          //  toReturn = Rewriter::rewrite(toReturn);
             Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
           }
         }
@@ -757,6 +757,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
     if(t[0].hasBoundVar() && containsSameBoundVar(t[0], bv)) {
       coeff = getIntegerFromNode(getCoefficientsOfExpression(t[0], bv));
       Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
+      Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
       if(multiple == 1) {
         toReturn = n;
       } else {
@@ -764,7 +765,6 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         if(n.getKind() == kind::NOT) {
           toReturn = toReturn.negate();
         }
-       // toReturn = Rewriter::rewrite(toReturn);
         Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
       }
     }
@@ -780,7 +780,6 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         {
           toReturn = toReturn.negate();
         }
-      //  toReturn = Rewriter::rewrite(toReturn);
         Debug("expr-qetest")<<"Node toReturn in multiply expression "<<toReturn<<std::endl;
       }
     }
@@ -2078,10 +2077,10 @@ Node QuantifierEliminate::rewriteRelationOperatorQE(Node n, Node bv,
 }
 Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv,
                                                      QuantifierEliminate q) {
-  n = parseEquation(n, bv, q);
-  Debug("expr-qetest")<<"Parse equation result "<<n<<std::endl;
   n = rewriteRelationOperatorQE(n, bv, q);
   Debug("expr-qetest")<<"rewrite relational operator result "<<n<<std::endl;
+  n = parseEquation(n, bv, q);
+  Debug("expr-qetest")<<"Parse equation result "<<n<<std::endl;
   return n;
 }
 
