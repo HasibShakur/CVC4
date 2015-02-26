@@ -641,7 +641,7 @@ Integer QuantifierEliminate::getLcmResult(Node t, Node bv,
 }
 
 Node QuantifierEliminate::multiplyIndividualExpression(Node n, Node bv,
-                                                       Integer multiple) {
+                                                       Integer multiple,std::vector<Node> expr) {
   Debug("expr-qetest")<<"Expression before multiplication "<<n<<std::endl;
   for(Node::iterator it = n.begin(),it_end = n.end();
   it != it_end;
@@ -651,39 +651,49 @@ Node QuantifierEliminate::multiplyIndividualExpression(Node n, Node bv,
     Debug("expr-qetest")<<"child inside multiply individual expression "<<child<<std::endl;
     if(isConstQE(child))
     {
-      TNode tn1 = child;
-      Node temp = fromIntegerToNodeQE(getIntegerFromNode(child)*multiple);
-      Debug("expr-qetest")<<"temp node inside multiply individual expression "<<temp<<std::endl;
-      TNode tn2 = temp;
-      n = n.substitute(tn1,tn2);
+//      TNode tn1 = child;
+//      Node temp = fromIntegerToNodeQE(getIntegerFromNode(child)*multiple);
+//      Debug("expr-qetest")<<"temp node inside multiply individual expression "<<temp<<std::endl;
+//      TNode tn2 = temp;
+//      n = n.substitute(tn1,tn2);
+      child = fromIntegerToNodeQE(getIntegerFromNode(child)*multiple);
+      Debug("expr-qetest")<<"temp node inside multiply individual expression "<<child<<std::endl;
+      expr.push_back(child);
     }
     else if(isVarQE(child))
     {
-      TNode tn1;
-      TNode tn2;
-      tn1 = child;
-      Node temp = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple),child);
-      Debug("expr-qetest")<<"temp node inside multiply individual expression "<<temp<<std::endl;
-      tn2 = temp;
-      n = n.substitute(tn1,tn2);
+//      TNode tn1;
+//      TNode tn2;
+//      tn1 = child;
+//      Node temp = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple),child);
+//      Debug("expr-qetest")<<"temp node inside multiply individual expression "<<temp<<std::endl;
+//      tn2 = temp;
+//      n = n.substitute(tn1,tn2);
+      child = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple),child);
+      Debug("expr-qetest")<<"temp node inside multiply individual expression "<<child<<std::endl;
+      expr.push_back(child);
     }
     else if(isVarWithCoefficientsQE(child))
     {
-      TNode tn1;
-      TNode tn2;
-      tn1 = child;
-      Node temp = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple*getIntegerFromNode(child[0])),child[1]);
+//      TNode tn1;
+//      TNode tn2;
+//      tn1 = child;
+//      Node temp = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple*getIntegerFromNode(child[0])),child[1]);
+//      Debug("expr-qetest")<<"temp node inside multiply individual expression "<<temp<<std::endl;
+//      tn2 = temp;
+//      n = n.substitute(tn1,tn2);
+      child = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple*getIntegerFromNode(child[0])),child[1]);
       Debug("expr-qetest")<<"temp node inside multiply individual expression "<<temp<<std::endl;
-      tn2 = temp;
-      n = n.substitute(tn1,tn2);
+      expr.push_back(child);
     }
     else
     {
-      child = multiplyIndividualExpression(child,bv,multiple);
+      child = multiplyIndividualExpression(child,bv,multiple,expr);
     }
   }
-  Debug("expr-qetest")<<"Expression after multiplication "<<n<<std::endl;
-  return n;
+  Node toReturn = NodeManager::currentNM()->mkNode(n.getKind(),expr);
+  Debug("expr-qetest")<<"Expression after multiplication "<<toReturn<<std::endl;
+  return toReturn;
 }
 
 Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
@@ -712,7 +722,8 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
           if(multiple == 1) {
             toReturn = c;
           } else {
-            toReturn = multiplyIndividualExpression(t, bv, multiple);
+            std::vector<Node> multipliedExpression;
+            toReturn = multiplyIndividualExpression(t, bv, multiple,multipliedExpression);
             if(c.getKind() == kind::NOT) {
               toReturn = toReturn.negate();
             }
@@ -730,7 +741,8 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
           }
           else
           {
-            toReturn = multiplyIndividualExpression(t,bv,multiple);
+            std::vector<Node> multipliedExpression;
+            toReturn = multiplyIndividualExpression(t,bv,multiple,multipliedExpression);
             if(c.getKind() == kind::NOT)
             {
               toReturn = toReturn.negate();
@@ -765,7 +777,8 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
       if(multiple == 1) {
         toReturn = n;
       } else {
-        toReturn = multiplyIndividualExpression(t, bv, multiple);
+        std::vector<Node> multipliedExpression;
+        toReturn = multiplyIndividualExpression(t, bv, multiple,multipliedExpression);
         if(n.getKind() == kind::NOT) {
           toReturn = toReturn.negate();
         }
@@ -779,7 +792,8 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
       if(multiple == 1) {
         toReturn = n;
       } else {
-        toReturn = multiplyIndividualExpression(t,bv,multiple);
+        std::vector<Node> multipliedExpression;
+        toReturn = multiplyIndividualExpression(t,bv,multiple,multipliedExpression);
         if(n.getKind() == kind::NOT)
         {
           toReturn = toReturn.negate();
