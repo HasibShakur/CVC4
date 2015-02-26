@@ -670,7 +670,9 @@ Node QuantifierEliminate::multiplyIndividualExpression(Node n, Node bv,
     else
     {
       std::vector<Node> exprInner;
-      return multiplyIndividualExpression(child,bv,multiple,exprInner);
+      Node test;
+      test = multiplyIndividualExpression(child,bv,multiple,exprInner);
+      expr.push_back(test);
     }
   }
   Node toReturn = NodeManager::currentNM()->mkNode(n.getKind(),expr);
