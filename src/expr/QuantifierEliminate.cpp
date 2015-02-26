@@ -648,10 +648,12 @@ Node QuantifierEliminate::multiplyIndividualExpression(Node n, Node bv,
   ++it)
   {
     Node child = *it;
+    Debug("expr-qetest")<<"child inside multiply individual expression "<<child<<std::endl;
     if(isConstQE(child))
     {
       TNode tn1 = child;
       Node temp = fromIntegerToNodeQE(getIntegerFromNode(child)*multiple);
+      Debug("expr-qetest")<<"temp node inside multiply individual expression "<<temp<<std::endl;
       TNode tn2 = temp;
       n = n.substitute(tn1,tn2);
     }
@@ -661,6 +663,7 @@ Node QuantifierEliminate::multiplyIndividualExpression(Node n, Node bv,
       TNode tn2;
       tn1 = child;
       Node temp = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple),child);
+      Debug("expr-qetest")<<"temp node inside multiply individual expression "<<temp<<std::endl;
       tn2 = temp;
       n = n.substitute(tn1,tn2);
     }
@@ -670,6 +673,7 @@ Node QuantifierEliminate::multiplyIndividualExpression(Node n, Node bv,
       TNode tn2;
       tn1 = child;
       Node temp = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(multiple*getIntegerFromNode(child[0])),child[1]);
+      Debug("expr-qetest")<<"temp node inside multiply individual expression "<<temp<<std::endl;
       tn2 = temp;
       n = n.substitute(tn1,tn2);
     }
