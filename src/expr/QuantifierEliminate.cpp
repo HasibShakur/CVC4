@@ -701,6 +701,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         Integer coeff = 0;
         if(t[0].hasBoundVar() && containsSameBoundVar(t[0], bv)) {
           coeff = getIntegerFromNode(getCoefficientsOfExpression(t[0], bv));
+          coeff = coeff.abs();
           Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
           Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
           if(multiple == 1) {
@@ -717,6 +718,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         else if(t[1].hasBoundVar() && containsSameBoundVar(t[1],bv))
         {
           coeff = getIntegerFromNode(getCoefficientsOfExpression(t[1],bv));
+          coeff = coeff.abs();
           Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
           Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
           if(multiple == 1)
@@ -738,8 +740,8 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
         {
           toReturn = c;
         }
-        multipliedExpression.push_back(toReturn);
       }
+      multipliedExpression.push_back(toReturn);
     }
     Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
                                                        multipliedExpression);
@@ -756,6 +758,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
     Integer coeff = 0;
     if(t[0].hasBoundVar() && containsSameBoundVar(t[0], bv)) {
       coeff = getIntegerFromNode(getCoefficientsOfExpression(t[0], bv));
+      coeff = coeff.abs();
       Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
       Debug("expr-qetest")<<"multiple "<<multiple<<std::endl;
       if(multiple == 1) {
@@ -772,6 +775,7 @@ Node QuantifierEliminate::multiplyEquationWithLcm(Node n, Node bv) {
     else if(t[1].hasBoundVar() && containsSameBoundVar(t[1], bv))
     {
       coeff = getIntegerFromNode(getCoefficientsOfExpression(t[1], bv));
+      coeff = coeff.abs();
       Integer multiple = lcmValue.euclidianDivideQuotient(coeff);
       if(multiple == 1) {
         toReturn = n;
