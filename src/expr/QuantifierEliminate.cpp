@@ -830,7 +830,15 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,
   else
   {
     Node returnNode = multiplyEquationWithLcm(t,bv);
-    Debug("expr-qetest")<<"After multiplication operation expression "<<returnNode<<std::endl;
+    Debug("expr-qetest")<<"After multiplication operation expression before replace of lcm*x with x "<<returnNode<<std::endl;
+    Node replace1 = NodeManager::currentNM()->mkNode(kind::MULT, fromIntegerToNodeQE(lcmValue),bv);
+    Node replace2 = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(lcmValue*(-1)),bv);
+    TNode tn1 = replace1;
+    TNode tn2 = replace2;
+    TNode tn3 = bv;
+    returnNode = returnNode.substitute(tn1,tn3);
+    returnNode = returnNode.substitute(tn2,tn3);
+    Debug("expr-qetest")<<"After multiplication operation expression after replace of lcm*x with x "<<returnNode<<std::endl;
     return returnNode;
   }
 }
