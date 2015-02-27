@@ -836,8 +836,10 @@ Node QuantifierEliminate::parseEquation(Node t, Node bv,
     TNode tn1 = replace1;
     TNode tn2 = replace2;
     TNode tn3 = bv;
+    Node replace3 = NodeManager::currentNM()->mkNode(kind::MULT,fromIntegerToNodeQE(-1),bv);
+    TNode tn4 = replace3;
     returnNode = returnNode.substitute(tn1,tn3);
-    returnNode = returnNode.substitute(tn2,tn3);
+    returnNode = returnNode.substitute(tn2,tn4);
     Debug("expr-qetest")<<"After multiplication operation expression after replace of lcm*x with x "<<returnNode<<std::endl;
     return returnNode;
   }
@@ -3747,6 +3749,9 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
     {
       std::stringstream sstm;
       sstm << "(error! Number of quantifiers requested to be eliminated is " << numOfQuantifiers <<" )";
+     /* NodeManager nm;
+      SmtEngine smt(&nm);
+      smt.q*/
       std::string s = sstm.str();
       Debug("expr-qetest")<<s<<std::endl;
       qe.setMessage(s);
