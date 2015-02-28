@@ -2134,9 +2134,10 @@ Node QuantifierEliminate::convertIFF(Node body)
 
 Node QuantifierEliminate::doRewriting(Node n, Node bv, QuantifierEliminate q) {
   Node t;
-  if(t.getKind() == kind::IFF)
+  Debug("expr-qetest")<<"kind of n "<<n.getKind()<<std::endl;
+  if(n.getKind() == kind::IFF)
   {
-    t = convertIFF(t);
+    t = convertIFF(n);
   }
   t = eliminateImpliesQE(n);
   Debug("expr-qetest")<<"eliminate implies qe result "<<t<<std::endl;
