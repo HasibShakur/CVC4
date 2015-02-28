@@ -2118,8 +2118,21 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,
   }
 }
 
+Node QuantifierEliminate::convertIFF(Node body)
+{
+  Node left = body[0];
+  Node right = body[1];
+  Node returnNode;
+  returnNode = NodeManager::currentNM()->mkNode(kind::AND,NodeManager::currentNM()->mkNode(kind::IMPLIES, left,right),NodeManager::currentNM()->mkNode(kind::IMPLIES, right,left));
+  return returnNode;
+}
+
 Node QuantifierEliminate::doRewriting(Node n, Node bv, QuantifierEliminate q) {
   Node t;
+  if(t.getKind() == kind::IFF)
+  {
+    t = convertIFF(t);
+  }
   t = eliminateImpliesQE(n);
   Debug("expr-qetest")<<"eliminate implies qe result "<<t<<std::endl;
   t = convertToNNFQE(t);

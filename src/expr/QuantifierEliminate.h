@@ -55,6 +55,7 @@ private:
   static Node computeRightProjection(Node n, Node bv, Integer lcmCalc);
   static Node doRewriting(Node n, Node bv, QuantifierEliminate q);
   static Node eliminateImpliesQE(Node body);
+  static Node convertIFF(Node body);
   static std::vector<Node> getMinimalExprForRightProjection(Node n, Node bv,std::vector<Node> bExpressions);
   static Node rewriteForSameCoefficients(Node n, Node boundVar,
                                          QuantifierEliminate q);
