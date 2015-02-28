@@ -2123,7 +2123,12 @@ Node QuantifierEliminate::convertIFF(Node body)
   Node left = body[0];
   Node right = body[1];
   Node returnNode;
-  returnNode = NodeManager::currentNM()->mkNode(kind::AND,NodeManager::currentNM()->mkNode(kind::IMPLIES, left,right),NodeManager::currentNM()->mkNode(kind::IMPLIES, right,left));
+  Node tempLeft = NodeManager::currentNM()->mkNode(kind::IMPLIES, left,right);
+  Debug("expr-qetest")<<"templeft in convertIFF "<<tempLeft<<std::endl;
+  Node tempRight = NodeManager::currentNM()->mkNode(kind::IMPLIES, right,left);
+  Debug("expr-qetest")<<"tempRight in convertIFF "<<tempRight<<std::endl;
+  returnNode = NodeManager::currentNM()->mkNode(kind::AND,tempLeft,tempRight);
+  Debug("expr-qetest")<<"returnNode in convertIFF "<<returnNode<<std::endl;
   return returnNode;
 }
 
