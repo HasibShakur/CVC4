@@ -2125,12 +2125,12 @@ Node QuantifierEliminate::convertIFF(Node body)
     Node left = body[0][0];
     Node right = body[0][1];
     Node returnNode;
-    Node tempLeft = NodeManager::currentNM()->mkNode(kind::IMPLIES, left,right);
+    Node tempLeft = NodeManager::currentNM()->mkNode(kind::OR, left.negate(),right);
     Debug("expr-qetest")<<"templeft in convertIFF "<<tempLeft<<std::endl;
-    Node tempRight = NodeManager::currentNM()->mkNode(kind::IMPLIES, right,left);
+    Node tempRight = NodeManager::currentNM()->mkNode(kind::OR, right.negate(),left);
     Debug("expr-qetest")<<"tempRight in convertIFF "<<tempRight<<std::endl;
     returnNode = NodeManager::currentNM()->mkNode(kind::AND,tempLeft,tempRight);
-    Debug("expr-qetest")<<"returnNode in convertIFF "<<returnNode<<std::endl;
+    Debug("expr-qetest")<<"returnNode in convertIFF "<<returnNode.negate()<<std::endl;
     return returnNode.negate();
   }
   else
@@ -2138,9 +2138,9 @@ Node QuantifierEliminate::convertIFF(Node body)
       Node left = body[0];
       Node right = body[1];
       Node returnNode;
-      Node tempLeft = NodeManager::currentNM()->mkNode(kind::IMPLIES, left,right);
+      Node tempLeft = NodeManager::currentNM()->mkNode(kind::OR, left.negate(),right);
       Debug("expr-qetest")<<"templeft in convertIFF "<<tempLeft<<std::endl;
-      Node tempRight = NodeManager::currentNM()->mkNode(kind::IMPLIES, right,left);
+      Node tempRight = NodeManager::currentNM()->mkNode(kind::OR, right.negate(),left);
       Debug("expr-qetest")<<"tempRight in convertIFF "<<tempRight<<std::endl;
       returnNode = NodeManager::currentNM()->mkNode(kind::AND,tempLeft,tempRight);
       Debug("expr-qetest")<<"returnNode in convertIFF "<<returnNode<<std::endl;
@@ -2152,14 +2152,15 @@ Node QuantifierEliminate::convertIFF(Node body)
 Node QuantifierEliminate::doRewriting(Node n, Node bv, QuantifierEliminate q) {
   Node t;
   Debug("expr-qetest")<<"kind of n "<<n.getKind()<<std::endl;
-  if((n.getKind() == kind::NOT && n[0].getKind() == kind::IFF)||n.getKind() == kind::IFF)
-  {
-    t = convertIFF(n);
-  }
   t = eliminateImpliesQE(n);
   Debug("expr-qetest")<<"eliminate implies qe result "<<t<<std::endl;
   t = convertToNNFQE(t);
   Debug("expr-qetest")<<"convert to nnf qe result "<<t<<std::endl;
+  if((t.getKind() == kind::NOT && t[0].getKind() == kind::IFF)||t.getKind() == kind::IFF)
+  {
+     t = convertIFF(t);
+  }
+  Debug("expr-qetest")<<"After IFF conversion "<<t<<std::endl;
   t = rewriteForSameCoefficients(t, bv, q);
   Debug("expr-qetest")<<"rewrite for same coefficients result "<<t<<std::endl;
   t = getExpressionWithDivisibility(t, bv, q);
