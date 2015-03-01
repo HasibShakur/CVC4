@@ -2098,16 +2098,18 @@ Node QuantifierEliminate::rewriteForSameCoefficients(Node n, Node bv,
   {
     t = n[0];
     t = rewriteRelationOperatorQE(t, bv, q);
-    Debug("expr-qetest")<<"rewrite relational operator result "<<n<<std::endl;
+    Debug("expr-qetest")<<"rewrite relational operator result "<<t<<std::endl;
     n = parseEquation(t, bv, q);
-    Debug("expr-qetest")<<"Parse equation result "<<n<<std::endl;
+    Debug("expr-qetest")<<"Parse equation result "<<t<<std::endl;
     return t.negate();
   }
   else
   {
     t = n;
     t = rewriteRelationOperatorQE(t, bv, q);
+    Debug("expr-qetest")<<"rewrite relational operator result "<<t<<std::endl;
     t = parseEquation(t, bv, q);
+    Debug("expr-qetest")<<"Parse equation result "<<t<<std::endl;
     return t;
   }
 }
