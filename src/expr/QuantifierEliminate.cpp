@@ -2126,8 +2126,8 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,
 Node QuantifierEliminate::convertIFF(Node body)
 {
   Node nn = NodeManager::currentNM()->mkNode( kind::AND,
-                     NodeManager::currentNM()->mkNode( kind::OR, n[0].notNode(), n.getKind()==kind::XOR ? n[1].notNode() : n[1] ),
-                     NodeManager::currentNM()->mkNode( kind::OR, n[0], n.getKind()==kind::XOR ? n[1] : n[1].notNode() ) );
+                     NodeManager::currentNM()->mkNode( kind::OR, body[0].notNode(), body.getKind()==kind::XOR ? body[1].notNode() : body[1] ),
+                     NodeManager::currentNM()->mkNode( kind::OR, body[0], body.getKind()==kind::XOR ? body[1] : body[1].notNode() ) );
   return nn;
 }
 
