@@ -408,12 +408,12 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
           children.push_back(convertToNNFQE(body[0][i].notNode()));
         }
         k = body[0].getKind() == kind::AND ? kind::OR : kind::AND;
-      }else if( body[0].getKind()==IFF ){
+      }else if( body[0].getKind()== kind::IFF ){
         for( int i=0; i<2; i++ ){
           Node nn = i==0 ? body[0][i] : body[0][i].notNode();
           children.push_back( convertToNNFQE( nn ) );
         }
-      }else if( body[0].getKind()==ITE ){
+      }else if( body[0].getKind()==kind::ITE ){
         for( int i=0; i<3; i++ ){
           Node nn = i==0 ? body[0][i] : body[0][i].notNode();
           children.push_back( convertToNNFQE( nn ) );
