@@ -543,24 +543,6 @@ void QuantifierEliminate::parseCoefficientQE(Node n, QuantifierEliminate q) {
         Container c(child, n);
         container.push_back(c);
       } else {
-//        for(Node::iterator j = child.begin(), end = child.end(); j != end;
-//            ++j) {
-//          Node inner = *j;
-//          if(isConstQE(inner)) {
-//            Integer n = getIntegerFromNode(inner);
-//            Container c(inner, n);
-//            container.push_back(c);
-//          } else if(isVarQE(inner)) {
-//            Constant one = Constant::mkOne();
-//            Integer n = getIntegerFromNode(one.getNode());
-//            Container c(inner, n);
-//            container.push_back(c);
-//          } else {
-//            Integer n = getIntegerFromNode(inner[0]);
-//            Container c(inner[1], n);
-//            container.push_back(c);
-//          }
-//        }
         parseCoefficientQE(child, q);
       }
 
@@ -2141,11 +2123,24 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,
   }
 }
 
+Node QuantifierEliminate::convertIFF(Node body)
+{
+  Node nn = NodeManager::currentNM()->mkNode( kind::AND,
+                     NodeManager::currentNM()->mkNode( kind::OR, n[0].notNode(), n.getKind()==kind::XOR ? n[1].notNode() : n[1] ),
+                     NodeManager::currentNM()->mkNode( kind::OR, n[0], n.getKind()==kind::XOR ? n[1] : n[1].notNode() ) );
+  return nn;
+}
+
 Node QuantifierEliminate::doRewriting(Node n, Node bv, QuantifierEliminate q) {
   Node t;
   Debug("expr-qetest")<<"kind of n "<<n.getKind()<<std::endl;
   t = eliminateImpliesQE(n);
   Debug("expr-qetest")<<"eliminate implies qe result "<<t<<std::endl;
+  if(t.getKind() == kind::IFF || t.getKind() == kind::XOR)
+  {
+    t = convertIFF(t);
+  }
+  Debug("expr-qetest")<<"After iff conversion "<<t<<std::endl;
   t = convertToNNFQE(t);
   Debug("expr-qetest")<<"convert to nnf qe result "<<t<<std::endl;
   t = rewriteForSameCoefficients(t, bv, q);
