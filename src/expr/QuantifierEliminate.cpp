@@ -397,10 +397,8 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
 
   if(body.getKind() == kind::NOT) {
     if(body[0].getKind() == kind::NOT) {
-      //  Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0][0].getKind() << "\n";
       return convertToNNFQE(body[0][0]);
     } else if(isLiteralQE(body[0])) {
-      //  Debug("expr-qetest") << "Inside NNF convertion of the formula "<< body[0].getKind() << "\n";
       return body;
     } else {
       std::vector<CVC4::Node> children;
@@ -410,7 +408,18 @@ Node QuantifierEliminate::convertToNNFQE(Node body) {
           children.push_back(convertToNNFQE(body[0][i].notNode()));
         }
         k = body[0].getKind() == kind::AND ? kind::OR : kind::AND;
-      } else {
+      }else if( body[0].getKind()==IFF ){
+        for( int i=0; i<2; i++ ){
+          Node nn = i==0 ? body[0][i] : body[0][i].notNode();
+          children.push_back( convertToNNFQE( nn ) );
+        }
+      }else if( body[0].getKind()==ITE ){
+        for( int i=0; i<3; i++ ){
+          Node nn = i==0 ? body[0][i] : body[0][i].notNode();
+          children.push_back( convertToNNFQE( nn ) );
+        }
+      }
+      else {
         Notice() << "Unhandled Quantifiers NNF: " << body << std::endl;
         return body;
       }
@@ -2132,37 +2141,6 @@ Node QuantifierEliminate::getExpressionWithDivisibility(Node n, Node bv,
   }
 }
 
-Node QuantifierEliminate::convertIFF(Node body)
-{
-  if(body.getKind() == kind::NOT)
-  {
-    Node left = body[0][0];
-    Node right = body[0][1];
-    Node returnNode;
-    Node tempLeft = NodeManager::currentNM()->mkNode(kind::OR, left.negate(),right);
-    Debug("expr-qetest")<<"templeft in convertIFF "<<tempLeft<<std::endl;
-    Node tempRight = NodeManager::currentNM()->mkNode(kind::OR, right.negate(),left);
-    Debug("expr-qetest")<<"tempRight in convertIFF "<<tempRight<<std::endl;
-    returnNode = NodeManager::currentNM()->mkNode(kind::AND,tempLeft,tempRight);
-    Debug("expr-qetest")<<"returnNode in convertIFF "<<returnNode.negate()<<std::endl;
-    return returnNode.negate();
-  }
-  else
-  {
-      Node left = body[0];
-      Node right = body[1];
-      Node returnNode;
-      Node tempLeft = NodeManager::currentNM()->mkNode(kind::OR, left.negate(),right);
-      Debug("expr-qetest")<<"templeft in convertIFF "<<tempLeft<<std::endl;
-      Node tempRight = NodeManager::currentNM()->mkNode(kind::OR, right.negate(),left);
-      Debug("expr-qetest")<<"tempRight in convertIFF "<<tempRight<<std::endl;
-      returnNode = NodeManager::currentNM()->mkNode(kind::AND,tempLeft,tempRight);
-      Debug("expr-qetest")<<"returnNode in convertIFF "<<returnNode<<std::endl;
-      return returnNode;
-
-  }
-}
-
 Node QuantifierEliminate::doRewriting(Node n, Node bv, QuantifierEliminate q) {
   Node t;
   Debug("expr-qetest")<<"kind of n "<<n.getKind()<<std::endl;
@@ -2170,11 +2148,6 @@ Node QuantifierEliminate::doRewriting(Node n, Node bv, QuantifierEliminate q) {
   Debug("expr-qetest")<<"eliminate implies qe result "<<t<<std::endl;
   t = convertToNNFQE(t);
   Debug("expr-qetest")<<"convert to nnf qe result "<<t<<std::endl;
-  if((t.getKind() == kind::NOT && t[0].getKind() == kind::IFF)||t.getKind() == kind::IFF)
-  {
-     t = convertIFF(t);
-  }
-  Debug("expr-qetest")<<"After IFF conversion "<<t<<std::endl;
   t = rewriteForSameCoefficients(t, bv, q);
   Debug("expr-qetest")<<"rewrite for same coefficients result "<<t<<std::endl;
   t = getExpressionWithDivisibility(t, bv, q);
