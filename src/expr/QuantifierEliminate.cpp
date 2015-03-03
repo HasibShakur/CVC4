@@ -3858,10 +3858,10 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         }
         else
         {
-          ExprManager em;
+          Expr e = temp.toExpr();
+          ExprManager em = e.getExprManager();
           SmtEngine smt(&em);
           smt.setOption("produce-models", true);
-          Expr e = temp.toExpr();
           Debug("expr-qetest")<<"Expression e"<<e<<std::endl;
           Debug("expr-qetest")<<"Model "<<smt.query(e)<<std::endl;
           return qe;
