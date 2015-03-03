@@ -2161,7 +2161,7 @@ Node QuantifierEliminate::computeSimpleITE(Node body) {
     bool changed = false;
     std::vector<Node> children;
     for(size_t i = 0; i < body.getNumChildren(); i++) {
-      Node nn = computeSimpleIteLift(body[i]);
+      Node nn = computeSimpleITE(body[i]);
       children.push_back(nn);
       changed = changed || nn != body[i];
     }
@@ -3857,6 +3857,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         {
           ExprManager em;
           SmtEngine smt(&em);
+          smt.setOption("produce-models", true);
           Expr e = temp.toExpr();
           Result result = smt.checkSat(e);
           if(result == Result::SAT)
