@@ -3862,6 +3862,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           SmtEngine smt(&em);
           smt.setOption("produce-models", true);
           Expr e = temp.toExpr();
+          Debug("expr-qetest")<<"Expression e"<<e<<std::endl;
           Result result = smt.checkSat(e);
           if(result == Result::SAT)
           {
