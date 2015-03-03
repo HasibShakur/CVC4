@@ -3863,15 +3863,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           smt.setOption("produce-models", true);
           Expr e = temp.toExpr();
           Debug("expr-qetest")<<"Expression e"<<e<<std::endl;
-          Result result = smt.checkSat(e);
-          if(result == Result::SAT)
-          {
-            Debug("expr-qetest")<<"Model of the expression "<<smt.getValue(e)<<std::endl;
-          }
-          else
-          {
-            Debug("expr-qetest")<<"UNSAT"<<std::endl;
-          }
+          Debug("expr-qetest")<<"Model "<<smt.getValue(e)<<std::endl;
           return qe;
         }
 
