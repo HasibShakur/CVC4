@@ -3,6 +3,7 @@
 #include<iostream>
 #include<vector>
 #include<numeric>
+#include <cvc4/cvc4.h>
 #include "expr/node.h"
 #include "expr/QuantifierEliminate.h"
 #include "expr/attribute.h"
@@ -13,6 +14,7 @@
 #include "util/rational.h"
 #include "util/integer.h"
 #include "theory/arith/arith_utilities.h"
+
 
 //#include "theory/quantifiers/quantifiers_rewriter.h"
 
