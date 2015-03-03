@@ -3,7 +3,7 @@
 #include<iostream>
 #include<vector>
 #include<numeric>
-#include <cvc4/cvc4.h>
+#include <include/cvc4.h>
 #include "expr/node.h"
 #include "expr/QuantifierEliminate.h"
 #include "expr/attribute.h"
