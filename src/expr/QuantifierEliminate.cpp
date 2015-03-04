@@ -3942,7 +3942,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           std::set<Node> bv = getBoundVariablesList(temp,boundVars);
           Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
           Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
-          for(std::set<Node>::iterator it = bv.begin();it_end != bv.end();++it)
+          for(std::set<Node>::iterator it = bv.begin();it != bv.end();++it)
           {
             Debug("expr-qetest")<<"Boundvars "<<*it<<std::endl;
           }
