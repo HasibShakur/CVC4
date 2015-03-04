@@ -3939,18 +3939,23 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         else
         {
           Node t = extractQuantifierFreeFormula(temp);
+          Expr e = t.toExpr();
+          ExprManager *em = e.getExprManager();
+          SmtEngine smt(em);
+          smt.setOption("produce-models", true);
+          smt.setLogic("LIA");
+          Type integer = em->integerType();
           std::set<Node> boundVars;
           std::set<Node> bv = getBoundVariablesList(temp,boundVars);
           Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
           Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
+          std::vector<Expr> variables;
           for(std::set<Node>::iterator it = bv.begin();it != bv.end();++it)
           {
             Debug("expr-qetest")<<"Boundvars "<<*it<<std::endl;
+            Node child = *it;
+            variables.push_back(em->mkVar(integer,child));
           }
-          Expr e = t.toExpr();
-          SmtEngine smt(e.getExprManager());
-          smt.setOption("produce-models", true);
-          smt.setLogic("LIA");
           Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
           Debug("expr-qetest")<<"Model "<<smt.query(e)<<std::endl;
           return qe;
