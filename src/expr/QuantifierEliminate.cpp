@@ -15,6 +15,7 @@
 #include "util/rational.h"
 #include "util/integer.h"
 #include "smt/smt_engine.h"
+#include "smt/smt_engine_scope.h"
 #include "theory/arith/arith_utilities.h"
 
 //#include "theory/quantifiers/quantifiers_rewriter.h"
@@ -26,6 +27,7 @@ using namespace CVC4::kind;
 using namespace CVC4::printer;
 using namespace CVC4::theory;
 using namespace CVC4::theory::arith;
+using namespace CVC4::smt;
 //using namespace CVC4::theory::quantifiers;
 
 //struct QENestedQuantAttributeId {
@@ -3942,6 +3944,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           ExprManager* em = t.toExpr().getExprManager();
           NodeManager* nm = NodeManager::fromExprManager(em);
           SmtEngine smt(em);
+          SmtScope smts(this);
           smt.setOption("produce-models", true);
           smt.setLogic("LIA");
           Type integer = em->integerType();
