@@ -3954,8 +3954,17 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           {
             Debug("expr-qetest")<<"Boundvars "<<*it<<std::endl;
             Node child = *it;
-            variables.push_back(em->mkVar(integer,child));
+            if(child.isVar())
+            {
+              variables.push_back(child.toExpr());
+            }
           }
+          Debug("expr-qetest")<<"num of variables "<<variables.size()<<std::endl;
+          for(int i = 0;i<(int) variables.size();++i)
+          {
+            Debug("expr-qetest")<<"variables "<<variables[i]<<std::endl;
+          }
+          Expr y = em->mkVar(integer);
           Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
           Debug("expr-qetest")<<"Model "<<smt.query(e)<<std::endl;
           return qe;
