@@ -3970,9 +3970,9 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           {
             Debug("expr-qetest")<<"variables "<<variables[i]<<std::endl;
           }
-          smt.assertFormula(e);
+          Result result = smt.assertFormula(e);
           Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
-          Debug("expr-qetest")<<"Model "<<smt.getValue(e)<<std::endl;
+          Debug("expr-qetest")<<"Model "<<result.toString()<<std::endl;
           while(!variables.empty())
           {
             variables.pop_back();
