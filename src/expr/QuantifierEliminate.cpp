@@ -3794,9 +3794,9 @@ Node QuantifierEliminate::prenexChecker(Node n) {
 Node QuantifierEliminate::extractQuantifierFreeFormula(Node n)
 {
   Node t;
-    if(n.getKind() == kind::NOT)
+    if(n.getKind() == kind::NOT && n[0].getKind() == kind::FORALL)
     {
-      t = extractQuantifierFreeFormula(n[0]);
+      t = extractQuantifierFreeFormula(n[0][1]);
     }
     else if(n.getKind() == kind::FORALL)
     {
