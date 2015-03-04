@@ -86,6 +86,7 @@ private:
   static Node prenexChecker(Node n);
   static Node getCoefficientsOfExpression(Node n,Node bv);
   static Node replaceWithLeftInfinity(Node n,Node boundVar);
+  static std::vector<Node> extractBoundVariables(Node n);
   static Node extractQuantifierFreeFormula(Node n);
 
   //non static methods

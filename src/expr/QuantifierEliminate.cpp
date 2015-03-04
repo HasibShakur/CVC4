@@ -3790,6 +3790,25 @@ Node QuantifierEliminate::prenexChecker(Node n) {
   Debug("expre-qetest")<<"toReturn from prenex checker "<<toReturn<<std::endl;
   return toReturn;
 }
+std::vector<Node> QuantifierEliminate::extractBoundVariables(Node n)
+{
+  std::vector<Node> boundVars;
+  if(n.getKind() == kind::FORALL)
+  {
+    for(int i=0;i<(int)n[0].getNumChildren();i++)
+    {
+      boundVars.push_back(n[0][i][0]);
+    }
+  }
+  else
+  {
+    for(int i=0;i<(int)n.getNumChildren();i++)
+    {
+      boundVars.push_back(extractBoundVariables(n[i]));
+    }
+  }
+  return boundVars;
+}
 
 Node QuantifierEliminate::extractQuantifierFreeFormula(Node n)
 {
@@ -3877,7 +3896,9 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         else
         {
           Node t = extractQuantifierFreeFormula(temp);
+          std::vector<Node> bv = extractBoundVariables(temp);
           Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
+          Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
           Expr e = t.toExpr();
           SmtEngine smt(e.getExprManager());
           smt.setOption("produce-models", true);
