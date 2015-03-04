@@ -3972,7 +3972,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           }
           smt.assertFormula(e);
           Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
-          Debug("expr-qetest")<<"Model "<<smt.query(e)<<std::endl;
+          Debug("expr-qetest")<<"Model "<<smt.getValue(e)<<std::endl;
           return qe;
         }
 
