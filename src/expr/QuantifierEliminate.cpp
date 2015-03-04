@@ -1092,6 +1092,7 @@ Node QuantifierEliminate::replaceGEQQE(Node n, Node bv) {
         }
       }
     }
+    return returnNode;
   } else {
     Node left = n[0];
     Node right = n[1];
@@ -3799,7 +3800,7 @@ std::set<Node> QuantifierEliminate::getBoundVariablesList(
       for(Node::iterator it = t.begin(), it_end = t.end(); it != it_end; ++it) {
         Node child = *it;
         if(child.getKind() == kind::FORALL) {
-          std::vector < Node > bv = computeMultipleBoundVariables(child);
+          std::vector < Node > bv = computeMultipleBoundVariables(child[0]);
           for(int i = 0; i < (int) bv.size(); i++) {
             if(bv[i].getNumChildren() > 0) {
               boundVars.insert(bv[i][0]);
@@ -3812,7 +3813,7 @@ std::set<Node> QuantifierEliminate::getBoundVariablesList(
       }
       return boundVars;
     } else if(t.getKind() == kind::FORALL) {
-      std::vector < Node > bv = computeMultipleBoundVariables(t);
+      std::vector < Node > bv = computeMultipleBoundVariables(t[0]);
       for(int i = 0; i < (int) bv.size(); i++) {
         if(bv[i].getNumChildren() > 0) {
           boundVars.insert(bv[i][0]);
@@ -3830,7 +3831,7 @@ std::set<Node> QuantifierEliminate::getBoundVariablesList(
     for(Node::iterator it = n.begin(), it_end = n.end(); it != it_end; ++it) {
       Node child = *it;
       if(child.getKind() == kind::FORALL) {
-        std::vector < Node > bv = computeMultipleBoundVariables(child);
+        std::vector < Node > bv = computeMultipleBoundVariables(child[0]);
         for(int i = 0; i < (int) bv.size(); i++) {
           if(bv[i].getNumChildren() > 0) {
             boundVars.insert(bv[i][0]);
@@ -3844,7 +3845,7 @@ std::set<Node> QuantifierEliminate::getBoundVariablesList(
     return boundVars;
 
   } else if(n.getKind() == kind::FORALL) {
-    std::vector < Node > bv = computeMultipleBoundVariables(n);
+    std::vector < Node > bv = computeMultipleBoundVariables(n[0]);
     for(int i = 0; i < (int) bv.size(); i++) {
       if(bv[i].getNumChildren() > 0) {
         boundVars.insert(bv[i][0]);
