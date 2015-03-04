@@ -3941,7 +3941,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           Node t = extractQuantifierFreeFormula(temp);
           NodeManager nm;
           Expr e = t.toExpr();
-          ExprManager *em(&nm);
+          ExprManager *em = e.getExprManager();
           SmtEngine smt(em);
           smt.setOption("produce-models", true);
           smt.setLogic("LIA");
