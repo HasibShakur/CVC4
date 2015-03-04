@@ -3944,7 +3944,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           ExprManager* em = t.toExpr().getExprManager();
           NodeManager* nm = NodeManager::fromExprManager(em);
           SmtEngine smt(em);
-          SmtScope smts(this);
+          SmtScope smts(&smt);
           smt.setOption("produce-models", true);
           smt.setLogic("LIA");
           Type integer = em->integerType();
