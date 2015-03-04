@@ -3,7 +3,7 @@
 #include<iostream>
 #include<vector>
 #include<numeric>
-#include <unordered_set>
+#include <set>
 
 #include "expr/node.h"
 #include "expr/QuantifierEliminate.h"
@@ -3790,8 +3790,8 @@ Node QuantifierEliminate::prenexChecker(Node n) {
   Debug("expre-qetest")<<"toReturn from prenex checker "<<toReturn<<std::endl;
   return toReturn;
 }
-std::unordered_set<Node> QuantifierEliminate::getBoundVariablesList(
-    Node n, std::unordered_set<Node> boundVars) {
+std::set<Node> QuantifierEliminate::getBoundVariablesList(
+    Node n, std::set<Node> boundVars) {
   Node t;
   if(n.getKind() == kind::NOT) {
     t = n[0];
@@ -3938,11 +3938,11 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         else
         {
           Node t = extractQuantifierFreeFormula(temp);
-          std::unordered_set<Node> boundVars;
-          std::unordered_set<Node> bv = getBoundVariablesList(temp,boundVars);
+          std::set<Node> boundVars;
+          std::set<Node> bv = getBoundVariablesList(temp,boundVars);
           Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
           Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
-          for(auto it = bv.begin();it_end != bv.end();++it)
+          for(std::set<Node>::iterator it = bv.begin();it_end != bv.end();++it)
           {
             Debug("expr-qetest")<<"Boundvars "<<*it<<std::endl;
           }

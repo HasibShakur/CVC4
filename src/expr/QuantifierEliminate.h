@@ -5,7 +5,7 @@
 
 #include<iostream>
 #include<vector>
-#include <unordered_set>
+#include <set>
 #include "expr/node.h"
 #include "theory/arith/normal_form.h"
 namespace CVC4 {
@@ -87,7 +87,7 @@ private:
   static Node prenexChecker(Node n);
   static Node getCoefficientsOfExpression(Node n,Node bv);
   static Node replaceWithLeftInfinity(Node n,Node boundVar);
-  static std::unordered_set<Node> getBoundVariablesList(Node n,std::unordered_set<Node> bv);
+  static std::set<Node> getBoundVariablesList(Node n,std::set<Node> bv);
   static Node extractQuantifierFreeFormula(Node n);
 
   //non static methods
