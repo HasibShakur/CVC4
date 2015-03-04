@@ -3977,10 +3977,8 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           {
             variables.pop_back();
           }
-          while(!boundVars.empty())
-          {
-            boundVars.erase();
-          }
+          boundVars.clear();
+          bv.clear();
           return qe;
         }
 
