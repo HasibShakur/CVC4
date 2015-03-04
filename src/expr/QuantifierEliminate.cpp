@@ -3796,11 +3796,11 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n)
   Node t;
     if(n.getKind() == kind::NOT)
     {
-      extractQuantifierFreeFormula(n[0]);
+      t = extractQuantifierFreeFormula(n[0]);
     }
     else if(n.getKind() == kind::FORALL)
     {
-     extractQuantifierFreeFormula(n[1]);
+     t = extractQuantifierFreeFormula(n[1]);
     }
     else
     {
