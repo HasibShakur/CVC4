@@ -3791,6 +3791,24 @@ Node QuantifierEliminate::prenexChecker(Node n) {
   return toReturn;
 }
 
+Node QuantifierEliminate::extractQuantifierFreeFormula(Node n)
+{
+  Node t;
+    if(n.getKind() == kind::NOT)
+    {
+      extractQuantifierFreeFormula(n[0]);
+    }
+    else if(n.getKind() == kind::FORALL)
+    {
+     extractQuantifierFreeFormula(n[1]);
+    }
+    else
+    {
+      t = n;
+    }
+    return t;
+}
+
 QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
                                                   std::string optionQE) {
   Debug("expr-qetest")<<"Before qeEngine  "<<n<<std::endl;
@@ -3858,10 +3876,13 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         }
         else
         {
-          Expr e = temp.toExpr();
+          Node t = extractQuantifierFreeFormula(temp);
+          Debug("expr-qetest")<<"Quantifier Free Expression e"<<t<<std::endl;
+          Expr e = t.toExpr();
           SmtEngine smt(e.getExprManager());
           smt.setOption("produce-models", true);
           Debug("expr-qetest")<<"Expression e"<<e<<std::endl;
+
           Debug("expr-qetest")<<"Model "<<smt.query(e)<<std::endl;
           return qe;
         }
