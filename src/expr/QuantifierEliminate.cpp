@@ -3964,7 +3964,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           {
             Debug("expr-qetest")<<"variables "<<variables[i]<<std::endl;
           }
-          Expr y = em->mkVar(integer);
+         // Expr y = em->mk;
           Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
           Debug("expr-qetest")<<"Model "<<smt.query(e)<<std::endl;
           return qe;
