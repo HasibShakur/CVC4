@@ -3,6 +3,7 @@
 #include<iostream>
 #include<vector>
 #include<numeric>
+#include <unordered_set>
 
 #include "expr/node.h"
 #include "expr/QuantifierEliminate.h"
@@ -15,7 +16,6 @@
 #include "util/integer.h"
 #include "smt/smt_engine.h"
 #include "theory/arith/arith_utilities.h"
-
 
 //#include "theory/quantifiers/quantifiers_rewriter.h"
 
@@ -3790,42 +3790,84 @@ Node QuantifierEliminate::prenexChecker(Node n) {
   Debug("expre-qetest")<<"toReturn from prenex checker "<<toReturn<<std::endl;
   return toReturn;
 }
-std::vector<Node> QuantifierEliminate::extractBoundVariables(Node n)
-{
-  std::vector<Node> boundVars;
-  if(n.getKind() == kind::FORALL)
-  {
-    for(int i=0;i<(int)n[0].getNumChildren();i++)
-    {
-      boundVars.push_back(n[0][i][0]);
+std::unordered_set<Node> QuantifierEliminate::getBoundVariablesList(
+    Node n, std::unordered_set<Node> boundVars) {
+  Node t;
+  if(n.getKind() == kind::NOT) {
+    t = n[0];
+    if(t.getKind() == kind::AND) {
+      for(Node::iterator it = t.begin(), it_end = t.end(); it != it_end; ++it) {
+        Node child = *it;
+        if(child.getKind() == kind::FORALL) {
+          std::vector < Node > bv = computeMultipleBoundVariables(child);
+          for(int i = 0; i < (int) bv.size(); i++) {
+            if(bv[i].getNumChildren() > 0) {
+              boundVars.insert(bv[i][0]);
+            } else {
+              boundVars.insert(bv[i]);
+            }
+          }
+        } else {
+        }
+      }
+      return boundVars;
+    } else if(t.getKind() == kind::FORALL) {
+      std::vector < Node > bv = computeMultipleBoundVariables(t);
+      for(int i = 0; i < (int) bv.size(); i++) {
+        if(bv[i].getNumChildren() > 0) {
+          boundVars.insert(bv[i][0]);
+        } else {
+          boundVars.insert(bv[i]);
+        }
+      }
+      return getBoundVariablesList(t[1], boundVars);
+    } else {
+      return boundVars;
     }
-  }
-  else
-  {
-    for(int i=0;i<(int)n.getNumChildren();i++)
-    {
-      boundVars.push_back(extractBoundVariables(n[i]));
+
+  } else if(n.getKind() == kind::AND) {
+
+    for(Node::iterator it = n.begin(), it_end = n.end(); it != it_end; ++it) {
+      Node child = *it;
+      if(child.getKind() == kind::FORALL) {
+        std::vector < Node > bv = computeMultipleBoundVariables(child);
+        for(int i = 0; i < (int) bv.size(); i++) {
+          if(bv[i].getNumChildren() > 0) {
+            boundVars.insert(bv[i][0]);
+          } else {
+            boundVars.insert(bv[i]);
+          }
+        }
+      } else {
+      }
     }
+    return boundVars;
+
+  } else if(n.getKind() == kind::FORALL) {
+    std::vector < Node > bv = computeMultipleBoundVariables(n);
+    for(int i = 0; i < (int) bv.size(); i++) {
+      if(bv[i].getNumChildren() > 0) {
+        boundVars.insert(bv[i][0]);
+      } else {
+        boundVars.insert(bv[i]);
+      }
+    }
+    return getBoundVariablesList(n[1], boundVars);
+  } else {
+    return boundVars;
   }
-  return boundVars;
 }
 
-Node QuantifierEliminate::extractQuantifierFreeFormula(Node n)
-{
+Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   Node t;
-    if(n.getKind() == kind::NOT && n[0].getKind() == kind::FORALL)
-    {
-      t = extractQuantifierFreeFormula(n[0][1]);
-    }
-    else if(n.getKind() == kind::FORALL)
-    {
-     t = extractQuantifierFreeFormula(n[1]);
-    }
-    else
-    {
-      t = n;
-    }
-    return t;
+  if(n.getKind() == kind::NOT && n[0].getKind() == kind::FORALL) {
+    t = extractQuantifierFreeFormula(n[0][1]);
+  } else if(n.getKind() == kind::FORALL) {
+    t = extractQuantifierFreeFormula(n[1]);
+  } else {
+    t = n;
+  }
+  return t;
 }
 
 QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
@@ -3896,9 +3938,14 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         else
         {
           Node t = extractQuantifierFreeFormula(temp);
-          std::vector<Node> bv = extractBoundVariables(temp);
+          std::unordered_set<Node> boundVars;
+          std::unordered_set<Node> bv = getBoundVariablesList(temp,boundVars);
           Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
           Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
+          for(auto it = bv.begin();it_end != bv.end();++it)
+          {
+            Debug("expr-qetest")<<"Boundvars "<<*it<<std::endl;
+          }
           Expr e = t.toExpr();
           SmtEngine smt(e.getExprManager());
           smt.setOption("produce-models", true);
