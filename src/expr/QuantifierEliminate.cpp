@@ -3945,26 +3945,27 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           smt.setOption("produce-models", true);
           smt.setLogic("LIA");
           Type integer = em->integerType();
-          std::set<Node> boundVars;
-          std::set<Node> bv = getBoundVariablesList(temp,boundVars);
-          Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
-          Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
-          std::vector<Expr> variables;
-          for(std::set<Node>::iterator it = bv.begin();it != bv.end();++it)
-          {
-            Debug("expr-qetest")<<"Boundvars "<<*it<<std::endl;
-            Node child = *it;
-            if(child.isVar())
-            {
-              variables.push_back(child.toExpr());
-            }
-          }
-          Debug("expr-qetest")<<"num of variables "<<variables.size()<<std::endl;
-          for(int i = 0;i<(int) variables.size();++i)
-          {
-            Debug("expr-qetest")<<"variables "<<variables[i]<<std::endl;
-          }
-          Expr y = em->mkBoundVar("y",integer);
+//          std::set<Node> boundVars;
+//          std::set<Node> bv = getBoundVariablesList(temp,boundVars);
+//          Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
+//          Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
+//          std::vector<Expr> variables;
+//          for(std::set<Node>::iterator it = bv.begin();it != bv.end();++it)
+//          {
+//            Debug("expr-qetest")<<"Boundvars "<<*it<<std::endl;
+//            Node child = *it;
+//            if(child.isVar())
+//            {
+//              variables.push_back(child.toExpr());
+//            }
+//          }
+//          Debug("expr-qetest")<<"num of variables "<<variables.size()<<std::endl;
+//          for(int i = 0;i<(int) variables.size();++i)
+//          {
+//            Debug("expr-qetest")<<"variables "<<variables[i]<<std::endl;
+//          }
+          Expr x = em->mkVar("x",integer);
+          Expr y = em->mkVar("y",integer);
           Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
           Debug("expr-qetest")<<"Model "<<smt.query(e)<<std::endl;
           return qe;
