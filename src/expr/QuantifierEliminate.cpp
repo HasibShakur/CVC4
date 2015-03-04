@@ -3877,12 +3877,12 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         else
         {
           Node t = extractQuantifierFreeFormula(temp);
-          Debug("expr-qetest")<<"Quantifier Free Expression e"<<t<<std::endl;
+          Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
           Expr e = t.toExpr();
           SmtEngine smt(e.getExprManager());
           smt.setOption("produce-models", true);
-          Debug("expr-qetest")<<"Expression e"<<e<<std::endl;
-
+          smt.setLogic("LIA");
+          Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
           Debug("expr-qetest")<<"Model "<<smt.query(e)<<std::endl;
           return qe;
         }
