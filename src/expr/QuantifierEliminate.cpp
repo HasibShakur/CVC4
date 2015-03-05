@@ -3930,7 +3930,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n) {
   smt.setOption("produce-models", true);
   smt.setOption("finite-model-find", true);
   Type integer = em->integerType();
-  Expr e = t.toExpr();
+  Expr e = n.toExpr();
   std::set<Node> boundVars;
   std::set<Node> vars;
   std::set < Node > bv = getBoundVariablesList(n, boundVars);
