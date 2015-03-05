@@ -3860,7 +3860,7 @@ std::set<Node> QuantifierEliminate::getBoundVariablesList(
     return boundVars;
   }
 }
-Node QuantifierEliminate::obtainFreeVariable(Node n, std::vector<Node> v) {
+std::vector<Node> QuantifierEliminate::obtainFreeVariable(Node n, std::vector<Node> v) {
   Node toReturn;
   Debug("expr-qetest")<<"Expession in obtain free variable "<<n<<std::endl;
   for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
@@ -3892,7 +3892,7 @@ std::set<Node> QuantifierEliminate::getFreeVariablesList(Node n,
         std::vector<Node> vars;
         vars = obtainFreeVariable(child, vars);
         Debug("expr-qetest")<<"free vars size "<<vars.size()<<std::endl;
-        for(int i = 0; i < vars.size(); i++) {
+        for(int i = 0; i < (int)vars.size(); i++) {
           fv.insert(vars[i]);
         }
       }
@@ -3902,7 +3902,7 @@ std::set<Node> QuantifierEliminate::getFreeVariablesList(Node n,
     std::vector<Node> vars;
     vars = obtainFreeVariable(child, vars);
     Debug("expr-qetest")<<"free vars size "<<vars.size()<<std::endl;
-    for(int i = 0; i < vars.size(); i++) {
+    for(int i = 0; i < (int)vars.size(); i++) {
       fv.insert(vars[i]);
     }
     return fv;
