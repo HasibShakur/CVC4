@@ -4043,6 +4043,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           bv.clear();
           vars.clear();
           v.clear();
+          ~SmtEngine();
           return qe;
         }
 
