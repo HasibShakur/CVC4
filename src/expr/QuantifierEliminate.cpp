@@ -3988,6 +3988,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         else
         {
           Node t = extractQuantifierFreeFormula(temp);
+          t = t.negate();
           ExprManager* em = t.toExpr().getExprManager();
           SmtEngine smt(em);
           SmtScope smts(&smt);
