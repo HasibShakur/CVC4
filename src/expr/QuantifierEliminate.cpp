@@ -3860,7 +3860,8 @@ std::set<Node> QuantifierEliminate::getBoundVariablesList(
     return boundVars;
   }
 }
-std::vector<Node> QuantifierEliminate::obtainFreeVariable(Node n, std::vector<Node> v) {
+std::vector<Node> QuantifierEliminate::obtainFreeVariable(Node n,
+                                                          std::vector<Node> v) {
   Node toReturn;
   Debug("expr-qetest")<<"Expession in obtain free variable "<<n<<std::endl;
   for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
@@ -3892,7 +3893,7 @@ std::set<Node> QuantifierEliminate::getFreeVariablesList(Node n,
         std::vector<Node> vars;
         vars = obtainFreeVariable(child, vars);
         Debug("expr-qetest")<<"free vars size "<<vars.size()<<std::endl;
-        for(int i = 0; i < (int)vars.size(); i++) {
+        for(int i = 0; i < (int) vars.size(); i++) {
           fv.insert(vars[i]);
         }
       }
@@ -3902,7 +3903,7 @@ std::set<Node> QuantifierEliminate::getFreeVariablesList(Node n,
     std::vector<Node> vars;
     vars = obtainFreeVariable(t, vars);
     Debug("expr-qetest")<<"free vars size "<<vars.size()<<std::endl;
-    for(int i = 0; i < (int)vars.size(); i++) {
+    for(int i = 0; i < (int) vars.size(); i++) {
       fv.insert(vars[i]);
     }
     return fv;
@@ -3917,6 +3918,55 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   } else {
     t = n;
   }
+  return t;
+}
+Node QuantifierEliminate::strongerQEProcedure(Node n) {
+  Node t = extractQuantifierFreeFormula(n);
+  t = t.negate();
+  ExprManager* em = t.toExpr().getExprManager();
+  SmtEngine smt(em);
+  SmtScope smts(&smt);
+  smt.setLogic("LIA");
+  smt.setOption("produce-models", true);
+  smt.setOption("finite-model-find", true);
+  Type integer = em->integerType();
+  Expr e = t.toExpr();
+  std::set<Node> boundVars;
+  std::set<Node> vars;
+  std::set < Node > bv = getBoundVariablesList(n, boundVars);
+  std::set<Node> v = getFreeVariablesList(t, vars);
+  Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
+  Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
+  Debug("expr-qetest")<<"num of free vars "<<v.size()<<std::endl;
+  std::vector<Expr> variables;
+  for(std::set<Node>::iterator it = bv.begin(); it != bv.end(); ++it) {
+    Debug("expr-qetest")<<"Boundvars "<<*it<<std::endl;
+    Node child = *it;
+    if(child.isVar() && child.getKind() == kind::BOUND_VARIABLE)
+    {
+      variables.push_back(child.toExpr());
+    }
+  }
+  for(std::set<Node>::iterator it = v.begin(); it != v.end(); ++it) {
+    Debug("expr-qetest")<<"free vars "<<*it<<std::endl;
+    Node child = *it;
+    if(child.isVar() && child.getKind() != kind::BOUND_VARIABLE)
+    {
+      variables.push_back(child.toExpr());
+    }
+  }
+  Result result = smt.checkSat(e);
+  Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
+  for(int i = 0; i < (int) variables.size(); i++) {
+    Debug("expr-qetest")<<"Value of "<<variables[i]<<" "<<smt.getValue(variables[i])<<std::endl;
+  }
+  while(!variables.empty()) {
+    variables.pop_back();
+  }
+  boundVars.clear();
+  bv.clear();
+  vars.clear();
+  v.clear();
   return t;
 }
 
@@ -3987,58 +4037,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         }
         else
         {
-          Node t = extractQuantifierFreeFormula(temp);
-          t = t.negate();
-          ExprManager* em = t.toExpr().getExprManager();
-          SmtEngine smt(em);
-          SmtScope smts(&smt);
-          smt.setLogic("LIA");
-          smt.setOption("produce-models", true);
-          smt.setOption("finite-model-find",true);
-          Type integer = em->integerType();
-          Expr e = t.toExpr();
-          std::set<Node> boundVars;
-          std::set<Node> vars;
-          std::set<Node> bv = getBoundVariablesList(temp,boundVars);
-          std::set<Node> v = getFreeVariablesList(temp,vars);
-          Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
-          Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
-          Debug("expr-qetest")<<"num of free vars "<<v.size()<<std::endl;
-          std::vector<Expr> variables;
-          for(std::set<Node>::iterator it = bv.begin();it != bv.end();++it)
-          {
-            Debug("expr-qetest")<<"Boundvars "<<*it<<std::endl;
-            Node child = *it;
-            if(child.isVar() && child.getKind() == kind::BOUND_VARIABLE)
-            {
-              variables.push_back(child.toExpr());
-            }
-          }
-          for(std::set<Node>::iterator it = v.begin();it != v.end();++it)
-          {
-            Debug("expr-qetest")<<"free vars "<<*it<<std::endl;
-            Node child = *it;
-            if(child.isVar() && child.getKind() != kind::BOUND_VARIABLE)
-            {
-              variables.push_back(child.toExpr());
-            }
-          }
-          Result result = smt.checkSat(e);
-          Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
-          for(int i=0;i<(int) variables.size();i++)
-          {
-            Debug("expr-qetest")<<"Value of "<<variables[i]<<" "<<smt.getValue(variables[i])<<std::endl;
-          }
-          while(!variables.empty())
-          {
-            variables.pop_back();
-          }
-          boundVars.clear();
-          bv.clear();
-          vars.clear();
-          v.clear();
-
-          //temp
+          Node t = strongerQEProcedure(temp);
           qe.setEquivalentExpression(t);
           qe.setMessage("success");
           return qe;
