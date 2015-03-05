@@ -3996,8 +3996,6 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           smt.setOption("produce-models", true);
           smt.setOption("finite-model-find",true);
           Type integer = em->integerType();
-//          Expr x = em->mkVar("x",integer);
-//          Expr y = em->mkVar("y",integer);
           Expr e = t.toExpr();
           std::set<Node> boundVars;
           std::set<Node> vars;
@@ -4030,15 +4028,21 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           {
             Debug("expr-qetest")<<"variables "<<variables[i]<<std::endl;
           }
-          Result result = smt.assertFormula(e);
+          Result result = smt.checkSat(e);
+
           Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
-          Debug("expr-qetest")<<"Model "<<result.toString()<<std::endl;
+          for(int i=0;i<(int) variables.size();i++)
+          {
+            Debug("expr-qetest")<<"Value of "<<variables[i]<<" "<<smt.getValue(variables[i])<<std::endl;
+          }
           while(!variables.empty())
           {
             variables.pop_back();
           }
           boundVars.clear();
           bv.clear();
+          vars.clear();
+          v.clear();
           return qe;
         }
 
