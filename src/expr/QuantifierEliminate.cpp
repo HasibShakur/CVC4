@@ -3992,8 +3992,9 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           NodeManager* nm = NodeManager::fromExprManager(em);
           SmtEngine smt(em);
           SmtScope smts(&smt);
-          smt.setOption("produce-models", true);
           smt.setLogic("LIA");
+          smt.setOption("produce-models", true);
+          smt.setOption("finite-model-find",true);
           Type integer = em->integerType();
 //          Expr x = em->mkVar("x",integer);
 //          Expr y = em->mkVar("y",integer);
