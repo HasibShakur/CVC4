@@ -3989,7 +3989,6 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         {
           Node t = extractQuantifierFreeFormula(temp);
           ExprManager* em = t.toExpr().getExprManager();
-          NodeManager* nm = NodeManager::fromExprManager(em);
           SmtEngine smt(em);
           SmtScope smts(&smt);
           smt.setLogic("LIA");
@@ -4023,13 +4022,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
               variables.push_back(child.toExpr());
             }
           }
-          Debug("expr-qetest")<<"num of variables "<<variables.size()<<std::endl;
-          for(int i = 0;i<(int) variables.size();++i)
-          {
-            Debug("expr-qetest")<<"variables "<<variables[i]<<std::endl;
-          }
           Result result = smt.checkSat(e);
-
           Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
           for(int i=0;i<(int) variables.size();i++)
           {
@@ -4043,7 +4036,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           bv.clear();
           vars.clear();
           v.clear();
-          ~SmtEngine();
+
           return qe;
         }
 
