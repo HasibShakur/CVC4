@@ -4037,6 +4037,9 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           vars.clear();
           v.clear();
 
+          //temp
+          qe.setEquivalentExpression(t);
+          qe.setMessage("success");
           return qe;
         }
 
