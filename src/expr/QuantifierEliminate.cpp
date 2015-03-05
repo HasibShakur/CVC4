@@ -3865,7 +3865,7 @@ std::vector<Node> QuantifierEliminate::obtainFreeVariable(Node n, std::vector<No
   Debug("expr-qetest")<<"Expession in obtain free variable "<<n<<std::endl;
   for(Node::iterator i = n.begin(), i_end = n.end(); i != i_end; ++i) {
     Node c = *i;
-    if(c.isVar()) {
+    if(c.isVar() && c.getKind() != kind::BOUND_VARIABLE) {
       toReturn = c;
       v.push_back(toReturn);
     } else {
@@ -4010,7 +4010,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           {
             Debug("expr-qetest")<<"Boundvars "<<*it<<std::endl;
             Node child = *it;
-            if(child.isVar())
+            if(child.isVar() && child.getKind() == kind::BOUND_VARIABLE)
             {
               variables.push_back(child.toExpr());
             }
@@ -4019,7 +4019,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
           {
             Debug("expr-qetest")<<"free vars "<<*it<<std::endl;
             Node child = *it;
-            if(child.isVar())
+            if(child.isVar() && child.getKind() != kind::BOUND_VARIABLE)
             {
               variables.push_back(child.toExpr());
             }
