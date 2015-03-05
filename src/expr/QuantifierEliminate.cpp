@@ -3867,7 +3867,7 @@ std::vector<Node> QuantifierEliminate::obtainFreeVariable(Node n, std::vector<No
     Node c = *i;
     if(c.isVar()) {
       toReturn = c;
-      v.push_back(toReturn)
+      v.push_back(toReturn);
     } else {
       v = obtainFreeVariable(c, v);
     }
@@ -3900,7 +3900,7 @@ std::set<Node> QuantifierEliminate::getFreeVariablesList(Node n,
     return fv;
   } else {
     std::vector<Node> vars;
-    vars = obtainFreeVariable(child, vars);
+    vars = obtainFreeVariable(t, vars);
     Debug("expr-qetest")<<"free vars size "<<vars.size()<<std::endl;
     for(int i = 0; i < (int)vars.size(); i++) {
       fv.insert(vars[i]);
