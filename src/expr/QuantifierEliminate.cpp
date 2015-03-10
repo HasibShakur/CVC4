@@ -4,7 +4,6 @@
 #include<vector>
 #include<numeric>
 #include <set>
-#include <boost/ptr_container/ptr_deque.hpp>
 #include "expr/node.h"
 #include "expr/QuantifierEliminate.h"
 #include "expr/attribute.h"
@@ -3921,7 +3920,8 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   return t;
 }
 Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
-  Node m(n.clone());
+  NodeManager nm = new NodeManager;
+  Node m = nm.currentNM()->mkNode(n.getKind(),n);
   Node t = extractQuantifierFreeFormula(m);
   t = t.negate();
   ExprManager* em = t.toExpr().getExprManager();
@@ -3968,6 +3968,8 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   bv.clear();
   vars.clear();
   v.clear();
+  delete em;
+  delete nm;
   return t;
 }
 
