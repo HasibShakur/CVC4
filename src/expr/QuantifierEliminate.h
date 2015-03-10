@@ -94,6 +94,7 @@ private:
   static Node strongerQEProcedure(Node n,QuantifierEliminate qe);
   static Node defautlQEProcedure(Node n,QuantifierEliminate qe);
  // static Node mkDeepCopy(Expr e,ExprManager *em);
+
   //non static methods
 
   std::vector<ExpressionContainer> getExpContainer(QuantifierEliminate q);
@@ -103,19 +104,7 @@ private:
   void setEquivalentExpression(Node n);
   void setOptionQE(std::string opt);
 
-  //  static Node convertToPrenexQE(Node body, std::vector< Node >& args, bool pol);
-  //  static bool evaluateBoolean(Node n);
-//  static Node preProcessingForRightProjection(Node n);
-//  static Node preProcessing2ForRightProjection(Node n);
-//  static Node evaluateForRightProjection(Node n, Node replacement);
-//  static Node computeOperationQE(Node n, bool isNested);
-//  static void setQENestedQuantifiers( Node n, Node q );
-//  static void setQENestedQuantifiers2( Node n, Node q, std::vector< Node >& processed );
-//  static void setAttributesQE( Node in, Node n );
-  //static Node replaceForall(Node body);
 public:
-//  static Node preRewriteForPrenex(Node n);
-//  static Node postRewriteForPrenex(Node n);
 
   //static public functions
   static QuantifierEliminate qeEngine(Node n, int numOfQuantifiers, std::string optionQE);
