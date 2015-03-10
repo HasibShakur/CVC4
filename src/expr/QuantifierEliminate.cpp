@@ -3923,10 +3923,10 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   ExprManager *em = new ExprManager;
   std::vector<Expr> temp_expr;
   Kind k = n.getKind();
-  expr.push_back(n.toExpr());
-  Expr e = em->mkExpr(k,temp_expr);
+  temp_expr.push_back(n.toExpr());
+  Expr exp = em->mkExpr(k,temp_expr);
   Debug("expr-qetest")<<"in strong qe proc e "<<e<<std::endl;
-  Node m(e);
+  Node m(exp);
   Debug("expr-qetest")<<"in strong qe proc m "<<m<<std::endl;
   Node t = extractQuantifierFreeFormula(m);
   t = t.negate();
@@ -3937,7 +3937,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   smt.setOption("produce-models", true);
   smt.setOption("finite-model-find", true);
   Type integer = em->integerType();
-  Expr e = n.toExpr();
+  Expr e = t.toExpr();
   std::set<Node> boundVars;
   std::set<Node> vars;
   std::set < Node > bv = getBoundVariablesList(m, boundVars);
