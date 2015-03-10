@@ -3921,14 +3921,13 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
 }
 Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   ExprManager *em = new ExprManager;
-  n = eliminateImpliesQE(n);
-  n = convertToNNFQE(n);
-  n = convertIFF(n);
-  n = computeSimpleITE(n);
   Node m = n;
-  Debug("expr-qetest")<<"in strong qe proc m "<<m<<std::endl;
   Node t = extractQuantifierFreeFormula(m);
   t = t.negate();
+  t = eliminateImpliesQE(t);
+  t = convertToNNFQE(t);
+  t = convertIFF(t);
+  t = computeSimpleITE(t);
   Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
   SmtEngine smt(em);
   SmtScope smts(&smt);
