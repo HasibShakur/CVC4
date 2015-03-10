@@ -15,6 +15,7 @@
 #include "util/integer.h"
 #include "smt/smt_engine.h"
 #include "smt/smt_engine_scope.h"
+#include "expr/expr_manager_scope.h"
 #include "theory/arith/arith_utilities.h"
 
 //#include "theory/quantifiers/quantifiers_rewriter.h"
@@ -3931,7 +3932,6 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   ExprManager *em = n.toExpr().getExprManager();
   Expr exp = n.toExpr();
   Debug("expr-qetest")<<"Expr exp "<<exp<<std::endl;
-  Kind k = exp.getKind();
   ExprManager *em1 = new ExprManager;
   ExprManagerScope ems(em1);
   Expr exp1 = em1->mkExpr(exp);
