@@ -93,6 +93,7 @@ private:
   static Node extractQuantifierFreeFormula(Node n);
   static Node strongerQEProcedure(Node n,QuantifierEliminate qe);
   static Node defautlQEProcedure(Node n,QuantifierEliminate qe);
+ // static Node mkDeepCopy(Expr e,ExprManager *em);
   //non static methods
 
   std::vector<ExpressionContainer> getExpContainer(QuantifierEliminate q);
