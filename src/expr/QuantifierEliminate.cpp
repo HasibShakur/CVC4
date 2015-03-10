@@ -3925,7 +3925,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   Kind k = n.getKind();
   temp_expr.push_back(n.toExpr());
   Expr exp = em->mkExpr(k,temp_expr);
-  Debug("expr-qetest")<<"in strong qe proc e "<<e<<std::endl;
+  Debug("expr-qetest")<<"in strong qe proc e "<<exp<<std::endl;
   Node m(exp);
   Debug("expr-qetest")<<"in strong qe proc m "<<m<<std::endl;
   Node t = extractQuantifierFreeFormula(m);
