@@ -3925,12 +3925,15 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   Node t = extractQuantifierFreeFormula(m);
   t = t.notNode();
   Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
+  t = eliminateImpliesQE(t);
+  Debug("expr-qetest")<<"After eliminate implies qe "<<t<<std::endl;
   t = convertToNNFQE(t);
   t = Rewriter::rewrite(t);
   Debug("expr-qetest")<<"After nnf "<<t<<std::endl;
-  t = eliminateImpliesQE(t);
-  t = convertIFF(t);
   t = computeSimpleITE(t);
+  if(t.getKind() == kind::IFF || t.getKind() == kind::XOR) {
+      t = convertIFF(t);
+    }
   Debug("expr-qetest")<<"After rewriting "<<t<<std::endl;
   SmtEngine smt(em);
   SmtScope smts(&smt);
