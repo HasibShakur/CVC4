@@ -3968,7 +3968,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   bv.clear();
   vars.clear();
   v.clear();
-  delete *em;
+  //delete *em;
   return t;
 }
 
