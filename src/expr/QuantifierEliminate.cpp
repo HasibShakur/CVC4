@@ -3680,7 +3680,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   Expr exp = n.toExpr();
   Debug("expr-qetest")<<"Expr exp "<<exp<<std::endl;
   ExprManager *em1 = new ExprManager;
-  ExprManagerScope ems(&em1);
+  ExprManagerScope ems(&exp);
   Expr exp1 = em1->mkExpr(exp);
   Debug("expr-qetest")<<"Expr exp1 "<<exp1<<std::endl;
   if(exp1.getExprManager() == exp.getExprManager())
