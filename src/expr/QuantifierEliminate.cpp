@@ -3924,16 +3924,16 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   Expr exp = n.toExpr();
   Debug("expr-qetest")<<"Expr exp "<<exp<<std::endl;
   ExprManager *em1 = new ExprManager;
-  Expr exp1(&exp);
+  Expr exp1(exp);
   Debug("expr-qetest")<<"Expr exp1 "<<exp1<<std::endl;
-//  if(exp.getExprManager() == n.toExpr().getExprManager())
-//  {
-//    Debug("expr-qetest")<<"Same expr manager "<<std::endl;
-//  }
-//  else
-//  {
-//    Debug("expr-qetest")<<"different expr manager "<<std::endl;
-//  }
+  if(exp1.getExprManager() == exp.getExprManager())
+  {
+    Debug("expr-qetest")<<"Same expr manager "<<std::endl;
+  }
+  else
+  {
+    Debug("expr-qetest")<<"different expr manager "<<std::endl;
+  }
   Node m(exp);
   Node t = extractQuantifierFreeFormula(m);
   t = t.notNode();
