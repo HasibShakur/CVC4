@@ -3923,7 +3923,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   ExprManager *em = new ExprManager;
   Node m = n;
   Node t = extractQuantifierFreeFormula(m);
-  t = t.negate();
+  t = t.notNode();
   t = eliminateImpliesQE(t);
   t = convertToNNFQE(t);
   t = convertIFF(t);
