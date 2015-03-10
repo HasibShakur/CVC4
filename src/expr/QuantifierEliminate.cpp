@@ -4,7 +4,7 @@
 #include<vector>
 #include<numeric>
 #include <set>
-
+#include <boost/ptr_container/ptr_deque.hpp>
 #include "expr/node.h"
 #include "expr/QuantifierEliminate.h"
 #include "expr/attribute.h"
@@ -3920,8 +3920,9 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   }
   return t;
 }
-Node QuantifierEliminate::strongerQEProcedure(Node n) {
-  Node t = extractQuantifierFreeFormula(n);
+Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
+  Node m(n.clone());
+  Node t = extractQuantifierFreeFormula(m);
   t = t.negate();
   ExprManager* em = t.toExpr().getExprManager();
   SmtEngine smt(em);
@@ -3933,7 +3934,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n) {
   Expr e = n.toExpr();
   std::set<Node> boundVars;
   std::set<Node> vars;
-  std::set < Node > bv = getBoundVariablesList(n, boundVars);
+  std::set < Node > bv = getBoundVariablesList(m, boundVars);
   std::set<Node> v = getFreeVariablesList(t, vars);
   Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
   Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
@@ -3968,6 +3969,12 @@ Node QuantifierEliminate::strongerQEProcedure(Node n) {
   vars.clear();
   v.clear();
   return t;
+}
+
+Node QuantifierEliminate::defautlQEProcedure(Node n,QuantifierEliminate qe)
+{
+  Node returnNode = computeProjections(n,qe);
+  return returnNode;
 }
 
 QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
@@ -4037,7 +4044,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         }
         else
         {
-          Node t = strongerQEProcedure(temp);
+          Node t = strongerQEProcedure(temp,qe);
           qe.setEquivalentExpression(t);
           qe.setMessage("success");
           return qe;
@@ -4058,7 +4065,7 @@ QuantifierEliminate QuantifierEliminate::qeEngine(Node n, int numOfQuantifiers,
         }
         else
         {
-          final = computeProjections(temp,qe);
+          final = strongerQEProcedure(temp,qe);
           Debug("expr-qetest")<<"After qe "<<final<<std::endl;
           qe.setEquivalentExpression(final);
           qe.setMessage("success");

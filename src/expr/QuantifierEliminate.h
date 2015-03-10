@@ -91,7 +91,8 @@ private:
   static std::set<Node> getFreeVariablesList(Node n,std::set<Node> bv);
   static std::vector<Node> obtainFreeVariable(Node n,std::vector<Node> vars);
   static Node extractQuantifierFreeFormula(Node n);
-  static Node strongerQEProcedure(Node n);
+  static Node strongerQEProcedure(Node n,QuantifierEliminate qe);
+  static Node defautlQEProcedure(Node n,QuantifierEliminate qe);
   //non static methods
 
   std::vector<ExpressionContainer> getExpContainer(QuantifierEliminate q);
