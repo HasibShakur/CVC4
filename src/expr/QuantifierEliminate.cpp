@@ -3926,6 +3926,8 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   t = t.notNode();
   Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
   t = convertToNNFQE(t);
+  t = Rewriter::rewrite(t);
+  Debug("expr-qetest")<<"After nnf "<<t<<std::endl;
   t = eliminateImpliesQE(t);
   t = convertIFF(t);
   t = computeSimpleITE(t);
