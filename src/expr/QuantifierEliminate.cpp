@@ -3920,11 +3920,16 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   return t;
 }
 Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
+  Expr y = n.toExpr();
+  Debug("expr-qetest")<<"in strong qe proc y "<<y<<std::endl;
   ExprManager *em = new ExprManager;
-  Expr x = em->mkExpr(n.getKind(),n.toExpr());
+  Expr x = em->mkExpr(y.getKind(),y);
+  Debug("expr-qetest")<<"in strong qe proc x "<<x<<std::endl;
   Node m(x);
+  Debug("expr-qetest")<<"in strong qe proc m "<<m<<std::endl;
   Node t = extractQuantifierFreeFormula(m);
   t = t.negate();
+  Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
   SmtEngine smt(em);
   SmtScope smts(&smt);
   smt.setLogic("LIA");
@@ -3936,7 +3941,6 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   std::set<Node> vars;
   std::set < Node > bv = getBoundVariablesList(m, boundVars);
   std::set<Node> v = getFreeVariablesList(t, vars);
-  Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
   Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
   Debug("expr-qetest")<<"num of free vars "<<v.size()<<std::endl;
   std::vector<Expr> variables;
