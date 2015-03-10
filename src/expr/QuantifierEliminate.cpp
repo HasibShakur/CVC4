@@ -3920,11 +3920,11 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   return t;
 }
 Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
-  NodeManager *nm = new NodeManager;
-  Node m = NodeManager::currentNM()->mkNode(n.getKind(),n);
+  ExprManager *em = new ExprManager;
+  Expr x = em->mkExpr(n.getKind(),n.toExpr());
+  Node m(x);
   Node t = extractQuantifierFreeFormula(m);
   t = t.negate();
-  ExprManager* em = t.toExpr().getExprManager();
   SmtEngine smt(em);
   SmtScope smts(&smt);
   smt.setLogic("LIA");
@@ -3969,7 +3969,6 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   vars.clear();
   v.clear();
   delete *em;
-  delete *nm;
   return t;
 }
 
