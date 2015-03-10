@@ -3924,11 +3924,12 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   Node m = n;
   Node t = extractQuantifierFreeFormula(m);
   t = t.notNode();
+  Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
   t = eliminateImpliesQE(t);
   t = convertToNNFQE(t);
   t = convertIFF(t);
   t = computeSimpleITE(t);
-  Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
+  Debug("expr-qetest")<<"After rewriting "<<t<<std::endl;
   SmtEngine smt(em);
   SmtScope smts(&smt);
   smt.setLogic("LIA");
