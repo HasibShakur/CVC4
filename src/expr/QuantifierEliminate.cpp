@@ -3921,7 +3921,7 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
 }
 Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   ExprManager *em = new ExprManager;
-  Expr exp = n.toExpr();
+  Expr exp(em,&n);
   Debug("expr-qetest")<<"Expr exp "<<exp<<std::endl;
   if(exp.getExprManager() == n.toExpr().getExprManager())
   {
