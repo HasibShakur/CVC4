@@ -3925,10 +3925,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   Node t = extractQuantifierFreeFormula(m);
   t = t.notNode();
   Debug("expr-qetest")<<"Quantifier Free Expression "<<t<<std::endl;
-//  t = eliminateImpliesQE(t);
   t = convertToNNFQE(t);
-//  t = convertIFF(t);
-//  t = computeSimpleITE(t);
   Debug("expr-qetest")<<"After rewriting "<<t<<std::endl;
   SmtEngine smt(em);
   SmtScope smts(&smt);
@@ -3937,6 +3934,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   smt.setOption("finite-model-find", true);
   Type integer = em->integerType();
   Expr e = t.toExpr();
+  Debug("expr-qetest")<<"Expr e "<<e<<std::endl;
   std::set<Node> boundVars;
   std::set<Node> vars;
   std::set < Node > bv = getBoundVariablesList(m, boundVars);
