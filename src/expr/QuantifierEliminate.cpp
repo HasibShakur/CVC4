@@ -3921,12 +3921,11 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
 }
 Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   ExprManager *em = new ExprManager;
-  std::vector<Expr> temp_expr;
-  Kind k = n.getKind();
-  temp_expr.push_back(n.toExpr());
-  Expr exp = em->mkExpr(k,temp_expr);
-  Debug("expr-qetest")<<"in strong qe proc e "<<exp<<std::endl;
-  Node m(exp);
+  n = eliminateImpliesQE(n);
+  n = convertToNNFQE(n);
+  n = convertIFF(n);
+  n = computeSimpleITE(n);
+  Node m = n;
   Debug("expr-qetest")<<"in strong qe proc m "<<m<<std::endl;
   Node t = extractQuantifierFreeFormula(m);
   t = t.negate();
@@ -3969,12 +3968,11 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   while(!variables.empty()) {
     variables.pop_back();
   }
-  temp_expr.clear();
   boundVars.clear();
   bv.clear();
   vars.clear();
   v.clear();
-  //delete *em;
+
   return t;
 }
 
