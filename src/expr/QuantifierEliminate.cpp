@@ -3920,7 +3920,7 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   return t;
 }
 Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
-  NodeManager nm = new NodeManager;
+  NodeManager *nm = new NodeManager;
   Node m = nm.currentNM()->mkNode(n.getKind(),n);
   Node t = extractQuantifierFreeFormula(m);
   t = t.negate();
@@ -3968,8 +3968,8 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   bv.clear();
   vars.clear();
   v.clear();
-  delete em;
-  delete nm;
+  delete *em;
+  delete *nm;
   return t;
 }
 
