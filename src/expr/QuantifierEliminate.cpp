@@ -3923,8 +3923,11 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   ExprManager *em = n.toExpr().getExprManager();
   Expr exp = n.toExpr();
   Debug("expr-qetest")<<"Expr exp "<<exp<<std::endl;
+  std::vector<Expr> expr_temp;
+  expr_temp.push_back(exp);
+  Kind k = exp.getKind();
   ExprManager *em1 = new ExprManager;
-  Expr exp1(exp);
+  Expr exp1 = em1->mkExpr(k,expr_temp);
   Debug("expr-qetest")<<"Expr exp1 "<<exp1<<std::endl;
   if(exp1.getExprManager() == exp.getExprManager())
   {
