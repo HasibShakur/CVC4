@@ -3668,12 +3668,27 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   return t;
 }
 
-//Node QuantifierEliminate::mkDeepCopy(Expr e,ExprManager *em)
-//{
-// Expr* new_expr;
-// for(Expr::)
-//
-//}
+Node* QuantifierEliminate::newNode(Node n)
+{
+  Node *node = new Node;
+  node->NodeTemplate(n);
+  return node;
+}
+Node QuantifierEliminate::mkDeepCopy(Node n,ExprManager *em)
+{
+ Node* new_node;
+ Node* new_child;
+ new_node = newNode(n);
+ for(Node::iterator it = n.begin(),it_end = n.end();
+     it != it_end;
+     ++it)
+ {
+   Node child = *it;
+   new_child = mkDeepCopy(child,em);
+ }
+ return new_node;
+
+}
 
 Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   Expr exp1 = n.toExpr();
@@ -3688,7 +3703,8 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   {
     Debug("expr-qetest")<<"different expression manager"<<std::endl;
   }
-  Node m = x;
+  Node m = mkDeepCopy(x,em1);
+  Debug("expr-qetest")<<"After deep copy "<<m<<std::endl;
   Node t = extractQuantifierFreeFormula(m);
   t = t.notNode();
   t = eliminateImpliesQE(t);
