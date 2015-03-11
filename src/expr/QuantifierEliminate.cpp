@@ -3676,19 +3676,18 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
 //}
 
 Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
+  Expr exp1 = n.toExpr();
   ExprManager *em1 = new ExprManager;
   NodeTemplate<true> x(n);
-//  Expr exp1(x);
-//  Debug("expr-qetest")<<"Expr exp1 "<<exp1<<std::endl;
-//  if(exp1.getExprManager() == n.toExpr().getExprManager())
-//  {
-//    Debug("expr-qetest")<<"Same expr manager "<<std::endl;
-//  }
-//  else
-//  {
-//    Debug("expr-qetest")<<"different expr manager "<<std::endl;
-//  }
-//  Node m = Node::fromExpr(exp1);
+  Expr exp2 = x.toExpr();
+  if(exp1.getExprManager() == exp2.getExprManager())
+  {
+    Debug("expr-qetest")<<"same expression manager"<<std::endl;
+  }
+  else
+  {
+    Debug("expr-qetest")<<"different expression manager"<<std::endl;
+  }
   Node m = x;
   Node t = extractQuantifierFreeFormula(m);
   t = t.notNode();
