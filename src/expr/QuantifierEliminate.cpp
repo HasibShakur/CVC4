@@ -3755,12 +3755,10 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
   smt.setOption("produce-models", true);
   smt.setOption("finite-model-find", true);
   Type integer = em1->integerType();
-  Expr e(copy.toExpr());
-  Debug("expr-qetest")<<"Expr e "<<e<<std::endl;
   std::set<Node> boundVars;
   std::set<Node> vars;
-  std::set < Node > bv = getBoundVariablesList(m, boundVars);
-  std::set<Node> v = getFreeVariablesList(t, vars);
+  std::set < Node > bv = getBoundVariablesList(copy, boundVars);
+  std::set<Node> v = getFreeVariablesList(copy, vars);
   Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
   Debug("expr-qetest")<<"num of free vars "<<v.size()<<std::endl;
   std::vector<Expr> variables;
