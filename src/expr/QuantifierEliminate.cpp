@@ -3667,15 +3667,35 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   return t;
 }
 
-Node QuantifierEliminate::copyInternalNodes(Node n) {
+Node QuantifierEliminate::copyInternalNodes(Node n,std::vector<Node> internalExp) {
+  Node temp;
   for(Node::iterator it = n.begin(),it_end = n.end();
       it != it_end;
       ++it)
   {
     Node child = *it;
     Debug("expr-qetest")<<"child in copy Internal nodes "<<child<<std::endl;
+    if(child.isVar())
+    {
+      internalExp.push_back(NodeTemplate(child));
+    }
+    else if(child.getKind() == kind::BOUND_VARIABLE)
+    {
+      internalExp.push_back(NodeTemplate(child));
+    }
+    else if(child.isConst())
+    {
+      internalExp.push_back(child)
+    }
+    else
+    {
+      std::vector<Node> temp_exp;
+      temp = copyInternalNodes(child,temp_exp);
+      internalExp.push_back(temp);
+    }
   }
-  return n;
+  Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),internalExp);
+  return returnNode;
 }
 
 Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
@@ -3690,7 +3710,8 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
       if(c.getKind() == kind::AND || c.getKind() == kind::OR) {
         toReturn = mkDeepCopy(c, em);
       } else {
-        toReturn = copyInternalNodes(c);
+        std::vector<Node> internalExp;
+        toReturn = copyInternalNodes(c,internalExp);
         Debug("expr-qetest")<<"Node temp "<<toReturn<<std::endl;
       }
       replaceNode.push_back(toReturn);
@@ -3701,7 +3722,8 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
     return returnNode;
   }
   else {
-    Node returnNode = copyInternalNodes(n);
+    std::vector<Node> internalExp;
+    Node returnNode = copyInternalNodes(n,internalExp);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   }
