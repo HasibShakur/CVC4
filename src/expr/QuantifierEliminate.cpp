@@ -3706,7 +3706,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   smt.setOption("produce-models", true);
   smt.setOption("finite-model-find", true);
   Type integer = em1->integerType();
-  Expr e = t.toExpr();
+  Expr e(t.toExpr());
   Debug("expr-qetest")<<"Expr e "<<e<<std::endl;
   std::set<Node> boundVars;
   std::set<Node> vars;
