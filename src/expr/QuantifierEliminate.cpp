@@ -3703,7 +3703,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   {
     Debug("expr-qetest")<<"different expression manager"<<std::endl;
   }
-  Node m = mkDeepCopy(x,em1);
+  Node m = &mkDeepCopy(x,em1);
   Debug("expr-qetest")<<"After deep copy "<<m<<std::endl;
   Node t = extractQuantifierFreeFormula(m);
   t = t.notNode();
