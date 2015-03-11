@@ -3746,7 +3746,8 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
   Debug("expr-qetest")<<"After rewriting "<<t<<std::endl;
   ExprManager *em = new ExprManager;
   Node copy = mkDeepCopy(t, em);
-  Debug("expr-qetest")<<"After deep copy "<<copy<<std::endl;
+  Expr test = copy.toExpr();
+  Debug("expr-qetest")<<"After deep copy "<<test<<std::endl;
   ExprManager *em1 = t.toExpr().getExprManager();
   SmtEngine smt(em1);
   SmtScope smts(&smt);
@@ -3779,7 +3780,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
       variables.push_back(child.toExpr());
     }
   }
-  Result result = smt.checkSat(e);
+  Result result = smt.checkSat(test);
   Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
   for(int i = 0; i < (int) variables.size(); i++) {
     Debug("expr-qetest")<<"Value of "<<variables[i]<<" "<<smt.getValue(variables[i])<<std::endl;
