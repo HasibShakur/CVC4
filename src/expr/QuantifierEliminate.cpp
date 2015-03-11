@@ -3730,7 +3730,7 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
 }
 
 Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
-  ExprManager *em1 = n.toExpr().getExprManager();
+  ExprManager *em = n.toExpr().getExprManager();
   NodeTemplate<true> x(n);
 //  Node m = mkDeepCopy(x,em1);
   Node m = x;
@@ -3744,15 +3744,16 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
     t = convertIFF(t);
   }
   Debug("expr-qetest")<<"After rewriting "<<t<<std::endl;
+  Node copy = mkDeepCopy(t, em);
+  Debug("expr-qetest")<<"After deep copy "<<copy<<std::endl;
+  ExprManager *em1 = new ExprManager;
   SmtEngine smt(em1);
   SmtScope smts(&smt);
   smt.setLogic("LIA");
   smt.setOption("produce-models", true);
   smt.setOption("finite-model-find", true);
   Type integer = em1->integerType();
-  Node copy = mkDeepCopy(t, em1);
-  Debug("expr-qetest")<<"After deep copy "<<copy<<std::endl;
-  Expr e = em1->mkExpr(copy.toExpr());
+  Expr e(copy.toExpr());
   Debug("expr-qetest")<<"Expr e "<<e<<std::endl;
   std::set<Node> boundVars;
   std::set<Node> vars;
