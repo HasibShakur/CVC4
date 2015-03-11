@@ -3730,7 +3730,7 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
 }
 
 Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
-  ExprManager *em = n.toExpr().getExprManager();
+
   NodeTemplate<true> x(n);
 //  Node m = mkDeepCopy(x,em1);
   Node m = x;
@@ -3744,10 +3744,10 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
     t = convertIFF(t);
   }
   Debug("expr-qetest")<<"After rewriting "<<t<<std::endl;
-  ExprManager *em1 = new ExprManager;
-  Node copy = mkDeepCopy(t, em1);
+  ExprManager *em = new ExprManager;
+  Node copy = mkDeepCopy(t, em);
   Debug("expr-qetest")<<"After deep copy "<<copy<<std::endl;
-
+  ExprManager *em1 = t.toExpr().getExprManager();
   SmtEngine smt(em1);
   SmtScope smts(&smt);
   smt.setLogic("LIA");
