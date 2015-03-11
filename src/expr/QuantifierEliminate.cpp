@@ -3751,7 +3751,8 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
   smt.setOption("finite-model-find", true);
   Type integer = em1->integerType();
   Node copy = mkDeepCopy(t, em1);
-  Expr e = t.toExpr();
+  Debug("expr-qetest")<<"After deep copy "<<copy<<std::endl;
+  Expr e = copy.toExpr();
   Debug("expr-qetest")<<"Expr e "<<e<<std::endl;
   std::set<Node> boundVars;
   std::set<Node> vars;
