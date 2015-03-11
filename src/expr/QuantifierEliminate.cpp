@@ -3677,15 +3677,15 @@ Node QuantifierEliminate::copyInternalNodes(Node n,std::vector<Node> internalExp
     Debug("expr-qetest")<<"child in copy Internal nodes "<<child<<std::endl;
     if(child.isVar())
     {
-      internalExp.push_back(NodeTemplate(child));
+      internalExp.push_back(NodeTemplate<true>(child));
     }
     else if(child.getKind() == kind::BOUND_VARIABLE)
     {
-      internalExp.push_back(NodeTemplate(child));
+      internalExp.push_back(NodeTemplate<true>(child));
     }
     else if(child.isConst())
     {
-      internalExp.push_back(child)
+      internalExp.push_back(child);
     }
     else
     {
