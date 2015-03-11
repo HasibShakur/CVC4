@@ -3779,7 +3779,6 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
     }
   }
   Result result = smt.checkSat(test);
-  Debug("expr-qetest")<<"Expression e "<<e<<std::endl;
   for(int i = 0; i < (int) variables.size(); i++) {
     Debug("expr-qetest")<<"Value of "<<variables[i]<<" "<<smt.getValue(variables[i])<<std::endl;
   }
