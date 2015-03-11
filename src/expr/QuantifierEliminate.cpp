@@ -29,7 +29,6 @@ using namespace CVC4::theory;
 using namespace CVC4::theory::arith;
 using namespace CVC4::smt;
 
-
 std::vector<std::vector<Node> > QuantifierEliminate::boundVar;
 std::vector<Node> QuantifierEliminate::args;
 std::vector<Container> QuantifierEliminate::container;
@@ -3668,42 +3667,51 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   return t;
 }
 
-Node QuantifierEliminate::newNode(Node n)
-{
-  Node *node = new Node;
-  return node->NodeTemplate(n);
-}
-Node QuantifierEliminate::mkDeepCopy(Node n,ExprManager *em)
-{
- Node new_node;
- Node new_child;
- new_node = newNode(n);
- for(Node::iterator it = n.begin(),it_end = n.end();
-     it != it_end;
-     ++it)
- {
-   Node child = *it;
-   new_child = mkDeepCopy(child,em);
- }
- return new_node;
-
+Node QuantifierEliminate::copyInternalNodes(Node n) {
+  for(Node::iterator it = n.begin(),it_end = n.end();
+      it != it_end;
+      ++it)
+  {
+    Node child = *it;
+    Debug("expr-qetest")<<"child in copy Internal nodes "<<child<<std::endl;
+  }
+  return n;
 }
 
-Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
-  Expr exp1 = n.toExpr();
+Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
+
+  Node toReturn;
+  std::vector<Node> replaceNode;
+  Debug("expr-qetest")<<"Node n "<<n<<std::endl;
+  if(n.getKind() == kind::AND || n.getKind() == kind::OR) {
+    for(Node::iterator i = n.begin(), iEnd = n.end(); i != iEnd; ++i) {
+      Node c = *i;
+      Debug("expr-qetest")<<"Node c "<<c<<std::endl;
+      if(c.getKind() == kind::AND || c.getKind() == kind::OR) {
+        toReturn = mkDeepCopy(c, em);
+      } else {
+        toReturn = copyInternalNodes(c);
+        Debug("expr-qetest")<<"Node temp "<<toReturn<<std::endl;
+      }
+      replaceNode.push_back(toReturn);
+    }
+    Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
+    replaceNode);
+    Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
+    return returnNode;
+  }
+  else {
+    Node returnNode = copyInternalNodes(n);
+    Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
+    return returnNode;
+  }
+}
+
+Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
   ExprManager *em1 = new ExprManager;
   NodeTemplate<true> x(n);
-  Expr exp2 = x.toExpr();
-  if(exp1.getExprManager() == exp2.getExprManager())
-  {
-    Debug("expr-qetest")<<"same expression manager"<<std::endl;
-  }
-  else
-  {
-    Debug("expr-qetest")<<"different expression manager"<<std::endl;
-  }
-  Node m = mkDeepCopy(x,em1);
-  Debug("expr-qetest")<<"After deep copy "<<m<<std::endl;
+//  Node m = mkDeepCopy(x,em1);
+  Node m = x;
   Node t = extractQuantifierFreeFormula(m);
   t = t.notNode();
   t = eliminateImpliesQE(t);
@@ -3711,8 +3719,8 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   t = Rewriter::rewrite(t);
   t = computeSimpleITE(t);
   if(t.getKind() == kind::IFF || t.getKind() == kind::XOR) {
-      t = convertIFF(t);
-    }
+    t = convertIFF(t);
+  }
   Debug("expr-qetest")<<"After rewriting "<<t<<std::endl;
   SmtEngine smt(em1);
   SmtScope smts(&smt);
@@ -3720,7 +3728,8 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   smt.setOption("produce-models", true);
   smt.setOption("finite-model-find", true);
   Type integer = em1->integerType();
-  Expr e(t.toExpr());
+  Node copy = mkDeepCopy(t, em1);
+  Expr e = t.toExpr();
   Debug("expr-qetest")<<"Expr e "<<e<<std::endl;
   std::set<Node> boundVars;
   std::set<Node> vars;
@@ -3761,9 +3770,8 @@ Node QuantifierEliminate::strongerQEProcedure(Node n,QuantifierEliminate qe) {
   return t;
 }
 
-Node QuantifierEliminate::defautlQEProcedure(Node n,QuantifierEliminate qe)
-{
-  Node returnNode = computeProjections(n,qe);
+Node QuantifierEliminate::defautlQEProcedure(Node n, QuantifierEliminate qe) {
+  Node returnNode = computeProjections(n, qe);
   return returnNode;
 }
 
