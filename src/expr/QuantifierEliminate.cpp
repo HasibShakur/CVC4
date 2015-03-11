@@ -3674,7 +3674,7 @@ Node* QuantifierEliminate::newNode(Node n)
   node->NodeTemplate(n);
   return node;
 }
-Node QuantifierEliminate::mkDeepCopy(Node n,ExprManager *em)
+Node* QuantifierEliminate::mkDeepCopy(Node n,ExprManager *em)
 {
  Node* new_node;
  Node* new_child;
