@@ -3730,7 +3730,7 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
 }
 
 Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
-  ExprManager *em1 = new ExprManager;
+  ExprManager *em1 = n.toExpr().getExprManager();
   NodeTemplate<true> x(n);
 //  Node m = mkDeepCopy(x,em1);
   Node m = x;
