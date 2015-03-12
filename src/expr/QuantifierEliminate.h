@@ -8,6 +8,7 @@
 #include<set>
 #include<map>
 #include "expr/node.h"
+#include "smt/smt_engine.h"
 #include "theory/arith/normal_form.h"
 namespace CVC4 {
 class Container;
@@ -96,8 +97,8 @@ private:
   static Node defautlQEProcedure(Node n,QuantifierEliminate qe);
   static Node mkDeepCopy(Node n,ExprManager *em);
   static Node copyInternalNodes(Node n,std::vector<Node> internalExp,ExprManager *em);
-//  static Node mkStrongerExpression(Node n,std::map<Expr,Expr> assignment);
-
+  static Node mkStrongerExpression(Node n,std::map<Expr,Expr> assignment,std::vector<Node> inner_expr,SmtEngine smt);
+  static Node evaluateExpressionOnAssignment(Node n,std::map<Expr,Expr> assignment);
   //non static methods
 
   std::vector<ExpressionContainer> getExpContainer(QuantifierEliminate q);
