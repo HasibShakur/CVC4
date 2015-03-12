@@ -3719,7 +3719,7 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
     }
 //    Node returnNode = NodeManager::fromExprManager(em)->mkNode(n.getKind(),
 //    replaceNode);
-    Node returnNode = NodeManager::currentNm()->mkNode(n.getKind(),
+    Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
         replaceNode);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
