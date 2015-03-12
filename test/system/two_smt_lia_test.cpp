@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "expr/expr_template.h"
+#include "expr/expr.h"
 #include "smt/smt_engine.h"
 #include "util/integer.h"
 #include "theory/arith/arith_utilities.h"
