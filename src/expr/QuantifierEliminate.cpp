@@ -3732,9 +3732,7 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
 Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
 
   NodeTemplate<true> x(n);
-//  Node m = mkDeepCopy(x,em1);
-  Node m = x;
-  Node t = extractQuantifierFreeFormula(m);
+  Node t = extractQuantifierFreeFormula(x);
   t = t.notNode();
   t = eliminateImpliesQE(t);
   t = convertToNNFQE(t);
@@ -3757,7 +3755,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
   Type integer = em1->integerType();
   std::set<Node> boundVars;
   std::set<Node> vars;
-  std::set < Node > bv = getBoundVariablesList(copy, boundVars);
+  std::set < Node > bv = getBoundVariablesList(x, boundVars);
   std::set<Node> v = getFreeVariablesList(copy, vars);
   Debug("expr-qetest")<<"num of boundvars "<<bv.size()<<std::endl;
   Debug("expr-qetest")<<"num of free vars "<<v.size()<<std::endl;
