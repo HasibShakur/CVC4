@@ -3780,13 +3780,13 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
   for(int i = 0; i < (int) variables.size(); i++) {
     Debug("expr-qetest")<<"Value of "<<variables[i]<<" "<<smt.getValue(variables[i])<<std::endl;
   }
-  while(!variables.empty()) {
-    variables.pop_back();
-  }
-  boundVars.clear();
-  bv.clear();
-  vars.clear();
-  v.clear();
+//  while(!variables.empty()) {
+//    variables.pop_back();
+//  }
+//  boundVars.clear();
+//  bv.clear();
+//  vars.clear();
+//  v.clear();
 
   return t;
 }
