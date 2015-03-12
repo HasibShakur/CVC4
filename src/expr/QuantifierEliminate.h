@@ -98,7 +98,7 @@ private:
   static Node mkDeepCopy(Node n,ExprManager *em);
   static Node copyInternalNodes(Node n,std::vector<Node> internalExp,ExprManager *em);
   static Node mkStrongerExpression(Node n,std::map<Expr,Expr> assignment,std::vector<Node> inner_expr,SmtEngine smt);
-  static Node evaluateExpressionOnAssignment(Node n,std::map<Expr,Expr> assignment);
+  static Node evaluateExpressionOnAssignment(Node n,std::map<Expr,Expr> assignment,SmtEngine smt);
   //non static methods
 
   std::vector<ExpressionContainer> getExpContainer(QuantifierEliminate q);
