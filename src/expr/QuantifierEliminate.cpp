@@ -3736,7 +3736,7 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
 Node QuantifierEliminate::evaluateExpressionOnAssignment(Node n,std::map<Expr,Expr> assignment,SmtEngine smt)
 {
   Debug("expr-qetest")<<"Inner Expression "<<n<<std::endl;
-  Expr result = smt.simplify(n.toExpr)
+  Expr result = smt.simplify(n.toExpr())
   Debug("expr-qetest")<<"After Simplify Expression "<<result<<std::endl;
   return NodeManager::fromExpr(result);
 }
@@ -3777,7 +3777,7 @@ Node QuantifierEliminate::mkStrongerExpression(Node n,std::map<Expr,Expr> assign
       Node child1 = *j;
       if(child1.getKind() == kind::AND || child1.getKind() == kind::OR)
       {
-        toReturn = mkDeepCopy(child1,assignment,inner_expr,smt);
+        toReturn = mkStrongerExpression(child1,assignment,inner_expr,smt);
       }
       else
       {
