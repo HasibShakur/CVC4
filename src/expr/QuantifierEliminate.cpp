@@ -3,7 +3,8 @@
 #include<iostream>
 #include<vector>
 #include<numeric>
-#include <set>
+#include<set>
+#include<map>
 #include "expr/node.h"
 #include "expr/QuantifierEliminate.h"
 #include "expr/attribute.h"
@@ -3667,7 +3668,7 @@ Node QuantifierEliminate::extractQuantifierFreeFormula(Node n) {
   return t;
 }
 
-Node QuantifierEliminate::copyInternalNodes(Node n,std::vector<Node> internalExp) {
+Node QuantifierEliminate::copyInternalNodes(Node n,std::vector<Node> internalExp,ExprManager *em) {
   Node temp;
   for(Node::iterator it = n.begin(),it_end = n.end();
       it != it_end;
@@ -3694,12 +3695,11 @@ Node QuantifierEliminate::copyInternalNodes(Node n,std::vector<Node> internalExp
       internalExp.push_back(temp);
     }
   }
-  Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),internalExp);
+  Node returnNode = NodeManager::fromExprManager(em)->mkNode(n.getKind(),internalExp);
   return returnNode;
 }
 
 Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
-
   Node toReturn;
   std::vector<Node> replaceNode;
   Debug("expr-qetest")<<"Node n "<<n<<std::endl;
@@ -3711,19 +3711,19 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
         toReturn = mkDeepCopy(c, em);
       } else {
         std::vector<Node> internalExp;
-        toReturn = copyInternalNodes(c,internalExp);
+        toReturn = copyInternalNodes(c,internalExp,em);
         Debug("expr-qetest")<<"Node temp "<<toReturn<<std::endl;
       }
       replaceNode.push_back(toReturn);
     }
-    Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),
+    Node returnNode = NodeManager::fromExprManager(em)->mkNode(n.getKind(),
     replaceNode);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   }
   else {
     std::vector<Node> internalExp;
-    Node returnNode = copyInternalNodes(n,internalExp);
+    Node returnNode = copyInternalNodes(n,internalExp,em);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   }
@@ -3777,16 +3777,16 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
     }
   }
   Result result = smt.checkSat(test);
+  std::map<Expr,Expr> assignment;
+  std::map<Expr,Expr>::iterator map_insert = assignment.begin();
   for(int i = 0; i < (int) variables.size(); i++) {
-    Debug("expr-qetest")<<"Value of "<<variables[i]<<" "<<smt.getValue(variables[i])<<std::endl;
+    //Debug("expr-qetest")<<"Value of "<<variables[i]<<" "<<smt.getValue(variables[i])<<std::endl;
+    assignment.insert(map_insert, std::pair<Expr,Expr>(variables[i],smt.getValue(variables[i])));
   }
-//  while(!variables.empty()) {
-//    variables.pop_back();
-//  }
-//  boundVars.clear();
-//  bv.clear();
-//  vars.clear();
-//  v.clear();
+  for(map_insert = assignment.begin(); map_insert!=assignment.end();++map_insert)
+  {
+    Debug("expr-qetest")<<map_insert->first<<" => "<<map_insert->second<<std::endl;
+  }
 
   return t;
 }

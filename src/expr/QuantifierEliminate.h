@@ -94,7 +94,7 @@ private:
   static Node strongerQEProcedure(Node n,QuantifierEliminate qe);
   static Node defautlQEProcedure(Node n,QuantifierEliminate qe);
   static Node mkDeepCopy(Node n,ExprManager *em);
-  static Node copyInternalNodes(Node n,std::vector<Node> internalExp);
+  static Node copyInternalNodes(Node n,std::vector<Node> internalExp,ExprManager *em);
 
   //non static methods
 
