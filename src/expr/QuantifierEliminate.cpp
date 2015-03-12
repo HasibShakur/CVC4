@@ -3819,7 +3819,7 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
     Debug("expr-qetest")<<map_insert->first<<" => "<<map_insert->second<<std::endl;
   }
  // Node strongerExpression = mkStrongerExpression(copy,assignment);
-  Expr simplified = smt.simplify(n.toExpr());
+  Expr simplified = smt.simplify(copy);
   Debug("expr-qetest")<<"simplified expression "<<simplified<<std::endl;
   return NodeManager::fromExpr(simplified);
 }
