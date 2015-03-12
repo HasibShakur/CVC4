@@ -33,12 +33,8 @@ int main() {
   smt2.setOption("produce-models", true);
   Expr y1 = em.mkVar("y",integer);
   Expr x1 = em.mkVar("x",integer);
-  Expr ex1 = em.mkExpr(kind::PLUS,x1,smt.getValue(x));
-  Expr ex2 = em.mkExpr(kind::PLUS,y1,smt.getValue(y));
-  Expr ex3 = em.mkExpr(kind::AND,ex1,ex2);
-  Expr ex4 = em.mkExpr(kind::EQUAL,ex2,em.mkConst(Rational(0)));
-  Expr final = em.mkExpr(kind::EQUAL,ex4,exp1);
-  Result r2 = smt2.query(final);
+  Expr ex1 = em.mkExpr(kind::EQUAL,x1,smt.getValue(x));
+  Result r2 = smt2.query(ex1);
   std::cout<<"final "<<r2.toString()<<std::endl;
 
   //Result r = smt.query(em.mkConst(true));
