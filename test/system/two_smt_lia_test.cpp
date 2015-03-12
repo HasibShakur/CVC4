@@ -33,9 +33,9 @@ int main() {
   smt2.setLogic("LIA");
   smt2.setOption("produce-models", true);
 
-  Expr exp1 = em.mkExpr(kind::MULT,two,smt.getValue(x));
-  Expr exp2 = em.mkExpr(kind::EQUAL,smt.getValue(y),exp1);
-  Result r2 = smt2.query(exp2);
+  Expr exp2 = em.mkExpr(kind::MULT,two,smt.getValue(x));
+  Expr exp3 = em.mkExpr(kind::EQUAL,smt.getValue(y),exp2);
+  Result r2 = smt2.query(exp3);
   std::cout<<"final "<<r2.toString()<<std::endl;
 
   return 0;
