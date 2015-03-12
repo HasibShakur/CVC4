@@ -3,9 +3,10 @@ TEST_EXTENSIONS = .class
 CPLUSPLUS_TESTS = \
 	boilerplate \
 	ouroborous \
+	two_smt_lia_test \
 	two_smt_engines \
 	smt2_compliance \
-	statistics
+	statistics 
 
 if CVC4_BUILD_LIBCOMPAT
 #CPLUSPLUS_TESTS += \

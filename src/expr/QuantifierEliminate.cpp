@@ -16,7 +16,6 @@
 #include "util/integer.h"
 #include "smt/smt_engine.h"
 #include "smt/smt_engine_scope.h"
-#include "expr/expr_manager_scope.h"
 #include "theory/arith/arith_utilities.h"
 
 //#include "theory/quantifiers/quantifiers_rewriter.h"
