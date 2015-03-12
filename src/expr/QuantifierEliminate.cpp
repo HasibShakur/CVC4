@@ -3691,7 +3691,7 @@ Node QuantifierEliminate::copyInternalNodes(Node n,std::vector<Node> internalExp
     else
     {
       std::vector<Node> temp_exp;
-      temp = copyInternalNodes(child,temp_exp);
+      temp = copyInternalNodes(child,temp_exp,em);
       internalExp.push_back(temp);
     }
   }
