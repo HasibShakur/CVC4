@@ -15,10 +15,10 @@ int main() {
   ExprManager em;
   Options opts;
   SmtEngine smt(&em);
-  //SmtEngine smt2(&em);
+
   smt.setLogic("LIA");
   smt.setOption("produce-models", true);
- // smt.setOption("finite-model-find", true);
+
   Type integer = em.integerType();
   Expr y = em.mkVar("y",integer);
   Expr x = em.mkVar("x",integer);
