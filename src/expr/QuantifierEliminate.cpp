@@ -3695,7 +3695,8 @@ Node QuantifierEliminate::copyInternalNodes(Node n,std::vector<Node> internalExp
       internalExp.push_back(temp);
     }
   }
-  Node returnNode = NodeManager::fromExprManager(em)->mkNode(n.getKind(),internalExp);
+ // Node returnNode = NodeManager::fromExprManager(em)->mkNode(n.getKind(),internalExp);
+  Node returnNode = NodeManager::currentNM()->mkNode(n.getKind(),internalExp);
   return returnNode;
 }
 
@@ -3716,8 +3717,10 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
       }
       replaceNode.push_back(toReturn);
     }
-    Node returnNode = NodeManager::fromExprManager(em)->mkNode(n.getKind(),
-    replaceNode);
+//    Node returnNode = NodeManager::fromExprManager(em)->mkNode(n.getKind(),
+//    replaceNode);
+    Node returnNode = NodeManager::currentNm()->mkNode(n.getKind(),
+        replaceNode);
     Debug("expr-qetest")<<"returnNode "<<returnNode<<std::endl;
     return returnNode;
   }
