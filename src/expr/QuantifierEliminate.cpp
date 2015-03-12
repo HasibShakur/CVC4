@@ -3732,6 +3732,33 @@ Node QuantifierEliminate::mkDeepCopy(Node n, ExprManager *em) {
   }
 }
 
+/*Node QuantifierEliminate::mkStrongerExpression(Node n,std::map<Expr,Expr> assignment)
+{
+  Node toReturn;
+  Debug("expr-qetest")<<"Original Expression "<<n<<std::endl;
+  if(n.getKind() == kind::AND)
+  {
+    for(Node::iterator i = n.begin(),i_end = n.end();
+        i != i_end;
+        ++i)
+    {
+      Node child = *i;
+      if(child.getKind() == kind::AND || child.getKind() == kind::OR)
+      {
+        toReturn = mkStrongerExpression(child,assignment);
+      }
+      else
+      {
+
+      }
+    }
+  }
+  else if(n.getKind() == kind::OR)
+  {
+
+  }
+}*/
+
 Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
 
   NodeTemplate<true> x(n);
@@ -3786,12 +3813,15 @@ Node QuantifierEliminate::strongerQEProcedure(Node n, QuantifierEliminate qe) {
     //Debug("expr-qetest")<<"Value of "<<variables[i]<<" "<<smt.getValue(variables[i])<<std::endl;
     assignment.insert(map_insert, std::pair<Expr,Expr>(variables[i],smt.getValue(variables[i])));
   }
+
   for(map_insert = assignment.begin(); map_insert!=assignment.end();++map_insert)
   {
     Debug("expr-qetest")<<map_insert->first<<" => "<<map_insert->second<<std::endl;
   }
-
-  return t;
+ // Node strongerExpression = mkStrongerExpression(copy,assignment);
+  Expr simplified = smt.simplify(test);
+  Debug("expr-qetest")<<"simplified expression "<<simplified<<std::endl;
+  return NodeManager::fromExpr(simplified);
 }
 
 Node QuantifierEliminate::defautlQEProcedure(Node n, QuantifierEliminate qe) {
